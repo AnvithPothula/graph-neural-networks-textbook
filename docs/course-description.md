@@ -18,8 +18,6 @@ quality_score: 97
 
 This textbook is built from the materials of Stanford CS224W (Jure Leskovec) but is designed to **exceed** that course in depth, accessibility, completeness, and interactivity. Where the course relies on lectures to fill in the gaps between terse slides, this textbook is fully self-contained. Where the course must choose between classical and modern topics due to time constraints, this textbook covers both.
 
-See `textbook-design-principles.md` for a precise account of how this textbook improves on CS224W.
-
 ---
 
 ## Overview
@@ -116,8 +114,8 @@ The textbook is organized into 6 parts. It covers **all** topics from both the 2
 | 15 | Heterogeneous Graphs | ✅ 2025 Lecture 9 |
 | 16 | GNNs for Recommender Systems | ✅ Both years |
 | 17 | Relational Deep Learning | ✅ 2025 Lectures 12–13 |
-| 18 | Frequent Subgraph Mining | ✅ 2021 Lecture 12 / ❌ dropped from 2025 |
-| 19 | Community Structure in Networks | ✅ 2021 Lecture 14 / ❌ dropped from 2025 |
+| 18 | Community Structure in Networks | ✅ 2021 Lecture 14 / ❌ dropped from 2025 |
+| 19 | Frequent Subgraph Mining | ✅ 2021 Lecture 12 / ❌ dropped from 2025 |
 
 ### Part 5: Scalability and Generation (Chapters 20–22)
 
@@ -229,7 +227,7 @@ Every chapter follows this structure:
 
 ## Style and Technology
 
-- **Format:** MkDocs with Material theme (same as `anvithpothula.github.io/machine-learning-textbook`)
+- **Format:** MkDocs with Material theme
 - **Math:** LaTeX via MathJax; all major results stated as numbered theorems/propositions
 - **Code:** Python with PyTorch Geometric; every snippet is self-contained and runnable
 - **Interactivity:** p5.js MicroSims for: message passing, random walk, WL color refinement, PageRank power iteration, KG geometry, graph generation

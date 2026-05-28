@@ -1,0 +1,4286 @@
+{
+  "metadata": {
+    "title": "Graph Neural Networks and Machine Learning with Graphs",
+    "description": "A comprehensive intelligent textbook covering Graph Neural Networks from graph theory fundamentals through frontier topics including Graph Transformers, Knowledge Graph Foundation Models, and LLM+GNN integration.",
+    "creator": "Anvith Pothula",
+    "date": "2026-05-28",
+    "version": "1.0",
+    "format": "Learning Graph JSON v1.0",
+    "schema": "https://raw.githubusercontent.com/dmccreary/learning-graphs/refs/heads/main/src/schema/learning-graph-schema.json",
+    "license": "CC BY-NC-SA 4.0 DEED"
+  },
+  "groups": {
+    "PREREQ": {
+      "classifierName": "Prerequisites",
+      "color": "SteelBlue",
+      "font": {
+        "color": "white"
+      }
+    },
+    "FOUND": {
+      "classifierName": "Graph Fundamentals",
+      "color": "DodgerBlue",
+      "font": {
+        "color": "white"
+      }
+    },
+    "ALGO": {
+      "classifierName": "Classical Graph Algorithms",
+      "color": "Teal",
+      "font": {
+        "color": "white"
+      }
+    },
+    "EMB": {
+      "classifierName": "Node Embeddings",
+      "color": "DarkSlateBlue",
+      "font": {
+        "color": "white"
+      }
+    },
+    "GNN": {
+      "classifierName": "GNN Architecture",
+      "color": "Indigo",
+      "font": {
+        "color": "white"
+      }
+    },
+    "THEORY": {
+      "classifierName": "GNN Theory",
+      "color": "MediumPurple",
+      "font": {
+        "color": "white"
+      }
+    },
+    "TRANS": {
+      "classifierName": "Graph Transformers",
+      "color": "DarkOrchid",
+      "font": {
+        "color": "white"
+      }
+    },
+    "KG": {
+      "classifierName": "Knowledge Graphs",
+      "color": "Crimson",
+      "font": {
+        "color": "white"
+      }
+    },
+    "HETERO": {
+      "classifierName": "Heterogeneous Graphs",
+      "color": "DarkRed",
+      "font": {
+        "color": "white"
+      }
+    },
+    "APP": {
+      "classifierName": "Applications",
+      "color": "DarkGreen",
+      "font": {
+        "color": "white"
+      }
+    },
+    "SCALE": {
+      "classifierName": "Scalability",
+      "color": "OliveDrab",
+      "font": {
+        "color": "white"
+      }
+    },
+    "GEN": {
+      "classifierName": "Generative Models",
+      "color": "DeepPink",
+      "font": {
+        "color": "white"
+      }
+    },
+    "ADV": {
+      "classifierName": "Advanced Topics",
+      "color": "DarkGoldenrod",
+      "font": {
+        "color": "white"
+      }
+    },
+    "TRAIN": {
+      "classifierName": "Training & Optimization",
+      "color": "Orange",
+      "font": {
+        "color": "black"
+      }
+    },
+    "TOOLS": {
+      "classifierName": "Tools & Frameworks",
+      "color": "DimGray",
+      "font": {
+        "color": "white"
+      }
+    }
+  },
+  "nodes": [
+    {
+      "id": 1,
+      "label": "Matrix Multiplication",
+      "group": "PREREQ",
+      "shape": "box"
+    },
+    {
+      "id": 2,
+      "label": "Matrix Transpose",
+      "group": "PREREQ",
+      "shape": "box"
+    },
+    {
+      "id": 3,
+      "label": "Eigenvalue Decomposition",
+      "group": "PREREQ"
+    },
+    {
+      "id": 4,
+      "label": "Eigenvector",
+      "group": "PREREQ"
+    },
+    {
+      "id": 5,
+      "label": "Symmetric Matrix",
+      "group": "PREREQ",
+      "shape": "box"
+    },
+    {
+      "id": 6,
+      "label": "Positive Semi-Definite Matrix",
+      "group": "PREREQ"
+    },
+    {
+      "id": 7,
+      "label": "Singular Value Decomp (SVD)",
+      "group": "PREREQ"
+    },
+    {
+      "id": 8,
+      "label": "Matrix Rank",
+      "group": "PREREQ"
+    },
+    {
+      "id": 9,
+      "label": "Dot Product",
+      "group": "PREREQ"
+    },
+    {
+      "id": 10,
+      "label": "Cosine Similarity",
+      "group": "PREREQ"
+    },
+    {
+      "id": 11,
+      "label": "Gradient Descent",
+      "group": "PREREQ",
+      "shape": "box"
+    },
+    {
+      "id": 12,
+      "label": "Backpropagation",
+      "group": "PREREQ"
+    },
+    {
+      "id": 13,
+      "label": "Chain Rule (Calculus)",
+      "group": "PREREQ",
+      "shape": "box"
+    },
+    {
+      "id": 14,
+      "label": "Automatic Differentiation",
+      "group": "PREREQ"
+    },
+    {
+      "id": 15,
+      "label": "PyTorch Tensor",
+      "group": "PREREQ",
+      "shape": "box"
+    },
+    {
+      "id": 16,
+      "label": "PyTorch Autograd",
+      "group": "PREREQ"
+    },
+    {
+      "id": 17,
+      "label": "Neural Network Layer",
+      "group": "PREREQ"
+    },
+    {
+      "id": 18,
+      "label": "Softmax Function",
+      "group": "PREREQ"
+    },
+    {
+      "id": 19,
+      "label": "Cross-Entropy Loss",
+      "group": "PREREQ"
+    },
+    {
+      "id": 20,
+      "label": "Adam Optimizer",
+      "group": "PREREQ"
+    },
+    {
+      "id": 21,
+      "label": "Graph (Undirected)",
+      "group": "FOUND",
+      "shape": "box"
+    },
+    {
+      "id": 22,
+      "label": "Graph (Directed)",
+      "group": "FOUND"
+    },
+    {
+      "id": 23,
+      "label": "Node (Vertex)",
+      "group": "FOUND"
+    },
+    {
+      "id": 24,
+      "label": "Edge (Link)",
+      "group": "FOUND"
+    },
+    {
+      "id": 25,
+      "label": "Adjacency Matrix",
+      "group": "FOUND"
+    },
+    {
+      "id": 26,
+      "label": "Node Degree",
+      "group": "FOUND"
+    },
+    {
+      "id": 27,
+      "label": "In-Degree",
+      "group": "FOUND"
+    },
+    {
+      "id": 28,
+      "label": "Out-Degree",
+      "group": "FOUND"
+    },
+    {
+      "id": 29,
+      "label": "Degree Distribution",
+      "group": "FOUND"
+    },
+    {
+      "id": 30,
+      "label": "Power-Law Degree Distribution",
+      "group": "FOUND"
+    },
+    {
+      "id": 31,
+      "label": "Graph Path",
+      "group": "FOUND"
+    },
+    {
+      "id": 32,
+      "label": "Shortest Path",
+      "group": "FOUND"
+    },
+    {
+      "id": 33,
+      "label": "Graph Diameter",
+      "group": "FOUND"
+    },
+    {
+      "id": 34,
+      "label": "Connected Component",
+      "group": "FOUND"
+    },
+    {
+      "id": 35,
+      "label": "Strongly Connected Component",
+      "group": "FOUND"
+    },
+    {
+      "id": 36,
+      "label": "Weakly Connected Component",
+      "group": "FOUND"
+    },
+    {
+      "id": 37,
+      "label": "Bipartite Graph",
+      "group": "FOUND"
+    },
+    {
+      "id": 38,
+      "label": "Heterogeneous Graph",
+      "group": "FOUND"
+    },
+    {
+      "id": 39,
+      "label": "Multigraph",
+      "group": "FOUND"
+    },
+    {
+      "id": 40,
+      "label": "Weighted Graph",
+      "group": "FOUND"
+    },
+    {
+      "id": 41,
+      "label": "Attribute Graph",
+      "group": "FOUND"
+    },
+    {
+      "id": 42,
+      "label": "Subgraph",
+      "group": "FOUND"
+    },
+    {
+      "id": 43,
+      "label": "Ego Network",
+      "group": "FOUND"
+    },
+    {
+      "id": 44,
+      "label": "Clique",
+      "group": "FOUND"
+    },
+    {
+      "id": 45,
+      "label": "Cycle",
+      "group": "FOUND"
+    },
+    {
+      "id": 46,
+      "label": "Tree (Graph Theory)",
+      "group": "FOUND"
+    },
+    {
+      "id": 47,
+      "label": "Spanning Tree",
+      "group": "FOUND"
+    },
+    {
+      "id": 48,
+      "label": "Planar Graph",
+      "group": "FOUND"
+    },
+    {
+      "id": 49,
+      "label": "Graph Isomorphism",
+      "group": "FOUND"
+    },
+    {
+      "id": 50,
+      "label": "Graph Homomorphism",
+      "group": "FOUND"
+    },
+    {
+      "id": 51,
+      "label": "Small-World Network",
+      "group": "FOUND"
+    },
+    {
+      "id": 52,
+      "label": "Scale-Free Network",
+      "group": "FOUND"
+    },
+    {
+      "id": 53,
+      "label": "Erd\u0151s\u2013R\u00e9nyi Random Graph",
+      "group": "FOUND"
+    },
+    {
+      "id": 54,
+      "label": "Barab\u00e1si\u2013Albert Model",
+      "group": "FOUND"
+    },
+    {
+      "id": 55,
+      "label": "Preferential Attachment",
+      "group": "FOUND"
+    },
+    {
+      "id": 56,
+      "label": "Giant Component",
+      "group": "FOUND"
+    },
+    {
+      "id": 57,
+      "label": "Transitivity",
+      "group": "FOUND"
+    },
+    {
+      "id": 58,
+      "label": "Local Clustering Coefficient",
+      "group": "ALGO"
+    },
+    {
+      "id": 59,
+      "label": "Betweenness Centrality",
+      "group": "ALGO"
+    },
+    {
+      "id": 60,
+      "label": "Closeness Centrality",
+      "group": "ALGO"
+    },
+    {
+      "id": 61,
+      "label": "Eigenvector Centrality",
+      "group": "ALGO"
+    },
+    {
+      "id": 62,
+      "label": "PageRank",
+      "group": "ALGO"
+    },
+    {
+      "id": 63,
+      "label": "Personalized PageRank",
+      "group": "ALGO"
+    },
+    {
+      "id": 64,
+      "label": "HITS Algorithm",
+      "group": "ALGO"
+    },
+    {
+      "id": 65,
+      "label": "Random Walk",
+      "group": "ALGO"
+    },
+    {
+      "id": 66,
+      "label": "Stationary Distribution",
+      "group": "ALGO"
+    },
+    {
+      "id": 67,
+      "label": "Power Iteration",
+      "group": "ALGO"
+    },
+    {
+      "id": 68,
+      "label": "Teleportation (PageRank)",
+      "group": "ALGO"
+    },
+    {
+      "id": 69,
+      "label": "Community Detection",
+      "group": "ALGO"
+    },
+    {
+      "id": 70,
+      "label": "Modularity (Network)",
+      "group": "ALGO"
+    },
+    {
+      "id": 71,
+      "label": "Louvain Algorithm",
+      "group": "ALGO"
+    },
+    {
+      "id": 72,
+      "label": "Girvan-Newman Algorithm",
+      "group": "ALGO"
+    },
+    {
+      "id": 73,
+      "label": "Spectral Clustering",
+      "group": "ALGO"
+    },
+    {
+      "id": 74,
+      "label": "Normalized Cut",
+      "group": "ALGO"
+    },
+    {
+      "id": 75,
+      "label": "Overlapping Community",
+      "group": "ALGO"
+    },
+    {
+      "id": 76,
+      "label": "BigCLAM Model",
+      "group": "ALGO"
+    },
+    {
+      "id": 77,
+      "label": "Network Motif",
+      "group": "ALGO"
+    },
+    {
+      "id": 78,
+      "label": "Graphlet",
+      "group": "ALGO"
+    },
+    {
+      "id": 79,
+      "label": "Graphlet Degree Vector",
+      "group": "ALGO"
+    },
+    {
+      "id": 80,
+      "label": "Graph Kernel",
+      "group": "ALGO"
+    },
+    {
+      "id": 81,
+      "label": "Weisfeiler-Lehman Kernel",
+      "group": "ALGO"
+    },
+    {
+      "id": 82,
+      "label": "Label Propagation",
+      "group": "ALGO"
+    },
+    {
+      "id": 83,
+      "label": "Belief Propagation",
+      "group": "ALGO"
+    },
+    {
+      "id": 84,
+      "label": "Influence Maximization",
+      "group": "ALGO"
+    },
+    {
+      "id": 85,
+      "label": "Linear Threshold Model",
+      "group": "ALGO"
+    },
+    {
+      "id": 86,
+      "label": "Independent Cascade Model",
+      "group": "ALGO"
+    },
+    {
+      "id": 87,
+      "label": "SIR Epidemic Model",
+      "group": "ALGO"
+    },
+    {
+      "id": 88,
+      "label": "Breadth-First Search",
+      "group": "ALGO"
+    },
+    {
+      "id": 89,
+      "label": "Depth-First Search",
+      "group": "ALGO"
+    },
+    {
+      "id": 90,
+      "label": "Katz Similarity",
+      "group": "ALGO"
+    },
+    {
+      "id": 91,
+      "label": "Node Embedding",
+      "group": "EMB"
+    },
+    {
+      "id": 92,
+      "label": "Embedding Space",
+      "group": "EMB"
+    },
+    {
+      "id": 93,
+      "label": "Encoder-Decoder Framework",
+      "group": "EMB"
+    },
+    {
+      "id": 94,
+      "label": "Shallow Embedding",
+      "group": "EMB"
+    },
+    {
+      "id": 95,
+      "label": "Matrix Factorization (Graph)",
+      "group": "EMB"
+    },
+    {
+      "id": 96,
+      "label": "DeepWalk",
+      "group": "EMB"
+    },
+    {
+      "id": 97,
+      "label": "node2vec",
+      "group": "EMB"
+    },
+    {
+      "id": 98,
+      "label": "Biased Random Walk",
+      "group": "EMB"
+    },
+    {
+      "id": 99,
+      "label": "BFS Strategy (node2vec)",
+      "group": "EMB"
+    },
+    {
+      "id": 100,
+      "label": "DFS Strategy (node2vec)",
+      "group": "EMB"
+    },
+    {
+      "id": 101,
+      "label": "Skip-Gram Model",
+      "group": "EMB"
+    },
+    {
+      "id": 102,
+      "label": "Negative Sampling",
+      "group": "EMB"
+    },
+    {
+      "id": 103,
+      "label": "LINE Embedding",
+      "group": "EMB"
+    },
+    {
+      "id": 104,
+      "label": "Transductive Learning",
+      "group": "EMB"
+    },
+    {
+      "id": 105,
+      "label": "Inductive Learning",
+      "group": "EMB"
+    },
+    {
+      "id": 106,
+      "label": "Structural Equivalence",
+      "group": "EMB"
+    },
+    {
+      "id": 107,
+      "label": "Homophily",
+      "group": "EMB"
+    },
+    {
+      "id": 108,
+      "label": "Graph Neural Network (GNN)",
+      "group": "GNN"
+    },
+    {
+      "id": 109,
+      "label": "Message Passing Neural Net",
+      "group": "GNN"
+    },
+    {
+      "id": 110,
+      "label": "Message Function",
+      "group": "GNN"
+    },
+    {
+      "id": 111,
+      "label": "Aggregation Function",
+      "group": "GNN"
+    },
+    {
+      "id": 112,
+      "label": "Update Function",
+      "group": "GNN"
+    },
+    {
+      "id": 113,
+      "label": "Graph Convolutional Network",
+      "group": "GNN"
+    },
+    {
+      "id": 114,
+      "label": "GraphSAGE",
+      "group": "GNN"
+    },
+    {
+      "id": 115,
+      "label": "Graph Attention Network (GAT)",
+      "group": "GNN"
+    },
+    {
+      "id": 116,
+      "label": "Attention Mechanism (Graph)",
+      "group": "GNN"
+    },
+    {
+      "id": 117,
+      "label": "Multi-Head Attention (Graph)",
+      "group": "GNN"
+    },
+    {
+      "id": 118,
+      "label": "Graph Isomorphism Network",
+      "group": "GNN"
+    },
+    {
+      "id": 119,
+      "label": "Sum Aggregation",
+      "group": "GNN"
+    },
+    {
+      "id": 120,
+      "label": "Mean Aggregation",
+      "group": "GNN"
+    },
+    {
+      "id": 121,
+      "label": "Max Aggregation",
+      "group": "GNN"
+    },
+    {
+      "id": 122,
+      "label": "Neighborhood Aggregation",
+      "group": "GNN"
+    },
+    {
+      "id": 123,
+      "label": "K-Hop Neighborhood",
+      "group": "GNN"
+    },
+    {
+      "id": 124,
+      "label": "Receptive Field (GNN)",
+      "group": "GNN"
+    },
+    {
+      "id": 125,
+      "label": "Layer Depth (GNN)",
+      "group": "GNN"
+    },
+    {
+      "id": 126,
+      "label": "Skip Connection (GNN)",
+      "group": "GNN"
+    },
+    {
+      "id": 127,
+      "label": "Residual Connection (GNN)",
+      "group": "GNN"
+    },
+    {
+      "id": 128,
+      "label": "Jumping Knowledge Network",
+      "group": "GNN"
+    },
+    {
+      "id": 129,
+      "label": "Graph-Level Readout",
+      "group": "GNN"
+    },
+    {
+      "id": 130,
+      "label": "Global Mean Pooling",
+      "group": "GNN"
+    },
+    {
+      "id": 131,
+      "label": "Global Sum Pooling",
+      "group": "GNN"
+    },
+    {
+      "id": 132,
+      "label": "DiffPool",
+      "group": "GNN"
+    },
+    {
+      "id": 133,
+      "label": "MinCutPool",
+      "group": "GNN"
+    },
+    {
+      "id": 134,
+      "label": "Node-Level Task",
+      "group": "GNN"
+    },
+    {
+      "id": 135,
+      "label": "Edge-Level Task",
+      "group": "GNN"
+    },
+    {
+      "id": 136,
+      "label": "Graph-Level Task",
+      "group": "GNN"
+    },
+    {
+      "id": 137,
+      "label": "Link Prediction",
+      "group": "GNN"
+    },
+    {
+      "id": 138,
+      "label": "Node Classification",
+      "group": "GNN"
+    },
+    {
+      "id": 139,
+      "label": "Graph Classification",
+      "group": "GNN"
+    },
+    {
+      "id": 140,
+      "label": "Graph Regression",
+      "group": "GNN"
+    },
+    {
+      "id": 141,
+      "label": "Spectral Graph Convolution",
+      "group": "GNN"
+    },
+    {
+      "id": 142,
+      "label": "Chebyshev Polynomial Conv",
+      "group": "GNN"
+    },
+    {
+      "id": 143,
+      "label": "Graph Laplacian",
+      "group": "GNN"
+    },
+    {
+      "id": 144,
+      "label": "Normalized Graph Laplacian",
+      "group": "GNN"
+    },
+    {
+      "id": 145,
+      "label": "Spectral Domain (Graph)",
+      "group": "GNN"
+    },
+    {
+      "id": 146,
+      "label": "Spatial Domain (Graph)",
+      "group": "GNN"
+    },
+    {
+      "id": 147,
+      "label": "Virtual Node Augmentation",
+      "group": "GNN"
+    },
+    {
+      "id": 148,
+      "label": "Virtual Edge Augmentation",
+      "group": "GNN"
+    },
+    {
+      "id": 149,
+      "label": "Weisfeiler-Lehman (WL) Test",
+      "group": "THEORY"
+    },
+    {
+      "id": 150,
+      "label": "1-WL Test",
+      "group": "THEORY"
+    },
+    {
+      "id": 151,
+      "label": "k-WL Test",
+      "group": "THEORY"
+    },
+    {
+      "id": 152,
+      "label": "GNN Expressiveness",
+      "group": "THEORY"
+    },
+    {
+      "id": 153,
+      "label": "Graph Isomorphism Problem",
+      "group": "THEORY"
+    },
+    {
+      "id": 154,
+      "label": "GNN Distinguishing Power",
+      "group": "THEORY"
+    },
+    {
+      "id": 155,
+      "label": "Over-Smoothing",
+      "group": "THEORY"
+    },
+    {
+      "id": 156,
+      "label": "Over-Squashing",
+      "group": "THEORY"
+    },
+    {
+      "id": 157,
+      "label": "GNN Bottleneck",
+      "group": "THEORY"
+    },
+    {
+      "id": 158,
+      "label": "Graph Equivariance",
+      "group": "THEORY"
+    },
+    {
+      "id": 159,
+      "label": "Graph Invariance",
+      "group": "THEORY"
+    },
+    {
+      "id": 160,
+      "label": "Permutation Invariance",
+      "group": "THEORY"
+    },
+    {
+      "id": 161,
+      "label": "Permutation Equivariance",
+      "group": "THEORY"
+    },
+    {
+      "id": 162,
+      "label": "Position-Aware GNN",
+      "group": "THEORY"
+    },
+    {
+      "id": 163,
+      "label": "Identity-Aware GNN",
+      "group": "THEORY"
+    },
+    {
+      "id": 164,
+      "label": "Higher-Order GNN",
+      "group": "THEORY"
+    },
+    {
+      "id": 165,
+      "label": "Subgraph GNN",
+      "group": "THEORY"
+    },
+    {
+      "id": 166,
+      "label": "Graph Transformer",
+      "group": "TRANS"
+    },
+    {
+      "id": 167,
+      "label": "Graphormer",
+      "group": "TRANS"
+    },
+    {
+      "id": 168,
+      "label": "SAN (Spectral Attention Net)",
+      "group": "TRANS"
+    },
+    {
+      "id": 169,
+      "label": "GPS (General Powerful GNN)",
+      "group": "TRANS"
+    },
+    {
+      "id": 170,
+      "label": "Laplacian Positional Encoding",
+      "group": "TRANS"
+    },
+    {
+      "id": 171,
+      "label": "Random Walk Struct Encoding",
+      "group": "TRANS"
+    },
+    {
+      "id": 172,
+      "label": "Sign-Invariant Network",
+      "group": "TRANS"
+    },
+    {
+      "id": 173,
+      "label": "Basis-Invariant Network",
+      "group": "TRANS"
+    },
+    {
+      "id": 174,
+      "label": "Spatial Bias (Graph Attention)",
+      "group": "TRANS"
+    },
+    {
+      "id": 175,
+      "label": "Centrality Encoding",
+      "group": "TRANS"
+    },
+    {
+      "id": 176,
+      "label": "Edge Encoding (Transformer)",
+      "group": "TRANS"
+    },
+    {
+      "id": 177,
+      "label": "Relative Positional Encoding",
+      "group": "TRANS"
+    },
+    {
+      "id": 178,
+      "label": "Knowledge Graph",
+      "group": "KG"
+    },
+    {
+      "id": 179,
+      "label": "KG Entity",
+      "group": "KG"
+    },
+    {
+      "id": 180,
+      "label": "KG Relation",
+      "group": "KG"
+    },
+    {
+      "id": 181,
+      "label": "KG Triple",
+      "group": "KG"
+    },
+    {
+      "id": 182,
+      "label": "KG Completion",
+      "group": "KG"
+    },
+    {
+      "id": 183,
+      "label": "Link Prediction (KG)",
+      "group": "KG"
+    },
+    {
+      "id": 184,
+      "label": "TransE",
+      "group": "KG"
+    },
+    {
+      "id": 185,
+      "label": "TransR",
+      "group": "KG"
+    },
+    {
+      "id": 186,
+      "label": "DistMult",
+      "group": "KG"
+    },
+    {
+      "id": 187,
+      "label": "ComplEx",
+      "group": "KG"
+    },
+    {
+      "id": 188,
+      "label": "RotatE",
+      "group": "KG"
+    },
+    {
+      "id": 189,
+      "label": "KG Embedding Geometry",
+      "group": "KG"
+    },
+    {
+      "id": 190,
+      "label": "Bilinear KG Model",
+      "group": "KG"
+    },
+    {
+      "id": 191,
+      "label": "Symmetry (Relation Pattern)",
+      "group": "KG"
+    },
+    {
+      "id": 192,
+      "label": "Antisymmetry (Relation)",
+      "group": "KG"
+    },
+    {
+      "id": 193,
+      "label": "Inversion (Relation)",
+      "group": "KG"
+    },
+    {
+      "id": 194,
+      "label": "Composition (Relation)",
+      "group": "KG"
+    },
+    {
+      "id": 195,
+      "label": "Query Embedding",
+      "group": "KG"
+    },
+    {
+      "id": 196,
+      "label": "Box Embedding (Query2Box)",
+      "group": "KG"
+    },
+    {
+      "id": 197,
+      "label": "Multi-Hop Query",
+      "group": "KG"
+    },
+    {
+      "id": 198,
+      "label": "Conjunctive Query",
+      "group": "KG"
+    },
+    {
+      "id": 199,
+      "label": "Neural Bellman-Ford Net",
+      "group": "KG"
+    },
+    {
+      "id": 200,
+      "label": "Inductive KG Reasoning",
+      "group": "KG"
+    },
+    {
+      "id": 201,
+      "label": "ULTRA",
+      "group": "KG"
+    },
+    {
+      "id": 202,
+      "label": "InGram",
+      "group": "KG"
+    },
+    {
+      "id": 203,
+      "label": "Heterogeneous GNN",
+      "group": "HETERO"
+    },
+    {
+      "id": 204,
+      "label": "R-GCN (Relational GCN)",
+      "group": "HETERO"
+    },
+    {
+      "id": 205,
+      "label": "Heterogeneous Graph Trans",
+      "group": "HETERO"
+    },
+    {
+      "id": 206,
+      "label": "HAN (Hetero Attention Net)",
+      "group": "HETERO"
+    },
+    {
+      "id": 207,
+      "label": "Meta-Path",
+      "group": "HETERO"
+    },
+    {
+      "id": 208,
+      "label": "Relation-Specific Weights",
+      "group": "HETERO"
+    },
+    {
+      "id": 209,
+      "label": "Basis Decomposition (R-GCN)",
+      "group": "HETERO"
+    },
+    {
+      "id": 210,
+      "label": "Type-Specific Projection",
+      "group": "HETERO"
+    },
+    {
+      "id": 211,
+      "label": "Recommender System (Graph)",
+      "group": "APP"
+    },
+    {
+      "id": 212,
+      "label": "Collaborative Filtering",
+      "group": "APP"
+    },
+    {
+      "id": 213,
+      "label": "Matrix Factorization (Rec)",
+      "group": "APP"
+    },
+    {
+      "id": 214,
+      "label": "Neural Collaborative Filter",
+      "group": "APP"
+    },
+    {
+      "id": 215,
+      "label": "LightGCN",
+      "group": "APP"
+    },
+    {
+      "id": 216,
+      "label": "PinSage",
+      "group": "APP"
+    },
+    {
+      "id": 217,
+      "label": "Drug-Drug Interaction",
+      "group": "APP"
+    },
+    {
+      "id": 218,
+      "label": "Protein-Protein Interaction",
+      "group": "APP"
+    },
+    {
+      "id": 219,
+      "label": "Molecular Graph",
+      "group": "APP"
+    },
+    {
+      "id": 220,
+      "label": "Drug Discovery with GNNs",
+      "group": "APP"
+    },
+    {
+      "id": 221,
+      "label": "Social Network Analysis",
+      "group": "APP"
+    },
+    {
+      "id": 222,
+      "label": "Fraud Detection (Graph)",
+      "group": "APP"
+    },
+    {
+      "id": 223,
+      "label": "Traffic Forecasting (Graph)",
+      "group": "APP"
+    },
+    {
+      "id": 224,
+      "label": "Scene Graph",
+      "group": "APP"
+    },
+    {
+      "id": 225,
+      "label": "Relational Database as Graph",
+      "group": "APP"
+    },
+    {
+      "id": 226,
+      "label": "Temporal Graph",
+      "group": "APP"
+    },
+    {
+      "id": 227,
+      "label": "Dynamic Graph",
+      "group": "APP"
+    },
+    {
+      "id": 228,
+      "label": "Temporal GNN (TGN)",
+      "group": "APP"
+    },
+    {
+      "id": 229,
+      "label": "TGAT",
+      "group": "APP"
+    },
+    {
+      "id": 230,
+      "label": "Frequent Subgraph Mining",
+      "group": "APP"
+    },
+    {
+      "id": 231,
+      "label": "Subgraph Isomorphism",
+      "group": "APP"
+    },
+    {
+      "id": 232,
+      "label": "Order Embedding",
+      "group": "APP"
+    },
+    {
+      "id": 233,
+      "label": "SPMiner",
+      "group": "APP"
+    },
+    {
+      "id": 234,
+      "label": "Mini-Batch Training (GNN)",
+      "group": "SCALE"
+    },
+    {
+      "id": 235,
+      "label": "Neighbor Sampling",
+      "group": "SCALE"
+    },
+    {
+      "id": 236,
+      "label": "GraphSAINT",
+      "group": "SCALE"
+    },
+    {
+      "id": 237,
+      "label": "Cluster-GCN",
+      "group": "SCALE"
+    },
+    {
+      "id": 238,
+      "label": "LADIES Sampler",
+      "group": "SCALE"
+    },
+    {
+      "id": 239,
+      "label": "Layer-Wise Sampling",
+      "group": "SCALE"
+    },
+    {
+      "id": 240,
+      "label": "Historical Embeddings (SIGN)",
+      "group": "SCALE"
+    },
+    {
+      "id": 241,
+      "label": "Graph Partitioning",
+      "group": "SCALE"
+    },
+    {
+      "id": 242,
+      "label": "Graph Generative Model",
+      "group": "GEN"
+    },
+    {
+      "id": 243,
+      "label": "GraphRNN",
+      "group": "GEN"
+    },
+    {
+      "id": 244,
+      "label": "GCPN",
+      "group": "GEN"
+    },
+    {
+      "id": 245,
+      "label": "Molecule Generation",
+      "group": "GEN"
+    },
+    {
+      "id": 246,
+      "label": "Variational Autoencoder (VGAE)",
+      "group": "GEN"
+    },
+    {
+      "id": 247,
+      "label": "DiGress",
+      "group": "GEN"
+    },
+    {
+      "id": 248,
+      "label": "Graph Generation Metrics",
+      "group": "GEN"
+    },
+    {
+      "id": 249,
+      "label": "In-Context Learning (Graphs)",
+      "group": "ADV"
+    },
+    {
+      "id": 250,
+      "label": "Conformalized GNN",
+      "group": "ADV"
+    },
+    {
+      "id": 251,
+      "label": "Graph Foundation Model",
+      "group": "ADV"
+    },
+    {
+      "id": 252,
+      "label": "LLM + GNN Integration",
+      "group": "ADV"
+    },
+    {
+      "id": 253,
+      "label": "Text-Attributed Graph",
+      "group": "ADV"
+    },
+    {
+      "id": 254,
+      "label": "Graph Instruction Tuning",
+      "group": "ADV"
+    },
+    {
+      "id": 255,
+      "label": "One-For-All (OFA) Model",
+      "group": "ADV"
+    },
+    {
+      "id": 256,
+      "label": "Agent Memory as Graph",
+      "group": "ADV"
+    },
+    {
+      "id": 257,
+      "label": "Tool-Use Graph",
+      "group": "ADV"
+    },
+    {
+      "id": 258,
+      "label": "Relational Deep Learning",
+      "group": "ADV"
+    },
+    {
+      "id": 259,
+      "label": "RelBench",
+      "group": "ADV"
+    },
+    {
+      "id": 260,
+      "label": "RelGNN",
+      "group": "ADV"
+    },
+    {
+      "id": 261,
+      "label": "Cross-Entropy (Node Class)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 262,
+      "label": "Binary Cross-Entropy (LP)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 263,
+      "label": "Negative Sampling (LP)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 264,
+      "label": "Data Augmentation (Graph)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 265,
+      "label": "Dropout (GNN)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 266,
+      "label": "Batch Normalization (GNN)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 267,
+      "label": "Layer Normalization (GNN)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 268,
+      "label": "DropEdge",
+      "group": "TRAIN"
+    },
+    {
+      "id": 269,
+      "label": "PairNorm",
+      "group": "TRAIN"
+    },
+    {
+      "id": 270,
+      "label": "Early Stopping (GNN)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 271,
+      "label": "Train/Val/Test Split (Trans)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 272,
+      "label": "Train/Val/Test Split (Ind)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 273,
+      "label": "Curriculum Learning (Graph)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 274,
+      "label": "PyTorch Geometric (PyG)",
+      "group": "TOOLS"
+    },
+    {
+      "id": 275,
+      "label": "NetworkX",
+      "group": "TOOLS"
+    },
+    {
+      "id": 276,
+      "label": "Open Graph Benchmark",
+      "group": "TOOLS"
+    },
+    {
+      "id": 277,
+      "label": "SNAP",
+      "group": "TOOLS"
+    },
+    {
+      "id": 278,
+      "label": "DeepSNAP",
+      "group": "TOOLS"
+    },
+    {
+      "id": 279,
+      "label": "DGL",
+      "group": "TOOLS"
+    },
+    {
+      "id": 280,
+      "label": "TUDataset",
+      "group": "TOOLS"
+    },
+    {
+      "id": 281,
+      "label": "PyKEEN",
+      "group": "TOOLS"
+    },
+    {
+      "id": 282,
+      "label": "RelBench (Benchmark)",
+      "group": "TOOLS"
+    },
+    {
+      "id": 283,
+      "label": "Self-Supervised Learning",
+      "group": "ADV"
+    },
+    {
+      "id": 284,
+      "label": "Deep Graph Infomax (DGI)",
+      "group": "ADV"
+    },
+    {
+      "id": 285,
+      "label": "Graph Contrastive Learning",
+      "group": "ADV"
+    },
+    {
+      "id": 286,
+      "label": "Contrastive Loss",
+      "group": "TRAIN"
+    },
+    {
+      "id": 287,
+      "label": "Graph Augmentation (SSL)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 288,
+      "label": "APPNP",
+      "group": "GNN"
+    },
+    {
+      "id": 289,
+      "label": "Simple Graph Conv (SGC)",
+      "group": "GNN"
+    },
+    {
+      "id": 290,
+      "label": "Principal Neighborhood Agg",
+      "group": "GNN"
+    },
+    {
+      "id": 291,
+      "label": "Mean Reciprocal Rank (MRR)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 292,
+      "label": "Hits@K Metric",
+      "group": "TRAIN"
+    },
+    {
+      "id": 293,
+      "label": "ROC-AUC Score",
+      "group": "TRAIN"
+    },
+    {
+      "id": 294,
+      "label": "Transfer Learning (Graphs)",
+      "group": "ADV"
+    },
+    {
+      "id": 295,
+      "label": "Pre-Training (GNN)",
+      "group": "ADV"
+    },
+    {
+      "id": 296,
+      "label": "Fine-Tuning (GNN)",
+      "group": "ADV"
+    },
+    {
+      "id": 297,
+      "label": "Node Feature Normalization",
+      "group": "TRAIN"
+    },
+    {
+      "id": 298,
+      "label": "Graph Sampling Strategy",
+      "group": "SCALE"
+    },
+    {
+      "id": 299,
+      "label": "Stochastic Depth (GNN)",
+      "group": "TRAIN"
+    },
+    {
+      "id": 300,
+      "label": "SIGN Architecture",
+      "group": "SCALE"
+    }
+  ],
+  "edges": [
+    {
+      "from": 3,
+      "to": 1
+    },
+    {
+      "from": 3,
+      "to": 2
+    },
+    {
+      "from": 3,
+      "to": 5
+    },
+    {
+      "from": 4,
+      "to": 3
+    },
+    {
+      "from": 6,
+      "to": 3
+    },
+    {
+      "from": 6,
+      "to": 5
+    },
+    {
+      "from": 7,
+      "to": 1
+    },
+    {
+      "from": 7,
+      "to": 2
+    },
+    {
+      "from": 7,
+      "to": 3
+    },
+    {
+      "from": 7,
+      "to": 8
+    },
+    {
+      "from": 8,
+      "to": 1
+    },
+    {
+      "from": 8,
+      "to": 2
+    },
+    {
+      "from": 9,
+      "to": 1
+    },
+    {
+      "from": 10,
+      "to": 9
+    },
+    {
+      "from": 12,
+      "to": 11
+    },
+    {
+      "from": 12,
+      "to": 13
+    },
+    {
+      "from": 14,
+      "to": 12
+    },
+    {
+      "from": 14,
+      "to": 13
+    },
+    {
+      "from": 16,
+      "to": 14
+    },
+    {
+      "from": 16,
+      "to": 15
+    },
+    {
+      "from": 17,
+      "to": 11
+    },
+    {
+      "from": 17,
+      "to": 12
+    },
+    {
+      "from": 17,
+      "to": 15
+    },
+    {
+      "from": 18,
+      "to": 9
+    },
+    {
+      "from": 19,
+      "to": 18
+    },
+    {
+      "from": 20,
+      "to": 11
+    },
+    {
+      "from": 22,
+      "to": 21
+    },
+    {
+      "from": 23,
+      "to": 21
+    },
+    {
+      "from": 24,
+      "to": 21
+    },
+    {
+      "from": 24,
+      "to": 23
+    },
+    {
+      "from": 25,
+      "to": 21
+    },
+    {
+      "from": 25,
+      "to": 23
+    },
+    {
+      "from": 25,
+      "to": 24
+    },
+    {
+      "from": 25,
+      "to": 1
+    },
+    {
+      "from": 26,
+      "to": 24
+    },
+    {
+      "from": 26,
+      "to": 25
+    },
+    {
+      "from": 27,
+      "to": 22
+    },
+    {
+      "from": 27,
+      "to": 26
+    },
+    {
+      "from": 28,
+      "to": 22
+    },
+    {
+      "from": 28,
+      "to": 26
+    },
+    {
+      "from": 29,
+      "to": 26
+    },
+    {
+      "from": 30,
+      "to": 29
+    },
+    {
+      "from": 31,
+      "to": 23
+    },
+    {
+      "from": 31,
+      "to": 24
+    },
+    {
+      "from": 32,
+      "to": 31
+    },
+    {
+      "from": 32,
+      "to": 88
+    },
+    {
+      "from": 33,
+      "to": 32
+    },
+    {
+      "from": 34,
+      "to": 31
+    },
+    {
+      "from": 35,
+      "to": 22
+    },
+    {
+      "from": 35,
+      "to": 34
+    },
+    {
+      "from": 36,
+      "to": 22
+    },
+    {
+      "from": 36,
+      "to": 34
+    },
+    {
+      "from": 37,
+      "to": 21
+    },
+    {
+      "from": 37,
+      "to": 24
+    },
+    {
+      "from": 38,
+      "to": 23
+    },
+    {
+      "from": 38,
+      "to": 24
+    },
+    {
+      "from": 39,
+      "to": 24
+    },
+    {
+      "from": 40,
+      "to": 24
+    },
+    {
+      "from": 41,
+      "to": 23
+    },
+    {
+      "from": 41,
+      "to": 24
+    },
+    {
+      "from": 42,
+      "to": 21
+    },
+    {
+      "from": 42,
+      "to": 23
+    },
+    {
+      "from": 42,
+      "to": 24
+    },
+    {
+      "from": 43,
+      "to": 42
+    },
+    {
+      "from": 43,
+      "to": 26
+    },
+    {
+      "from": 44,
+      "to": 42
+    },
+    {
+      "from": 45,
+      "to": 31
+    },
+    {
+      "from": 45,
+      "to": 24
+    },
+    {
+      "from": 46,
+      "to": 21
+    },
+    {
+      "from": 46,
+      "to": 34
+    },
+    {
+      "from": 46,
+      "to": 45
+    },
+    {
+      "from": 47,
+      "to": 46
+    },
+    {
+      "from": 48,
+      "to": 21
+    },
+    {
+      "from": 49,
+      "to": 21
+    },
+    {
+      "from": 49,
+      "to": 25
+    },
+    {
+      "from": 50,
+      "to": 49
+    },
+    {
+      "from": 51,
+      "to": 57
+    },
+    {
+      "from": 51,
+      "to": 33
+    },
+    {
+      "from": 51,
+      "to": 21
+    },
+    {
+      "from": 51,
+      "to": 29
+    },
+    {
+      "from": 52,
+      "to": 29
+    },
+    {
+      "from": 52,
+      "to": 30
+    },
+    {
+      "from": 52,
+      "to": 55
+    },
+    {
+      "from": 53,
+      "to": 21
+    },
+    {
+      "from": 53,
+      "to": 29
+    },
+    {
+      "from": 54,
+      "to": 52
+    },
+    {
+      "from": 54,
+      "to": 55
+    },
+    {
+      "from": 55,
+      "to": 29
+    },
+    {
+      "from": 55,
+      "to": 30
+    },
+    {
+      "from": 56,
+      "to": 34
+    },
+    {
+      "from": 56,
+      "to": 53
+    },
+    {
+      "from": 57,
+      "to": 26
+    },
+    {
+      "from": 57,
+      "to": 24
+    },
+    {
+      "from": 58,
+      "to": 26
+    },
+    {
+      "from": 58,
+      "to": 44
+    },
+    {
+      "from": 59,
+      "to": 32
+    },
+    {
+      "from": 59,
+      "to": 23
+    },
+    {
+      "from": 60,
+      "to": 32
+    },
+    {
+      "from": 60,
+      "to": 23
+    },
+    {
+      "from": 61,
+      "to": 4
+    },
+    {
+      "from": 61,
+      "to": 25
+    },
+    {
+      "from": 61,
+      "to": 23
+    },
+    {
+      "from": 62,
+      "to": 25
+    },
+    {
+      "from": 62,
+      "to": 65
+    },
+    {
+      "from": 62,
+      "to": 66
+    },
+    {
+      "from": 62,
+      "to": 67
+    },
+    {
+      "from": 63,
+      "to": 62
+    },
+    {
+      "from": 63,
+      "to": 43
+    },
+    {
+      "from": 64,
+      "to": 22
+    },
+    {
+      "from": 64,
+      "to": 62
+    },
+    {
+      "from": 64,
+      "to": 27
+    },
+    {
+      "from": 64,
+      "to": 28
+    },
+    {
+      "from": 65,
+      "to": 25
+    },
+    {
+      "from": 65,
+      "to": 31
+    },
+    {
+      "from": 66,
+      "to": 65
+    },
+    {
+      "from": 67,
+      "to": 65
+    },
+    {
+      "from": 67,
+      "to": 3
+    },
+    {
+      "from": 67,
+      "to": 25
+    },
+    {
+      "from": 68,
+      "to": 62
+    },
+    {
+      "from": 68,
+      "to": 65
+    },
+    {
+      "from": 69,
+      "to": 21
+    },
+    {
+      "from": 69,
+      "to": 34
+    },
+    {
+      "from": 69,
+      "to": 58
+    },
+    {
+      "from": 70,
+      "to": 69
+    },
+    {
+      "from": 70,
+      "to": 58
+    },
+    {
+      "from": 71,
+      "to": 70
+    },
+    {
+      "from": 71,
+      "to": 69
+    },
+    {
+      "from": 72,
+      "to": 59
+    },
+    {
+      "from": 72,
+      "to": 69
+    },
+    {
+      "from": 73,
+      "to": 4
+    },
+    {
+      "from": 73,
+      "to": 143
+    },
+    {
+      "from": 74,
+      "to": 73
+    },
+    {
+      "from": 74,
+      "to": 143
+    },
+    {
+      "from": 75,
+      "to": 69
+    },
+    {
+      "from": 76,
+      "to": 69
+    },
+    {
+      "from": 76,
+      "to": 75
+    },
+    {
+      "from": 77,
+      "to": 42
+    },
+    {
+      "from": 77,
+      "to": 21
+    },
+    {
+      "from": 78,
+      "to": 77
+    },
+    {
+      "from": 78,
+      "to": 42
+    },
+    {
+      "from": 79,
+      "to": 78
+    },
+    {
+      "from": 79,
+      "to": 26
+    },
+    {
+      "from": 80,
+      "to": 78
+    },
+    {
+      "from": 80,
+      "to": 42
+    },
+    {
+      "from": 80,
+      "to": 50
+    },
+    {
+      "from": 81,
+      "to": 80
+    },
+    {
+      "from": 81,
+      "to": 49
+    },
+    {
+      "from": 81,
+      "to": 25
+    },
+    {
+      "from": 82,
+      "to": 25
+    },
+    {
+      "from": 82,
+      "to": 23
+    },
+    {
+      "from": 82,
+      "to": 26
+    },
+    {
+      "from": 82,
+      "to": 107
+    },
+    {
+      "from": 83,
+      "to": 25
+    },
+    {
+      "from": 83,
+      "to": 82
+    },
+    {
+      "from": 84,
+      "to": 85
+    },
+    {
+      "from": 84,
+      "to": 86
+    },
+    {
+      "from": 84,
+      "to": 60
+    },
+    {
+      "from": 84,
+      "to": 87
+    },
+    {
+      "from": 85,
+      "to": 21
+    },
+    {
+      "from": 85,
+      "to": 26
+    },
+    {
+      "from": 86,
+      "to": 21
+    },
+    {
+      "from": 86,
+      "to": 26
+    },
+    {
+      "from": 87,
+      "to": 21
+    },
+    {
+      "from": 87,
+      "to": 29
+    },
+    {
+      "from": 88,
+      "to": 31
+    },
+    {
+      "from": 88,
+      "to": 34
+    },
+    {
+      "from": 89,
+      "to": 31
+    },
+    {
+      "from": 89,
+      "to": 34
+    },
+    {
+      "from": 90,
+      "to": 25
+    },
+    {
+      "from": 90,
+      "to": 32
+    },
+    {
+      "from": 91,
+      "to": 21
+    },
+    {
+      "from": 91,
+      "to": 9
+    },
+    {
+      "from": 91,
+      "to": 10
+    },
+    {
+      "from": 92,
+      "to": 91
+    },
+    {
+      "from": 92,
+      "to": 9
+    },
+    {
+      "from": 93,
+      "to": 91
+    },
+    {
+      "from": 93,
+      "to": 17
+    },
+    {
+      "from": 94,
+      "to": 91
+    },
+    {
+      "from": 94,
+      "to": 93
+    },
+    {
+      "from": 95,
+      "to": 91
+    },
+    {
+      "from": 95,
+      "to": 1
+    },
+    {
+      "from": 95,
+      "to": 7
+    },
+    {
+      "from": 95,
+      "to": 25
+    },
+    {
+      "from": 96,
+      "to": 65
+    },
+    {
+      "from": 96,
+      "to": 91
+    },
+    {
+      "from": 96,
+      "to": 101
+    },
+    {
+      "from": 97,
+      "to": 96
+    },
+    {
+      "from": 98,
+      "to": 65
+    },
+    {
+      "from": 98,
+      "to": 97
+    },
+    {
+      "from": 99,
+      "to": 88
+    },
+    {
+      "from": 99,
+      "to": 98
+    },
+    {
+      "from": 100,
+      "to": 89
+    },
+    {
+      "from": 100,
+      "to": 98
+    },
+    {
+      "from": 101,
+      "to": 91
+    },
+    {
+      "from": 101,
+      "to": 17
+    },
+    {
+      "from": 102,
+      "to": 101
+    },
+    {
+      "from": 102,
+      "to": 91
+    },
+    {
+      "from": 103,
+      "to": 91
+    },
+    {
+      "from": 103,
+      "to": 25
+    },
+    {
+      "from": 103,
+      "to": 101
+    },
+    {
+      "from": 104,
+      "to": 91
+    },
+    {
+      "from": 105,
+      "to": 91
+    },
+    {
+      "from": 106,
+      "to": 91
+    },
+    {
+      "from": 106,
+      "to": 49
+    },
+    {
+      "from": 107,
+      "to": 26
+    },
+    {
+      "from": 107,
+      "to": 29
+    },
+    {
+      "from": 107,
+      "to": 21
+    },
+    {
+      "from": 108,
+      "to": 21
+    },
+    {
+      "from": 108,
+      "to": 17
+    },
+    {
+      "from": 108,
+      "to": 12
+    },
+    {
+      "from": 108,
+      "to": 25
+    },
+    {
+      "from": 108,
+      "to": 91
+    },
+    {
+      "from": 108,
+      "to": 20
+    },
+    {
+      "from": 109,
+      "to": 108
+    },
+    {
+      "from": 109,
+      "to": 110
+    },
+    {
+      "from": 109,
+      "to": 111
+    },
+    {
+      "from": 109,
+      "to": 112
+    },
+    {
+      "from": 110,
+      "to": 108
+    },
+    {
+      "from": 110,
+      "to": 17
+    },
+    {
+      "from": 111,
+      "to": 108
+    },
+    {
+      "from": 111,
+      "to": 17
+    },
+    {
+      "from": 112,
+      "to": 108
+    },
+    {
+      "from": 112,
+      "to": 17
+    },
+    {
+      "from": 113,
+      "to": 109
+    },
+    {
+      "from": 113,
+      "to": 141
+    },
+    {
+      "from": 113,
+      "to": 144
+    },
+    {
+      "from": 113,
+      "to": 25
+    },
+    {
+      "from": 113,
+      "to": 142
+    },
+    {
+      "from": 114,
+      "to": 109
+    },
+    {
+      "from": 114,
+      "to": 113
+    },
+    {
+      "from": 114,
+      "to": 105
+    },
+    {
+      "from": 115,
+      "to": 109
+    },
+    {
+      "from": 115,
+      "to": 116
+    },
+    {
+      "from": 115,
+      "to": 117
+    },
+    {
+      "from": 116,
+      "to": 17
+    },
+    {
+      "from": 116,
+      "to": 9
+    },
+    {
+      "from": 116,
+      "to": 18
+    },
+    {
+      "from": 117,
+      "to": 116
+    },
+    {
+      "from": 118,
+      "to": 109
+    },
+    {
+      "from": 118,
+      "to": 119
+    },
+    {
+      "from": 118,
+      "to": 152
+    },
+    {
+      "from": 119,
+      "to": 111
+    },
+    {
+      "from": 120,
+      "to": 111
+    },
+    {
+      "from": 121,
+      "to": 111
+    },
+    {
+      "from": 122,
+      "to": 109
+    },
+    {
+      "from": 122,
+      "to": 26
+    },
+    {
+      "from": 123,
+      "to": 26
+    },
+    {
+      "from": 123,
+      "to": 124
+    },
+    {
+      "from": 124,
+      "to": 108
+    },
+    {
+      "from": 124,
+      "to": 26
+    },
+    {
+      "from": 125,
+      "to": 108
+    },
+    {
+      "from": 125,
+      "to": 124
+    },
+    {
+      "from": 126,
+      "to": 108
+    },
+    {
+      "from": 126,
+      "to": 17
+    },
+    {
+      "from": 127,
+      "to": 126
+    },
+    {
+      "from": 128,
+      "to": 126
+    },
+    {
+      "from": 128,
+      "to": 125
+    },
+    {
+      "from": 129,
+      "to": 108
+    },
+    {
+      "from": 129,
+      "to": 130
+    },
+    {
+      "from": 129,
+      "to": 131
+    },
+    {
+      "from": 130,
+      "to": 120
+    },
+    {
+      "from": 131,
+      "to": 119
+    },
+    {
+      "from": 132,
+      "to": 129
+    },
+    {
+      "from": 132,
+      "to": 113
+    },
+    {
+      "from": 133,
+      "to": 129
+    },
+    {
+      "from": 133,
+      "to": 73
+    },
+    {
+      "from": 134,
+      "to": 108
+    },
+    {
+      "from": 134,
+      "to": 138
+    },
+    {
+      "from": 135,
+      "to": 108
+    },
+    {
+      "from": 135,
+      "to": 137
+    },
+    {
+      "from": 136,
+      "to": 108
+    },
+    {
+      "from": 136,
+      "to": 139
+    },
+    {
+      "from": 137,
+      "to": 108
+    },
+    {
+      "from": 137,
+      "to": 91
+    },
+    {
+      "from": 137,
+      "to": 25
+    },
+    {
+      "from": 138,
+      "to": 108
+    },
+    {
+      "from": 138,
+      "to": 82
+    },
+    {
+      "from": 139,
+      "to": 108
+    },
+    {
+      "from": 139,
+      "to": 129
+    },
+    {
+      "from": 140,
+      "to": 139
+    },
+    {
+      "from": 140,
+      "to": 132
+    },
+    {
+      "from": 140,
+      "to": 133
+    },
+    {
+      "from": 141,
+      "to": 143
+    },
+    {
+      "from": 141,
+      "to": 3
+    },
+    {
+      "from": 141,
+      "to": 145
+    },
+    {
+      "from": 142,
+      "to": 141
+    },
+    {
+      "from": 142,
+      "to": 143
+    },
+    {
+      "from": 143,
+      "to": 25
+    },
+    {
+      "from": 143,
+      "to": 4
+    },
+    {
+      "from": 143,
+      "to": 3
+    },
+    {
+      "from": 143,
+      "to": 6
+    },
+    {
+      "from": 144,
+      "to": 143
+    },
+    {
+      "from": 144,
+      "to": 26
+    },
+    {
+      "from": 145,
+      "to": 143
+    },
+    {
+      "from": 145,
+      "to": 3
+    },
+    {
+      "from": 146,
+      "to": 109
+    },
+    {
+      "from": 146,
+      "to": 26
+    },
+    {
+      "from": 147,
+      "to": 108
+    },
+    {
+      "from": 147,
+      "to": 23
+    },
+    {
+      "from": 148,
+      "to": 108
+    },
+    {
+      "from": 148,
+      "to": 24
+    },
+    {
+      "from": 149,
+      "to": 49
+    },
+    {
+      "from": 149,
+      "to": 108
+    },
+    {
+      "from": 149,
+      "to": 25
+    },
+    {
+      "from": 150,
+      "to": 149
+    },
+    {
+      "from": 151,
+      "to": 150
+    },
+    {
+      "from": 152,
+      "to": 108
+    },
+    {
+      "from": 152,
+      "to": 149
+    },
+    {
+      "from": 152,
+      "to": 150
+    },
+    {
+      "from": 153,
+      "to": 49
+    },
+    {
+      "from": 154,
+      "to": 152
+    },
+    {
+      "from": 154,
+      "to": 153
+    },
+    {
+      "from": 155,
+      "to": 108
+    },
+    {
+      "from": 155,
+      "to": 125
+    },
+    {
+      "from": 156,
+      "to": 108
+    },
+    {
+      "from": 156,
+      "to": 124
+    },
+    {
+      "from": 156,
+      "to": 155
+    },
+    {
+      "from": 156,
+      "to": 33
+    },
+    {
+      "from": 157,
+      "to": 156
+    },
+    {
+      "from": 157,
+      "to": 124
+    },
+    {
+      "from": 158,
+      "to": 108
+    },
+    {
+      "from": 158,
+      "to": 160
+    },
+    {
+      "from": 158,
+      "to": 161
+    },
+    {
+      "from": 159,
+      "to": 158
+    },
+    {
+      "from": 160,
+      "to": 108
+    },
+    {
+      "from": 161,
+      "to": 108
+    },
+    {
+      "from": 162,
+      "to": 108
+    },
+    {
+      "from": 162,
+      "to": 170
+    },
+    {
+      "from": 163,
+      "to": 108
+    },
+    {
+      "from": 163,
+      "to": 152
+    },
+    {
+      "from": 164,
+      "to": 108
+    },
+    {
+      "from": 164,
+      "to": 151
+    },
+    {
+      "from": 164,
+      "to": 165
+    },
+    {
+      "from": 165,
+      "to": 42
+    },
+    {
+      "from": 165,
+      "to": 108
+    },
+    {
+      "from": 165,
+      "to": 152
+    },
+    {
+      "from": 166,
+      "to": 108
+    },
+    {
+      "from": 166,
+      "to": 116
+    },
+    {
+      "from": 166,
+      "to": 117
+    },
+    {
+      "from": 166,
+      "to": 170
+    },
+    {
+      "from": 167,
+      "to": 166
+    },
+    {
+      "from": 167,
+      "to": 175
+    },
+    {
+      "from": 167,
+      "to": 174
+    },
+    {
+      "from": 168,
+      "to": 166
+    },
+    {
+      "from": 168,
+      "to": 170
+    },
+    {
+      "from": 169,
+      "to": 166
+    },
+    {
+      "from": 169,
+      "to": 108
+    },
+    {
+      "from": 170,
+      "to": 143
+    },
+    {
+      "from": 170,
+      "to": 144
+    },
+    {
+      "from": 171,
+      "to": 65
+    },
+    {
+      "from": 171,
+      "to": 170
+    },
+    {
+      "from": 172,
+      "to": 170
+    },
+    {
+      "from": 172,
+      "to": 158
+    },
+    {
+      "from": 173,
+      "to": 170
+    },
+    {
+      "from": 173,
+      "to": 172
+    },
+    {
+      "from": 174,
+      "to": 116
+    },
+    {
+      "from": 174,
+      "to": 32
+    },
+    {
+      "from": 175,
+      "to": 61
+    },
+    {
+      "from": 175,
+      "to": 26
+    },
+    {
+      "from": 176,
+      "to": 116
+    },
+    {
+      "from": 176,
+      "to": 24
+    },
+    {
+      "from": 177,
+      "to": 170
+    },
+    {
+      "from": 177,
+      "to": 32
+    },
+    {
+      "from": 178,
+      "to": 21
+    },
+    {
+      "from": 178,
+      "to": 38
+    },
+    {
+      "from": 179,
+      "to": 178
+    },
+    {
+      "from": 179,
+      "to": 23
+    },
+    {
+      "from": 180,
+      "to": 178
+    },
+    {
+      "from": 180,
+      "to": 24
+    },
+    {
+      "from": 181,
+      "to": 179
+    },
+    {
+      "from": 181,
+      "to": 180
+    },
+    {
+      "from": 182,
+      "to": 178
+    },
+    {
+      "from": 182,
+      "to": 181
+    },
+    {
+      "from": 183,
+      "to": 182
+    },
+    {
+      "from": 183,
+      "to": 137
+    },
+    {
+      "from": 184,
+      "to": 181
+    },
+    {
+      "from": 184,
+      "to": 91
+    },
+    {
+      "from": 184,
+      "to": 182
+    },
+    {
+      "from": 185,
+      "to": 184
+    },
+    {
+      "from": 186,
+      "to": 181
+    },
+    {
+      "from": 186,
+      "to": 182
+    },
+    {
+      "from": 186,
+      "to": 91
+    },
+    {
+      "from": 187,
+      "to": 186
+    },
+    {
+      "from": 188,
+      "to": 184
+    },
+    {
+      "from": 188,
+      "to": 187
+    },
+    {
+      "from": 189,
+      "to": 184
+    },
+    {
+      "from": 189,
+      "to": 185
+    },
+    {
+      "from": 189,
+      "to": 186
+    },
+    {
+      "from": 189,
+      "to": 187
+    },
+    {
+      "from": 189,
+      "to": 188
+    },
+    {
+      "from": 190,
+      "to": 186
+    },
+    {
+      "from": 190,
+      "to": 1
+    },
+    {
+      "from": 191,
+      "to": 180
+    },
+    {
+      "from": 192,
+      "to": 180
+    },
+    {
+      "from": 193,
+      "to": 180
+    },
+    {
+      "from": 194,
+      "to": 180
+    },
+    {
+      "from": 195,
+      "to": 91
+    },
+    {
+      "from": 195,
+      "to": 178
+    },
+    {
+      "from": 195,
+      "to": 197
+    },
+    {
+      "from": 196,
+      "to": 195
+    },
+    {
+      "from": 196,
+      "to": 197
+    },
+    {
+      "from": 197,
+      "to": 178
+    },
+    {
+      "from": 197,
+      "to": 31
+    },
+    {
+      "from": 198,
+      "to": 197
+    },
+    {
+      "from": 199,
+      "to": 178
+    },
+    {
+      "from": 199,
+      "to": 108
+    },
+    {
+      "from": 200,
+      "to": 178
+    },
+    {
+      "from": 200,
+      "to": 105
+    },
+    {
+      "from": 200,
+      "to": 199
+    },
+    {
+      "from": 201,
+      "to": 200
+    },
+    {
+      "from": 201,
+      "to": 178
+    },
+    {
+      "from": 201,
+      "to": 108
+    },
+    {
+      "from": 201,
+      "to": 291
+    },
+    {
+      "from": 202,
+      "to": 200
+    },
+    {
+      "from": 202,
+      "to": 178
+    },
+    {
+      "from": 202,
+      "to": 292
+    },
+    {
+      "from": 203,
+      "to": 38
+    },
+    {
+      "from": 203,
+      "to": 108
+    },
+    {
+      "from": 203,
+      "to": 207
+    },
+    {
+      "from": 204,
+      "to": 113
+    },
+    {
+      "from": 204,
+      "to": 38
+    },
+    {
+      "from": 204,
+      "to": 208
+    },
+    {
+      "from": 205,
+      "to": 166
+    },
+    {
+      "from": 205,
+      "to": 203
+    },
+    {
+      "from": 205,
+      "to": 207
+    },
+    {
+      "from": 206,
+      "to": 203
+    },
+    {
+      "from": 206,
+      "to": 207
+    },
+    {
+      "from": 206,
+      "to": 116
+    },
+    {
+      "from": 207,
+      "to": 38
+    },
+    {
+      "from": 207,
+      "to": 31
+    },
+    {
+      "from": 208,
+      "to": 111
+    },
+    {
+      "from": 208,
+      "to": 38
+    },
+    {
+      "from": 209,
+      "to": 204
+    },
+    {
+      "from": 209,
+      "to": 208
+    },
+    {
+      "from": 210,
+      "to": 203
+    },
+    {
+      "from": 210,
+      "to": 208
+    },
+    {
+      "from": 211,
+      "to": 37
+    },
+    {
+      "from": 211,
+      "to": 108
+    },
+    {
+      "from": 211,
+      "to": 212
+    },
+    {
+      "from": 212,
+      "to": 37
+    },
+    {
+      "from": 212,
+      "to": 95
+    },
+    {
+      "from": 212,
+      "to": 104
+    },
+    {
+      "from": 213,
+      "to": 95
+    },
+    {
+      "from": 213,
+      "to": 212
+    },
+    {
+      "from": 214,
+      "to": 212
+    },
+    {
+      "from": 214,
+      "to": 108
+    },
+    {
+      "from": 215,
+      "to": 114
+    },
+    {
+      "from": 215,
+      "to": 212
+    },
+    {
+      "from": 215,
+      "to": 211
+    },
+    {
+      "from": 216,
+      "to": 114
+    },
+    {
+      "from": 216,
+      "to": 211
+    },
+    {
+      "from": 217,
+      "to": 219
+    },
+    {
+      "from": 217,
+      "to": 108
+    },
+    {
+      "from": 218,
+      "to": 21
+    },
+    {
+      "from": 218,
+      "to": 108
+    },
+    {
+      "from": 219,
+      "to": 21
+    },
+    {
+      "from": 219,
+      "to": 41
+    },
+    {
+      "from": 219,
+      "to": 108
+    },
+    {
+      "from": 220,
+      "to": 219
+    },
+    {
+      "from": 220,
+      "to": 108
+    },
+    {
+      "from": 220,
+      "to": 246
+    },
+    {
+      "from": 221,
+      "to": 21
+    },
+    {
+      "from": 221,
+      "to": 29
+    },
+    {
+      "from": 221,
+      "to": 58
+    },
+    {
+      "from": 221,
+      "to": 62
+    },
+    {
+      "from": 221,
+      "to": 51
+    },
+    {
+      "from": 221,
+      "to": 52
+    },
+    {
+      "from": 221,
+      "to": 56
+    },
+    {
+      "from": 221,
+      "to": 57
+    },
+    {
+      "from": 221,
+      "to": 59
+    },
+    {
+      "from": 221,
+      "to": 60
+    },
+    {
+      "from": 222,
+      "to": 108
+    },
+    {
+      "from": 222,
+      "to": 138
+    },
+    {
+      "from": 222,
+      "to": 221
+    },
+    {
+      "from": 222,
+      "to": 293
+    },
+    {
+      "from": 223,
+      "to": 108
+    },
+    {
+      "from": 223,
+      "to": 226
+    },
+    {
+      "from": 223,
+      "to": 40
+    },
+    {
+      "from": 224,
+      "to": 21
+    },
+    {
+      "from": 224,
+      "to": 38
+    },
+    {
+      "from": 224,
+      "to": 108
+    },
+    {
+      "from": 225,
+      "to": 21
+    },
+    {
+      "from": 225,
+      "to": 38
+    },
+    {
+      "from": 226,
+      "to": 21
+    },
+    {
+      "from": 226,
+      "to": 24
+    },
+    {
+      "from": 227,
+      "to": 21
+    },
+    {
+      "from": 227,
+      "to": 226
+    },
+    {
+      "from": 228,
+      "to": 108
+    },
+    {
+      "from": 228,
+      "to": 226
+    },
+    {
+      "from": 228,
+      "to": 227
+    },
+    {
+      "from": 229,
+      "to": 228
+    },
+    {
+      "from": 229,
+      "to": 116
+    },
+    {
+      "from": 230,
+      "to": 78
+    },
+    {
+      "from": 230,
+      "to": 77
+    },
+    {
+      "from": 230,
+      "to": 231
+    },
+    {
+      "from": 231,
+      "to": 42
+    },
+    {
+      "from": 231,
+      "to": 49
+    },
+    {
+      "from": 232,
+      "to": 42
+    },
+    {
+      "from": 232,
+      "to": 91
+    },
+    {
+      "from": 233,
+      "to": 232
+    },
+    {
+      "from": 233,
+      "to": 231
+    },
+    {
+      "from": 234,
+      "to": 108
+    },
+    {
+      "from": 234,
+      "to": 17
+    },
+    {
+      "from": 235,
+      "to": 26
+    },
+    {
+      "from": 235,
+      "to": 234
+    },
+    {
+      "from": 235,
+      "to": 108
+    },
+    {
+      "from": 236,
+      "to": 234
+    },
+    {
+      "from": 236,
+      "to": 241
+    },
+    {
+      "from": 236,
+      "to": 298
+    },
+    {
+      "from": 237,
+      "to": 234
+    },
+    {
+      "from": 237,
+      "to": 241
+    },
+    {
+      "from": 237,
+      "to": 73
+    },
+    {
+      "from": 237,
+      "to": 47
+    },
+    {
+      "from": 238,
+      "to": 235
+    },
+    {
+      "from": 238,
+      "to": 239
+    },
+    {
+      "from": 239,
+      "to": 234
+    },
+    {
+      "from": 239,
+      "to": 235
+    },
+    {
+      "from": 240,
+      "to": 91
+    },
+    {
+      "from": 240,
+      "to": 234
+    },
+    {
+      "from": 241,
+      "to": 21
+    },
+    {
+      "from": 241,
+      "to": 73
+    },
+    {
+      "from": 241,
+      "to": 35
+    },
+    {
+      "from": 241,
+      "to": 36
+    },
+    {
+      "from": 241,
+      "to": 47
+    },
+    {
+      "from": 242,
+      "to": 108
+    },
+    {
+      "from": 242,
+      "to": 21
+    },
+    {
+      "from": 243,
+      "to": 242
+    },
+    {
+      "from": 243,
+      "to": 46
+    },
+    {
+      "from": 243,
+      "to": 12
+    },
+    {
+      "from": 244,
+      "to": 242
+    },
+    {
+      "from": 244,
+      "to": 108
+    },
+    {
+      "from": 244,
+      "to": 219
+    },
+    {
+      "from": 245,
+      "to": 219
+    },
+    {
+      "from": 245,
+      "to": 242
+    },
+    {
+      "from": 245,
+      "to": 244
+    },
+    {
+      "from": 246,
+      "to": 108
+    },
+    {
+      "from": 246,
+      "to": 91
+    },
+    {
+      "from": 246,
+      "to": 17
+    },
+    {
+      "from": 246,
+      "to": 137
+    },
+    {
+      "from": 247,
+      "to": 242
+    },
+    {
+      "from": 247,
+      "to": 108
+    },
+    {
+      "from": 247,
+      "to": 219
+    },
+    {
+      "from": 248,
+      "to": 242
+    },
+    {
+      "from": 249,
+      "to": 108
+    },
+    {
+      "from": 249,
+      "to": 251
+    },
+    {
+      "from": 250,
+      "to": 108
+    },
+    {
+      "from": 250,
+      "to": 138
+    },
+    {
+      "from": 251,
+      "to": 108
+    },
+    {
+      "from": 251,
+      "to": 295
+    },
+    {
+      "from": 251,
+      "to": 252
+    },
+    {
+      "from": 251,
+      "to": 283
+    },
+    {
+      "from": 251,
+      "to": 294
+    },
+    {
+      "from": 252,
+      "to": 108
+    },
+    {
+      "from": 252,
+      "to": 253
+    },
+    {
+      "from": 253,
+      "to": 41
+    },
+    {
+      "from": 253,
+      "to": 108
+    },
+    {
+      "from": 254,
+      "to": 252
+    },
+    {
+      "from": 254,
+      "to": 253
+    },
+    {
+      "from": 255,
+      "to": 251
+    },
+    {
+      "from": 255,
+      "to": 252
+    },
+    {
+      "from": 255,
+      "to": 296
+    },
+    {
+      "from": 256,
+      "to": 21
+    },
+    {
+      "from": 256,
+      "to": 178
+    },
+    {
+      "from": 257,
+      "to": 256
+    },
+    {
+      "from": 257,
+      "to": 21
+    },
+    {
+      "from": 258,
+      "to": 38
+    },
+    {
+      "from": 258,
+      "to": 108
+    },
+    {
+      "from": 258,
+      "to": 225
+    },
+    {
+      "from": 259,
+      "to": 258
+    },
+    {
+      "from": 260,
+      "to": 258
+    },
+    {
+      "from": 260,
+      "to": 203
+    },
+    {
+      "from": 260,
+      "to": 259
+    },
+    {
+      "from": 261,
+      "to": 19
+    },
+    {
+      "from": 261,
+      "to": 138
+    },
+    {
+      "from": 262,
+      "to": 19
+    },
+    {
+      "from": 262,
+      "to": 137
+    },
+    {
+      "from": 263,
+      "to": 102
+    },
+    {
+      "from": 263,
+      "to": 137
+    },
+    {
+      "from": 264,
+      "to": 108
+    },
+    {
+      "from": 264,
+      "to": 21
+    },
+    {
+      "from": 265,
+      "to": 108
+    },
+    {
+      "from": 265,
+      "to": 17
+    },
+    {
+      "from": 266,
+      "to": 108
+    },
+    {
+      "from": 266,
+      "to": 17
+    },
+    {
+      "from": 267,
+      "to": 108
+    },
+    {
+      "from": 267,
+      "to": 17
+    },
+    {
+      "from": 268,
+      "to": 264
+    },
+    {
+      "from": 268,
+      "to": 265
+    },
+    {
+      "from": 269,
+      "to": 155
+    },
+    {
+      "from": 269,
+      "to": 266
+    },
+    {
+      "from": 270,
+      "to": 108
+    },
+    {
+      "from": 270,
+      "to": 261
+    },
+    {
+      "from": 271,
+      "to": 104
+    },
+    {
+      "from": 271,
+      "to": 108
+    },
+    {
+      "from": 272,
+      "to": 105
+    },
+    {
+      "from": 272,
+      "to": 108
+    },
+    {
+      "from": 273,
+      "to": 108
+    },
+    {
+      "from": 273,
+      "to": 234
+    },
+    {
+      "from": 274,
+      "to": 15
+    },
+    {
+      "from": 274,
+      "to": 16
+    },
+    {
+      "from": 274,
+      "to": 17
+    },
+    {
+      "from": 274,
+      "to": 108
+    },
+    {
+      "from": 275,
+      "to": 21
+    },
+    {
+      "from": 276,
+      "to": 108
+    },
+    {
+      "from": 276,
+      "to": 138
+    },
+    {
+      "from": 276,
+      "to": 137
+    },
+    {
+      "from": 277,
+      "to": 21
+    },
+    {
+      "from": 277,
+      "to": 59
+    },
+    {
+      "from": 278,
+      "to": 274
+    },
+    {
+      "from": 278,
+      "to": 108
+    },
+    {
+      "from": 279,
+      "to": 108
+    },
+    {
+      "from": 279,
+      "to": 15
+    },
+    {
+      "from": 280,
+      "to": 139
+    },
+    {
+      "from": 280,
+      "to": 276
+    },
+    {
+      "from": 281,
+      "to": 178
+    },
+    {
+      "from": 281,
+      "to": 184
+    },
+    {
+      "from": 282,
+      "to": 225
+    },
+    {
+      "from": 282,
+      "to": 258
+    },
+    {
+      "from": 282,
+      "to": 276
+    },
+    {
+      "from": 283,
+      "to": 17
+    },
+    {
+      "from": 283,
+      "to": 12
+    },
+    {
+      "from": 284,
+      "to": 283
+    },
+    {
+      "from": 284,
+      "to": 108
+    },
+    {
+      "from": 284,
+      "to": 129
+    },
+    {
+      "from": 285,
+      "to": 283
+    },
+    {
+      "from": 285,
+      "to": 284
+    },
+    {
+      "from": 285,
+      "to": 286
+    },
+    {
+      "from": 286,
+      "to": 283
+    },
+    {
+      "from": 286,
+      "to": 19
+    },
+    {
+      "from": 287,
+      "to": 264
+    },
+    {
+      "from": 287,
+      "to": 283
+    },
+    {
+      "from": 288,
+      "to": 113
+    },
+    {
+      "from": 288,
+      "to": 63
+    },
+    {
+      "from": 289,
+      "to": 113
+    },
+    {
+      "from": 289,
+      "to": 141
+    },
+    {
+      "from": 290,
+      "to": 118
+    },
+    {
+      "from": 290,
+      "to": 119
+    },
+    {
+      "from": 290,
+      "to": 120
+    },
+    {
+      "from": 290,
+      "to": 121
+    },
+    {
+      "from": 290,
+      "to": 289
+    },
+    {
+      "from": 291,
+      "to": 183
+    },
+    {
+      "from": 291,
+      "to": 182
+    },
+    {
+      "from": 292,
+      "to": 183
+    },
+    {
+      "from": 292,
+      "to": 182
+    },
+    {
+      "from": 293,
+      "to": 138
+    },
+    {
+      "from": 293,
+      "to": 261
+    },
+    {
+      "from": 294,
+      "to": 91
+    },
+    {
+      "from": 294,
+      "to": 108
+    },
+    {
+      "from": 294,
+      "to": 105
+    },
+    {
+      "from": 295,
+      "to": 283
+    },
+    {
+      "from": 295,
+      "to": 108
+    },
+    {
+      "from": 295,
+      "to": 294
+    },
+    {
+      "from": 296,
+      "to": 295
+    },
+    {
+      "from": 296,
+      "to": 108
+    },
+    {
+      "from": 297,
+      "to": 108
+    },
+    {
+      "from": 297,
+      "to": 17
+    },
+    {
+      "from": 298,
+      "to": 234
+    },
+    {
+      "from": 298,
+      "to": 235
+    },
+    {
+      "from": 299,
+      "to": 265
+    },
+    {
+      "from": 299,
+      "to": 125
+    },
+    {
+      "from": 299,
+      "to": 268
+    },
+    {
+      "from": 300,
+      "to": 240
+    },
+    {
+      "from": 300,
+      "to": 108
+    },
+    {
+      "from": 300,
+      "to": 289
+    }
+  ]
+}

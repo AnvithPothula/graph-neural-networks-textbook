@@ -137,6 +137,34 @@ Organized by topic for easy reference when generating textbook chapter content. 
 | Cluster-GCN: An Efficient Algorithm for Training Deep and Large GCNs | Chiang et al. | 2019 | [arXiv](https://arxiv.org/abs/1905.07953) |
 | GraphSAINT: Graph Sampling Based Inductive Learning Method | Zeng et al. | 2020 | [arXiv](https://arxiv.org/abs/1907.04931) |
 | SIGN: Scalable Inception Graph Neural Networks | Rossi et al. | 2020 | [arXiv](https://arxiv.org/abs/2004.11198) |
+| Inductive Representation Learning on Large Graphs (GraphSAGE) | Hamilton et al. | 2017 | [arXiv](https://arxiv.org/abs/1706.02216) |
+| FastGCN: Fast Learning with Graph Convolutional Networks via Importance Sampling | Chen et al. | 2018 | [arXiv](https://arxiv.org/abs/1801.10247) |
+| Stochastic Training of Graph Convolutional Networks (LADIES) | Zou et al. | 2019 | [arXiv](https://arxiv.org/abs/1905.12405) |
+| PinSage: Graph Convolutional Neural Networks for Web-Scale Recommender Systems | Ying et al. | 2018 | [arXiv](https://arxiv.org/abs/1806.01973) |
+
+---
+
+## Temporal and Dynamic Graphs
+
+| Paper | Authors | Year | Link |
+|---|---|---|---|
+| Temporal Graph Networks for Deep Learning on Dynamic Graphs (TGN) | Rossi et al. | 2020 | [arXiv](https://arxiv.org/abs/2006.10637) |
+| Inductive Representation Learning on Temporal Graphs (TGAT) | Xu et al. | 2020 | [arXiv](https://arxiv.org/abs/2002.07962) |
+| DyRep: Learning Representations over Dynamic Graphs | Trivedi et al. | 2019 | [OpenReview](https://openreview.net/forum?id=HyePrhR5KX) |
+| JODIE: Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks | Kumar et al. | 2019 | [arXiv](https://arxiv.org/abs/1908.01207) |
+| CAWN: Inductive Representation Learning in Temporal Networks via Causal Anonymous Walks | Wang et al. | 2021 | [arXiv](https://arxiv.org/abs/2101.05974) |
+
+---
+
+## Subgraph Mining and Community Detection
+
+| Paper | Authors | Year | Link |
+|---|---|---|---|
+| SPMiner: Neural Subgraph Matching | Rex Ying et al. | 2020 | [arXiv](https://arxiv.org/abs/2007.03092) |
+| Order Embeddings of Images and Language | Vendrov et al. | 2016 | [arXiv](https://arxiv.org/abs/1511.06361) |
+| Fast Unfolding of Communities in Large Networks (Louvain) | Blondel et al. | 2008 | [arXiv](https://arxiv.org/abs/0803.0476) |
+| BigCLAM: Overlapping Community Detection via Non-negative Matrix Factorization | Yang, Leskovec | 2013 | [ACM](https://dl.acm.org/doi/10.1145/2433396.2433471) |
+| Network Community Detection: A Review | Fortunato | 2010 | [Physics Reports](https://doi.org/10.1016/j.physrep.2009.11.002) |
 
 ---
 
