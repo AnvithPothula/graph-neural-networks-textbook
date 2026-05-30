@@ -7,13 +7,6 @@
       "runtimeArgs": ["/tmp/gnn-mkdocs-spawner.js"],
       "port": 8000,
       "autoPort": false
-    },
-    {
-      "name": "mkdocs-preview",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["/tmp/gnn-static-server.js"],
-      "port": 8001,
-      "autoPort": false
     }
   ]
 }
