@@ -1,0 +1,3398 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A comprehensive intelligent textbook on Graph Neural Networks — from graph theory to foundation models, exceeding Stanford CS224W in depth, coverage, and interactivity.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/learning-graph/diagram-details/">
+      
+      
+        <link rel="prev" href="../diagram-table/">
+      
+      
+        <link rel="next" href="../../sims/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Diagrams Details - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Diagrams Details">
+  <meta property="og:description" content="A comprehensive intelligent textbook on Graph Neural Networks — from graph theory to foundation models, exceeding Stanford CS224W in depth, coverage, and interactivity.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/learning-graph/diagram-details/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Diagrams Details">
+  <meta name="twitter:description" content="A comprehensive intelligent textbook on Graph Neural Networks — from graph theory to foundation models, exceeding Stanford CS224W in depth, coverage, and interactivity.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#diagram-and-microsim-details" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Diagrams Details
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../chapters/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_5" id="__nav_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Learning Graph
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concept-list/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concept List
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concept-taxonomy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concept Taxonomy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quality-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph Quality Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../taxonomy-distribution/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Taxonomy Distribution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course-description-assessment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description Assessment
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mascot-test/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mascot Style Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../book-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Book Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../chapter-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapter Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../diagram-table/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams Table
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams Details
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Diagrams Details
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#chapter-0-math-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 0: Math Prerequisites
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 0: Math Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matrix-graph-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matrix × Graph Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-1-intro-to-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 1: Intro To Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 1: Intro To Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graph-property-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Property Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-2-graph-properties-and-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 2: Graph Properties And Features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 2: Graph Properties And Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wl-color-refinement-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WL Color Refinement Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-3-link-analysis-pagerank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 3: Link Analysis Pagerank
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 3: Link Analysis Pagerank">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pagerank-feedback-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PageRank Feedback Loops
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-4-node-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 4: Node Embeddings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 4: Node Embeddings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#node2vec-biased-random-walk-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        node2vec Biased Random Walk Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-5-label-propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 5: Label Propagation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 5: Label Propagation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#label-propagation-step-by-step-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Label Propagation Step-by-Step Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sir-epidemic-dynamics-on-network-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SIR Epidemic Dynamics on Network Structures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-6-gnn-foundations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 6: Gnn Foundations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 6: Gnn Foundations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gcn-message-passing-visualizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GCN Message Passing Visualizer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gnn-message-passing-feedback-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNN Message Passing Feedback Dynamics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-7-gnn-design-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 7: Gnn Design Space
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 7: Gnn Design Space">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gat-attention-weight-visualizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GAT Attention Weight Visualizer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gnn-design-space-interactive-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNN Design Space Interactive Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-8-gnn-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 8: Gnn Training
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 8: Gnn Training">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#over-smoothing-feedback-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Over-Smoothing Feedback Loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-9-gnn-theory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 9: Gnn Theory
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 9: Gnn Theory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wl-color-refinement-convergence-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WL Color Refinement Convergence — Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-10-powerful-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 10: Powerful Gnns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 10: Powerful Gnns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gin-vs-gcn-expressiveness-microsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GIN vs. GCN Expressiveness MicroSim
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-11-graph-transformers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 11: Graph Transformers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 11: Graph Transformers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graph-transformer-attention-heatmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Transformer Attention Heatmap
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-12-knowledge-graph-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 12: Knowledge Graph Embeddings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 12: Knowledge Graph Embeddings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transe-geometry-in-2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TransE Geometry in 2D
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-13-kg-reasoning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 13: Kg Reasoning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 13: Kg Reasoning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query-box-traversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query Box Traversal
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-14-kg-foundation-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 14: Kg Foundation Models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 14: Kg Foundation Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cross-kg-structure-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-KG Structure Transfer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-15-heterogeneous-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 15: Heterogeneous Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 15: Heterogeneous Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#typed-node-and-edge-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typed Node and Edge Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-16-recommender-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 16: Recommender Systems
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 16: Recommender Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#user-item-graph-with-multi-hop-propagation-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User-Item Graph with Multi-Hop Propagation Visualization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-17-relational-deep-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 17: Relational Deep Learning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 17: Relational Deep Learning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#relational-schema-to-heterogeneous-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relational Schema to Heterogeneous Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-18-community-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 18: Community Structure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 18: Community Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#girvan-newman-step-by-step-on-the-karate-club-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Girvan-Newman Step-by-Step on the Karate Club Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#louvain-two-phase-iteration-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Louvain Two-Phase Iteration Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-19-subgraph-mining" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 19: Subgraph Mining
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 19: Subgraph Mining">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#motif-z-score-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motif Z-Score Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spminer-order-embedding-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPMiner Order Embedding Space
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-20-scaling-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 20: Scaling Gnns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 20: Scaling Gnns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#neighbor-explosion-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neighbor Explosion Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-21-generative-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 21: Generative Models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 21: Generative Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#drug-discovery-gnn-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drug Discovery GNN Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-22-temporal-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 22: Temporal Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 22: Temporal Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#temporal-graph-memory-dynamics-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Temporal Graph Memory Dynamics — Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-23-llm-gnn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 23: Llm Gnn
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 23: Llm Gnn">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llmgnn-pipeline-explorer-full-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM+GNN Pipeline Explorer (Full Version)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#llmgnn-pipeline-text-to-prediction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM+GNN Pipeline — Text-to-Prediction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-24-advanced-gnn-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 24: Advanced Gnn Topics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 24: Advanced Gnn Topics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contrastive-loss-surface-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contrastive Loss Surface Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dgi-vs-contrastive-learning-concept-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DGI vs. Contrastive Learning — Concept Map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph-contrastive-learning-two-view-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Contrastive Learning — Two-View Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-25-agents-and-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 25: Agents And Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 25: Agents And Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agent-graph-reasoning-loop-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent Graph Reasoning Loop — Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent-tool-use-graph-interactive-planner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent Tool-Use Graph — Interactive Planner
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-26-conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 26: Conclusion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 26: Conclusion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gnn-architecture-family-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNN Architecture Family Tree
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#chapter-0-math-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 0: Math Prerequisites
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 0: Math Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matrix-graph-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matrix × Graph Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-1-intro-to-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 1: Intro To Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 1: Intro To Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graph-property-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Property Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-2-graph-properties-and-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 2: Graph Properties And Features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 2: Graph Properties And Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wl-color-refinement-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WL Color Refinement Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-3-link-analysis-pagerank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 3: Link Analysis Pagerank
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 3: Link Analysis Pagerank">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pagerank-feedback-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PageRank Feedback Loops
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-4-node-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 4: Node Embeddings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 4: Node Embeddings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#node2vec-biased-random-walk-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        node2vec Biased Random Walk Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-5-label-propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 5: Label Propagation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 5: Label Propagation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#label-propagation-step-by-step-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Label Propagation Step-by-Step Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sir-epidemic-dynamics-on-network-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SIR Epidemic Dynamics on Network Structures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-6-gnn-foundations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 6: Gnn Foundations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 6: Gnn Foundations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gcn-message-passing-visualizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GCN Message Passing Visualizer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gnn-message-passing-feedback-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNN Message Passing Feedback Dynamics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-7-gnn-design-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 7: Gnn Design Space
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 7: Gnn Design Space">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gat-attention-weight-visualizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GAT Attention Weight Visualizer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gnn-design-space-interactive-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNN Design Space Interactive Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-8-gnn-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 8: Gnn Training
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 8: Gnn Training">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#over-smoothing-feedback-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Over-Smoothing Feedback Loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-9-gnn-theory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 9: Gnn Theory
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 9: Gnn Theory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wl-color-refinement-convergence-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WL Color Refinement Convergence — Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-10-powerful-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 10: Powerful Gnns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 10: Powerful Gnns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gin-vs-gcn-expressiveness-microsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GIN vs. GCN Expressiveness MicroSim
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-11-graph-transformers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 11: Graph Transformers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 11: Graph Transformers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graph-transformer-attention-heatmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Transformer Attention Heatmap
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-12-knowledge-graph-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 12: Knowledge Graph Embeddings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 12: Knowledge Graph Embeddings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transe-geometry-in-2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TransE Geometry in 2D
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-13-kg-reasoning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 13: Kg Reasoning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 13: Kg Reasoning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query-box-traversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query Box Traversal
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-14-kg-foundation-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 14: Kg Foundation Models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 14: Kg Foundation Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cross-kg-structure-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-KG Structure Transfer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-15-heterogeneous-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 15: Heterogeneous Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 15: Heterogeneous Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#typed-node-and-edge-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typed Node and Edge Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-16-recommender-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 16: Recommender Systems
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 16: Recommender Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#user-item-graph-with-multi-hop-propagation-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User-Item Graph with Multi-Hop Propagation Visualization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-17-relational-deep-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 17: Relational Deep Learning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 17: Relational Deep Learning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#relational-schema-to-heterogeneous-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relational Schema to Heterogeneous Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-18-community-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 18: Community Structure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 18: Community Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#girvan-newman-step-by-step-on-the-karate-club-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Girvan-Newman Step-by-Step on the Karate Club Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#louvain-two-phase-iteration-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Louvain Two-Phase Iteration Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-19-subgraph-mining" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 19: Subgraph Mining
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 19: Subgraph Mining">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#motif-z-score-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motif Z-Score Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spminer-order-embedding-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPMiner Order Embedding Space
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-20-scaling-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 20: Scaling Gnns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 20: Scaling Gnns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#neighbor-explosion-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Neighbor Explosion Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-21-generative-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 21: Generative Models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 21: Generative Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#drug-discovery-gnn-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drug Discovery GNN Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-22-temporal-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 22: Temporal Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 22: Temporal Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#temporal-graph-memory-dynamics-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Temporal Graph Memory Dynamics — Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-23-llm-gnn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 23: Llm Gnn
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 23: Llm Gnn">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llmgnn-pipeline-explorer-full-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM+GNN Pipeline Explorer (Full Version)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#llmgnn-pipeline-text-to-prediction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM+GNN Pipeline — Text-to-Prediction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-24-advanced-gnn-topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 24: Advanced Gnn Topics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 24: Advanced Gnn Topics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contrastive-loss-surface-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contrastive Loss Surface Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dgi-vs-contrastive-learning-concept-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DGI vs. Contrastive Learning — Concept Map
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph-contrastive-learning-two-view-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Contrastive Learning — Two-View Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-25-agents-and-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 25: Agents And Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 25: Agents And Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#agent-graph-reasoning-loop-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent Graph Reasoning Loop — Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent-tool-use-graph-interactive-planner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent Tool-Use Graph — Interactive Planner
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-26-conclusion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 26: Conclusion
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 26: Conclusion">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gnn-architecture-family-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNN Architecture Family Tree
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Learning Graph
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/learning-graph/diagram-details.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="diagram-and-microsim-details">Diagram and MicroSim Details<a class="headerlink" href="#diagram-and-microsim-details" title="Permanent link">¶</a></h1>
+<p><strong>Total Visual Elements:</strong> 36
+<strong>Diagrams:</strong> 8
+<strong>MicroSims:</strong> 28</p>
+<h2 id="chapter-0-math-prerequisites">Chapter 0: Math Prerequisites<a class="headerlink" href="#chapter-0-math-prerequisites" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="matrix-graph-explorer"><a href="../../chapters/00-math-prerequisites/#diagram-matrix-×-graph-explorer">Matrix × Graph Explorer</a><a class="headerlink" href="#matrix-graph-explorer" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 5</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-1-intro-to-graphs">Chapter 1: Intro To Graphs<a class="headerlink" href="#chapter-1-intro-to-graphs" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="graph-property-explorer"><a href="../../chapters/01-intro-to-graphs/#diagram-graph-property-explorer">Graph Property Explorer</a><a class="headerlink" href="#graph-property-explorer" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Apply</li>
+<li><strong>UI Elements:</strong> 3</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-2-graph-properties-and-features">Chapter 2: Graph Properties And Features<a class="headerlink" href="#chapter-2-graph-properties-and-features" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="wl-color-refinement-simulator"><a href="../../chapters/02-graph-properties-and-features/#diagram-wl-color-refinement-simulator">WL Color Refinement Simulator</a><a class="headerlink" href="#wl-color-refinement-simulator" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 4</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-3-link-analysis-pagerank">Chapter 3: Link Analysis Pagerank<a class="headerlink" href="#chapter-3-link-analysis-pagerank" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="pagerank-feedback-loops"><a href="../../chapters/03-link-analysis-pagerank/#diagram-pagerank-feedback-loops">PageRank Feedback Loops</a><a class="headerlink" href="#pagerank-feedback-loops" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Diagram</li>
+<li><strong>Bloom's Taxonomy:</strong> Apply</li>
+<li><strong>UI Elements:</strong> 5</li>
+<li><strong>Difficulty:</strong> Easy</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-4-node-embeddings">Chapter 4: Node Embeddings<a class="headerlink" href="#chapter-4-node-embeddings" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="node2vec-biased-random-walk-explorer"><a href="../../chapters/04-node-embeddings/#diagram-node2vec-biased-random-walk-explorer">node2vec Biased Random Walk Explorer</a><a class="headerlink" href="#node2vec-biased-random-walk-explorer" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Apply</li>
+<li><strong>UI Elements:</strong> 7</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-5-label-propagation">Chapter 5: Label Propagation<a class="headerlink" href="#chapter-5-label-propagation" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 2</p>
+<h3 id="label-propagation-step-by-step-simulator"><a href="../../chapters/05-label-propagation/#diagram-label-propagation-step-by-step-simulator">Label Propagation Step-by-Step Simulator</a><a class="headerlink" href="#label-propagation-step-by-step-simulator" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Analyze</li>
+<li><strong>UI Elements:</strong> 4</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h3 id="sir-epidemic-dynamics-on-network-structures"><a href="../../chapters/05-label-propagation/#diagram-sir-epidemic-dynamics-on-network-structures">SIR Epidemic Dynamics on Network Structures</a><a class="headerlink" href="#sir-epidemic-dynamics-on-network-structures" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Analyze</li>
+<li><strong>UI Elements:</strong> 5</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-6-gnn-foundations">Chapter 6: Gnn Foundations<a class="headerlink" href="#chapter-6-gnn-foundations" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 2</p>
+<h3 id="gcn-message-passing-visualizer"><a href="../../chapters/06-gnn-foundations/#diagram-gcn-message-passing-visualizer">GCN Message Passing Visualizer</a><a class="headerlink" href="#gcn-message-passing-visualizer" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 3</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h3 id="gnn-message-passing-feedback-dynamics"><a href="../../chapters/06-gnn-foundations/#diagram-gnn-message-passing-feedback-dynamics">GNN Message Passing Feedback Dynamics</a><a class="headerlink" href="#gnn-message-passing-feedback-dynamics" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Diagram</li>
+<li><strong>Bloom's Taxonomy:</strong> Analyze</li>
+<li><strong>UI Elements:</strong> 4</li>
+<li><strong>Difficulty:</strong> Easy</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-7-gnn-design-space">Chapter 7: Gnn Design Space<a class="headerlink" href="#chapter-7-gnn-design-space" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 2</p>
+<h3 id="gat-attention-weight-visualizer"><a href="../../chapters/07-gnn-design-space/#diagram-gat-attention-weight-visualizer">GAT Attention Weight Visualizer</a><a class="headerlink" href="#gat-attention-weight-visualizer" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Apply</li>
+<li><strong>UI Elements:</strong> 2</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h3 id="gnn-design-space-interactive-comparison"><a href="../../chapters/07-gnn-design-space/#diagram-gnn-design-space-interactive-comparison">GNN Design Space Interactive Comparison</a><a class="headerlink" href="#gnn-design-space-interactive-comparison" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Create</li>
+<li><strong>UI Elements:</strong> 0</li>
+<li><strong>Difficulty:</strong> Easy</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-8-gnn-training">Chapter 8: Gnn Training<a class="headerlink" href="#chapter-8-gnn-training" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="over-smoothing-feedback-loop"><a href="../../chapters/08-gnn-training/#diagram-over-smoothing-feedback-loop">Over-Smoothing Feedback Loop</a><a class="headerlink" href="#over-smoothing-feedback-loop" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Diagram</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 5</li>
+<li><strong>Difficulty:</strong> Easy</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-9-gnn-theory">Chapter 9: Gnn Theory<a class="headerlink" href="#chapter-9-gnn-theory" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="wl-color-refinement-convergence-causal-loop-diagram"><a href="../../chapters/09-gnn-theory/#diagram-wl-color-refinement-convergence-—-causal-loop-diagram">WL Color Refinement Convergence — Causal Loop Diagram</a><a class="headerlink" href="#wl-color-refinement-convergence-causal-loop-diagram" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Diagram</li>
+<li><strong>Bloom's Taxonomy:</strong> Apply</li>
+<li><strong>UI Elements:</strong> 4</li>
+<li><strong>Difficulty:</strong> Easy</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-10-powerful-gnns">Chapter 10: Powerful Gnns<a class="headerlink" href="#chapter-10-powerful-gnns" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="gin-vs-gcn-expressiveness-microsim"><a href="../../chapters/10-powerful-gnns/#diagram-gin-vs-gcn-expressiveness-microsim">GIN vs. GCN Expressiveness MicroSim</a><a class="headerlink" href="#gin-vs-gcn-expressiveness-microsim" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 4</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-11-graph-transformers">Chapter 11: Graph Transformers<a class="headerlink" href="#chapter-11-graph-transformers" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="graph-transformer-attention-heatmap"><a href="../../chapters/11-graph-transformers/#diagram-graph-transformer-attention-heatmap">Graph Transformer Attention Heatmap</a><a class="headerlink" href="#graph-transformer-attention-heatmap" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Analyze</li>
+<li><strong>UI Elements:</strong> 4</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-12-knowledge-graph-embeddings">Chapter 12: Knowledge Graph Embeddings<a class="headerlink" href="#chapter-12-knowledge-graph-embeddings" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="transe-geometry-in-2d"><a href="../../chapters/12-knowledge-graph-embeddings/#diagram-transe-geometry-in-2d">TransE Geometry in 2D</a><a class="headerlink" href="#transe-geometry-in-2d" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Apply</li>
+<li><strong>UI Elements:</strong> 6</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-13-kg-reasoning">Chapter 13: Kg Reasoning<a class="headerlink" href="#chapter-13-kg-reasoning" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="query-box-traversal"><a href="../../chapters/13-kg-reasoning/#diagram-query-box-traversal">Query Box Traversal</a><a class="headerlink" href="#query-box-traversal" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Analyze</li>
+<li><strong>UI Elements:</strong> 5</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-14-kg-foundation-models">Chapter 14: Kg Foundation Models<a class="headerlink" href="#chapter-14-kg-foundation-models" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="cross-kg-structure-transfer"><a href="../../chapters/14-kg-foundation-models/#diagram-cross-kg-structure-transfer">Cross-KG Structure Transfer</a><a class="headerlink" href="#cross-kg-structure-transfer" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Analyze</li>
+<li><strong>UI Elements:</strong> 4</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-15-heterogeneous-graphs">Chapter 15: Heterogeneous Graphs<a class="headerlink" href="#chapter-15-heterogeneous-graphs" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="typed-node-and-edge-explorer"><a href="../../chapters/15-heterogeneous-graphs/#diagram-typed-node-and-edge-explorer">Typed Node and Edge Explorer</a><a class="headerlink" href="#typed-node-and-edge-explorer" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Apply</li>
+<li><strong>UI Elements:</strong> 6</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-16-recommender-systems">Chapter 16: Recommender Systems<a class="headerlink" href="#chapter-16-recommender-systems" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="user-item-graph-with-multi-hop-propagation-visualization"><a href="../../chapters/16-recommender-systems/#diagram-user-item-graph-with-multi-hop-propagation-visualization">User-Item Graph with Multi-Hop Propagation Visualization</a><a class="headerlink" href="#user-item-graph-with-multi-hop-propagation-visualization" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Apply</li>
+<li><strong>UI Elements:</strong> 3</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-17-relational-deep-learning">Chapter 17: Relational Deep Learning<a class="headerlink" href="#chapter-17-relational-deep-learning" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="relational-schema-to-heterogeneous-graph"><a href="../../chapters/17-relational-deep-learning/#diagram-relational-schema-to-heterogeneous-graph">Relational Schema to Heterogeneous Graph</a><a class="headerlink" href="#relational-schema-to-heterogeneous-graph" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 3</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-18-community-structure">Chapter 18: Community Structure<a class="headerlink" href="#chapter-18-community-structure" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 2</p>
+<h3 id="girvan-newman-step-by-step-on-the-karate-club-graph"><a href="../../chapters/18-community-structure/#diagram-girvan-newman-step-by-step-on-the-karate-club-graph">Girvan-Newman Step-by-Step on the Karate Club Graph</a><a class="headerlink" href="#girvan-newman-step-by-step-on-the-karate-club-graph" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 3</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h3 id="louvain-two-phase-iteration-explorer"><a href="../../chapters/18-community-structure/#diagram-louvain-two-phase-iteration-explorer">Louvain Two-Phase Iteration Explorer</a><a class="headerlink" href="#louvain-two-phase-iteration-explorer" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 5</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-19-subgraph-mining">Chapter 19: Subgraph Mining<a class="headerlink" href="#chapter-19-subgraph-mining" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 2</p>
+<h3 id="motif-z-score-explorer"><a href="../../chapters/19-subgraph-mining/#diagram-motif-z-score-explorer">Motif Z-Score Explorer</a><a class="headerlink" href="#motif-z-score-explorer" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 3</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h3 id="spminer-order-embedding-space"><a href="../../chapters/19-subgraph-mining/#diagram-spminer-order-embedding-space">SPMiner Order Embedding Space</a><a class="headerlink" href="#spminer-order-embedding-space" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 2</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-20-scaling-gnns">Chapter 20: Scaling Gnns<a class="headerlink" href="#chapter-20-scaling-gnns" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="neighbor-explosion-causal-loop-diagram"><a href="../../chapters/20-scaling-gnns/#diagram-neighbor-explosion-causal-loop-diagram">Neighbor Explosion Causal Loop Diagram</a><a class="headerlink" href="#neighbor-explosion-causal-loop-diagram" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Diagram</li>
+<li><strong>Bloom's Taxonomy:</strong> Analyze</li>
+<li><strong>UI Elements:</strong> 3</li>
+<li><strong>Difficulty:</strong> Easy</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-21-generative-models">Chapter 21: Generative Models<a class="headerlink" href="#chapter-21-generative-models" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="drug-discovery-gnn-pipeline"><a href="../../chapters/21-generative-models/#diagram-drug-discovery-gnn-pipeline">Drug Discovery GNN Pipeline</a><a class="headerlink" href="#drug-discovery-gnn-pipeline" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 2</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-22-temporal-graphs">Chapter 22: Temporal Graphs<a class="headerlink" href="#chapter-22-temporal-graphs" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="temporal-graph-memory-dynamics-causal-loop-diagram"><a href="../../chapters/22-temporal-graphs/#diagram-temporal-graph-memory-dynamics-—-causal-loop-diagram">Temporal Graph Memory Dynamics — Causal Loop Diagram</a><a class="headerlink" href="#temporal-graph-memory-dynamics-causal-loop-diagram" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Diagram</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 3</li>
+<li><strong>Difficulty:</strong> Easy</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-23-llm-gnn">Chapter 23: Llm Gnn<a class="headerlink" href="#chapter-23-llm-gnn" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 2</p>
+<h3 id="llmgnn-pipeline-explorer-full-version"><a href="../../chapters/23-llm-gnn/#diagram-llm+gnn-pipeline-explorer-full-version">LLM+GNN Pipeline Explorer (Full Version)</a><a class="headerlink" href="#llmgnn-pipeline-explorer-full-version" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Evaluate</li>
+<li><strong>UI Elements:</strong> 6</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h3 id="llmgnn-pipeline-text-to-prediction"><a href="../../chapters/23-llm-gnn/#diagram-llm+gnn-pipeline-—-text-to-prediction">LLM+GNN Pipeline — Text-to-Prediction</a><a class="headerlink" href="#llmgnn-pipeline-text-to-prediction" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 4</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-24-advanced-gnn-topics">Chapter 24: Advanced Gnn Topics<a class="headerlink" href="#chapter-24-advanced-gnn-topics" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 3</p>
+<h3 id="contrastive-loss-surface-explorer"><a href="../../chapters/24-advanced-gnn-topics/#diagram-contrastive-loss-surface-explorer">Contrastive Loss Surface Explorer</a><a class="headerlink" href="#contrastive-loss-surface-explorer" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Apply</li>
+<li><strong>UI Elements:</strong> 4</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h3 id="dgi-vs-contrastive-learning-concept-map"><a href="../../chapters/24-advanced-gnn-topics/#diagram-dgi-vs-contrastive-learning-—-concept-map">DGI vs. Contrastive Learning — Concept Map</a><a class="headerlink" href="#dgi-vs-contrastive-learning-concept-map" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Diagram</li>
+<li><strong>Bloom's Taxonomy:</strong> Analyze</li>
+<li><strong>UI Elements:</strong> 1</li>
+<li><strong>Difficulty:</strong> Easy</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h3 id="graph-contrastive-learning-two-view-pipeline"><a href="../../chapters/24-advanced-gnn-topics/#diagram-graph-contrastive-learning-—-two-view-pipeline">Graph Contrastive Learning — Two-View Pipeline</a><a class="headerlink" href="#graph-contrastive-learning-two-view-pipeline" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Create</li>
+<li><strong>UI Elements:</strong> 4</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-25-agents-and-graphs">Chapter 25: Agents And Graphs<a class="headerlink" href="#chapter-25-agents-and-graphs" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 2</p>
+<h3 id="agent-graph-reasoning-loop-causal-loop-diagram"><a href="../../chapters/25-agents-and-graphs/#diagram-agent-graph-reasoning-loop-—-causal-loop-diagram">Agent Graph Reasoning Loop — Causal Loop Diagram</a><a class="headerlink" href="#agent-graph-reasoning-loop-causal-loop-diagram" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Diagram</li>
+<li><strong>Bloom's Taxonomy:</strong> Apply</li>
+<li><strong>UI Elements:</strong> 4</li>
+<li><strong>Difficulty:</strong> Easy</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h3 id="agent-tool-use-graph-interactive-planner"><a href="../../chapters/25-agents-and-graphs/#diagram-agent-tool-use-graph-—-interactive-planner">Agent Tool-Use Graph — Interactive Planner</a><a class="headerlink" href="#agent-tool-use-graph-interactive-planner" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Understand</li>
+<li><strong>UI Elements:</strong> 2</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+<h2 id="chapter-26-conclusion">Chapter 26: Conclusion<a class="headerlink" href="#chapter-26-conclusion" title="Permanent link">¶</a></h2>
+<p><strong>Total elements:</strong> 1</p>
+<h3 id="gnn-architecture-family-tree"><a href="../../chapters/26-conclusion/#diagram-gnn-architecture-family-tree">GNN Architecture Family Tree</a><a class="headerlink" href="#gnn-architecture-family-tree" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Status:</strong> Implemented</li>
+<li><strong>Type:</strong> Microsim</li>
+<li><strong>Bloom's Taxonomy:</strong> Create</li>
+<li><strong>UI Elements:</strong> 2</li>
+<li><strong>Difficulty:</strong> Medium</li>
+<li><strong>Learning Objective:</strong> TODO: Add learning objectives...</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../diagram-table/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Diagrams Table">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Diagrams Table
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../sims/" class="md-footer__link md-footer__link--next" aria-label="Next: List of MicroSims">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                List of MicroSims
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

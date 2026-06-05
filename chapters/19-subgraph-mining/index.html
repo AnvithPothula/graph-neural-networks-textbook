@@ -1,0 +1,3246 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Subgraph isomorphism, classical pattern mining, order embeddings, and SPMiner — from combinatorial search to neural frequency estimation.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/19-subgraph-mining/">
+      
+      
+        <link rel="prev" href="../18-community-structure/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 19: Frequent Subgraph Mining - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 19: Frequent Subgraph Mining">
+  <meta property="og:description" content="Subgraph isomorphism, classical pattern mining, order embeddings, and SPMiner — from combinatorial search to neural frequency estimation.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/19-subgraph-mining/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 19: Frequent Subgraph Mining">
+  <meta name="twitter:description" content="Subgraph isomorphism, classical pattern mining, order embeddings, and SPMiner — from combinatorial search to neural frequency estimation.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-19-frequent-subgraph-mining" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 19: Frequent Subgraph Mining
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_21" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_21" id="__nav_4_21_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_21_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_21">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    19. Frequent Subgraph Mining
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#191-why-subgraph-patterns-matter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.1 Why Subgraph Patterns Matter
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#192-subgraph-isomorphism-the-core-combinatorial-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.2 Subgraph Isomorphism: The Core Combinatorial Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#193-classical-frequent-subgraph-mining" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.3 Classical Frequent Subgraph Mining
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#194-network-motifs-statistical-significance-of-subgraph-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.4 Network Motifs: Statistical Significance of Subgraph Patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.4 Network Motifs: Statistical Significance of Subgraph Patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-motif-z-score-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Motif Z-Score Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#195-order-embeddings-encoding-partial-orders-in-continuous-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.5 Order Embeddings: Encoding Partial Orders in Continuous Space
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#196-spminer-neural-subgraph-frequency-estimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.6 SPMiner: Neural Subgraph Frequency Estimation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="19.6 SPMiner: Neural Subgraph Frequency Estimation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-spminer-order-embedding-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: SPMiner Order Embedding Space
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#197-comparing-classical-and-neural-approaches" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.7 Comparing Classical and Neural Approaches
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#198-key-takeaways" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.8 Key Takeaways
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#199-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.9 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1910-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        19.10 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    19. Frequent Subgraph Mining
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/19-subgraph-mining/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-19-frequent-subgraph-mining">Chapter 19: Frequent Subgraph Mining<a class="headerlink" href="#chapter-19-frequent-subgraph-mining" title="Permanent link">¶</a></h1>
+<p><strong>Part 4: Graphs in the Wild</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Covers algorithms for mining frequent subgraph patterns — subgraph isomorphism, order embeddings, and SPMiner — connecting classical pattern mining to neural approaches.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 4 concepts from the learning graph:</p>
+<ol>
+<li>Frequent Subgraph Mining</li>
+<li>Subgraph Isomorphism</li>
+<li>Order Embedding</li>
+<li>SPMiner</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../01-intro-to-graphs/">Chapter 1: Introduction to Graphs and Networks</a></li>
+<li><a href="../02-graph-properties-and-features/">Chapter 2: Graph Properties and Traditional ML Features</a></li>
+<li><a href="../18-community-structure/">Chapter 18: Community Structure in Networks</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Welcome to Chapter 19</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waves hello">
+Graphs carry information at multiple scales simultaneously: individual edges encode pairwise relationships, global topology captures network-wide organization, and somewhere in between sit <strong>subgraph patterns</strong> — recurring structural motifs that appear far more often than random chance would predict. Identifying which patterns are frequent, and what their presence implies, is the subject of subgraph mining. This chapter traces the full arc from the classical combinatorial formulation — deciding whether one graph is embedded inside another — through scalable algebraic tricks that exploit the anti-monotonicity of pattern frequency, all the way to a neural approach that replaces exhaustive search with learned order embeddings. By the end you will understand not only how to find subgraph patterns but why the neural approach is necessary when graphs scale to millions of nodes and queries must be answered in milliseconds rather than hours.</p>
+</div>
+<h2 id="191-why-subgraph-patterns-matter">19.1 Why Subgraph Patterns Matter<a class="headerlink" href="#191-why-subgraph-patterns-matter" title="Permanent link">¶</a></h2>
+<p>Consider a drug discovery pipeline processing a database of ten thousand candidate molecules, each represented as a molecular graph with atoms as nodes and chemical bonds as edges. A medicinal chemist hypothesizes that a particular functional group — say, a benzene ring fused with an imidazole ring — is responsible for a class of compounds' anti-inflammatory activity. To test the hypothesis computationally, they need to determine how many molecules in the database contain this structural pattern as a subgraph — and do so without manually inspecting ten thousand graphs.</p>
+<p>This is the <strong>frequent subgraph mining</strong> problem in its clearest form: given a pattern graph (or query) <span class="arithmatex">\( Q \)</span> and a large graph or database of graphs <span class="arithmatex">\( G \)</span>, determine how frequently <span class="arithmatex">\( Q \)</span> appears as a subgraph, and across a large collection of queries identify which patterns are common enough to be statistically interesting. The applications span an enormous range:</p>
+<ul>
+<li><strong>Cheminformatics</strong>: frequent chemical fragments correlate with biological activity; rare ones may indicate synthetic artifacts.</li>
+<li><strong>Bioinformatics</strong>: network motifs — patterns that appear more often in biological networks than in random graphs — reveal functional modules in protein interaction networks and gene regulatory circuits.</li>
+<li><strong>Social network analysis</strong>: recurring structural patterns (triads, cliques, bow-ties) characterize social dynamics such as transitivity, brokerage, and information diffusion.</li>
+<li><strong>Cybersecurity</strong>: attack graphs contain characteristic subgraph signatures that intrusion detection systems can learn to recognize.</li>
+<li><strong>Code analysis</strong>: program dependency graphs contain recurring control-flow patterns whose frequency can distinguish benign software from malware.</li>
+</ul>
+<p>The fundamental algorithmic challenge underlying all of these applications is <strong>subgraph isomorphism</strong> — determining whether a query graph can be mapped injectively into a larger host graph while preserving adjacency. This problem is NP-complete, and for decades the only practical approach was exhaustive combinatorial search with clever pruning. The neural approach covered in §19.5 and §19.6 changes this by learning to estimate subgraph frequency from data, trading exact answers for amortized efficiency at scale.</p>
+<h2 id="192-subgraph-isomorphism-the-core-combinatorial-problem">19.2 Subgraph Isomorphism: The Core Combinatorial Problem<a class="headerlink" href="#192-subgraph-isomorphism-the-core-combinatorial-problem" title="Permanent link">¶</a></h2>
+<p>Before defining frequency, we need a precise definition of what it means for one graph to be a subgraph of another. There are two distinct notions in common use, which differ in whether edges between mapped nodes must be preserved exactly.</p>
+<p>A graph <span class="arithmatex">\( Q = (V_Q, E_Q) \)</span> is <strong>subgraph-isomorphic</strong> to <span class="arithmatex">\( G = (V_G, E_G) \)</span> if there exists an injective function <span class="arithmatex">\( f: V_Q \to V_G \)</span> such that for every edge <span class="arithmatex">\( (u, v) \in E_Q \)</span>, we have <span class="arithmatex">\( (f(u), f(v)) \in E_G \)</span>. The mapping <span class="arithmatex">\( f \)</span> must be injective — no two query nodes map to the same host node — but it need not be surjective; most host nodes are unmapped. When node or edge labels are present (as in molecular graphs), the mapping must additionally satisfy <span class="arithmatex">\( \text{label}(u) = \text{label}(f(u)) \)</span> for all <span class="arithmatex">\( u \in V_Q \)</span>, and analogously for edges.</p>
+<p>A stricter notion is <strong>induced subgraph isomorphism</strong>: the mapping <span class="arithmatex">\( f \)</span> must preserve both the presence and the absence of edges. If <span class="arithmatex">\( (u, v) \notin E_Q \)</span> for two query nodes, then <span class="arithmatex">\( (f(u), f(v)) \notin E_G \)</span>. Induced isomorphism is appropriate when you want to find exact copies of a structural motif; ordinary (non-induced) subgraph isomorphism is appropriate when you want to find the motif embedded within a larger structure with potentially additional edges.</p>
+<p>The decision problem — does <span class="arithmatex">\( Q \)</span> embed in <span class="arithmatex">\( G \)</span>? — is NP-complete via reduction from the clique problem. Intuitively, asking whether a <span class="arithmatex">\( k \)</span>-clique is a subgraph of <span class="arithmatex">\( G \)</span> is the clique problem, which is NP-complete. This means that no polynomial-time algorithm is known for the general case, and none is expected (unless <span class="arithmatex">\( \text{P} = \text{NP} \)</span>).</p>
+<p>In practice, the most widely used exact algorithm is <strong>VF2</strong> (Cordella et al., 2004), which performs a depth-first search over partial mappings and prunes branches using <strong>feasibility rules</strong> — structural checks that immediately rule out infeasible extensions without enumerating all possibilities. For example, if a query node <span class="arithmatex">\( u \)</span> has degree 5, any candidate host node <span class="arithmatex">\( f(u) \)</span> must have degree at least 5; if not, the extension is infeasible and the entire branch is pruned. VF2 runs in <span class="arithmatex">\( O(n! \cdot n) \)</span> worst-case time but is dramatically faster in practice on real graphs with heterogeneous degree distributions.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">NP-Complete in Theory, Tractable in Practice?</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking carefully">
+NP-completeness proves that no polynomial-time worst-case algorithm exists — but it says nothing about average-case performance on the kinds of graphs that appear in the real world. Real molecular graphs, citation graphs, and biological networks have highly heterogeneous degree distributions and rich node label sets, both of which dramatically constrain the search space. VF2 routinely solves subgraph isomorphism queries on graphs with thousands of nodes in milliseconds for typical query sizes. The bottleneck in practice is not any single query but the aggregated cost of answering millions of queries against a large graph database — which is exactly the problem that SPMiner addresses.</p>
+</div>
+<p>The following code demonstrates VF2 subgraph isomorphism using NetworkX, which exposes the algorithm through <code>graph_matcher</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">networkx.algorithms</span><span class="w"> </span><span class="kn">import</span> <span class="n">isomorphism</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Build a small query graph: a triangle (3-cycle)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># In a molecular context, this might be a 3-ring system</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">Q</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">Q</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># Build a host graph: the Karate Club graph (34 nodes, 78 edges)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># GraphMatcher performs VF2 subgraph isomorphism</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># subgraph_is_isomorphic() returns True/False (decision version)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># subgraph_isomorphisms_iter() generates all embeddings (search version)</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">gm</span> <span class="o">=</span> <span class="n">isomorphism</span><span class="o">.</span><span class="n">GraphMatcher</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">Q</span><span class="p">)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="k">if</span> <span class="n">gm</span><span class="o">.</span><span class="n">subgraph_is_isomorphic</span><span class="p">():</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="c1"># Count the number of distinct embeddings (automorphisms counted separately)</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">embeddings</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">gm</span><span class="o">.</span><span class="n">subgraph_isomorphisms_iter</span><span class="p">())</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Query triangle embeds in Karate Club: True"</span><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of distinct embeddings: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="c1"># Each embedding is a dict: {host_node: query_node}</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"First embedding: </span><span class="si">{</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="k">else</span><span class="p">:</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Query graph does not embed in host."</span><span class="p">)</span>
+</span></code></pre></div>
+<p>The key objects here are <code>GraphMatcher(G, Q)</code> — which takes the <strong>host</strong> graph first and the <strong>query</strong> second — and <code>subgraph_isomorphisms_iter()</code>, which is a generator that lazily yields each distinct injective mapping. For labeled graphs, use <code>categorical_node_match</code> to specify which node attributes must match:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Labeled subgraph isomorphism: node labels must also match</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">nm</span> <span class="o">=</span> <span class="n">isomorphism</span><span class="o">.</span><span class="n">categorical_node_match</span><span class="p">(</span><span class="s1">'element'</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">)</span>  <span class="c1"># match 'element' attribute</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">gm_labeled</span> <span class="o">=</span> <span class="n">isomorphism</span><span class="o">.</span><span class="n">GraphMatcher</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">Q</span><span class="p">,</span> <span class="n">node_match</span><span class="o">=</span><span class="n">nm</span><span class="p">)</span>
+</span></code></pre></div>
+<p>The <code>node_match</code> parameter is a function that returns <code>True</code> if two nodes are compatible under the mapping. <code>categorical_node_match</code> is a factory that generates such a function for a named attribute with a specified default value.</p>
+<h2 id="193-classical-frequent-subgraph-mining">19.3 Classical Frequent Subgraph Mining<a class="headerlink" href="#193-classical-frequent-subgraph-mining" title="Permanent link">¶</a></h2>
+<p>The <strong>support</strong> of a query graph <span class="arithmatex">\( Q \)</span> in a graph database <span class="arithmatex">\( \mathcal{D} = \{G_1, G_2, \ldots, G_N\} \)</span> is the number of graphs in the database that contain <span class="arithmatex">\( Q \)</span> as a subgraph:</p>
+<div class="arithmatex">\[
+\text{sup}(Q, \mathcal{D}) = \left|\{G_i \in \mathcal{D} : Q \text{ is subgraph-isomorphic to } G_i\}\right|
+\]</div>
+<p>A pattern is <strong>frequent</strong> if its support exceeds a user-specified threshold <span class="arithmatex">\( \sigma \)</span> (the minimum support). The goal of frequent subgraph mining is to enumerate all frequent patterns — all graphs <span class="arithmatex">\( Q \)</span> with <span class="arithmatex">\( \text{sup}(Q, \mathcal{D}) \geq \sigma \)</span> — without explicitly testing every possible graph structure.</p>
+<p>The search space is enormous: there are super-exponentially many non-isomorphic graphs on <span class="arithmatex">\( k \)</span> nodes as <span class="arithmatex">\( k \)</span> grows. Practical algorithms exploit a critical structural property called <strong>anti-monotonicity</strong> (the Apriori property): if a pattern <span class="arithmatex">\( Q \)</span> is infrequent, then every graph <span class="arithmatex">\( Q' \)</span> that contains <span class="arithmatex">\( Q \)</span> as a subgraph is also infrequent. Equivalently, every subgraph of a frequent pattern is itself frequent.</p>
+<p>Anti-monotonicity allows a top-down search strategy: begin with all frequent patterns of size 1 (single nodes or edges), extend them by one edge at a time, and prune any extension whose parent pattern is already infrequent — without needing to test the extension itself.</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">The Apriori Property Is Load-Bearing</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage offering a tip">
+Every major frequent subgraph mining algorithm — gSpan, GASTON, FFSM, Subdue — depends on the Apriori property for its efficiency. If you ever find yourself working with a support measure that does <strong>not</strong> satisfy anti-monotonicity (some single-graph support measures fail this), you lose the ability to prune the search space and must fall back to exhaustive enumeration. When designing custom support measures, always verify anti-monotonicity first — it is the difference between a tractable and an intractable mining problem.</p>
+</div>
+<p>The canonical frequent subgraph mining algorithm is <strong>gSpan</strong> (Graph-based Substructure Pattern mining), introduced by Yan and Han in 2002. gSpan avoids redundant pattern enumeration by defining a canonical <strong>DFS code</strong> for each pattern — a unique string representation derived from a depth-first traversal of the pattern's edges — and only generating patterns in canonical form. Two isomorphic patterns always produce the same DFS code, so duplicates are structurally eliminated.</p>
+<p>The gSpan DFS code represents a pattern as a sequence of edge tuples <span class="arithmatex">\( (i, j, l_i, l_{ij}, l_j) \)</span> where <span class="arithmatex">\( i \)</span> and <span class="arithmatex">\( j \)</span> are DFS discovery-time indices of the edge's endpoints, and <span class="arithmatex">\( l_i, l_{ij}, l_j \)</span> are the labels of the source node, edge, and destination node respectively. The canonical form is the lexicographically smallest DFS code among all possible DFS traversals of the pattern, and gSpan uses this ordering to define the extension strategy: each pattern is extended by adding the lexicographically smallest new edge that does not violate canonicality.</p>
+<p>For a <strong>single large graph</strong> rather than a database, the support definition must change: a natural choice is the <strong>minimum image support</strong> — the minimum, over all nodes of <span class="arithmatex">\( Q \)</span>, of the number of distinct host nodes that any correct mapping maps that query node to. This measure satisfies anti-monotonicity and avoids the overcounting problem that arises from simply counting embeddings (which can grow exponentially with the number of automorphisms of <span class="arithmatex">\( Q \)</span>).</p>
+<p>The following table summarizes the key properties of the three major classical frequent subgraph mining algorithms:</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Year</th>
+<th>Canonical Form</th>
+<th>Extension Strategy</th>
+<th>Support Setting</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>gSpan</td>
+<td>2002</td>
+<td>DFS code</td>
+<td>Right-most path extension</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>GASTON</td>
+<td>2004</td>
+<td>Free tree / cyclic</td>
+<td>Path → tree → cyclic</td>
+<td>Database</td>
+</tr>
+<tr>
+<td>FFSM</td>
+<td>2003</td>
+<td>Adjacency matrix</td>
+<td>Maximum extension</td>
+<td>Database</td>
+</tr>
+</tbody>
+</table>
+<p>All three achieve polynomial-time enumeration given the list of frequent patterns, but the number of frequent patterns itself can be exponential in the graph size — a fundamental barrier no classical algorithm can overcome.</p>
+<h2 id="194-network-motifs-statistical-significance-of-subgraph-patterns">19.4 Network Motifs: Statistical Significance of Subgraph Patterns<a class="headerlink" href="#194-network-motifs-statistical-significance-of-subgraph-patterns" title="Permanent link">¶</a></h2>
+<p>Subgraph frequency alone is insufficient to determine whether a pattern is biologically or sociologically meaningful. A 3-node chain appears frequently in social networks simply because chains are structurally simpler than triangles — not because they represent a meaningful social pattern. To distinguish <strong>structural significance</strong> from mere combinatorial abundance, network science introduces the concept of a <strong>network motif</strong>.</p>
+<p>A subgraph pattern <span class="arithmatex">\( Q \)</span> is a network motif in graph <span class="arithmatex">\( G \)</span> if its frequency in <span class="arithmatex">\( G \)</span> significantly exceeds its expected frequency in an ensemble of random graphs with the same degree sequence as <span class="arithmatex">\( G \)</span>. The <strong>significance profile</strong> of <span class="arithmatex">\( G \)</span> is the vector of Z-scores across a set of small connected subgraphs (typically all non-isomorphic graphs on 3 or 4 nodes), and different biological network types (transcription networks, neural circuits, signaling cascades) have characteristic significance profiles that serve as structural fingerprints.</p>
+<p>The Z-score for pattern <span class="arithmatex">\( Q \)</span> is:</p>
+<div class="arithmatex">\[
+Z_Q = \frac{f_Q^{\text{real}} - \mu_Q^{\text{rand}}}{\sigma_Q^{\text{rand}}}
+\]</div>
+<p>where <span class="arithmatex">\( f_Q^{\text{real}} \)</span> is the observed frequency of <span class="arithmatex">\( Q \)</span> in <span class="arithmatex">\( G \)</span>, and <span class="arithmatex">\( \mu_Q^{\text{rand}} \)</span> and <span class="arithmatex">\( \sigma_Q^{\text{rand}} \)</span> are the mean and standard deviation of <span class="arithmatex">\( Q \)</span>'s frequency across the random ensemble. Positive Z-scores indicate over-representation (motifs); negative Z-scores indicate under-representation (anti-motifs).</p>
+<h4 id="diagram-motif-z-score-explorer">Diagram: Motif Z-Score Explorer<a class="headerlink" href="#diagram-motif-z-score-explorer" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch19-motif-zscore/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch19-motif-zscore/main.html">Run Motif Z-Score Explorer Fullscreen</a></p>
+<h2 id="195-order-embeddings-encoding-partial-orders-in-continuous-space">19.5 Order Embeddings: Encoding Partial Orders in Continuous Space<a class="headerlink" href="#195-order-embeddings-encoding-partial-orders-in-continuous-space" title="Permanent link">¶</a></h2>
+<p>Classical frequent subgraph mining works by exact combinatorial search, which becomes impractical when the host graph has millions of nodes and queries must be answered in real time. A fundamentally different approach — the one underlying SPMiner — replaces search with <strong>learned representations</strong> that encode the subgraph relationship geometrically.</p>
+<p>The key observation is that the subgraph relationship is a <strong>partial order</strong>: it is reflexive (<span class="arithmatex">\( Q \subseteq Q \)</span>), antisymmetric (if <span class="arithmatex">\( Q \subseteq Q' \)</span> and <span class="arithmatex">\( Q' \subseteq Q \)</span> then <span class="arithmatex">\( Q \cong Q' \)</span>), and transitive (if <span class="arithmatex">\( Q \subseteq Q' \)</span> and <span class="arithmatex">\( Q' \subseteq Q'' \)</span> then <span class="arithmatex">\( Q \subseteq Q'' \)</span>). This partial order structure means that the space of all subgraphs forms a lattice — and any faithful embedding of this lattice into a metric space must preserve the order structure.</p>
+<p><strong>Order embeddings</strong>, introduced by Vendrov et al. (2016) in the context of image-caption hierarchies, provide exactly such a representation. The idea is to embed each object into <span class="arithmatex">\( \mathbb{R}^d \)</span> such that the partial order is encoded coordinate-wise: object <span class="arithmatex">\( x \)</span> is below object <span class="arithmatex">\( y \)</span> in the partial order if and only if every coordinate of the embedding of <span class="arithmatex">\( x \)</span> is less than or equal to the corresponding coordinate of the embedding of <span class="arithmatex">\( y \)</span>.</p>
+<p>Formally, define the <strong>order violation</strong> between embeddings <span class="arithmatex">\( \mathbf{z}_x \)</span> and <span class="arithmatex">\( \mathbf{z}_y \)</span> as:</p>
+<div class="arithmatex">\[
+E(\mathbf{z}_x, \mathbf{z}_y) = \left\| \max\!\left(0,\; \mathbf{z}_x - \mathbf{z}_y\right) \right\|_2^2
+\]</div>
+<p>where the <span class="arithmatex">\( \max \)</span> is applied coordinate-wise. If <span class="arithmatex">\( \mathbf{z}_x \leq \mathbf{z}_y \)</span> coordinate-wise (i.e., <span class="arithmatex">\( x \)</span> is below <span class="arithmatex">\( y \)</span> in the partial order), then <span class="arithmatex">\( E(\mathbf{z}_x, \mathbf{z}_y) = 0 \)</span> — no violation. If any coordinate of <span class="arithmatex">\( \mathbf{z}_x \)</span> exceeds the corresponding coordinate of <span class="arithmatex">\( \mathbf{z}_y \)</span>, the violation is positive and grows with the magnitude of the violation.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">Order Embeddings Look Abstract — Here's the Geometric Intuition</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage looking encouraging">
+Think of each point in <span class="arithmatex">\( \mathbb{R}^d \)</span> as the corner of an infinite "cone" extending toward <span class="arithmatex">\( +\infty \)</span> in every coordinate direction. Point <span class="arithmatex">\( x \)</span> is below point <span class="arithmatex">\( y \)</span> in the partial order if and only if the cone of <span class="arithmatex">\( y \)</span> contains the cone of <span class="arithmatex">\( x \)</span> — equivalently, the corner of <span class="arithmatex">\( x \)</span>'s cone is dominated coordinate-wise by the corner of <span class="arithmatex">\( y \)</span>'s cone. This is why order embeddings are sometimes called <strong>cone embeddings</strong>: the embedding of a small object (a small subgraph) should be contained within the cone of any larger object that contains it. The violation <span class="arithmatex">\( E(\mathbf{z}_x, \mathbf{z}_y) \)</span> measures how far the cone of <span class="arithmatex">\( x \)</span> protrudes outside the cone of <span class="arithmatex">\( y \)</span> — zero protrusion for true containment, positive protrusion for non-containment.</p>
+</div>
+<p>The training loss for order embeddings uses a <strong>max-margin objective</strong> that minimizes violation for true order relationships and maximizes it (up to a margin <span class="arithmatex">\( \alpha \)</span>) for non-relationships. For subgraph mining, a true relationship is a pair <span class="arithmatex">\( (Q, G_v) \)</span> where <span class="arithmatex">\( Q \)</span> is a subgraph of the neighborhood <span class="arithmatex">\( G_v \)</span> of node <span class="arithmatex">\( v \)</span> in the host graph, and a negative pair is one where <span class="arithmatex">\( Q \)</span> is not:</p>
+<div class="arithmatex">\[
+\mathcal{L} = \mathbb{E}_{(Q,\, G_v):\; Q \subseteq G_v}\!\left[E(\mathbf{z}_Q, \mathbf{z}_{G_v})\right] + \mathbb{E}_{(Q,\, G_v):\; Q \not\subseteq G_v}\!\left[\max\!\left(0,\; \alpha - E(\mathbf{z}_Q, \mathbf{z}_{G_v})\right)\right]
+\]</div>
+<p>The first term pulls true <span class="arithmatex">\( (Q, G_v) \)</span> pairs toward zero violation — the embedding of <span class="arithmatex">\( Q \)</span> should be coordinate-wise dominated by the embedding of <span class="arithmatex">\( G_v \)</span>. The second term pushes non-pairs toward violation exceeding <span class="arithmatex">\( \alpha \)</span> — their embeddings should not satisfy the coordinate-wise dominance relationship. The margin <span class="arithmatex">\( \alpha \)</span> is a hyperparameter controlling the separation between positive and negative pairs in embedding space.</p>
+<h2 id="196-spminer-neural-subgraph-frequency-estimation">19.6 SPMiner: Neural Subgraph Frequency Estimation<a class="headerlink" href="#196-spminer-neural-subgraph-frequency-estimation" title="Permanent link">¶</a></h2>
+<p><strong>SPMiner</strong> (Ying et al., 2020) — Subgraph Pattern Miner — operationalizes order embeddings for the problem of estimating subgraph frequency in a single large graph. The key insight is that if the subgraph order is faithfully encoded in embedding space, then the frequency of query <span class="arithmatex">\( Q \)</span> in graph <span class="arithmatex">\( G \)</span> can be estimated by counting how many node neighborhoods of <span class="arithmatex">\( G \)</span> satisfy the order relationship with <span class="arithmatex">\( Q \)</span> in embedding space — a simple geometric query rather than an NP-hard combinatorial search.</p>
+<p><strong>The SPMiner pipeline.</strong> The algorithm operates in three stages:</p>
+<p><strong>Stage 1 — GNN Encoding.</strong> A shared GNN encoder (SPMiner uses GraphSAGE) maps both the query graph <span class="arithmatex">\( Q \)</span> and each node neighborhood <span class="arithmatex">\( G_v \)</span> (the subgraph induced by the <span class="arithmatex">\( k \)</span>-hop neighborhood of node <span class="arithmatex">\( v \)</span>) into the order embedding space <span class="arithmatex">\( \mathbb{R}^d \)</span>. The GNN encoder is trained end-to-end with the order embedding loss from §19.5 so that the learned representations faithfully preserve the subgraph partial order.</p>
+<p><strong>Stage 2 — Frequency Estimation.</strong> Given the embedding <span class="arithmatex">\( \mathbf{z}_Q \)</span> of a query and the embeddings <span class="arithmatex">\( \{\mathbf{z}_{G_v}\}_{v \in V} \)</span> of all node neighborhoods, the estimated frequency of <span class="arithmatex">\( Q \)</span> in <span class="arithmatex">\( G \)</span> is:</p>
+<div class="arithmatex">\[
+\hat{f}(Q, G) = \frac{1}{|V|} \sum_{v \in V} \mathbf{1}\!\left[E(\mathbf{z}_Q, \mathbf{z}_{G_v}) &lt; \epsilon\right]
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{1}[\cdot] \)</span> is the indicator function and <span class="arithmatex">\( \epsilon \)</span> is a small threshold (near zero). A neighborhood <span class="arithmatex">\( G_v \)</span> "satisfies" the order relationship with <span class="arithmatex">\( Q \)</span> if their order violation is below <span class="arithmatex">\( \epsilon \)</span>, indicating that <span class="arithmatex">\( Q \)</span> is approximately embedded in <span class="arithmatex">\( G_v \)</span>.</p>
+<p><strong>Stage 3 — Search via Decomposition.</strong> For query graphs larger than the neighborhood radius <span class="arithmatex">\( k \)</span>, SPMiner uses a <strong>decomposition</strong> strategy: break <span class="arithmatex">\( Q \)</span> into overlapping <span class="arithmatex">\( k \)</span>-hop subpatterns, estimate the frequency of each subpattern, and combine the estimates. This extends the approach to arbitrarily large queries while preserving the efficiency advantage of the embedding-based approximation.</p>
+<p><strong>Why SPMiner is not exact.</strong> SPMiner is an approximation: the order embedding may not perfectly preserve the subgraph partial order (false positives and negatives exist), and the neighborhood decomposition introduces additional approximation error. The trade-off is speed: SPMiner answers frequency queries for graphs with millions of nodes in milliseconds, whereas exact VF2-based approaches would require hours or days. For many applications — particularly those requiring real-time interactive analysis or approximate answers over extremely large graphs — this trade-off is worth making.</p>
+<p>The following code demonstrates a simplified SPMiner-style pipeline using PyTorch Geometric, illustrating the GNN encoder and order embedding components:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">SAGEConv</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Data</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">k_hop_subgraph</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">OrderEmbeddingGNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="sd">    GNN encoder that maps graphs into the order embedding space.</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="sd">    Trained with the max-margin order embedding loss so that</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="sd">    subgraph relationships are encoded as coordinate-wise dominance.</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="sd">    """</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>        <span class="c1"># in_dim: input node feature dimension</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        <span class="c1"># hidden_dim: hidden layer width</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>        <span class="c1"># embed_dim: order embedding space dimension (d)</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>        <span class="c1"># num_layers: number of GraphSAGE message-passing layers</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SAGEConv</span><span class="p">(</span><span class="n">in_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">))</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SAGEConv</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">))</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SAGEConv</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">))</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">embed_dim</span> <span class="o">=</span> <span class="n">embed_dim</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">batch</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>        <span class="k">for</span> <span class="n">conv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>        <span class="c1"># Global mean pooling: one embedding per graph</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>        <span class="k">if</span> <span class="n">batch</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>            <span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">global_mean_pool</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">global_mean_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>        <span class="c1"># ReLU to enforce non-negativity (order embeddings must be &gt;= 0)</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="k">def</span><span class="w"> </span><span class="nf">order_violation</span><span class="p">(</span><span class="n">z_query</span><span class="p">,</span> <span class="n">z_neighborhood</span><span class="p">):</span>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="sd">    Compute E(z_query, z_neighborhood) = ||max(0, z_query - z_neighborhood)||^2.</span>
+</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a><span class="sd">    If z_query is coordinate-wise &lt;= z_neighborhood, violation = 0</span>
+</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a><span class="sd">    (query is embedded in the neighborhood).</span>
+</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a><span class="sd">    z_query, z_neighborhood: tensors of shape (batch_size, embed_dim)</span>
+</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a><span class="sd">    """</span>
+</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a>    <span class="n">violation</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">z_query</span> <span class="o">-</span> <span class="n">z_neighborhood</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a>    <span class="k">return</span> <span class="p">(</span><span class="n">violation</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># shape: (batch_size,)</span>
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a>
+</span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a><span class="k">def</span><span class="w"> </span><span class="nf">order_embedding_loss</span><span class="p">(</span><span class="n">z_pos_query</span><span class="p">,</span> <span class="n">z_pos_nbr</span><span class="p">,</span> <span class="n">z_neg_query</span><span class="p">,</span> <span class="n">z_neg_nbr</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+</span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a><span class="sd">    Max-margin order embedding loss.</span>
+</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a><span class="sd">    Positive pairs: query IS a subgraph of neighborhood → push violation toward 0.</span>
+</span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a><span class="sd">    Negative pairs: query is NOT a subgraph → push violation above alpha.</span>
+</span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a><span class="sd">    alpha: margin hyperparameter (default 1.0)</span>
+</span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a><span class="sd">    """</span>
+</span><span id="__span-2-57"><a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a>    <span class="n">pos_loss</span> <span class="o">=</span> <span class="n">order_violation</span><span class="p">(</span><span class="n">z_pos_query</span><span class="p">,</span> <span class="n">z_pos_nbr</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-2-58"><a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a>    <span class="n">neg_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">alpha</span> <span class="o">-</span> <span class="n">order_violation</span><span class="p">(</span><span class="n">z_neg_query</span><span class="p">,</span> <span class="n">z_neg_nbr</span><span class="p">),</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-2-59"><a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a>    <span class="k">return</span> <span class="n">pos_loss</span> <span class="o">+</span> <span class="n">neg_loss</span>
+</span><span id="__span-2-60"><a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a>
+</span><span id="__span-2-61"><a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a><span class="k">def</span><span class="w"> </span><span class="nf">estimate_frequency</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">query_data</span><span class="p">,</span> <span class="n">host_graph_data</span><span class="p">,</span> <span class="n">all_node_embeddings</span><span class="p">,</span>
+</span><span id="__span-2-62"><a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a>                       <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+</span><span id="__span-2-63"><a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-2-64"><a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a><span class="sd">    Estimate the frequency of query_data in host_graph_data using pre-computed</span>
+</span><span id="__span-2-65"><a id="__codelineno-2-65" name="__codelineno-2-65" href="#__codelineno-2-65"></a><span class="sd">    node neighborhood embeddings (all_node_embeddings, shape: [n_nodes, embed_dim]).</span>
+</span><span id="__span-2-66"><a id="__codelineno-2-66" name="__codelineno-2-66" href="#__codelineno-2-66"></a><span class="sd">    epsilon: order violation threshold for counting a match.</span>
+</span><span id="__span-2-67"><a id="__codelineno-2-67" name="__codelineno-2-67" href="#__codelineno-2-67"></a><span class="sd">    """</span>
+</span><span id="__span-2-68"><a id="__codelineno-2-68" name="__codelineno-2-68" href="#__codelineno-2-68"></a>    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span id="__span-2-69"><a id="__codelineno-2-69" name="__codelineno-2-69" href="#__codelineno-2-69"></a>    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+</span><span id="__span-2-70"><a id="__codelineno-2-70" name="__codelineno-2-70" href="#__codelineno-2-70"></a>        <span class="n">z_query</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">query_data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">query_data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>  <span class="c1"># shape: (1, embed_dim)</span>
+</span><span id="__span-2-71"><a id="__codelineno-2-71" name="__codelineno-2-71" href="#__codelineno-2-71"></a>        <span class="c1"># Broadcast query embedding against all neighborhood embeddings</span>
+</span><span id="__span-2-72"><a id="__codelineno-2-72" name="__codelineno-2-72" href="#__codelineno-2-72"></a>        <span class="n">violations</span> <span class="o">=</span> <span class="n">order_violation</span><span class="p">(</span><span class="n">z_query</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">all_node_embeddings</span><span class="p">),</span>
+</span><span id="__span-2-73"><a id="__codelineno-2-73" name="__codelineno-2-73" href="#__codelineno-2-73"></a>                                     <span class="n">all_node_embeddings</span><span class="p">)</span>
+</span><span id="__span-2-74"><a id="__codelineno-2-74" name="__codelineno-2-74" href="#__codelineno-2-74"></a>        <span class="n">matches</span> <span class="o">=</span> <span class="p">(</span><span class="n">violations</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</span><span id="__span-2-75"><a id="__codelineno-2-75" name="__codelineno-2-75" href="#__codelineno-2-75"></a>        <span class="n">frequency_estimate</span> <span class="o">=</span> <span class="n">matches</span> <span class="o">/</span> <span class="n">all_node_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-2-76"><a id="__codelineno-2-76" name="__codelineno-2-76" href="#__codelineno-2-76"></a>    <span class="k">return</span> <span class="n">frequency_estimate</span><span class="p">,</span> <span class="n">matches</span>
+</span></code></pre></div>
+<p>The critical parameters are: <code>embed_dim</code> (the dimensionality of the order embedding space — higher <span class="arithmatex">\( d \)</span> gives more expressive partial order representation but slower queries), <code>alpha</code> (the margin separating positive from negative pairs — set too small and positive and negative regions overlap; set too large and training becomes slow), and <code>epsilon</code> (the matching threshold — governs the precision-recall trade-off between false positives and false negatives in frequency estimation). <code>num_layers</code> controls the neighborhood radius <span class="arithmatex">\( k \)</span> captured by each node's embedding.</p>
+<h4 id="diagram-spminer-order-embedding-space">Diagram: SPMiner Order Embedding Space<a class="headerlink" href="#diagram-spminer-order-embedding-space" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch19-spminer-embedding/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch19-spminer-embedding/main.html">Run SPMiner Order Embedding Space Fullscreen</a></p>
+<h2 id="197-comparing-classical-and-neural-approaches">19.7 Comparing Classical and Neural Approaches<a class="headerlink" href="#197-comparing-classical-and-neural-approaches" title="Permanent link">¶</a></h2>
+<p>Before the exercises, it is worth making the trade-offs between classical and neural subgraph mining concrete. The following table contrasts the two paradigms across the dimensions that matter most for practitioners:</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Classical (VF2, gSpan)</th>
+<th>Neural (SPMiner)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exactness</td>
+<td>Exact (correct answer guaranteed)</td>
+<td>Approximate (bounded error)</td>
+</tr>
+<tr>
+<td>Query time</td>
+<td>Exponential worst-case (polynomial in practice)</td>
+<td>Near-constant (matrix lookup after encoding)</td>
+</tr>
+<tr>
+<td>Scales to millions of nodes</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Requires training data</td>
+<td>No</td>
+<td>Yes (positive/negative pairs)</td>
+</tr>
+<tr>
+<td>Handles labeled graphs</td>
+<td>Yes (label matching built-in)</td>
+<td>Yes (node features fed to GNN)</td>
+</tr>
+<tr>
+<td>Explainability of matches</td>
+<td>Full: explicit mapping <span class="arithmatex">\( f: V_Q \to V_G \)</span></td>
+<td>None: only an embedding distance</td>
+</tr>
+<tr>
+<td>Frequency estimate</td>
+<td>Exact count or min-image support</td>
+<td>Fraction of dominated neighborhoods</td>
+</tr>
+<tr>
+<td>Best use case</td>
+<td>Small graphs, drug discovery verification</td>
+<td>Large graphs, real-time interactive analysis</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Support Definitions Are Not Interchangeable</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage flagging a common mistake">
+Several different support measures appear in the literature for the single-graph setting: raw embedding count, minimum image support, harmful overlap support, and MNI (maximum independent set-based support). These measures are <strong>not interchangeable</strong> — they can differ by orders of magnitude on the same query and host graph, and only some of them satisfy anti-monotonicity. Before comparing frequency estimates across papers, verify which support measure each paper uses. A "frequent" pattern under one definition may be rare under another.</p>
+</div>
+<h2 id="198-key-takeaways">19.8 Key Takeaways<a class="headerlink" href="#198-key-takeaways" title="Permanent link">¶</a></h2>
+<p>Frequent subgraph mining connects classical combinatorics to modern neural representation learning through the geometric structure of the subgraph partial order:</p>
+<ul>
+<li><strong>Subgraph isomorphism</strong> is the NP-complete decision problem underlying subgraph frequency: does query <span class="arithmatex">\( Q \)</span> embed injectively into host <span class="arithmatex">\( G \)</span> with edge preservation? VF2 solves this exactly via feasibility-pruned backtracking.</li>
+<li><strong>Frequent subgraph mining</strong> enumerates all patterns whose support exceeds a threshold <span class="arithmatex">\( \sigma \)</span>, exploiting the Apriori anti-monotonicity property to prune the exponential search space; gSpan uses DFS canonical forms to avoid duplicate pattern generation.</li>
+<li><strong>Network motifs</strong> go beyond raw frequency to assess statistical significance: a motif is a pattern whose frequency in the real network exceeds what random graphs with the same degree sequence would produce, quantified by Z-scores.</li>
+<li><strong>Order embeddings</strong> encode the subgraph partial order geometrically in <span class="arithmatex">\( \mathbb{R}^d \)</span>: <span class="arithmatex">\( Q \)</span> is a subgraph of <span class="arithmatex">\( G_v \)</span> if and only if <span class="arithmatex">\( \mathbf{z}_Q \leq \mathbf{z}_{G_v} \)</span> coordinate-wise. The order violation <span class="arithmatex">\( E(\mathbf{z}_x, \mathbf{z}_y) = \|\max(0, \mathbf{z}_x - \mathbf{z}_y)\|^2 \)</span> measures how badly this constraint is violated.</li>
+<li><strong>SPMiner</strong> trains a GNN encoder with a max-margin order embedding loss, then estimates query frequency by counting node neighborhoods whose embeddings dominate the query's embedding — reducing an NP-hard search to a geometric counting query.</li>
+</ul>
+<h2 id="199-further-reading">19.9 Further Reading<a class="headerlink" href="#199-further-reading" title="Permanent link">¶</a></h2>
+<ul>
+<li>
+<p>Yan, X., &amp; Han, J. (2002). <strong>gSpan: Graph-based substructure pattern mining.</strong> <em>ICDM '02</em>. The original gSpan paper with the DFS code canonical form and right-most path extension strategy.</p>
+</li>
+<li>
+<p>Vendrov, I., Kiros, R., Fidler, S., &amp; Urtasun, R. (2016). <strong>Order-embeddings of images and language.</strong> <em>ICLR '16</em>. <a href="https://arxiv.org/abs/1511.06361">arXiv:1511.06361</a>. Introduces the coordinate-wise dominance embedding and the max-margin order embedding loss; the conceptual foundation for SPMiner.</p>
+</li>
+<li>
+<p>Ying, R., Lou, Z., You, J., Wen, C., Canedo, A., &amp; Leskovec, J. (2020). <strong>Neural subgraph matching.</strong> <em>NeurIPS '20</em>. <a href="https://arxiv.org/abs/2007.03092">arXiv:2007.03092</a>. The SPMiner paper with the full pipeline, training procedure, and large-scale experiments on biological and social networks.</p>
+</li>
+<li>
+<p>Milo, R., Shen-Orr, S., Itzkovitz, S., Kashtan, N., Chklovskii, D., &amp; Alon, U. (2002). <strong>Network motifs: Simple building blocks of complex networks.</strong> <em>Science</em>, 298(5594), 824–827. The original network motifs paper, establishing the notion of statistically over-represented subgraph patterns in biological networks.</p>
+</li>
+<li>
+<p>Cordella, L. P., Foggia, P., Sansone, C., &amp; Vento, M. (2004). <strong>A (sub)graph isomorphism algorithm for matching large graphs.</strong> <em>IEEE TPAMI</em>, 26(10), 1367–1372. The definitive reference for the VF2 algorithm.</p>
+</li>
+</ul>
+<h2 id="1910-exercises">19.10 Exercises<a class="headerlink" href="#1910-exercises" title="Permanent link">¶</a></h2>
+<p><strong>Remember (Level 1)</strong></p>
+<ol>
+<li>
+<p>Define subgraph isomorphism formally. What makes the induced subgraph isomorphism variant more restrictive than ordinary subgraph isomorphism, and in which application contexts is the stricter definition appropriate?</p>
+</li>
+<li>
+<p>State the Apriori anti-monotonicity property for subgraph pattern support. Give a concrete example of a 4-node query pattern and explain why, if it is infrequent, all 5-node patterns that contain it as a subgraph must also be infrequent.</p>
+</li>
+</ol>
+<p><strong>Understand (Level 2)</strong></p>
+<ol>
+<li>
+<p>Explain why subgraph isomorphism is NP-complete but VF2 is often fast in practice on real-world graphs. What structural properties of real graphs (as opposed to adversarial worst-case inputs) make VF2 efficient, and how do feasibility rules exploit those properties?</p>
+</li>
+<li>
+<p>Describe the geometric meaning of the order violation <span class="arithmatex">\( E(\mathbf{z}_x, \mathbf{z}_y) = \|\max(0, \mathbf{z}_x - \mathbf{z}_y)\|^2 \)</span>. In what sense is this a "soft" encoding of the partial order constraint <span class="arithmatex">\( \mathbf{z}_x \leq \mathbf{z}_y \)</span>? What happens to this loss when the constraint is perfectly satisfied?</p>
+</li>
+</ol>
+<p><strong>Apply (Level 3)</strong></p>
+<ol>
+<li>
+<p>Using NetworkX, enumerate all occurrences of the 4-cycle <span class="arithmatex">\( C_4 \)</span> in the Karate Club graph. Report (a) the number of distinct embeddings, (b) the minimum image support, and (c) which nodes appear in the most embeddings. Discuss whether the nodes with the highest embedding count correspond to structurally important positions in the graph.</p>
+</li>
+<li>
+<p>Implement the order embedding loss function from §19.5 in PyTorch. Construct a synthetic positive pair (a small triangle graph and a larger graph containing it) and a synthetic negative pair (a triangle and a graph that does not contain it), and verify that your loss function correctly drives the positive pair toward zero violation and the negative pair toward violation exceeding the margin.</p>
+</li>
+</ol>
+<p><strong>Analyze (Level 4)</strong></p>
+<ol>
+<li>
+<p>Compare the support of the triangle pattern <span class="arithmatex">\( K_3 \)</span> in the Karate Club graph under three different support measures: (a) raw embedding count, (b) minimum image support, and (c) the indicator-based measure used by SPMiner (fraction of <span class="arithmatex">\( k \)</span>-hop neighborhoods containing <span class="arithmatex">\( K_3 \)</span>). Explain the discrepancies. Which measure satisfies anti-monotonicity?</p>
+</li>
+<li>
+<p>Network motif analysis computes Z-scores by comparing observed frequency to a random ensemble. What property must the random graph ensemble satisfy for the Z-scores to be meaningful? Why is the configuration model (random rewiring preserving degree sequence) a better null model than the Erdős-Rényi random graph for this purpose?</p>
+</li>
+</ol>
+<p><strong>Evaluate (Level 5)</strong></p>
+<ol>
+<li>
+<p>A researcher proposes using SPMiner for drug lead discovery: given a pharmacophore (a molecular subgraph encoding a binding site pattern), estimate its frequency across a database of 100 million candidate molecules. Assess the feasibility of this approach. Identify two properties of molecular graphs that may make SPMiner less accurate than on social networks, and propose a modification to the training procedure that might address them.</p>
+</li>
+<li>
+<p>VF2 gives exact answers; SPMiner gives approximate ones. For a fraud detection application that requires identifying all accounts participating in a specific transactional ring pattern in a 50-million-node financial transaction graph, which approach would you recommend, and why? What are the legal and operational risks of using an approximate approach in this context?</p>
+</li>
+</ol>
+<p><strong>Create (Level 6)</strong></p>
+<ol>
+<li>
+<p>Design a training data generation procedure for SPMiner that avoids label leakage when both the query graphs and the host graph come from the same real network. Specifically: how would you construct positive pairs (true subgraph relationships) and negative pairs (non-relationships) so that the trained model generalizes to unseen query graphs rather than memorizing which specific queries appear in the training host graph?</p>
+</li>
+<li>
+<p>The order embedding approach encodes a two-valued relationship (subgraph / not-subgraph). Generalize the framework to encode a three-valued relationship: <span class="arithmatex">\( Q \)</span> is a subgraph of <span class="arithmatex">\( G_v \)</span>, <span class="arithmatex">\( Q \)</span> is approximately a subgraph of <span class="arithmatex">\( G_v \)</span> (with at most <span class="arithmatex">\( k \)</span> edge insertions), or <span class="arithmatex">\( Q \)</span> is not a subgraph. Specify: (a) how you would modify the embedding space, (b) how you would modify the violation function, and (c) what training signal you would use to distinguish the "approximate" class from the other two.</p>
+</li>
+</ol>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Chapter 19 Complete!</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating at chapter end">
+You have traveled from a problem that is NP-complete in theory to an algorithm that answers frequency queries in milliseconds — and understood exactly where the gap between them lives. Subgraph isomorphism is hard in the worst case but tractable on real graphs; anti-monotonicity makes exhaustive enumeration feasible up to a point; and beyond that point, the partial order structure of subgraph containment can be encoded geometrically so that frequency estimation becomes a lookup rather than a search. The tension between exactness and scalability that runs through this chapter is not unique to subgraph mining — it is a recurring theme throughout graph machine learning, and the tools you have built here (order embeddings, max-margin contrastive training, approximation via geometric counting) will reappear in the chapters ahead.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../18-community-structure/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

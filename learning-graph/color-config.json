@@ -1,0 +1,17 @@
+{
+  "PREREQ":  "SteelBlue",
+  "FOUND":   "DodgerBlue",
+  "ALGO":    "Teal",
+  "EMB":     "DarkSlateBlue",
+  "GNN":     "Indigo",
+  "THEORY":  "MediumPurple",
+  "TRANS":   "DarkOrchid",
+  "KG":      "Crimson",
+  "HETERO":  "DarkRed",
+  "APP":     "DarkGreen",
+  "SCALE":   "OliveDrab",
+  "GEN":     "DeepPink",
+  "ADV":     "DarkGoldenrod",
+  "TRAIN":   "Orange",
+  "TOOLS":   "DimGray"
+}

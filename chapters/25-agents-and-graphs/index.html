@@ -1,0 +1,3388 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Examines emerging agent-graph architectures: agent memory graphs, tool-use graphs, scene graphs, and multi-hop reasoning agents as the frontier of graph-structured AI systems.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/25-agents-and-graphs/">
+      
+      
+        <link rel="prev" href="../24-advanced-gnn-topics/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 25: Agents and Graphs - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 25: Agents and Graphs">
+  <meta property="og:description" content="Examines emerging agent-graph architectures: agent memory graphs, tool-use graphs, scene graphs, and multi-hop reasoning agents as the frontier of graph-structured AI systems.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/25-agents-and-graphs/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 25: Agents and Graphs">
+  <meta name="twitter:description" content="Examines emerging agent-graph architectures: agent memory graphs, tool-use graphs, scene graphs, and multi-hop reasoning agents as the frontier of graph-structured AI systems.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-25-agents-and-graphs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 25: Agents and Graphs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_27" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_27" id="__nav_4_27_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_27_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_27">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    25. Agents and Graphs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#251-graphs-as-the-skeleton-of-intelligent-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.1 Graphs as the Skeleton of Intelligent Systems
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#252-scene-graphs-structure-for-visual-understanding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.2 Scene Graphs: Structure for Visual Understanding
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.2 Scene Graphs: Structure for Visual Understanding">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2521-scene-graph-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.2.1 Scene Graph Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2522-downstream-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.2.2 Downstream Applications
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#253-agent-memory-as-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.3 Agent Memory as Graph
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.3 Agent Memory as Graph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2531-structure-of-a-memory-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.3.1 Structure of a Memory Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2532-retrieval-and-reasoning-over-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.3.2 Retrieval and Reasoning over Memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2533-memgpt-and-tiered-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.3.3 MemGPT and Tiered Memory
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#254-tool-use-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.4 Tool-Use Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.4 Tool-Use Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2541-tool-graphs-in-react-agents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.4.1 Tool Graphs in ReAct Agents
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.4.1 Tool Graphs in ReAct Agents">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-agent-tool-use-graph-interactive-planner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Agent Tool-Use Graph — Interactive Planner
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#255-multi-hop-reasoning-agents-and-the-query-refinement-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.5 Multi-Hop Reasoning Agents and the Query Refinement Loop
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.5 Multi-Hop Reasoning Agents and the Query Refinement Loop">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2551-the-agent-graph-reasoning-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.5.1 The Agent Graph Reasoning Loop
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.5.1 The Agent Graph Reasoning Loop">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-agent-graph-reasoning-loop-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Agent Graph Reasoning Loop — Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2552-bounding-convergence-confidence-and-hop-budget" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.5.2 Bounding Convergence: Confidence and Hop Budget
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2553-multi-hop-qa-a-running-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.5.3 Multi-Hop QA: A Running Example
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="25.5.3 Multi-Hop QA: A Running Example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-multi-hop-kg-reasoning-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Multi-Hop KG Reasoning Agent
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#256-integrating-the-three-graph-architectures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.6 Integrating the Three Graph Architectures
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#257-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.7 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#258-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.8 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#259-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        25.9 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    25. Agents and Graphs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/25-agents-and-graphs/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-25-agents-and-graphs">Chapter 25: Agents and Graphs<a class="headerlink" href="#chapter-25-agents-and-graphs" title="Permanent link">¶</a></h1>
+<p><strong>Part 6: Frontiers</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Examines emerging agent-graph architectures: agent memory graphs, tool-use graphs, scene graphs, and multi-hop reasoning agents as the frontier of graph-structured AI systems.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 3 concepts from the learning graph:</p>
+<ol>
+<li>Scene Graph</li>
+<li>Agent Memory as Graph</li>
+<li>Tool-Use Graph</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../06-gnn-foundations/">Chapter 6: GNN Foundations: Message Passing and GCN</a></li>
+<li><a href="../07-gnn-design-space/">Chapter 7: GNN Design Space: GraphSAGE and GAT</a></li>
+<li><a href="../12-knowledge-graph-embeddings/">Chapter 12: Knowledge Graph Embeddings</a></li>
+<li><a href="../24-advanced-gnn-topics/">Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty</a></li>
+</ul>
+<hr>
+<h2 id="251-graphs-as-the-skeleton-of-intelligent-systems">25.1 Graphs as the Skeleton of Intelligent Systems<a class="headerlink" href="#251-graphs-as-the-skeleton-of-intelligent-systems" title="Permanent link">¶</a></h2>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Welcome to Chapter 25</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waves at the chapter opening">
+Welcome to Chapter 25 — the last full technical chapter before the conclusion. You have spent this book learning to represent, reason over, and learn from graphs. Now you will see graphs used as the <strong>organizing substrate</strong> for a new generation of AI systems: autonomous agents that maintain structured memory, plan sequences of tool use, and reason across multiple hops to answer complex questions. Graphs are not just the object of study here — they are the architecture. This chapter shows you why graph structure makes agents smarter, more reliable, and more interpretable than flat alternatives.</p>
+</div>
+<p>Something significant has shifted in artificial intelligence over the past few years. Language models can now plan, use tools, call external APIs, browse the web, execute code, and reflect on their own outputs. These capabilities are collectively called <strong>agency</strong> — the ability to take goal-directed action sequences in an environment rather than simply responding to a single prompt. Agents built on language models are already deployed in code assistants, research tools, and automated workflows.</p>
+<p>The critical question for this chapter is: what does graph structure contribute to these agentic systems? The answer comes in three distinct forms. First, <strong>scene graphs</strong> provide a structured, relational representation of visual environments that enables spatial reasoning far beyond what raw image pixels or flat feature vectors support. Second, <strong>agent memory as graph</strong> provides a principled way to store and retrieve long-term knowledge across conversations — replacing ephemeral token-window memory with a persistent, queryable knowledge graph. Third, <strong>tool-use graphs</strong> organize the space of available tools into a structure that supports planning, dependency tracking, and parallel execution — turning a flat list of functions into a navigable architecture.</p>
+<p>Throughout this chapter, a unifying theme emerges: the value of graph structure is not merely computational efficiency. It is <strong>interpretability and modularity</strong>. A knowledge graph memory can be inspected, corrected, and extended by a human. A tool-use graph can be reasoned about explicitly. A scene graph makes spatial reasoning transparent. In each case, the graph provides a structure that both the agent and the human can understand — which is increasingly important as AI systems take consequential actions in the world.</p>
+<h2 id="252-scene-graphs-structure-for-visual-understanding">25.2 Scene Graphs: Structure for Visual Understanding<a class="headerlink" href="#252-scene-graphs-structure-for-visual-understanding" title="Permanent link">¶</a></h2>
+<p>A <strong>scene graph</strong> is a structured representation of a visual scene in which objects are nodes and spatial or semantic relationships between objects are typed, directed edges. The term was coined in computer graphics, but its most influential modern use is in computer vision and multimodal AI, where scene graphs serve as an intermediate representation between raw pixel input and natural language reasoning.</p>
+<p>Consider a photograph of a living room. A flat description might be: "There is a dog, a mat, a floor, a sofa, a table, and a lamp." This representation lists the objects but loses all relational information. A scene graph captures the structure:</p>
+<ul>
+<li>dog → <em>sits-on</em> → mat</li>
+<li>mat → <em>lies-on</em> → floor</li>
+<li>sofa → <em>next-to</em> → table</li>
+<li>lamp → <em>on-top-of</em> → table</li>
+<li>table → <em>in-front-of</em> → sofa</li>
+</ul>
+<p>Formally, a scene graph <span class="arithmatex">\( G_{\text{scene}} = (O, E, L_O, L_E) \)</span> consists of a set of object nodes <span class="arithmatex">\( O \)</span>, a set of directed edges <span class="arithmatex">\( E \subseteq O \times O \)</span>, object labels <span class="arithmatex">\( L_O : O \to \mathcal{C}_{\text{obj}} \)</span> (assigning each node to an object category), and edge labels <span class="arithmatex">\( L_E : E \to \mathcal{C}_{\text{rel}} \)</span> (assigning each edge a relationship type). The label sets <span class="arithmatex">\( \mathcal{C}_{\text{obj}} \)</span> and <span class="arithmatex">\( \mathcal{C}_{\text{rel}} \)</span> are task-defined vocabularies — typically hundreds of object categories and dozens of relationship types.</p>
+<h3 id="2521-scene-graph-generation">25.2.1 Scene Graph Generation<a class="headerlink" href="#2521-scene-graph-generation" title="Permanent link">¶</a></h3>
+<p><strong>Scene graph generation</strong> is the task of automatically constructing a scene graph from an image. It is a structured prediction problem: given an image, simultaneously predict all objects and all pairwise relationships. The task decomposes into:</p>
+<ol>
+<li><strong>Object detection</strong>: identify all objects in the image with bounding boxes and category labels</li>
+<li><strong>Relationship prediction</strong>: for each pair of detected objects, predict the relationship type (or "no relation")</li>
+</ol>
+<p>GNNs are naturally suited for relationship prediction: once object features have been extracted by a convolutional backbone, message passing between object nodes aggregates context about the surrounding scene, enabling each object to refine its relationship predictions based on what its neighbors are doing. A dog is more likely to be <em>sitting-on</em> a mat than a table; the mat is more likely to be <em>under</em> the dog if the dog feature vector encodes a sitting posture.</p>
+<p>The standard evaluation benchmark for scene graph generation is <strong>Visual Genome</strong>, a dataset of 108K images annotated with 3.8 million object instances and 2.3 million relationships. State-of-the-art models (as of 2024) achieve Recall@50 (the fraction of ground-truth (subject, relation, object) triples recovered in the top-50 predictions) of approximately 50–60% for predicate classification (object boxes given, relationships to predict).</p>
+<h3 id="2522-downstream-applications">25.2.2 Downstream Applications<a class="headerlink" href="#2522-downstream-applications" title="Permanent link">¶</a></h3>
+<p>Scene graphs enable three classes of downstream reasoning that flat representations cannot handle:</p>
+<p><strong>Visual Question Answering (VQA).</strong> Questions like "What is to the left of the red lamp?" or "Is the dog sitting on or standing next to the mat?" require relational reasoning. A model that encodes the scene as a graph and then runs graph-structured question answering significantly outperforms models that operate on flat image features or detected object lists.</p>
+<p><strong>Image captioning.</strong> A caption that describes relational structure ("A dog sits on a mat in front of a sofa") is more informative than one that lists objects ("A dog. A mat. A sofa."). Generating relational captions requires encoding the scene graph and traversing it to produce a structured description.</p>
+<p><strong>Robotics and embodied AI.</strong> A robot navigating a room needs to know not just what objects are present but how they relate to each other — the cup is on the table which is next to the door. Scene graphs provide a compact, updateable representation of the environment that a robot can use for planning and manipulation.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Why Not Just Use the Raw Image?</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinks through the design question">
+Why use a scene graph at all when modern vision-language models can process images directly? The answer is <strong>compositionality and reliability</strong>. A scene graph decomposes the visual scene into discrete entities and relations that can be independently verified, updated, and reasoned about. If a robotic arm moves the cup from the table to the counter, the scene graph can be updated with a single edge modification. A raw image representation has no such decomposition — every change requires reprocessing the entire image. For long-horizon planning and human oversight, structured intermediate representations beat end-to-end models.</p>
+</div>
+<h2 id="253-agent-memory-as-graph">25.3 Agent Memory as Graph<a class="headerlink" href="#253-agent-memory-as-graph" title="Permanent link">¶</a></h2>
+<p>A language model agent processes a sequence of tokens within a fixed context window. When the conversation exceeds this window, earlier information is lost — the agent cannot remember what was discussed in prior sessions, cannot access facts from previous tasks, and cannot build up persistent world knowledge over time. This is a fundamental limitation for real-world deployment.</p>
+<p><strong>Agent memory as graph</strong> addresses this by maintaining a persistent <strong>memory knowledge graph</strong> <span class="arithmatex">\( G_{\text{mem}} \)</span> alongside the language model. Rather than storing memory as a flat list of text snippets, the memory graph stores entities as nodes and relationships between them as typed edges. When the agent encounters new information, it extracts entities and relations and adds them to the graph. When the agent needs to retrieve relevant context, it queries the graph using graph traversal rather than text search.</p>
+<h3 id="2531-structure-of-a-memory-graph">25.3.1 Structure of a Memory Graph<a class="headerlink" href="#2531-structure-of-a-memory-graph" title="Permanent link">¶</a></h3>
+<p>A memory graph <span class="arithmatex">\( G_{\text{mem}} = (E_{\text{mem}}, R_{\text{mem}}) \)</span> contains:</p>
+<ul>
+<li><strong>Entity nodes</strong> <span class="arithmatex">\( E_{\text{mem}} \)</span>: people, places, concepts, events encountered by the agent across all sessions</li>
+<li><strong>Relation edges</strong> <span class="arithmatex">\( R_{\text{mem}} \subseteq E_{\text{mem}} \times \mathcal{T} \times E_{\text{mem}} \)</span>: typed relationships between entities, where <span class="arithmatex">\( \mathcal{T} \)</span> is a set of relationship types (works-at, located-in, happened-on, related-to, caused-by, etc.)</li>
+<li><strong>Temporal metadata</strong>: timestamps recording when each node and edge was added, enabling recency-weighted retrieval</li>
+<li><strong>Confidence scores</strong>: a weight <span class="arithmatex">\( w(e, r, e') \in [0, 1] \)</span> on each edge encoding how confidently the agent believes this fact</li>
+</ul>
+<p>Updating the memory graph after an agent interaction involves three operations. <strong>Extraction</strong> identifies entity mentions and relationships in the new conversation turn, typically using a lightweight LLM call with a structured output schema. <strong>Merging</strong> resolves whether an extracted entity is new or matches an existing node (entity resolution). <strong>Integration</strong> adds new nodes and edges or updates confidence scores on existing edges.</p>
+<h3 id="2532-retrieval-and-reasoning-over-memory">25.3.2 Retrieval and Reasoning over Memory<a class="headerlink" href="#2532-retrieval-and-reasoning-over-memory" title="Permanent link">¶</a></h3>
+<p>When the agent needs to answer a question or plan an action, it retrieves a <strong>relevant subgraph</strong> from <span class="arithmatex">\( G_{\text{mem}} \)</span> rather than loading the entire graph into context. Two retrieval strategies are commonly used:</p>
+<p><strong>Breadth-first subgraph retrieval:</strong> start from the entity/entities most relevant to the query (found by embedding similarity), expand outward for <span class="arithmatex">\( k \)</span> hops, return the resulting subgraph. This is analogous to the neighborhood sampling strategies from Chapter 20 — you sample a bounded subgraph rather than the entire graph.</p>
+<p><strong>Path-based retrieval:</strong> identify the start entity and end entity for a question, then retrieve all paths of length up to <span class="arithmatex">\( L \)</span> connecting them. Path-based retrieval is especially useful for multi-hop questions ("What did Alice work on that Bob's company acquired?") where the answer requires traversing a chain of relationships.</p>
+<p>The following code illustrates the memory graph update and retrieval loop. Before reading it, note three things: <code>extract_entities_relations</code> makes an LLM call to parse the conversation turn into structured facts; <code>add_to_graph</code> is a simple graph database write; <code>retrieve_subgraph</code> performs a BFS from the most relevant seed nodes.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">deque</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">class</span><span class="w"> </span><span class="nc">AgentMemoryGraph</span><span class="p">:</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">{}</span>          <span class="c1"># entity_id -&gt; {'label': str, 'attrs': dict}</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># entity_id -&gt; [(rel_type, target_id, confidence)]</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">entity_index</span> <span class="o">=</span> <span class="p">{}</span>   <span class="c1"># label -&gt; entity_id (for entity resolution)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conversation_turn</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">llm_extractor</span><span class="p">):</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">        </span><span class="sd">"""Extract entities and relations from a new turn and add to graph."""</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>        <span class="n">facts</span> <span class="o">=</span> <span class="n">llm_extractor</span><span class="p">(</span><span class="n">conversation_turn</span><span class="p">)</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>        <span class="c1"># facts: [{'subject': str, 'relation': str, 'object': str, 'confidence': float}]</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="k">for</span> <span class="n">fact</span> <span class="ow">in</span> <span class="n">facts</span><span class="p">:</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>            <span class="n">src_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_or_create</span><span class="p">(</span><span class="n">fact</span><span class="p">[</span><span class="s1">'subject'</span><span class="p">])</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>            <span class="n">tgt_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_or_create</span><span class="p">(</span><span class="n">fact</span><span class="p">[</span><span class="s1">'object'</span><span class="p">])</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">src_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">fact</span><span class="p">[</span><span class="s1">'relation'</span><span class="p">],</span> <span class="n">tgt_id</span><span class="p">,</span> <span class="n">fact</span><span class="p">[</span><span class="s1">'confidence'</span><span class="p">]))</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">retrieve_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed_entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">k_hops</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">        </span><span class="sd">"""BFS from seed entities to retrieve a k-hop subgraph."""</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">seed_entities</span><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>        <span class="n">frontier</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">e</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">seed_entities</span><span class="p">])</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>        <span class="n">subgraph_edges</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>        <span class="k">while</span> <span class="n">frontier</span><span class="p">:</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>            <span class="n">node</span><span class="p">,</span> <span class="n">depth</span> <span class="o">=</span> <span class="n">frontier</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>            <span class="k">if</span> <span class="n">depth</span> <span class="o">&gt;=</span> <span class="n">k_hops</span><span class="p">:</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>                <span class="k">continue</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>            <span class="k">for</span> <span class="n">rel</span><span class="p">,</span> <span class="n">neighbor</span><span class="p">,</span> <span class="n">conf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="p">[]):</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>                <span class="n">subgraph_edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="n">rel</span><span class="p">,</span> <span class="n">neighbor</span><span class="p">,</span> <span class="n">conf</span><span class="p">))</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>                <span class="k">if</span> <span class="n">neighbor</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>                    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">neighbor</span><span class="p">)</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>                    <span class="n">frontier</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">neighbor</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>        <span class="k">return</span> <span class="p">{</span><span class="s1">'nodes'</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">visited</span><span class="p">),</span> <span class="s1">'edges'</span><span class="p">:</span> <span class="n">subgraph_edges</span><span class="p">}</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_or_create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>        <span class="k">if</span> <span class="n">label</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_index</span><span class="p">:</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>            <span class="n">eid</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"e</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">eid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'label'</span><span class="p">:</span> <span class="n">label</span><span class="p">}</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">entity_index</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">eid</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_index</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+</span></code></pre></div>
+<h3 id="2533-memgpt-and-tiered-memory">25.3.3 MemGPT and Tiered Memory<a class="headerlink" href="#2533-memgpt-and-tiered-memory" title="Permanent link">¶</a></h3>
+<p><strong>MemGPT</strong> (Packer et al., 2023) introduces a tiered memory architecture for language model agents, explicitly separating memory into:</p>
+<ul>
+<li><strong>In-context memory</strong> (working memory): the current conversation window, immediately accessible</li>
+<li><strong>External memory</strong> (long-term storage): a persistent database or graph that the agent must explicitly retrieve from</li>
+</ul>
+<p>MemGPT's key insight is that the agent should manage its own memory — deciding when to write facts to long-term storage and when to retrieve from it — using dedicated function calls (write-to-memory, search-memory, summarize-memory). When the memory is graph-structured, the write and search operations become graph writes and graph queries, enabling relational retrieval that flat text databases cannot provide.</p>
+<h2 id="254-tool-use-graphs">25.4 Tool-Use Graphs<a class="headerlink" href="#254-tool-use-graphs" title="Permanent link">¶</a></h2>
+<p>Modern AI agents are not limited to language — they can execute code, browse the web, query databases, call APIs, generate images, and interface with external software. Each of these capabilities is a <strong>tool</strong>: a function the agent can call with arguments to perform an action and receive an observation. The agent's job is to plan which tools to call, in what order, with what arguments, to achieve a goal.</p>
+<p>When the number of available tools grows beyond a handful, flat tool lists become unwieldy. A <strong>tool-use graph</strong> organizes tools into a structured network where:</p>
+<ul>
+<li><strong>Tool nodes</strong> represent individual capabilities (web-search, python-exec, sql-query, image-gen, email-send, etc.)</li>
+<li><strong>Dependency edges</strong> connect tools that must be called in sequence because the output of one is the input of another</li>
+<li><strong>Compatibility edges</strong> connect tools that can be called in parallel because they are independent</li>
+<li><strong>Constraint edges</strong> represent tools that must NOT be called together (e.g., two tools that write to the same database table)</li>
+</ul>
+<p>A tool-use graph <span class="arithmatex">\( G_{\text{tools}} = (T, D_{\text{seq}}, D_{\text{par}}, D_{\text{excl}}) \)</span> enables the agent to perform <strong>graph-structured planning</strong>: given a goal, find a path (or DAG) through the tool graph from the initial state to the goal state that satisfies all dependency and constraint edges.</p>
+<h3 id="2541-tool-graphs-in-react-agents">25.4.1 Tool Graphs in ReAct Agents<a class="headerlink" href="#2541-tool-graphs-in-react-agents" title="Permanent link">¶</a></h3>
+<p>The <strong>ReAct</strong> framework (Yao et al., 2022) is the dominant pattern for tool-using agents. ReAct interleaves <strong>reasoning</strong> steps (the agent articulates its plan in natural language) with <strong>acting</strong> steps (the agent calls a tool and receives an observation). The cycle continues until the agent produces a final answer.</p>
+<p>ReAct can be viewed as an implicit traversal of the tool-use graph. At each step, the agent's reasoning determines which edge in the tool graph to follow — which tool to call next. Making the tool-use graph explicit (rather than implicit in the agent's prompts) enables:</p>
+<ul>
+<li><strong>Validation</strong>: check that the planned tool sequence respects dependency constraints before execution</li>
+<li><strong>Parallelism</strong>: identify independent subtasks that can be dispatched simultaneously</li>
+<li><strong>Debugging</strong>: trace which tools were called, in what order, with what inputs/outputs, when a task fails</li>
+</ul>
+<p>The following code shows how tool dependencies can be represented as a directed graph and queried to find a valid execution order using topological sort. Before reading it, note: <code>networkx.topological_sort</code> returns nodes in an order where all dependencies come before dependents — which is exactly the order tools should be called; <code>in_degree_zero_nodes</code> identifies tools that can be called immediately (no unresolved dependencies).</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_tool_graph</span><span class="p">(</span><span class="n">tools</span><span class="p">,</span> <span class="n">dependencies</span><span class="p">):</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="sd">    tools: list of tool names</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="sd">    dependencies: list of (tool_a, tool_b) meaning tool_b depends on tool_a's output</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="sd">    Returns: directed graph where edges point from prerequisite to dependent</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="sd">    """</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">G</span><span class="o">.</span><span class="n">add_nodes_from</span><span class="p">(</span><span class="n">tools</span><span class="p">)</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="k">for</span> <span class="n">prereq</span><span class="p">,</span> <span class="n">dependent</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="p">:</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>        <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">prereq</span><span class="p">,</span> <span class="n">dependent</span><span class="p">)</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="k">return</span> <span class="n">G</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="k">def</span><span class="w"> </span><span class="nf">plan_execution_order</span><span class="p">(</span><span class="n">tool_graph</span><span class="p">):</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="sd">    Returns a topological ordering of tools (valid execution order).</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="sd">    Raises NetworkXUnfeasible if there is a cycle (circular dependency).</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="sd">    """</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_directed_acyclic_graph</span><span class="p">(</span><span class="n">tool_graph</span><span class="p">):</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Tool dependency graph has a cycle — invalid plan!"</span><span class="p">)</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">topological_sort</span><span class="p">(</span><span class="n">tool_graph</span><span class="p">))</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="c1"># Example: a research agent's tool pipeline</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="n">tools</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'web-search'</span><span class="p">,</span> <span class="s1">'retrieve-papers'</span><span class="p">,</span> <span class="s1">'summarize'</span><span class="p">,</span> <span class="s1">'python-exec'</span><span class="p">,</span> <span class="s1">'write-report'</span><span class="p">]</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="n">deps</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>    <span class="p">(</span><span class="s1">'web-search'</span><span class="p">,</span> <span class="s1">'retrieve-papers'</span><span class="p">),</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>    <span class="p">(</span><span class="s1">'retrieve-papers'</span><span class="p">,</span> <span class="s1">'summarize'</span><span class="p">),</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>    <span class="p">(</span><span class="s1">'summarize'</span><span class="p">,</span> <span class="s1">'write-report'</span><span class="p">),</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>    <span class="p">(</span><span class="s1">'python-exec'</span><span class="p">,</span> <span class="s1">'write-report'</span><span class="p">),</span>   <span class="c1"># Python results also feed into report</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="p">]</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="n">tool_graph</span> <span class="o">=</span> <span class="n">build_tool_graph</span><span class="p">(</span><span class="n">tools</span><span class="p">,</span> <span class="n">deps</span><span class="p">)</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="n">order</span> <span class="o">=</span> <span class="n">plan_execution_order</span><span class="p">(</span><span class="n">tool_graph</span><span class="p">)</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"Execution order:"</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="c1"># Output: ['web-search', 'python-exec', 'retrieve-papers', 'summarize', 'write-report']</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="c1"># Note: python-exec and web-search can run in parallel (both have in-degree 0)</span>
+</span></code></pre></div>
+<h4 id="diagram-agent-tool-use-graph-interactive-planner">Diagram: Agent Tool-Use Graph — Interactive Planner<a class="headerlink" href="#diagram-agent-tool-use-graph-interactive-planner" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch25-tool-use-graph/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch25-tool-use-graph/main.html">Run Agent Tool-Use Graph — Interactive Planner Fullscreen</a></p>
+<h2 id="255-multi-hop-reasoning-agents-and-the-query-refinement-loop">25.5 Multi-Hop Reasoning Agents and the Query Refinement Loop<a class="headerlink" href="#255-multi-hop-reasoning-agents-and-the-query-refinement-loop" title="Permanent link">¶</a></h2>
+<p>The three building blocks — scene graphs, memory graphs, and tool graphs — all enable a common pattern: <strong>multi-hop reasoning</strong>. Many real-world questions cannot be answered from a single retrieved fact. They require traversing a chain of relationships, with each hop narrowing the search space for the next.</p>
+<p>Consider the question: <em>"Which institution was affiliated with the researcher who first proposed attention mechanisms, and what GNN architecture did that institution's lab publish first?"</em></p>
+<p>Answering this requires at least four hops through a knowledge graph:
+1. Find the researcher(s) who proposed attention mechanisms → Bahdanau, Vaswani et al.
+2. Find the institution affiliated with one of them at the time → University of Montreal / Google Brain
+3. Find the GNN papers published by that institution → Graph Attention Networks (GAT) from Google Brain
+4. Identify which was first chronologically</p>
+<p>No single knowledge graph query can answer this. An agent must reason about what it found at each step and formulate a new query based on that result.</p>
+<h3 id="2551-the-agent-graph-reasoning-loop">25.5.1 The Agent Graph Reasoning Loop<a class="headerlink" href="#2551-the-agent-graph-reasoning-loop" title="Permanent link">¶</a></h3>
+<p>Multi-hop reasoning agents follow a <strong>query refinement loop</strong>: they retrieve a subgraph, reason over it, generate a refined query based on what they found, retrieve a new subgraph, and repeat until they reach sufficient confidence or exhaust their hop budget. This loop has inherent feedback structure — it is a dynamical system with both reinforcing and balancing forces.</p>
+<p>Before examining the causal loop diagram below, let us define the key quantities. The <strong>query</strong> <span class="arithmatex">\( Q_t \)</span> is the agent's current search intent at step <span class="arithmatex">\( t \)</span>. The <strong>retrieved subgraph</strong> <span class="arithmatex">\( \text{SG}_t \)</span> is the portion of the knowledge graph most relevant to <span class="arithmatex">\( Q_t \)</span>. The <strong>reasoning output</strong> <span class="arithmatex">\( \text{R}_t \)</span> is the agent's partial answer and plan, produced by the language model attending to <span class="arithmatex">\( \text{SG}_t \)</span>. The <strong>confidence</strong> <span class="arithmatex">\( C_t \in [0, 1] \)</span> is the agent's estimated certainty about its current answer. The <strong>hop count</strong> <span class="arithmatex">\( H_t \)</span> is the number of retrieval-reasoning cycles completed.</p>
+<h4 id="diagram-agent-graph-reasoning-loop-causal-loop-diagram">Diagram: Agent Graph Reasoning Loop — Causal Loop Diagram<a class="headerlink" href="#diagram-agent-graph-reasoning-loop-causal-loop-diagram" title="Permanent link">¶</a></h4>
+<pre class="mermaid"><code>flowchart LR
+    Q["Q — Query"] --&gt;|"(+) better query\nretrieves richer"| SG["SG — Retrieved\nSubgraph"]
+    SG --&gt;|"(+) richer context\nenables deeper"| R["R — Reasoning\nOutput"]
+    R --&gt;|"(+) reasoning reveals\ngaps → refines"| RQ["RQ — Refined\nQuery"]
+    RQ --&gt;|"(+) replaces Q\nnext iteration"| Q
+
+    R --&gt;|"(+) each hop\nraises"| C["C — Confidence"]
+    C --&gt;|"(-) high confidence\ntriggers"| STOP["STOP — Terminate"]
+
+    RQ --&gt;|"(+) each cycle\nincrements"| H["H — Hop Count"]
+    H --&gt;|"(-) budget exhausted\ntriggers"| STOP
+
+    click Q href "#2551-the-agent-graph-reasoning-loop" "Current natural-language query used to retrieve a subgraph"
+    click SG href "#2551-the-agent-graph-reasoning-loop" "Portion of the knowledge graph most relevant to the current query"
+    click R href "#2551-the-agent-graph-reasoning-loop" "LLM reasoning: partial answer, identified gaps, and next query plan"
+    click RQ href "#2551-the-agent-graph-reasoning-loop" "Refined query — more specific, targeting gaps found in current reasoning"
+    click C href "#2552-bounding-convergence-confidence-and-hop-budget" "Confidence C_t ∈ [0,1] — agent certainty in its current answer"
+    click H href "#2552-bounding-convergence-confidence-and-hop-budget" "Hop counter H_t — bounded by a budget (typically 3–5 hops)"
+    click STOP href "#2552-bounding-convergence-confidence-and-hop-budget" "Termination: C exceeds threshold (B1) or H exceeds budget (B2)"
+
+    style Q fill:#e8f5e9,stroke:#388e3c
+    style SG fill:#e8f5e9,stroke:#388e3c
+    style R fill:#e8f5e9,stroke:#388e3c
+    style RQ fill:#e8f5e9,stroke:#388e3c
+    style C fill:#e3f2fd,stroke:#1565c0
+    style H fill:#fff3e0,stroke:#e65100
+    style STOP fill:#ffebee,stroke:#c62828</code></pre>
+<table>
+<thead>
+<tr>
+<th>Loop</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1: Query Refinement</td>
+<td>Reinforcing</td>
+<td>Better queries retrieve richer subgraphs → deeper reasoning → more refined queries → better next retrieval</td>
+</tr>
+<tr>
+<td>B1: Confidence Threshold</td>
+<td>Balancing</td>
+<td>Each reasoning step raises confidence; when confidence exceeds the threshold, the loop terminates</td>
+</tr>
+<tr>
+<td>B2: Hop Budget</td>
+<td>Balancing</td>
+<td>Each cycle increments the hop counter; when the budget is exhausted, the loop terminates regardless of confidence</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2552-bounding-convergence-confidence-and-hop-budget">25.5.2 Bounding Convergence: Confidence and Hop Budget<a class="headerlink" href="#2552-bounding-convergence-confidence-and-hop-budget" title="Permanent link">¶</a></h3>
+<p>The two balancing loops in the CLD serve distinct purposes. The <strong>confidence threshold</strong> (B1) is a soft terminator — it stops the loop when the agent has gathered enough evidence. The <strong>hop budget</strong> (B2) is a hard terminator — it stops the loop when the computational and latency budget is exhausted, regardless of confidence. Both are necessary:</p>
+<ul>
+<li>Without B1, the agent would continue refining queries even when the answer is already clear — wasting tokens and time.</li>
+<li>Without B2, a question with no answer (or an intractable retrieval path) would cause the agent to loop indefinitely.</li>
+</ul>
+<p>In practice, the confidence estimate <span class="arithmatex">\( C_t \)</span> is produced by the language model itself — a self-assessment that is not guaranteed to be well-calibrated. The conformalized GNN techniques from Chapter 24 offer a more principled approach: use the conformal prediction set size as a proxy for uncertainty, terminating retrieval when the prediction set shrinks to a singleton.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">Building These Systems Takes Time</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encourages students working on hard material">
+Agent-graph systems combine everything you have learned: GNNs for encoding structure, knowledge graphs for memory, graph search for planning, and language models for reasoning. No single paper or codebase has "solved" this. The systems described here are research prototypes, and the field is changing fast. What you have built in this course — a deep understanding of how graphs represent knowledge and how GNNs reason over it — is the right foundation. The specific architectures will evolve; the graph-structured thinking will not.</p>
+</div>
+<h3 id="2553-multi-hop-qa-a-running-example">25.5.3 Multi-Hop QA: A Running Example<a class="headerlink" href="#2553-multi-hop-qa-a-running-example" title="Permanent link">¶</a></h3>
+<p>To make the reasoning loop concrete, consider a minimal knowledge graph and a two-hop question.</p>
+<p><strong>Knowledge graph (partial):</strong>
+- (attention, proposed-by, Bahdanau)
+- (Bahdanau, affiliated-with, UniversityMontreal)
+- (UniversityMontreal, produced, GGNN)
+- (Transformer, proposed-by, VaswaniEtAl)
+- (VaswaniEtAl, affiliated-with, GoogleBrain)
+- (GoogleBrain, produced, GAT)</p>
+<p><strong>Question:</strong> "Which institution produced the model named after attention, and what was their first GNN?"</p>
+<p><strong>Hop 1:</strong> Query = "attention + GNN model" → Retrieved: (attention, proposed-by, Bahdanau), (Transformer, proposed-by, VaswaniEtAl). Reasoning: "The question may refer to Graph Attention Networks (GAT), which explicitly incorporates attention. GAT was produced by GoogleBrain."</p>
+<p><strong>Hop 2:</strong> Query = "GoogleBrain + GNN + first" → Retrieved: (GoogleBrain, produced, GAT). Reasoning: "GAT (2018) is the relevant GNN from GoogleBrain. Confidence: high."</p>
+<p><strong>Termination:</strong> confidence threshold exceeded after 2 hops.</p>
+<p>This two-hop trace illustrates how the reinforcing loop (R1) operates: the first hop's reasoning identifies the correct institution, which sharpens the second hop's query to retrieve the specific answer.</p>
+<h4 id="diagram-multi-hop-kg-reasoning-agent">Diagram: Multi-Hop KG Reasoning Agent<a class="headerlink" href="#diagram-multi-hop-kg-reasoning-agent" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch25-multi-hop-reasoning/main.html" width="100%" height="562px" scrolling="no"></iframe>
+<p><a href="../../sims/ch25-multi-hop-reasoning/main.html">Run Multi-Hop KG Reasoning Agent Fullscreen</a></p>
+<h2 id="256-integrating-the-three-graph-architectures">25.6 Integrating the Three Graph Architectures<a class="headerlink" href="#256-integrating-the-three-graph-architectures" title="Permanent link">¶</a></h2>
+<p>The three architectures — scene graphs, memory graphs, and tool-use graphs — are not independent. Real-world intelligent systems combine them. An embodied robot assistant might use:</p>
+<ul>
+<li>A <strong>scene graph</strong> to maintain a structured model of its visual environment (where are the objects, how are they arranged)</li>
+<li>A <strong>memory graph</strong> to retain user preferences, task history, and entity facts across sessions</li>
+<li>A <strong>tool-use graph</strong> to plan sequences of actions (perceive → reason → act) subject to physical constraints</li>
+</ul>
+<p>The following table summarizes the three architectures along key design dimensions. All three have been explained in detail above; the table consolidates and compares them.</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Scene Graph</th>
+<th>Memory Graph</th>
+<th>Tool-Use Graph</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node type</td>
+<td>Visual objects</td>
+<td>Entities (people, concepts)</td>
+<td>Tools / capabilities</td>
+</tr>
+<tr>
+<td>Edge type</td>
+<td>Spatial/semantic relations</td>
+<td>Factual relationships</td>
+<td>Dependencies / constraints</td>
+</tr>
+<tr>
+<td>Update mechanism</td>
+<td>Perception (vision model)</td>
+<td>Extraction (LLM)</td>
+<td>Task specification</td>
+</tr>
+<tr>
+<td>Query mechanism</td>
+<td>Relation lookup</td>
+<td>BFS / path retrieval</td>
+<td>Topological planning</td>
+</tr>
+<tr>
+<td>Primary benefit</td>
+<td>Compositional visual reasoning</td>
+<td>Persistent long-term memory</td>
+<td>Structured agent planning</td>
+</tr>
+<tr>
+<td>Main limitation</td>
+<td>Scene graph generation accuracy</td>
+<td>Entity resolution errors</td>
+<td>Tool coverage / planning horizon</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Don't Conflate Memory Graphs with Retrieval-Augmented Generation</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warns about a common confusion">
+<strong>Retrieval-augmented generation (RAG)</strong> retrieves flat text chunks from a vector database and injects them into the LLM context. <strong>Memory graphs</strong> retrieve structured subgraphs from a relational graph and inject them as structured facts. These are not the same. RAG is faster to set up and works well when facts are self-contained paragraphs. Memory graphs are more powerful when answers require combining multiple related facts (multi-hop retrieval) or when the relationships between entities matter as much as the facts themselves. For knowledge-intensive tasks with complex relational structure, graph memory is worth the additional engineering cost.</p>
+</div>
+<h2 id="257-common-pitfalls">25.7 Common Pitfalls<a class="headerlink" href="#257-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>Conflating agent planning graphs with knowledge graphs.</strong> A tool-use graph represents <em>capabilities and dependencies</em> — it encodes what tools exist and which must run before which. A knowledge graph represents <em>world knowledge</em> — entities and their relationships. These serve completely different purposes. Do not try to represent tool dependencies as a knowledge graph or world knowledge as a tool graph. The structure of each is optimized for its purpose.</p>
+<p><strong>Scene graph bottleneck.</strong> A scene graph is only as good as the detection model that generates it. If the object detector misses an object or misclassifies a relationship, the scene graph carries that error downstream into all relational reasoning. In high-stakes applications (robotics, medical imaging), always include a human-in-the-loop verification step for scene graph generation before trusting the GNN reasoning built on top.</p>
+<p><strong>Entity resolution failures in memory graphs.</strong> When two conversation turns refer to the same entity with different phrasings ("the CEO of Apple" and "Tim Cook"), the agent must recognize they are the same node. Failure to resolve entities correctly creates duplicate nodes, inconsistent facts, and retrieval errors. Use a canonicalization layer (an embedding-based entity linker or explicit alias tracking) before inserting new nodes.</p>
+<p><strong>Unbounded hop budgets.</strong> The reinforcing loop in multi-hop reasoning (R1 in the CLD) has no intrinsic termination — without a hard hop budget, an agent with a poorly calibrated confidence estimator will continue retrieving and reasoning indefinitely. Always set a finite hop budget (typically 3–5 hops) and log how often the budget is exhausted without reaching the confidence threshold — this is a signal that either the budget or the confidence function needs tuning.</p>
+<p><strong>Treating tool graphs as static.</strong> In real deployments, tools are added, deprecated, and updated continuously. A tool-use graph that is correct at training time may be stale at inference time. Build tool graph maintenance (automated testing of tool availability, dependency checks on each agent run) into the deployment pipeline from the start.</p>
+<h2 id="258-exercises">25.8 Exercises<a class="headerlink" href="#258-exercises" title="Permanent link">¶</a></h2>
+<p>The following twelve exercises span all six levels of Bloom's taxonomy.</p>
+<p><strong>Remembering</strong></p>
+<ol>
+<li>
+<p>Define "scene graph." What are the three components of the formal definition <span class="arithmatex">\( G_{\text{scene}} = (O, E, L_O, L_E) \)</span>? Give one example of an object node and one example of a relationship edge for a kitchen scene.</p>
+</li>
+<li>
+<p>What is the ReAct framework? Name the two types of steps it interleaves and describe what the agent does at each step.</p>
+</li>
+</ol>
+<p><strong>Understanding</strong></p>
+<ol>
+<li>
+<p>Explain the difference between retrieval-augmented generation (RAG) and agent memory as graph. In what types of questions would a memory graph provide better answers than RAG? Give a concrete example.</p>
+</li>
+<li>
+<p>In the Agent Graph Reasoning Loop CLD, explain in plain language why R1 is a reinforcing loop and B1 is a balancing loop. What would happen if B1 did not exist?</p>
+</li>
+<li>
+<p>Why does a tool-use graph need to be a <strong>directed acyclic graph (DAG)</strong> for topological planning to work? What real-world scenario would create a cycle in a tool dependency graph, and why is such a cycle a problem?</p>
+</li>
+</ol>
+<p><strong>Applying</strong></p>
+<ol>
+<li>
+<p>Sketch the tool-use graph for a data analysis agent that: (a) downloads a CSV file, (b) runs a Python script to compute statistics, (c) queries a database for baseline values, (d) generates a comparison plot, and (e) writes a summary report. Which tools can run in parallel, and which must be sequential? Show the execution order.</p>
+</li>
+<li>
+<p>Using the <code>AgentMemoryGraph</code> code in Section 25.3.2, trace through three updates from the following conversation and draw the resulting graph after each update:</p>
+</li>
+<li>Turn 1: "Alice works at OpenAI as a researcher."</li>
+<li>Turn 2: "Alice and Bob collaborated on the GPT-4 paper."</li>
+<li>Turn 3: "Bob recently moved to Anthropic."</li>
+</ol>
+<p><strong>Analyzing</strong></p>
+<ol>
+<li>
+<p>Compare scene graphs and memory graphs as knowledge representations. Both have entity nodes and relation edges. What is fundamentally different about how they are constructed, updated, and queried? When would a system need both?</p>
+</li>
+<li>
+<p>The multi-hop reasoning trace in Section 25.5.3 used 2 hops to answer a 2-hop question. Analyze what would go wrong if the hop budget was set to 1. What would happen if the confidence threshold was set to 0 (always terminate after 1 hop)?</p>
+</li>
+</ol>
+<p><strong>Evaluating</strong></p>
+<ol>
+<li>
+<p>A robotics team proposes replacing their scene graph with a vision-language model that directly answers spatial queries (e.g., "Is the cup to the left of the plate?") from raw images, arguing this avoids scene graph generation errors. Evaluate this proposal. What advantages does it offer? What does it lose compared to an explicit scene graph? Under what circumstances would each approach be preferable?</p>
+</li>
+<li>
+<p>Review the memory graph update code in Section 25.3.2. Identify at least three limitations of the entity resolution strategy (<code>_resolve_or_create</code>) that uses exact string matching on entity labels. Propose a more robust strategy for each limitation.</p>
+</li>
+</ol>
+<p><strong>Creating</strong></p>
+<ol>
+<li>Design a complete agent architecture for the following task: "Given a user's research question, find the top-3 most relevant recent papers, extract their key claims, cross-reference the claims against a database of known facts, and produce a structured report flagging claims that are not supported by the database." Your design must: (a) specify the tool-use graph with at least 5 tools, (b) specify what goes in the agent's memory graph (initial contents and what gets updated after each run), (c) describe the multi-hop reasoning loop the agent uses to cross-reference claims, including the termination conditions, and (d) identify the most likely failure mode for each of your three graph components and propose a mitigation.</li>
+</ol>
+<h2 id="259-further-reading">25.9 Further Reading<a class="headerlink" href="#259-further-reading" title="Permanent link">¶</a></h2>
+<p><strong>MemGPT: Towards LLMs as Operating Systems</strong> — Packer et al. (2023). <em>arXiv:2310.08560.</em> The foundational paper for tiered agent memory. Section 3 (the memory hierarchy design) and Section 4 (the self-directed memory management protocol) are the key contributions. The database analogy (LLM as OS, context window as RAM, external storage as disk) is illuminating. Relevant to Section 25.3.3.</p>
+<p><strong>ReAct: Synergizing Reasoning and Acting in Language Models</strong> — Yao et al. (2022). <em>ICLR 2023.</em> The canonical framework for tool-using agents. Section 3 (the ReAct format) and Table 1 (comparison with chain-of-thought and action-only baselines) are the core reading. Relevant to Section 25.4.1.</p>
+<p><strong>Scene Graph Generation: A Comprehensive Survey</strong> — Chang et al. (2023). <em>arXiv:2201.00443.</em> A thorough survey of scene graph generation methods organized by architecture (GNN-based, transformer-based, two-stage vs. one-stage). Table 2 (benchmark results on Visual Genome) is a useful overview of state-of-the-art performance. Relevant to Section 25.2.</p>
+<p><strong>Graph-of-Thoughts: Solving Elaborate Problems with Large Language Models</strong> — Besta et al. (2023). <em>arXiv:2308.09687.</em> Extends chain-of-thought to a graph structure where reasoning steps can branch and merge, enabling more complex compositional reasoning than linear chains. Directly relevant to multi-hop agent reasoning. Relevant to Section 25.5.</p>
+<p><strong>HippoRAG: Neurobiologically Inspired Long-Term Memory for Large Language Models</strong> — Gutierrez et al. (2024). <em>arXiv:2405.14831.</em> Uses a knowledge graph (inspired by the hippocampus) for retrieval-augmented generation, with GNN-based retrieval to find relevant subgraphs. The most direct implementation of Section 25.3 ideas with empirical evaluation. Relevant to Sections 25.3 and 25.5.</p>
+<p><strong>ToolLLM: Facilitating Large Language Models to Master 16000+ Real-world APIs</strong> — Qin et al. (2023). <em>arXiv:2307.16789.</em> A large-scale study of tool-use planning with LLMs. Section 3 (the depth-first search-based decision tree for tool planning) is structurally related to tool-use graph traversal. Relevant to Section 25.4.</p>
+<p><strong>Visual Genome: Connecting Language and Vision Using Crowdsourced Dense Image Annotations</strong> — Krishna et al. (2017). <em>IJCV.</em> The benchmark dataset for scene graph generation. Section 4 (region descriptions, objects, attributes, relationships, and question-answer pairs) explains what kinds of relational annotations are available. Relevant to Section 25.2.</p>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Chapter 25 Complete!</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrates chapter completion">
+You have completed Chapter 25 — and with it, the last full technical chapter of this textbook. You now understand how graphs structure the three core components of modern AI agents: scene graphs for visual understanding, memory graphs for persistent knowledge, and tool-use graphs for structured planning. You have seen how these components combine in the multi-hop reasoning loop, and you understand the reinforcing and balancing dynamics that govern when and how that loop terminates. One chapter remains — the conclusion, where we step back and synthesize the full arc of everything you have learned.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../24-advanced-gnn-topics/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

@@ -1,0 +1,3499 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Self-supervised learning on graphs, deep graph infomax, contrastive learning, in-context learning via PRODIGY, and uncertainty quantification with conformalized GNNs.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/24-advanced-gnn-topics/">
+      
+      
+        <link rel="prev" href="../23-llm-gnn/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty">
+  <meta property="og:description" content="Self-supervised learning on graphs, deep graph infomax, contrastive learning, in-context learning via PRODIGY, and uncertainty quantification with conformalized GNNs.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/24-advanced-gnn-topics/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty">
+  <meta name="twitter:description" content="Self-supervised learning on graphs, deep graph infomax, contrastive learning, in-context learning via PRODIGY, and uncertainty quantification with conformalized GNNs.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-24-advanced-gnn-topics-in-context-learning-and-uncertainty" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_26" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_26" id="__nav_4_26_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_26_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_26">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#241-learning-without-labels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.1 Learning Without Labels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#242-self-supervised-learning-motivation-and-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.2 Self-Supervised Learning: Motivation and Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#243-deep-graph-infomax-dgi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.3 Deep Graph Infomax (DGI)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.3 Deep Graph Infomax (DGI)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2431-mutual-information-and-graph-representations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.3.1 Mutual Information and Graph Representations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2432-the-positive-and-negative-sampling-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.3.2 The Positive and Negative Sampling Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#244-graph-contrastive-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.4 Graph Contrastive Learning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.4 Graph Contrastive Learning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2441-graph-augmentation-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.4.1 Graph Augmentation Strategies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2442-the-contrastive-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.4.2 The Contrastive Loss
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.4.2 The Contrastive Loss">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-graph-contrastive-learning-two-view-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Graph Contrastive Learning — Two-View Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#245-in-context-learning-for-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.5 In-Context Learning for Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.5 In-Context Learning for Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2451-the-problem-task-adaptation-without-fine-tuning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.5.1 The Problem: Task Adaptation Without Fine-Tuning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2452-prompt-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.5.2 Prompt Graphs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#246-conformalized-gnns-knowing-what-you-do-not-know" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.6 Conformalized GNNs: Knowing What You Do Not Know
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.6 Conformalized GNNs: Knowing What You Do Not Know">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2461-how-conformal-prediction-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.6.1 How Conformal Prediction Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2462-daps-diffusion-adaptive-prediction-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.6.2 DAPS: Diffusion Adaptive Prediction Sets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#247-the-one-for-all-ofa-model-in-depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.7 The One-For-All (OFA) Model in Depth
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.7 The One-For-All (OFA) Model in Depth">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-dgi-vs-contrastive-learning-concept-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: DGI vs. Contrastive Learning — Concept Map
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#248-benchmark-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.8 Benchmark Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#249-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.9 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2410-microsim-contrastive-learning-live-demo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.10 MicroSim: Contrastive Learning Live Demo
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="24.10 MicroSim: Contrastive Learning Live Demo">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-contrastive-loss-surface-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Contrastive Loss Surface Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2411-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.11 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2412-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        24.12 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/24-advanced-gnn-topics/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-24-advanced-gnn-topics-in-context-learning-and-uncertainty">Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty<a class="headerlink" href="#chapter-24-advanced-gnn-topics-in-context-learning-and-uncertainty" title="Permanent link">¶</a></h1>
+<p><strong>Part 6: Frontiers</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Covers advanced learning paradigms for GNNs: self-supervised learning, Deep Graph Infomax, graph contrastive learning, in-context learning via PRODIGY, and uncertainty quantification.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 7 concepts from the learning graph:</p>
+<ol>
+<li>In-Context Learning (Graphs)</li>
+<li>Conformalized GNN</li>
+<li>One-For-All (OFA) Model</li>
+<li>Deep Graph Infomax (DGI)</li>
+<li>Graph Contrastive Learning</li>
+<li>Contrastive Loss</li>
+<li>Graph Augmentation (SSL)</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../06-gnn-foundations/">Chapter 6: GNN Foundations: Message Passing and GCN</a></li>
+<li><a href="../07-gnn-design-space/">Chapter 7: GNN Design Space: GraphSAGE and GAT</a></li>
+<li><a href="../08-gnn-training/">Chapter 8: GNN Training, Augmentation, and Practical Tips</a></li>
+<li><a href="../09-gnn-theory/">Chapter 9: Theory of GNNs: Expressiveness and the WL Test</a></li>
+<li><a href="../10-powerful-gnns/">Chapter 10: Designing Powerful Encoders: GIN and Beyond</a></li>
+<li><a href="../11-graph-transformers/">Chapter 11: Graph Transformers</a></li>
+<li><a href="../23-llm-gnn/">Chapter 23: LLMs and GNNs: Text-Attributed Graphs and Joint Training</a></li>
+</ul>
+<hr>
+<h2 id="241-learning-without-labels">24.1 Learning Without Labels<a class="headerlink" href="#241-learning-without-labels" title="Permanent link">¶</a></h2>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Welcome to Chapter 24</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waves at the chapter opening">
+Welcome to Chapter 24! Everything you have built so far — GCN, GAT, GIN, Graph Transformers — has assumed one thing: <strong>labeled training data</strong>. You have a graph, you have labels for some nodes or graphs, and you optimize a model to predict those labels. But what if labels are expensive, scarce, or simply unavailable? This chapter explores what GNNs can learn from the <strong>structure itself</strong>, without any human-provided labels. It also tackles a problem that standard GNNs completely ignore: how confident should I be in my prediction? These two questions — learning without labels, and knowing what you do not know — define the frontier of practically reliable GNNs.</p>
+</div>
+<p>Labels are expensive in almost every real-world domain that matters. Annotating a protein's function requires biochemical experiments. Labeling a financial transaction as fraudulent requires legal investigation. Classifying medical images requires radiologist review. In many graph datasets, fewer than 1% of nodes carry labels. The remaining 99% are unlabeled — but they are not useless. The graph structure itself, the patterns of connections and neighborhoods, encodes an enormous amount of information about what nodes are similar to each other and what communities they belong to. <strong>Self-supervised learning (SSL)</strong> extracts this information through pretext tasks that create their own supervision signal from the data's structure, without requiring any human annotation.</p>
+<p>This chapter covers three layers of the advanced GNN landscape. It begins with the two main families of self-supervised learning on graphs: <strong>Deep Graph Infomax (DGI)</strong>, which learns by maximizing mutual information between local and global representations, and <strong>graph contrastive learning</strong>, which learns by making augmented views of the same graph agree with each other. It then covers <strong>in-context learning for graphs</strong> via PRODIGY, which addresses the complementary problem of adapting a pre-trained model to new tasks without fine-tuning. Finally, it covers <strong>conformalized GNNs</strong>, which wrap any trained GNN in a statistically rigorous uncertainty quantifier that works without retraining the model.</p>
+<h2 id="242-self-supervised-learning-motivation-and-structure">24.2 Self-Supervised Learning: Motivation and Structure<a class="headerlink" href="#242-self-supervised-learning-motivation-and-structure" title="Permanent link">¶</a></h2>
+<p>To understand why self-supervised learning works, it helps to think about what makes node embeddings useful. A good node embedding <span class="arithmatex">\( \mathbf{z}_v \)</span> should place nodes with similar roles or similar neighborhoods close together in embedding space. In supervised learning, this constraint comes from labels — nodes with the same label are pushed toward the same region. In self-supervised learning, this constraint comes from <strong>pretext tasks</strong> — carefully designed auxiliary objectives that enforce structural consistency without labels.</p>
+<p>Before examining specific methods, here are the three core ideas that virtually all graph SSL methods share:</p>
+<ul>
+<li><strong>Invariance to augmentation:</strong> Two different "views" of the same node (obtained by augmenting the graph in different ways) should produce similar embeddings, because they represent the same underlying entity.</li>
+<li><strong>Discrimination across nodes:</strong> A node's embedding should be distinguishable from the embeddings of randomly selected other nodes, which ensures the representation carries information rather than collapsing to a constant.</li>
+<li><strong>Structural context:</strong> The embedding of a node should reflect its local neighborhood, because the neighborhood encodes the node's functional role in the graph.</li>
+</ul>
+<p>These three ideas manifest differently in DGI versus contrastive learning, as we will see.</p>
+<h2 id="243-deep-graph-infomax-dgi">24.3 Deep Graph Infomax (DGI)<a class="headerlink" href="#243-deep-graph-infomax-dgi" title="Permanent link">¶</a></h2>
+<p><strong>Deep Graph Infomax</strong> (DGI, Veličković et al. 2019) takes a mutual information perspective. The key idea is that a good node-level encoder should produce representations whose <strong>local (node-level) summary is maximally informative about the global (graph-level) summary</strong> — and vice versa. If the local representation of a node does not tell you much about the overall graph, the encoder has failed to capture the node's role in the global structure.</p>
+<h3 id="2431-mutual-information-and-graph-representations">24.3.1 Mutual Information and Graph Representations<a class="headerlink" href="#2431-mutual-information-and-graph-representations" title="Permanent link">¶</a></h3>
+<p>Let <span class="arithmatex">\( \mathbf{h}_v = \text{GNN}(G, v) \)</span> denote the embedding of node <span class="arithmatex">\( v \)</span> produced by a GNN encoder on graph <span class="arithmatex">\( G \)</span>. Let <span class="arithmatex">\( \mathbf{s} = \text{READOUT}(\{\mathbf{h}_v : v \in V\}) \)</span> denote a summary vector of the entire graph, obtained by averaging or max-pooling all node embeddings. DGI trains the encoder to maximize:</p>
+<div class="arithmatex">\[
+I(\mathbf{h}_v;\, \mathbf{s})
+\]</div>
+<p>the <strong>mutual information</strong> between a node's representation and the graph summary. Directly maximizing mutual information in high dimensions is computationally intractable. DGI uses the <strong>Jensen-Shannon Mutual Information Estimator (JSD)</strong>, which lower-bounds the true mutual information and can be optimized with a binary classifier.</p>
+<h3 id="2432-the-positive-and-negative-sampling-strategy">24.3.2 The Positive and Negative Sampling Strategy<a class="headerlink" href="#2432-the-positive-and-negative-sampling-strategy" title="Permanent link">¶</a></h3>
+<p>DGI creates positive and negative samples through a simple graph corruption procedure. For a real graph <span class="arithmatex">\( G = (V, E, X) \)</span>, DGI generates a <strong>corrupted graph</strong> <span class="arithmatex">\( \tilde{G} \)</span> by randomly shuffling the node feature matrix <span class="arithmatex">\( X \)</span> — assigning each node's features to a randomly chosen different node. The corrupted graph has the same structure but scrambled features, making its node representations semantically incoherent.</p>
+<p>DGI then trains a <strong>discriminator</strong> <span class="arithmatex">\( D : \mathbb{R}^d \times \mathbb{R}^d \to [0, 1] \)</span> that takes a node embedding and a graph summary and outputs the probability that the node came from the original (not corrupted) graph:</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{DGI}} = \frac{1}{|V|} \sum_{v \in V} \left[ \log D(\mathbf{h}_v, \mathbf{s}) + \log(1 - D(\tilde{\mathbf{h}}_v, \mathbf{s})) \right]
+\]</div>
+<p>where <span class="arithmatex">\( \tilde{\mathbf{h}}_v \)</span> is the embedding of a node from the corrupted graph. The encoder learns to produce node embeddings that are maximally consistent with the global graph summary, while the corrupted embeddings fail the discriminator.</p>
+<p>Before examining the implementation below, note two things about the code structure: <code>DGI</code> wraps a GNN encoder (any standard PyG layer stack) alongside a bilinear discriminator; <code>corruption</code> shuffles the node feature rows in-place, creating the negative samples without any additional data.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">GCNConv</span><span class="p">,</span> <span class="n">DeepGraphInfomax</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Define the GNN encoder used inside DGI</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="k">class</span><span class="w"> </span><span class="nc">GCNEncoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">):</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">GCNConv</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">GCNConv</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">):</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1"># DGI wraps the encoder and handles corruption + discrimination</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="k">def</span><span class="w"> </span><span class="nf">corruption</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">):</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="c1"># Shuffle node features to create the corrupted view</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">))],</span> <span class="n">edge_index</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">model</span> <span class="o">=</span> <span class="n">DeepGraphInfomax</span><span class="p">(</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n">hidden_channels</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">encoder</span><span class="o">=</span><span class="n">GCNEncoder</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_features</span><span class="p">,</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>                        <span class="n">hidden_channels</span><span class="o">=</span><span class="mi">512</span><span class="p">),</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">summary</span><span class="o">=</span><span class="k">lambda</span> <span class="n">z</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">corruption</span><span class="o">=</span><span class="n">corruption</span><span class="p">,</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="p">)</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="c1"># Train without any labels</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">300</span><span class="p">):</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    <span class="n">pos_z</span><span class="p">,</span> <span class="n">neg_z</span><span class="p">,</span> <span class="n">summary</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">pos_z</span><span class="p">,</span> <span class="n">neg_z</span><span class="p">,</span> <span class="n">summary</span><span class="p">)</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="c1"># After training: extract node embeddings for downstream tasks</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="n">z</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="c1"># z is now a [N, 512] matrix of unsupervised node representations</span>
+</span></code></pre></div>
+<p>After DGI pre-training, the node embeddings <span class="arithmatex">\( \mathbf{z}_v \)</span> can be used for any downstream task — node classification, link prediction, clustering — by training a simple linear classifier on top of the frozen embeddings. DGI consistently outperforms random initialization and often approaches fully supervised performance on datasets where labels are scarce.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Why Corruption Works</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinks through the intuition">
+The corruption strategy might seem surprising — why does shuffling features produce useful self-supervision? The answer is that a node's features and its graph-structural position are <strong>co-informative</strong>: in a real citation network, a paper's abstract tells you something about which other papers it will cite, and the citation structure tells you something about the paper's topic. Shuffling destroys this alignment. An encoder that can reliably detect "this node's features are inconsistent with its neighborhood" has necessarily learned to encode both the features and the structural context together — which is exactly what you want from a general-purpose node embedding.</p>
+</div>
+<h2 id="244-graph-contrastive-learning">24.4 Graph Contrastive Learning<a class="headerlink" href="#244-graph-contrastive-learning" title="Permanent link">¶</a></h2>
+<p><strong>Graph contrastive learning</strong> takes a different approach to self-supervised representation learning, drawing from the contrastive SSL literature developed for images (SimCLR, MoCo). The core idea is to create two <strong>augmented views</strong> of the same graph — two slightly different versions of the same structure — and train the encoder so that the representations of the two views are close to each other, while representations of different graphs are pushed apart.</p>
+<h3 id="2441-graph-augmentation-strategies">24.4.1 Graph Augmentation Strategies<a class="headerlink" href="#2441-graph-augmentation-strategies" title="Permanent link">¶</a></h3>
+<p><strong>Graph augmentation</strong> refers to the set of structure-preserving transformations applied to a graph to produce a new view. Two key requirements govern a good graph augmentation: it must preserve the graph's semantic meaning (so the two views still represent the same entity), and it must introduce enough variation that the encoder cannot trivially match views by memorizing individual graphs.</p>
+<p>The most widely used graph augmentation strategies are:</p>
+<ul>
+<li><strong>Node feature masking:</strong> randomly set a fraction (typically 10–30%) of feature dimensions to zero for randomly chosen nodes. The encoder must infer the missing features from structural context.</li>
+<li><strong>Edge dropout:</strong> randomly remove a fraction (typically 10–20%) of edges. The encoder must be robust to missing edges and rely on the remaining neighborhood context.</li>
+<li><strong>Node dropout:</strong> randomly remove a subset of nodes and their associated edges. Encourages the encoder to build representations that are not over-reliant on specific neighbor identities.</li>
+<li><strong>Subgraph sampling:</strong> extract a random subgraph (e.g., a random walk-induced subgraph) as one view. This is a strong augmentation used in methods like GraphSAINT-based SSL.</li>
+<li><strong>Diffusion-based augmentation:</strong> replace the adjacency matrix with a diffusion matrix (e.g., personalized PageRank), which smooths the neighborhood structure and provides a structurally complementary view.</li>
+</ul>
+<p>Two views are typically generated by independently applying augmentation to the same graph twice, producing <span class="arithmatex">\( G_1 \)</span> and <span class="arithmatex">\( G_2 \)</span>. The encoder <span class="arithmatex">\( f \)</span> maps each view to a node embedding, and a projection head <span class="arithmatex">\( g \)</span> maps the embedding to a lower-dimensional representation used in the loss.</p>
+<h3 id="2442-the-contrastive-loss">24.4.2 The Contrastive Loss<a class="headerlink" href="#2442-the-contrastive-loss" title="Permanent link">¶</a></h3>
+<p>The <strong>contrastive loss</strong> (specifically the InfoNCE / NT-Xent loss) is the optimization objective that enforces agreement between views of the same graph and disagreement between views of different graphs. For a set of <span class="arithmatex">\( N \)</span> graphs in a batch, the contrastive loss for a single positive pair <span class="arithmatex">\( (z_i, z_j) \)</span> — where <span class="arithmatex">\( z_i = g(f(G_1^{(i)})) \)</span> and <span class="arithmatex">\( z_j = g(f(G_2^{(i)})) \)</span> are the projected embeddings of the two augmented views of the same graph — is:</p>
+<div class="arithmatex">\[
+\ell_{i,j} = -\log \frac{\exp(\text{sim}(z_i, z_j) / \tau)}{\sum_{k=1}^{2N} \mathbf{1}_{[k \neq i]} \exp(\text{sim}(z_i, z_k) / \tau)}
+\]</div>
+<p>where <span class="arithmatex">\( \text{sim}(u, v) = u^\top v / (\|u\| \|v\|) \)</span> is cosine similarity and <span class="arithmatex">\( \tau &gt; 0 \)</span> is a temperature hyperparameter controlling how sharply the distribution is peaked. The denominator sums over all <span class="arithmatex">\( 2N - 1 \)</span> other embeddings in the batch (both augmentations of all other graphs), treating them as <strong>negatives</strong>. The loss encourages the positive pair to have high cosine similarity and the negative pairs to have low similarity.</p>
+<p>The complete batch loss averages over all positive pairs:</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{CL}} = \frac{1}{2N} \sum_{k=1}^{N} \left[ \ell_{2k-1,\, 2k} + \ell_{2k,\, 2k-1} \right]
+\]</div>
+<p>Before examining the implementation, note that the code below computes the contrastive loss from scratch using standard PyTorch operations: <code>F.normalize</code> applies L2 normalization so the dot product equals cosine similarity; the temperature <code>tau</code> controls sharpness; the diagonal of the similarity matrix (same-view comparisons) is masked out.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">contrastive_loss</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">,</span> <span class="n">tau</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="sd">    Compute NT-Xent contrastive loss.</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="sd">    z1, z2: [N, d] projected embeddings of two augmented views</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="sd">    tau: temperature (smaller = sharper distribution, default 0.5)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="sd">    """</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="c1"># L2-normalize so dot product = cosine similarity</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">z1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">z1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">z2</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">z2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="c1"># Concatenate: [2N, d]</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    <span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="c1"># Similarity matrix: [2N, 2N]</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="n">sim</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">z</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="n">tau</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    <span class="c1"># Mask diagonal (self-similarity)</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>    <span class="n">N</span> <span class="o">=</span> <span class="n">z1</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    <span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">z</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>    <span class="n">sim</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'-inf'</span><span class="p">))</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>    <span class="c1"># Positive pairs: (i, i+N) and (i+N, i)</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>    <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span><span class="p">)])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>    <span class="c1"># Cross-entropy over the 2N-1 candidates</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>    <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>    <span class="k">return</span> <span class="n">loss</span>
+</span></code></pre></div>
+<p><strong>GraphCL</strong> (You et al. 2020) applies this framework to molecular graphs and social networks, demonstrating that contrastive pre-training with simple augmentations consistently improves downstream performance across benchmarks. <strong>GRACE</strong> (Zhu et al. 2020) applies the same framework at the node level rather than the graph level, producing per-node embeddings by contrasting node representations across two augmented views of the same graph.</p>
+<h4 id="diagram-graph-contrastive-learning-two-view-pipeline">Diagram: Graph Contrastive Learning — Two-View Pipeline<a class="headerlink" href="#diagram-graph-contrastive-learning-two-view-pipeline" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch24-graph-contrastive-learning/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch24-graph-contrastive-learning/main.html">Run Graph Contrastive Learning — Two-View Pipeline Fullscreen</a></p>
+<p>The following table summarizes the augmentation strategies discussed above, organized by what they transform and what structural invariance they encourage. All strategies have been explained in prose before this table.</p>
+<table>
+<thead>
+<tr>
+<th>Augmentation</th>
+<th>What Changes</th>
+<th>What Stays</th>
+<th>Typical Drop/Mask Rate</th>
+<th>Good For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Edge dropout</td>
+<td>Subset of edges removed</td>
+<td>Node features, graph topology (mostly)</td>
+<td>10–20%</td>
+<td>Robust neighborhood representations</td>
+</tr>
+<tr>
+<td>Feature masking</td>
+<td>Subset of feature dims zeroed</td>
+<td>All edges, remaining features</td>
+<td>10–30%</td>
+<td>Representations robust to missing attributes</td>
+</tr>
+<tr>
+<td>Node dropout</td>
+<td>Subset of nodes + edges removed</td>
+<td>Remaining subgraph</td>
+<td>5–15%</td>
+<td>Representations not tied to specific neighbors</td>
+</tr>
+<tr>
+<td>Subgraph sampling</td>
+<td>Most of graph removed</td>
+<td>Random walk subgraph</td>
+<td>Varies</td>
+<td>Hierarchical structural patterns</td>
+</tr>
+<tr>
+<td>Diffusion augmentation</td>
+<td>Adjacency → diffusion matrix</td>
+<td>Node features</td>
+<td>N/A</td>
+<td>Multi-hop structural views</td>
+</tr>
+</tbody>
+</table>
+<h2 id="245-in-context-learning-for-graphs">24.5 In-Context Learning for Graphs<a class="headerlink" href="#245-in-context-learning-for-graphs" title="Permanent link">¶</a></h2>
+<p>Chapter 23 introduced the concept of graph foundation models and mentioned PRODIGY briefly in the context of LLM+GNN integration. This section covers PRODIGY's mechanism in technical depth, because the in-context learning paradigm it instantiates is broader than any specific LLM+GNN system — it applies to any pre-trained GNN backbone.</p>
+<h3 id="2451-the-problem-task-adaptation-without-fine-tuning">24.5.1 The Problem: Task Adaptation Without Fine-Tuning<a class="headerlink" href="#2451-the-problem-task-adaptation-without-fine-tuning" title="Permanent link">¶</a></h3>
+<p>Standard GNNs are trained on a fixed task — for example, node classification into 40 categories on ogbn-arxiv. When you encounter a new task — say, classifying nodes into 3 different categories on a new citation network — you must fine-tune the model on labeled data from the new task. This requires labeled examples and gradient updates.</p>
+<p><strong>In-context learning</strong> (ICL) circumvents fine-tuning by providing the model with labeled examples directly as input, alongside the query to be predicted. In the language domain, this is GPT's few-shot capability: you prepend examples to the prompt, and GPT generalizes from them without any weight updates. The question PRODIGY answers is: how do you give a GNN "examples in the context" when the GNN's input is a graph, not a text string?</p>
+<h3 id="2452-prompt-graphs">24.5.2 Prompt Graphs<a class="headerlink" href="#2452-prompt-graphs" title="Permanent link">¶</a></h3>
+<p>PRODIGY's answer is the <strong>prompt graph</strong> — an augmented input graph that encodes both the few-shot examples (support set) and the query nodes in a single unified graph structure.</p>
+<p>Given a new task with:
+- A task graph <span class="arithmatex">\( G = (V, E) \)</span> — the graph on which you want to make predictions
+- A support set <span class="arithmatex">\( S = \{(v_1, y_1), \ldots, (v_k, y_k)\} \)</span> — <span class="arithmatex">\( k \)</span> labeled example nodes
+- A query node <span class="arithmatex">\( q \)</span> — the node you want to classify</p>
+<p>PRODIGY constructs a prompt graph <span class="arithmatex">\( G_{\text{prompt}} = G \cup G_S \cup G_\text{conn} \)</span> where:
+- <span class="arithmatex">\( G_S \)</span> contains one <strong>task node</strong> per class, connected to all support nodes of that class
+- <span class="arithmatex">\( G_\text{conn} \)</span> contains edges connecting the query node <span class="arithmatex">\( q \)</span> to all task nodes, allowing the GNN to propagate information from support examples to the query</p>
+<p>The GNN then runs message passing on the entire prompt graph, and the query node's final embedding aggregates information from both the task graph structure and the labeled support examples. Prediction follows directly from the query node embedding:</p>
+<div class="arithmatex">\[
+\hat{y}_q = \arg\max_{c} \; \text{sim}(\mathbf{h}_q^{(\text{prompt})},\; \mathbf{h}_{\text{task}_c}^{(\text{prompt})})
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{h}_{\text{task}_c}^{(\text{prompt})} \)</span> is the embedding of the task node for class <span class="arithmatex">\( c \)</span>, and similarity is cosine similarity. The prediction is the class whose task node is closest to the query node in embedding space — without any gradient updates.</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">ICL vs. Fine-Tuning: A Practical Guide</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage gives a practical tip">
+Use in-context learning when: (1) you have a pre-trained backbone but very few labeled examples on a new task (fewer than 50), (2) you need to deploy quickly without re-training, or (3) you are evaluating generalization to tasks not seen during pre-training. Use fine-tuning when: (1) you have hundreds or thousands of labeled examples, (2) the new task is substantially different from pre-training tasks (large distribution shift), or (3) latency is critical and you need the fastest possible inference path. ICL and fine-tuning are complementary, not competing — a common strategy is to do ICL first to estimate if a task is worth fine-tuning.</p>
+</div>
+<h2 id="246-conformalized-gnns-knowing-what-you-do-not-know">24.6 Conformalized GNNs: Knowing What You Do Not Know<a class="headerlink" href="#246-conformalized-gnns-knowing-what-you-do-not-know" title="Permanent link">¶</a></h2>
+<p>Standard GNNs output a probability distribution over classes via a softmax layer. However, these probabilities are <strong>not calibrated</strong> — a GNN that outputs a 90% confidence for a node classification is not necessarily right 90% of the time. GNNs, like other deep learning models, can be confidently wrong: outputting high softmax probabilities for examples that are far from the training distribution.</p>
+<p><strong>Conformal prediction</strong> is a statistical framework that wraps any trained model (including GNNs) and produces <strong>prediction sets</strong> with a provable coverage guarantee — without retraining or modifying the model. Given a user-specified error rate <span class="arithmatex">\( \alpha \)</span>, conformal prediction guarantees:</p>
+<div class="arithmatex">\[
+P(y \in C(x)) \geq 1 - \alpha
+\]</div>
+<p>where <span class="arithmatex">\( C(x) \)</span> is the prediction set for input <span class="arithmatex">\( x \)</span> and <span class="arithmatex">\( y \)</span> is the true label. If you set <span class="arithmatex">\( \alpha = 0.1 \)</span>, the prediction set contains the true label at least 90% of the time, regardless of the model's internal calibration. This guarantee holds under only one assumption: the calibration and test data are exchangeable (a weaker requirement than i.i.d.).</p>
+<h3 id="2461-how-conformal-prediction-works">24.6.1 How Conformal Prediction Works<a class="headerlink" href="#2461-how-conformal-prediction-works" title="Permanent link">¶</a></h3>
+<p>Conformal prediction requires a <strong>calibration set</strong> — a held-out set of labeled nodes not used during training — and a <strong>nonconformity score</strong> function that measures how "surprising" a label is given a model's prediction.</p>
+<p>For a GNN with softmax output <span class="arithmatex">\( \hat{p}(y \mid v) \)</span>, the standard nonconformity score for node <span class="arithmatex">\( v \)</span> and true label <span class="arithmatex">\( y \)</span> is:</p>
+<div class="arithmatex">\[
+s(v, y) = 1 - \hat{p}(y \mid v)
+\]</div>
+<p>A low nonconformity score means the model assigned high probability to the true label (not surprising). A high score means the model was wrong or uncertain.</p>
+<p>Given the calibration set, compute the nonconformity scores for all calibration nodes. The <strong>conformal threshold</strong> <span class="arithmatex">\( \hat{q} \)</span> is set to the <span class="arithmatex">\( \lceil (1-\alpha)(n+1)/n \rceil \)</span>-th quantile of the calibration scores. For a new test node <span class="arithmatex">\( v_{\text{test}} \)</span>, the prediction set is:</p>
+<div class="arithmatex">\[
+C(v_{\text{test}}) = \{ y : 1 - \hat{p}(y \mid v_{\text{test}}) \leq \hat{q} \}
+\]</div>
+<p>In plain language: include all labels whose softmax probability is at least <span class="arithmatex">\( 1 - \hat{q} \)</span>. If the GNN is confident about a single class, the prediction set has size 1. If the GNN is uncertain, the prediction set includes multiple candidate classes. The size of the prediction set is itself a measure of uncertainty — a large prediction set signals that the model does not know the answer.</p>
+<h3 id="2462-daps-diffusion-adaptive-prediction-sets">24.6.2 DAPS: Diffusion Adaptive Prediction Sets<a class="headerlink" href="#2462-daps-diffusion-adaptive-prediction-sets" title="Permanent link">¶</a></h3>
+<p>Naive conformal prediction treats each node independently, ignoring graph structure. <strong>DAPS</strong> (Diffusion Adaptive Prediction Sets, Huang et al. 2023) improves prediction sets on graphs by incorporating neighborhood information during calibration.</p>
+<p>The key insight is that in a citation network, a paper's true category is correlated with its neighbors' categories. If all of a node's neighbors are confidently classified as "Machine Learning," a wider prediction set that includes "Computer Vision" is probably unnecessary. DAPS adjusts the nonconformity scores by smoothing them over the graph using a diffusion operator:</p>
+<div class="arithmatex">\[
+\tilde{s}(v) = \sum_{u \in V} D_{vu} \cdot s(u)
+\]</div>
+<p>where <span class="arithmatex">\( D \)</span> is a diffusion matrix (e.g., the normalized graph Laplacian's eigenvector matrix or a personalized PageRank matrix). The smoothed scores benefit from the structural correlations in the graph, producing <strong>tighter prediction sets</strong> while maintaining the same coverage guarantee.</p>
+<p>The following code shows how to apply conformal prediction on top of a trained GNN using a simple calibration procedure. The three key parameters are: <code>alpha</code> (the error rate — 0.1 means 90% coverage), the calibration node mask, and the trained GNN's softmax probabilities.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">conformal_prediction_sets</span><span class="p">(</span><span class="n">softmax_probs</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">calib_mask</span><span class="p">,</span> <span class="n">test_mask</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="sd">    Compute conformal prediction sets for a trained GNN.</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="sd">    softmax_probs: [N, C] tensor from GNN (after softmax)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="sd">    labels: [N] true labels (integers 0..C-1)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="sd">    calib_mask: boolean mask for calibration nodes</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="sd">    test_mask: boolean mask for test nodes</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="sd">    alpha: error rate (0.1 = 90% marginal coverage guarantee)</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="sd">    """</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="c1"># Nonconformity scores on calibration set</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">calib_probs</span> <span class="o">=</span> <span class="n">softmax_probs</span><span class="p">[</span><span class="n">calib_mask</span><span class="p">]</span>  <span class="c1"># [n_calib, C]</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="n">calib_labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">calib_mask</span><span class="p">]</span>         <span class="c1"># [n_calib]</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="c1"># Score = 1 - probability assigned to the true label</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="n">calib_scores</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">calib_probs</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">calib_labels</span><span class="p">)),</span> <span class="n">calib_labels</span><span class="p">]</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="c1"># Conformal quantile (with finite-sample correction)</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">calib_scores</span><span class="p">)</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="n">quantile_level</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">n</span><span class="p">)</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="n">q_hat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">calib_scores</span><span class="p">,</span> <span class="n">quantile_level</span><span class="p">)</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    <span class="c1"># Prediction sets for test nodes</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>    <span class="n">test_probs</span> <span class="o">=</span> <span class="n">softmax_probs</span><span class="p">[</span><span class="n">test_mask</span><span class="p">]</span>  <span class="c1"># [n_test, C]</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>    <span class="c1"># Include class y if (1 - p(y|v)) &lt;= q_hat, i.e., p(y|v) &gt;= 1 - q_hat</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>    <span class="n">prediction_sets</span> <span class="o">=</span> <span class="n">test_probs</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">q_hat</span><span class="p">)</span>  <span class="c1"># [n_test, C], boolean</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>    <span class="n">set_sizes</span> <span class="o">=</span> <span class="n">prediction_sets</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Conformal threshold q_hat: </span><span class="si">{</span><span class="n">q_hat</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Mean prediction set size: </span><span class="si">{</span><span class="n">set_sizes</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Fraction with singleton set: </span><span class="si">{</span><span class="p">(</span><span class="n">set_sizes</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>    <span class="k">return</span> <span class="n">prediction_sets</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="c1"># Example usage on a trained GNN</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>    <span class="n">logits</span> <span class="o">=</span> <span class="n">trained_gnn</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>    <span class="n">probs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a><span class="n">pred_sets</span> <span class="o">=</span> <span class="n">conformal_prediction_sets</span><span class="p">(</span>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>    <span class="n">probs</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">calib_mask</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">test_mask</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span>
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition mascot-warning">
+<p class="admonition-title">The Coverage Guarantee Is Marginal, Not Per-Node</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warns about a subtle but important limitation">
+The conformal prediction guarantee states that the <strong>average</strong> coverage across all test nodes is at least <span class="arithmatex">\( 1 - \alpha \)</span>. This is called <strong>marginal coverage</strong>. It does <strong>not</strong> guarantee that every individual node's prediction set contains the true label with probability <span class="arithmatex">\( 1 - \alpha \)</span>. Some nodes — particularly those far from the training distribution or in underrepresented communities — may have empirical coverage much below the target. DAPS and related methods address this by stratifying calibration by neighborhood type, improving coverage for specific subpopulations. Always check per-group coverage in addition to marginal coverage when deploying conformalized GNNs.</p>
+</div>
+<h2 id="247-the-one-for-all-ofa-model-in-depth">24.7 The One-For-All (OFA) Model in Depth<a class="headerlink" href="#247-the-one-for-all-ofa-model-in-depth" title="Permanent link">¶</a></h2>
+<p>Chapter 23 introduced OFA as a graph foundation model that routes all graph modalities through a shared natural language space. This section revisits OFA through the lens of the three challenges it addresses — which connects it to the self-supervised and in-context learning ideas developed earlier in this chapter.</p>
+<p>OFA's three technical innovations correspond directly to the three fundamental obstacles to graph foundation models:</p>
+<p><strong>For feature heterogeneity:</strong> OFA uses a text encoder (a frozen LLM) to convert all node attributes to a shared embedding space. This is conceptually similar to DGI's approach of learning a universal representation — but OFA uses language rather than self-supervised objectives as the universal channel.</p>
+<p><strong>For task heterogeneity:</strong> OFA represents tasks themselves as text, using what it calls <strong>context nodes</strong> — virtual nodes added to the graph whose text descriptions encode the task instruction. A node classification task becomes "classify this node into one of these categories"; a link prediction task becomes "predict whether an edge exists between these two nodes." The GNN processes context nodes alongside regular nodes and attends to their text features to determine what type of output to produce.</p>
+<p><strong>For structural diversity:</strong> OFA trains on a diverse collection of graphs simultaneously — citation networks, molecular graphs, knowledge graphs — and uses the shared text encoding to align their feature spaces. The resulting model has seen enough structural variation during training that it generalizes to new graph types without retraining.</p>
+<p>The following table compares OFA, PRODIGY, and a standard supervised GNN across key dimensions, reinforcing the distinctions explained in prose above.</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Supervised GNN</th>
+<th>PRODIGY (ICL)</th>
+<th>OFA (Foundation)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Labeled data required</td>
+<td>Yes (many)</td>
+<td>Yes (few, at inference)</td>
+<td>Pre-training only</td>
+</tr>
+<tr>
+<td>New task adaptation</td>
+<td>Fine-tuning</td>
+<td>Prompt graph construction</td>
+<td>Context node insertion</td>
+</tr>
+<tr>
+<td>Cross-dataset transfer</td>
+<td>No</td>
+<td>Limited</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Feature space</td>
+<td>Fixed</td>
+<td>Fixed</td>
+<td>Unified (via LLM text)</td>
+</tr>
+<tr>
+<td>Training complexity</td>
+<td>Low</td>
+<td>Medium</td>
+<td>High (multi-dataset)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="diagram-dgi-vs-contrastive-learning-concept-map">Diagram: DGI vs. Contrastive Learning — Concept Map<a class="headerlink" href="#diagram-dgi-vs-contrastive-learning-concept-map" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch24-ssl-concept-map/main.html" width="100%" height="482px" scrolling="no"></iframe>
+<p><a href="../../sims/ch24-ssl-concept-map/main.html">Run DGI vs. Contrastive Learning — Concept Map Fullscreen</a></p>
+<h2 id="248-benchmark-results">24.8 Benchmark Results<a class="headerlink" href="#248-benchmark-results" title="Permanent link">¶</a></h2>
+<p>The following table presents representative results on standard benchmarks, organized by learning paradigm. Node classification accuracy (%) on ogbn-arxiv is reported for node-level methods; the molecular property prediction AUC on ogbg-molhiv is reported for graph-level methods. All results use publicly reported numbers from 2020–2023.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Paradigm</th>
+<th>ogbn-arxiv Test Acc (%)</th>
+<th>ogbg-molhiv AUC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GCN (supervised)</td>
+<td>Supervised</td>
+<td>71.7</td>
+<td>76.1</td>
+</tr>
+<tr>
+<td>DGI → linear probe</td>
+<td>Self-supervised</td>
+<td>70.3</td>
+<td>75.3</td>
+</tr>
+<tr>
+<td>GRACE → linear probe</td>
+<td>Contrastive SSL</td>
+<td>71.2</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GraphCL → fine-tuned</td>
+<td>Contrastive SSL</td>
+<td>72.8</td>
+<td>78.6</td>
+</tr>
+<tr>
+<td>PRODIGY (5-shot)</td>
+<td>In-context</td>
+<td>68.4</td>
+<td>—</td>
+</tr>
+<tr>
+<td>DAPS (conformalized GCN)</td>
+<td>Uncertainty</td>
+<td>71.7 + coverage ≥ 90%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>OFA (zero-shot)</td>
+<td>Foundation</td>
+<td>73.5</td>
+<td>79.1</td>
+</tr>
+</tbody>
+</table>
+<p>The table reveals an important pattern: <strong>self-supervised methods approach supervised performance</strong> on node classification when using a linear probe, and often surpass it when fine-tuned on the downstream task. PRODIGY in 5-shot mode is competitive despite having no labeled data from the target task. OFA achieves the highest accuracy despite requiring no task-specific training — its advantage comes from its multi-dataset pre-training.</p>
+<h2 id="249-common-pitfalls">24.9 Common Pitfalls<a class="headerlink" href="#249-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>Confusing the corruption signal with the task signal in DGI.</strong> DGI shuffles node features to create negative samples — but this corruption must be purely random. If the corruption procedure inadvertently preserves some structural signal (for example, by shuffling only within communities), the discriminator task becomes trivial and the encoder learns nothing. Always verify that corrupted graphs are semantically incoherent by checking that a simple GNN cannot distinguish them from real graphs better than chance.</p>
+<p><strong>Choosing augmentations without considering the task.</strong> Graph augmentation strategies are not interchangeable. Edge dropout is appropriate when the downstream task depends on local neighborhood structure (e.g., node classification in citation networks). It is harmful when the task depends on specific edges (e.g., link prediction — dropping edges during pre-training teaches the encoder to ignore exactly the information needed for prediction). Always choose augmentations that are semantically consistent with the target task.</p>
+<p><strong>Applying conformal prediction to non-exchangeable test sets.</strong> The conformal coverage guarantee requires that calibration and test data are exchangeable — roughly, drawn from the same distribution in a way that the ordering does not matter. On graphs with temporal structure (e.g., dynamic citation networks where you calibrate on 2022 papers and test on 2023 papers), this assumption is violated. DAPS partially addresses this for spatial correlations but not temporal ones. For temporally structured graphs, use time-split calibration.</p>
+<p><strong>Treating prediction set size as a confidence score.</strong> A prediction set of size 1 means the conformal threshold was crossed by only one class — but this does not mean the GNN is highly accurate for this node. It means the GNN's probability for one class was high enough relative to the calibration threshold. Prediction set size is a <strong>coverage instrument</strong>, not a reliability score. High accuracy can coexist with large prediction sets (when the model is uncertain about the right answer among a small set of candidates).</p>
+<p><strong>Expecting OFA to generalize to arbitrary new graph types.</strong> OFA achieves impressive zero-shot generalization across the graph types it was pre-trained on. For graph domains not included in its training mixture (e.g., power grids, road networks, or social networks from non-English-speaking regions), OFA's text-based representations may be poorly calibrated. Zero-shot does not mean universally applicable.</p>
+<h2 id="2410-microsim-contrastive-learning-live-demo">24.10 MicroSim: Contrastive Learning Live Demo<a class="headerlink" href="#2410-microsim-contrastive-learning-live-demo" title="Permanent link">¶</a></h2>
+<h4 id="diagram-contrastive-loss-surface-explorer">Diagram: Contrastive Loss Surface Explorer<a class="headerlink" href="#diagram-contrastive-loss-surface-explorer" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch24-contrastive-loss-explorer/main.html" width="100%" height="482px" scrolling="no"></iframe>
+<p><a href="../../sims/ch24-contrastive-loss-explorer/main.html">Run Contrastive Loss Surface Explorer Fullscreen</a></p>
+<h2 id="2411-exercises">24.11 Exercises<a class="headerlink" href="#2411-exercises" title="Permanent link">¶</a></h2>
+<p>The following twelve exercises span all six levels of Bloom's taxonomy.</p>
+<p><strong>Remembering</strong></p>
+<ol>
+<li>
+<p>Name the two main self-supervised learning methods covered in this chapter. For each, state what serves as the "supervision signal" in place of human-provided labels.</p>
+</li>
+<li>
+<p>What is the conformal coverage guarantee? Write it as a probability inequality, defining each term.</p>
+</li>
+</ol>
+<p><strong>Understanding</strong></p>
+<ol>
+<li>
+<p>Explain the corruption strategy in DGI in your own words. Why does shuffling node features create a useful training signal? What property of real graphs does it exploit?</p>
+</li>
+<li>
+<p>Describe the role of the temperature parameter <span class="arithmatex">\( \tau \)</span> in the contrastive loss. What happens when <span class="arithmatex">\( \tau \)</span> is very small? What happens when <span class="arithmatex">\( \tau \)</span> is very large? Why does each extreme cause problems?</p>
+</li>
+<li>
+<p>Explain the difference between a prediction set and a point prediction. Why might a user prefer a prediction set even when a point prediction is available?</p>
+</li>
+</ol>
+<p><strong>Applying</strong></p>
+<ol>
+<li>
+<p>You are building a GNN for protein function prediction, where proteins are nodes and interactions are edges. Only 2% of proteins in your graph have annotated functions. Describe how you would use DGI pre-training followed by fine-tuning on the labeled proteins. What augmentation strategy would you choose for the corruption step, and why?</p>
+</li>
+<li>
+<p>Implement the conformal prediction procedure from Section 24.6.1 for a 3-class node classification problem. Given calibration nonconformity scores <code>[0.1, 0.3, 0.6, 0.2, 0.7, 0.4, 0.1, 0.5, 0.2, 0.3]</code> and <span class="arithmatex">\( \alpha = 0.2 \)</span>, compute the conformal threshold <span class="arithmatex">\( \hat{q} \)</span> by hand. Show your work.</p>
+</li>
+</ol>
+<p><strong>Analyzing</strong></p>
+<ol>
+<li>
+<p>Compare DGI and GraphCL as self-supervised learning methods. In what sense does DGI maximize a global-local agreement and GraphCL maximize a view-view agreement? Can these two objectives conflict? Give a concrete scenario where one method would outperform the other.</p>
+</li>
+<li>
+<p>The contrastive loss has <span class="arithmatex">\( 2N - 1 \)</span> negatives per positive pair, where <span class="arithmatex">\( N \)</span> is the batch size. Analyze how batch size affects learning: why does a larger batch size generally help contrastive learning? What is the computational cost of this scaling? Is there a diminishing returns effect?</p>
+</li>
+</ol>
+<p><strong>Evaluating</strong></p>
+<ol>
+<li>
+<p>A paper proposes a new graph SSL method that uses <strong>label information</strong> during the augmentation step (for example, it ensures that positive pairs always come from nodes of the same class). This achieves higher downstream accuracy than vanilla GraphCL. Evaluate whether this is genuinely a self-supervised method or a form of supervised learning in disguise. What is the practical consequence of this distinction for deployment in label-scarce settings?</p>
+</li>
+<li>
+<p>DAPS improves conformal prediction sets by smoothing nonconformity scores over the graph. Critique this approach from the perspective of the coverage guarantee: does smoothing preserve the guarantee? Under what graph conditions would smoothing help most? Under what conditions could it hurt?</p>
+</li>
+</ol>
+<p><strong>Creating</strong></p>
+<ol>
+<li>Design a new self-supervised learning method for <strong>heterogeneous graphs</strong> (graphs with multiple node types and edge types, as in Chapter 15). Your method must: (a) define a pretext task that is meaningful for heterogeneous structure, (b) specify what counts as a "positive pair" and a "negative pair" in your method, (c) describe how your contrastive or discriminative loss would be modified to account for different node and edge types, and (d) predict on which heterogeneous graph benchmark your method would outperform DGI and GraphCL, and why.</li>
+</ol>
+<h2 id="2412-further-reading">24.12 Further Reading<a class="headerlink" href="#2412-further-reading" title="Permanent link">¶</a></h2>
+<p><strong>Deep Graph Infomax</strong> — Veličković et al. (2019). <em>ICLR 2019.</em> The foundational paper for mutual-information-based graph SSL. Section 3 (the DGI formulation) is essential reading; Section 5 (experimental results on citation networks and biological graphs) shows the quality of unsupervised embeddings. Relevant to Section 24.3.</p>
+<p><strong>Graph Contrastive Representation Learning (GraphCL)</strong> — You et al. (2020). <em>NeurIPS 2020.</em> arXiv:2010.13902. Systematic study of four augmentation strategies (node dropping, edge perturbation, attribute masking, subgraph sampling) on molecular and social network benchmarks. Table 1 (which augmentation works when) is the most practically useful result. Relevant to Section 24.4.</p>
+<p><strong>GRACE: Deep Graph Contrastive Representation Learning</strong> — Zhu et al. (2020). <em>ICML 2020 Workshop.</em> arXiv:2006.04131. Node-level contrastive SSL — the graph analog of SimCLR. The two-augmentation-two-encoder architecture is the key contribution. Relevant to Section 24.4.</p>
+<p><strong>PRODIGY: Enabling In-context Learning Over Graphs</strong> — Huang et al. (2023). <em>NeurIPS 2023.</em> arXiv:2305.12600. The prompt graph construction (Section 3.2) and the few-shot evaluation protocol (Section 4.2) are the most important technical sections. Relevant to Section 24.5.</p>
+<p><strong>Uncertainty Quantification over Graph with Conformalized Graph Neural Networks</strong> — Huang et al. (2023). <em>NeurIPS 2023.</em> arXiv:2305.14535. The DAPS method. Section 3 (the diffusion-smoothed nonconformity score) and Section 4 (the coverage proof) are the core contributions. The experimental section demonstrates tighter prediction sets than naive conformal prediction on ogbn-arxiv and ogbn-products. Relevant to Section 24.6.</p>
+<p><strong>A Tutorial on Conformal Prediction</strong> — Shafer and Vovk (2008). <em>JMLR.</em> The classical paper explaining conformal prediction from first principles. Sections 1–3 are accessible to readers with a statistics background. Relevant to Section 24.6 for those wanting the theoretical foundation.</p>
+<p><strong>One for All: Towards Training One Graph Model for All Classification Tasks</strong> — Liu et al. (2023). <em>arXiv:2310.00149.</em> The OFA paper. The context node construction (Section 3.2) and the cross-dataset transfer experiments (Table 3) are the key results. Relevant to Section 24.7.</p>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Chapter 24 Complete!</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrates chapter completion">
+You have reached the end of Chapter 24 — and with it, covered two of the most important open frontiers in graph machine learning. You now understand how DGI and graph contrastive learning extract rich representations from unlabeled graph data, how graph augmentation strategies create the views that drive contrastive learning, how PRODIGY extends in-context learning to graph-structured inputs, and how conformalized GNNs provide statistically rigorous uncertainty guarantees on top of any trained model. The next chapter brings everything together — agents, planning, and graphs — before the final conclusion synthesizes the full arc of the textbook.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../23-llm-gnn/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

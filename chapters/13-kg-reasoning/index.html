@@ -1,0 +1,3581 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Moves from entity embedding to query answering — multi-hop path queries, conjunctive box embeddings (Query2Box), and the Neural Bellman-Ford Network for state-of-the-art relational path reasoning.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/13-kg-reasoning/">
+      
+      
+        <link rel="prev" href="../12-knowledge-graph-embeddings/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 13: Reasoning over Knowledge Graphs - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 13: Reasoning over Knowledge Graphs">
+  <meta property="og:description" content="Moves from entity embedding to query answering — multi-hop path queries, conjunctive box embeddings (Query2Box), and the Neural Bellman-Ford Network for state-of-the-art relational path reasoning.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/13-kg-reasoning/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 13: Reasoning over Knowledge Graphs">
+  <meta name="twitter:description" content="Moves from entity embedding to query answering — multi-hop path queries, conjunctive box embeddings (Query2Box), and the Neural Bellman-Ford Network for state-of-the-art relational path reasoning.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-13-reasoning-over-knowledge-graphs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 13: Reasoning over Knowledge Graphs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_15" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_15" id="__nav_4_15_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_15_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_15">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#131-motivating-example-multi-hop-biomedical-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.1 Motivating Example: Multi-Hop Biomedical Queries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#132-multi-hop-queries-a-formal-taxonomy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2 Multi-Hop Queries: A Formal Taxonomy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.2 Multi-Hop Queries: A Formal Taxonomy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1321-path-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2.1 Path Queries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1322-conjunctive-queries-and-the-epfo-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2.2 Conjunctive Queries and the EPFO Class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1323-why-graph-traversal-fails-on-incomplete-kgs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.2.3 Why Graph Traversal Fails on Incomplete KGs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#133-query-embedding-from-entities-to-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.3 Query Embedding: From Entities to Queries
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#134-box-embeddings-query2box" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4 Box Embeddings: Query2Box
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.4 Box Embeddings: Query2Box">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1341-projection-following-a-relation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4.1 Projection: Following a Relation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1342-intersection-logical-and" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4.2 Intersection: Logical AND
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1343-distance-function-and-scoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4.3 Distance Function and Scoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1344-limitations-disjunction-and-negation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.4.4 Limitations: Disjunction and Negation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#135-neural-bellman-ford-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5 Neural Bellman-Ford Networks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="13.5 Neural Bellman-Ford Networks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1351-algorithm-to-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.1 Algorithm to Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1352-query-conditioned-initialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.2 Query-Conditioned Initialization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1353-message-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.3 Message Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1354-nbfnet-as-a-gnn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.5.4 NBFNet as a GNN
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#136-complete-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.6 Complete Implementation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#137-benchmark-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.7 Benchmark Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#138-microsim-query-box-traversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.8 MicroSim: Query Box Traversal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#139-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.9 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1310-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.10 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1311-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        13.11 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    13. Reasoning over Knowledge Graphs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/13-kg-reasoning/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-13-reasoning-over-knowledge-graphs">Chapter 13: Reasoning over Knowledge Graphs<a class="headerlink" href="#chapter-13-reasoning-over-knowledge-graphs" title="Permanent link">¶</a></h1>
+<p><strong>Part 3: Knowledge Graphs and Reasoning</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Moves from entity embedding to query answering: covers query embedding, box embeddings for conjunctive queries (Query2Box), and the Neural Bellman-Ford Network for multi-hop path reasoning, with complete treatment of EPFO query classes and their geometric representations.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 5 concepts from the learning graph:</p>
+<ol>
+<li>Query Embedding</li>
+<li>Box Embedding (Query2Box)</li>
+<li>Multi-Hop Query</li>
+<li>Conjunctive Query</li>
+<li>Neural Bellman-Ford Net</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../12-knowledge-graph-embeddings/">Chapter 12: Knowledge Graph Embeddings</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Beyond Triple Completion — Reasoning at Scale</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+Chapter 12 taught you how to score individual triples: given <span class="arithmatex">\( (h, r, ?) \)</span>, rank all entities by their plausibility as the tail. That is a 1-hop lookup — one relation step from a known entity. But real-world reasoning rarely stops at one hop. A physician asking "Which approved drugs target proteins associated with Alzheimer's?" is asking a multi-hop query across a biomedical knowledge graph, requiring traversal through gene regulation, protein function, drug-target interaction, and drug approval status simultaneously. This chapter develops the geometric and algorithmic machinery to answer such queries efficiently — even when the KG is severely incomplete.</p>
+</div>
+<hr>
+<h2 id="131-motivating-example-multi-hop-biomedical-queries">13.1 Motivating Example: Multi-Hop Biomedical Queries<a class="headerlink" href="#131-motivating-example-multi-hop-biomedical-queries" title="Permanent link">¶</a></h2>
+<p>Alzheimer's disease research illustrates the multi-hop query problem vividly. A biologist searching a biomedical knowledge graph might pose the question: <em>"Find proteins that are encoded by genes regulated by the transcription factor NFκB AND that are targeted by at least one FDA-approved oncology drug."</em> Written as a query graph, this request decomposes into two reasoning chains that must be satisfied simultaneously:</p>
+<div class="arithmatex">\[
+\text{Chain 1:}\quad \text{NFkB} \xrightarrow{\textit{regulates}} \text{Gene}_{?} \xrightarrow{\textit{encodes}} \text{Protein}_{?}
+\]</div>
+<div class="arithmatex">\[
+\text{Chain 2:}\quad \text{Drug}_{?} \xrightarrow{\textit{targets}} \text{Protein}_{?} \quad\wedge\quad \text{Drug}_{?} \xrightarrow{\textit{approvedFor}} \text{Oncology}
+\]</div>
+<p>The two chains must agree on the same <span class="arithmatex">\( \text{Protein}_? \)</span>. This is a <strong>conjunctive query</strong> — a logical AND over multiple path conditions. No single triple-completion lookup can answer it; the system must traverse multiple edges and enforce consistency across chains.</p>
+<p>The challenge is compounded by incompleteness: many of the edges in the biomedical KG are missing. Gene-regulation relationships are only partially recorded; drug-target interactions are perhaps 30% complete in published databases. A system that answers only over observed triples will miss most correct answers. The embedding-based approach developed in this chapter predicts answers even when intermediate facts are absent, by reasoning through the geometry of the embedding space rather than requiring explicit graph traversal.</p>
+<hr>
+<h2 id="132-multi-hop-queries-a-formal-taxonomy">13.2 Multi-Hop Queries: A Formal Taxonomy<a class="headerlink" href="#132-multi-hop-queries-a-formal-taxonomy" title="Permanent link">¶</a></h2>
+<p>Before developing the machinery, it is worth establishing a precise taxonomy of query types. All queries considered in this chapter are formulated over a set of entities <span class="arithmatex">\( \mathcal{E} \)</span>, a set of relations <span class="arithmatex">\( \mathcal{R} \)</span>, and an incomplete set of observed triples <span class="arithmatex">\( \mathcal{T} \)</span>.</p>
+<h3 id="1321-path-queries">13.2.1 Path Queries<a class="headerlink" href="#1321-path-queries" title="Permanent link">¶</a></h3>
+<p>The simplest multi-hop extension of link prediction is the <strong>path query</strong>: a chain of relation edges starting from a known anchor entity <span class="arithmatex">\( e_s \)</span> and asking for all entities reachable via a specific sequence of relation types <span class="arithmatex">\( (r_1, r_2, \ldots, r_L) \)</span>:</p>
+<div class="arithmatex">\[
+q = \bigl(e_s,\ (r_1, r_2, \ldots, r_L),\ ?\bigr)
+\]</div>
+<p>A 1-hop path query (<span class="arithmatex">\( L = 1 \)</span>) is exactly the link prediction problem from Chapter 12. A 2-hop path query (<span class="arithmatex">\( L = 2 \)</span>) asks: follow relation <span class="arithmatex">\( r_1 \)</span> from <span class="arithmatex">\( e_s \)</span> to some intermediate entity, then follow <span class="arithmatex">\( r_2 \)</span> to reach the answer. For example, <span class="arithmatex">\( (\text{Einstein},\ (\textit{bornIn},\, \textit{officialLanguage}),\ ?) \)</span> asks for languages spoken in Einstein's birth country.</p>
+<h3 id="1322-conjunctive-queries-and-the-epfo-class">13.2.2 Conjunctive Queries and the EPFO Class<a class="headerlink" href="#1322-conjunctive-queries-and-the-epfo-class" title="Permanent link">¶</a></h3>
+<p>A <strong>conjunctive query</strong> extends path queries to require simultaneous satisfaction of multiple path conditions, connected by logical AND. The EPFO (Existential Positive First-Order) query class covers all combinations of AND (<span class="arithmatex">\( \wedge \)</span>) and OR (<span class="arithmatex">\( \vee \)</span>) operations over path conditions, where variables are existentially quantified. Standard query shapes have been assigned short names in the literature:</p>
+<table>
+<thead>
+<tr>
+<th>Query type</th>
+<th>Notation</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1-hop</td>
+<td><strong>1p</strong></td>
+<td>Single relation edge from one anchor</td>
+</tr>
+<tr>
+<td>2-hop chain</td>
+<td><strong>2p</strong></td>
+<td>Two sequential edges from one anchor</td>
+</tr>
+<tr>
+<td>3-hop chain</td>
+<td><strong>3p</strong></td>
+<td>Three sequential edges from one anchor</td>
+</tr>
+<tr>
+<td>2-chain intersection</td>
+<td><strong>2i</strong></td>
+<td>Two 1-hop chains sharing the answer variable</td>
+</tr>
+<tr>
+<td>3-chain intersection</td>
+<td><strong>3i</strong></td>
+<td>Three 1-hop chains sharing the answer variable</td>
+</tr>
+<tr>
+<td>Path then intersection</td>
+<td><strong>pi</strong></td>
+<td>2-hop chain AND a 1-hop chain</td>
+</tr>
+<tr>
+<td>Intersection then path</td>
+<td><strong>ip</strong></td>
+<td>Two 1-hop chains intersect, then one more hop</td>
+</tr>
+</tbody>
+</table>
+<p>The 2i query is perhaps the most important: it asks for entities that satisfy two independent path conditions simultaneously:</p>
+<div class="arithmatex">\[
+q^{\text{2i}} = \bigl\{t \in \mathcal{E} : \exists a_1\ (e_1, r_1, a_1) \wedge (a_1, r_2, t) \wedge \exists a_2\ (e_2, r_3, a_2) \wedge (a_2, r_4, t)\bigr\}
+\]</div>
+<p>Two independent chains (starting from anchor entities <span class="arithmatex">\( e_1 \)</span> and <span class="arithmatex">\( e_2 \)</span>) must converge at the same answer entity <span class="arithmatex">\( t \)</span>. This is the biomedical query from §13.1: the NFκB chain and the drug-target chain must point to the same protein.</p>
+<h3 id="1323-why-graph-traversal-fails-on-incomplete-kgs">13.2.3 Why Graph Traversal Fails on Incomplete KGs<a class="headerlink" href="#1323-why-graph-traversal-fails-on-incomplete-kgs" title="Permanent link">¶</a></h3>
+<p>A natural approach to multi-hop query answering is pure graph traversal: start at the anchor entity, follow all edges matching <span class="arithmatex">\( r_1 \)</span>, then from those intermediate nodes follow all edges matching <span class="arithmatex">\( r_2 \)</span>, and so on. This gives exact answers on a complete KG — but on an incomplete KG, traversal fails if any intermediate edge is missing.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Recall Degrades Exponentially with Path Length</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking about the missing edges problem">
+If a KG is 80% complete (each true edge is observed with probability 0.8, independently), then the probability of an entire L-hop path being traversable is <span class="arithmatex">\( 0.8^L \)</span>. At <span class="arithmatex">\( L = 2 \)</span>: 64% recall. At <span class="arithmatex">\( L = 3 \)</span>: 51%. At <span class="arithmatex">\( L = 5 \)</span>: 33%. Even a relatively complete KG loses two-thirds of correct answers on 5-hop queries. For biomedical KGs that are 30–50% complete, the situation is far worse. This is why raw graph traversal is fundamentally inadequate for multi-hop reasoning: the expected recall decreases exponentially with path length. Embedding-based query answering circumvents this by reasoning through the smooth geometry of the embedding space, inferring the plausibility of missing intermediate facts rather than requiring their explicit presence.</p>
+</div>
+<hr>
+<h2 id="133-query-embedding-from-entities-to-queries">13.3 Query Embedding: From Entities to Queries<a class="headerlink" href="#133-query-embedding-from-entities-to-queries" title="Permanent link">¶</a></h2>
+<p>The <strong>query embedding</strong> paradigm lifts the entity embedding idea from Chapter 12 to the level of entire queries. Instead of learning a vector for each entity, we learn to map each <em>query</em> to a geometric object in the embedding space such that true answer entities cluster inside or near that object.</p>
+<p>For path queries, the simplest query embedding is chain composition. Using the TransE convention (relation = translation vector), the query embedding for a 2-hop path is:</p>
+<div class="arithmatex">\[
+\mathbf{q}_{(e_s, r_1, r_2)} = \mathbf{e}_s + \mathbf{r}_1 + \mathbf{r}_2
+\]</div>
+<p>A candidate answer entity <span class="arithmatex">\( t \)</span> is scored by its distance to the query point:</p>
+<div class="arithmatex">\[
+f(q, t) = -\|\mathbf{q} - \mathbf{t}\|_2
+\]</div>
+<p>This approach, introduced as <strong>GQE</strong> (Hamilton et al., 2018), works for path queries but has a critical limitation: there is no natural way to represent logical conjunction between two <em>point</em> embeddings. The average of two points gives a point, but the set of entities satisfying a conjunction is generally a <em>region</em> of the embedding space. Box embeddings resolve this by replacing points with axis-aligned hyper-rectangles whose size encodes the breadth of valid answers.</p>
+<hr>
+<h2 id="134-box-embeddings-query2box">13.4 Box Embeddings: Query2Box<a class="headerlink" href="#134-box-embeddings-query2box" title="Permanent link">¶</a></h2>
+<p><strong>Query2Box</strong> (Ren et al., 2020) represents each query as a <strong>hyper-rectangle</strong> (axis-aligned box) in <span class="arithmatex">\( \mathbb{R}^d \)</span>:</p>
+<div class="arithmatex">\[
+\text{Box}(\mathbf{c},\, \mathbf{o}) = \bigl\{\mathbf{x} \in \mathbb{R}^d :\ |x_i - c_i| \leq o_i\ \text{ for all } i \in [d]\bigr\}
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{c} \in \mathbb{R}^d \)</span> is the center and <span class="arithmatex">\( \mathbf{o} \in \mathbb{R}^d_{\geq 0} \)</span> is the offset vector (non-negative half-widths). Entities falling inside the box are predicted answers; entities outside are non-answers. The key intuition: the <strong>offset</strong> encodes query specificity — large offsets indicate many plausible answers (high uncertainty); small offsets indicate high specificity (narrow answer set). Conjunctions shrink the box; following a relation expands it.</p>
+<h3 id="1341-projection-following-a-relation">13.4.1 Projection: Following a Relation<a class="headerlink" href="#1341-projection-following-a-relation" title="Permanent link">¶</a></h3>
+<p>Starting from an anchor entity <span class="arithmatex">\( e_s \)</span> (treated as a zero-offset box <span class="arithmatex">\( \text{Box}(\mathbf{e}_s, \mathbf{0}) \)</span>), following a relation <span class="arithmatex">\( r \)</span> shifts the center and expands the offset via learned parameters:</p>
+<div class="arithmatex">\[
+\text{Proj}\!\left(\text{Box}(\mathbf{c}, \mathbf{o}),\, r\right) = \text{Box}\!\left(\mathbf{c} + \mathbf{r}_c,\ \text{softplus}(\mathbf{o} + \mathbf{r}_o)\right)
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{r}_c \in \mathbb{R}^d \)</span> is the learned center shift and <span class="arithmatex">\( \mathbf{r}_o \in \mathbb{R}^d \)</span> is the learned offset shift for relation <span class="arithmatex">\( r \)</span>. The softplus function <span class="arithmatex">\( \log(1 + e^x) \)</span> ensures the offset remains non-negative while being differentiable everywhere. The offset grows with each hop because traversing a relation from a set of entities reaches a generally broader set of entities — uncertainty accumulates.</p>
+<p>For a 2-hop path query <span class="arithmatex">\( (e_s, (r_1, r_2), ?) \)</span>:</p>
+<div class="arithmatex">\[
+q_\text{box} = \text{Proj}\!\left(\text{Proj}\!\left(\text{Box}(\mathbf{e}_s, \mathbf{0}),\, r_1\right),\, r_2\right)
+\]</div>
+<h3 id="1342-intersection-logical-and">13.4.2 Intersection: Logical AND<a class="headerlink" href="#1342-intersection-logical-and" title="Permanent link">¶</a></h3>
+<p>The conjunction of multiple boxes represents entities satisfying all conditions simultaneously. Given k query boxes <span class="arithmatex">\( \{(\mathbf{c}_1, \mathbf{o}_1), \ldots, (\mathbf{c}_k, \mathbf{o}_k)\} \)</span>, the intersection box is:</p>
+<div class="arithmatex">\[
+\mathbf{c}_\text{int} = \sum_{j=1}^{k} w_j\, \mathbf{c}_j, \qquad w_j = \text{softmax}\!\left(f_\text{att}(\mathbf{c}_j)\right)_j
+\]</div>
+<div class="arithmatex">\[
+\mathbf{o}_\text{int} = \text{sigmoid}\!\left(f_\text{off}\!\left(\min_j \mathbf{o}_j,\; \bar{\mathbf{o}}\right)\right) \odot \min_j \mathbf{o}_j
+\]</div>
+<p>where <span class="arithmatex">\( f_\text{att} \)</span> and <span class="arithmatex">\( f_\text{off} \)</span> are learned MLPs, <span class="arithmatex">\( \bar{\mathbf{o}} = \frac{1}{k} \sum_j \mathbf{o}_j \)</span> is the mean offset, and the element-wise minimum <span class="arithmatex">\( \min_j \mathbf{o}_j \)</span> enforces that the intersection cannot be larger than the smallest input box — semantically correct because AND is more restrictive than any individual constraint. The sigmoid shrinkage further contracts the offset to reflect the narrowing of the feasible region.</p>
+<h3 id="1343-distance-function-and-scoring">13.4.3 Distance Function and Scoring<a class="headerlink" href="#1343-distance-function-and-scoring" title="Permanent link">¶</a></h3>
+<p>For a candidate answer entity <span class="arithmatex">\( \mathbf{e}_t \)</span> and a query box <span class="arithmatex">\( (\mathbf{c}, \mathbf{o}) \)</span>, the box distance decomposes into an exterior distance (zero inside, positive outside) and a small interior smoothing term:</p>
+<div class="arithmatex">\[
+d_\text{out}(\mathbf{e}_t, \mathbf{c}, \mathbf{o}) = \left\|\max\!\bigl(|\mathbf{e}_t - \mathbf{c}| - \mathbf{o},\; \mathbf{0}\bigr)\right\|_1
+\]</div>
+<div class="arithmatex">\[
+d_\text{in}(\mathbf{e}_t, \mathbf{c}, \mathbf{o}) = \left\|\mathbf{c} - \min\!\bigl(\mathbf{o},\; |\mathbf{e}_t - \mathbf{c}|\bigr)\right\|_1
+\]</div>
+<div class="arithmatex">\[
+d_\text{box}(\mathbf{e}_t, \mathbf{c}, \mathbf{o}) = d_\text{out}(\mathbf{e}_t, \mathbf{c}, \mathbf{o}) + \lambda \cdot d_\text{in}(\mathbf{e}_t, \mathbf{c}, \mathbf{o}), \quad \lambda = 0.02
+\]</div>
+<p>The outside distance is zero when the entity is inside the box; the inside distance provides gradient even for entities that technically satisfy the query, encouraging answers to cluster near the center. The plausibility score is:</p>
+<div class="arithmatex">\[
+f(q, t) = -d_\text{box}(\mathbf{e}_t, \mathbf{c}_q, \mathbf{o}_q)
+\]</div>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Query2Box for Real-Time KG Question Answering</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving a tip about Query2Box in production">
+Query2Box's inference cost for a given query is <span class="arithmatex">\( O(|\mathcal{E}|) \)</span> — compute the query box once in <span class="arithmatex">\( O(L) \)</span> time (L hops), then evaluate <span class="arithmatex">\( d_\text{box} \)</span> against all entity embeddings simultaneously via a vectorized operation. For a KG with 1 million entities at embedding dimension 400, this is a single matrix operation taking milliseconds on a GPU. This constant-time-per-entity property makes Query2Box practical for real-time question answering over large KGs — in contrast to graph traversal approaches whose cost grows with the number of valid intermediate paths, which can be exponential in path length.</p>
+</div>
+<h3 id="1344-limitations-disjunction-and-negation">13.4.4 Limitations: Disjunction and Negation<a class="headerlink" href="#1344-limitations-disjunction-and-negation" title="Permanent link">¶</a></h3>
+<p>Query2Box handles conjunction (AND) via box intersection, but cannot cleanly represent <strong>disjunction</strong> (OR): the union of two boxes is not a box. The model approximates OR by evaluating each disjunct as a separate query and taking the maximum score across disjuncts — a valid but non-differentiable approximation at the query boundary.</p>
+<p><strong>Negation</strong> (NOT) is fundamentally incompatible with box geometry: the complement of a hyper-rectangle in <span class="arithmatex">\( \mathbb{R}^d \)</span> is a non-convex union of <span class="arithmatex">\( 2d \)</span> half-spaces, which cannot be compactly represented as another box.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Query2Box Cannot Handle Negation</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning about negation limitations">
+If your query workload includes NOT operators — "Find proteins associated with Disease X but NOT targeted by Drug Y" — Query2Box will produce incorrect results. The complement of a box has no compact box representation, so applying Query2Box's distance function to a negated condition is geometrically meaningless. The successor model BetaE (Ren &amp; Leskovec, 2020) uses Beta distribution embeddings, whose complement distributions represent negation naturally. Always audit your query workload for negation before committing to Query2Box; for mixed AND/OR/NOT workloads, BetaE is the appropriate baseline.</p>
+</div>
+<hr>
+<h2 id="135-neural-bellman-ford-networks">13.5 Neural Bellman-Ford Networks<a class="headerlink" href="#135-neural-bellman-ford-networks" title="Permanent link">¶</a></h2>
+<h3 id="1351-algorithm-to-architecture">13.5.1 Algorithm to Architecture<a class="headerlink" href="#1351-algorithm-to-architecture" title="Permanent link">¶</a></h3>
+<p>The <strong>Neural Bellman-Ford Network</strong> (NBFNet, Zhu et al., 2021) approaches KG reasoning from a graph-algorithmic perspective: it generalizes the classical Bellman-Ford shortest-path algorithm to learn relational path reasoning through the graph structure.</p>
+<p>In classical Bellman-Ford, given source node <span class="arithmatex">\( s \)</span> with initial distance 0, the update rule is:</p>
+<div class="arithmatex">\[
+d^{(t+1)}(v) = \min_{(u, v) \in E}\!\left\{d^{(t)}(u) + w(u,v)\right\}
+\]</div>
+<p>NBFNet replaces the scalar <span class="arithmatex">\( d(v) \in \mathbb{R} \)</span> with a representation vector <span class="arithmatex">\( \mathbf{h}_v^{(t)} \in \mathbb{R}^d \)</span>, replaces the edge weight <span class="arithmatex">\( + w(u,v) \)</span> with a learned relation-conditioned message function, and replaces the min aggregation with sum:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(t+1)} = \sigma\!\left(\sum_{(u, r', v) \in \mathcal{E}} f_\theta\!\left(\mathbf{h}_u^{(t)},\, \mathbf{r}'\right) + \mathbf{h}_v^{(t)}\right)
+\]</div>
+<p>where the self-loop term <span class="arithmatex">\( \mathbf{h}_v^{(t)} \)</span> plays the role of the identity message (preserving prior state across iterations), and <span class="arithmatex">\( f_\theta(\mathbf{h}_u, \mathbf{r}') \)</span> is a learned function of neighbor state and edge relation type.</p>
+<h3 id="1352-query-conditioned-initialization">13.5.2 Query-Conditioned Initialization<a class="headerlink" href="#1352-query-conditioned-initialization" title="Permanent link">¶</a></h3>
+<p>The innovation that makes NBFNet a reasoning system rather than a generic GNN is its <strong>query-conditioned initialization</strong>. For a query <span class="arithmatex">\( (e_s, r_q, ?) \)</span>:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(0)} = \begin{cases} \mathbf{r}_q &amp; \text{if } v = e_s \\ \mathbf{0} &amp; \text{otherwise} \end{cases}
+\]</div>
+<p>The source entity receives the query relation embedding as its initial representation; all others start at zero. As Bellman-Ford iterations proceed, the query-conditioned signal propagates from <span class="arithmatex">\( e_s \)</span> through the relational graph, with each message operation incorporating the relation types along the traversed path. After <span class="arithmatex">\( T \)</span> iterations, <span class="arithmatex">\( \mathbf{h}_v^{(T)} \)</span> encodes the query-conditioned reachability of entity <span class="arithmatex">\( v \)</span> from <span class="arithmatex">\( e_s \)</span> via learned relational paths — integrating information from all paths of length up to <span class="arithmatex">\( T \)</span> implicitly.</p>
+<p>The final score for candidate answer <span class="arithmatex">\( t \)</span> is:</p>
+<div class="arithmatex">\[
+f(e_s, r_q, t) = \text{MLP}_\text{score}\!\left(\mathbf{h}_t^{(T)}\right)
+\]</div>
+<h3 id="1353-message-function">13.5.3 Message Function<a class="headerlink" href="#1353-message-function" title="Permanent link">¶</a></h3>
+<p>Zhu et al. (2021) find that a DistMult-inspired query-conditioned message works best:</p>
+<div class="arithmatex">\[
+f_\theta(\mathbf{h}_u^{(t)},\, r') = \mathbf{h}_u^{(t)} \odot \left(W_{r'}\, \mathbf{r}_q\right)
+\]</div>
+<p>where <span class="arithmatex">\( W_{r'} \)</span> is a learned relation-specific matrix and <span class="arithmatex">\( \mathbf{r}_q \)</span> is the query relation embedding. This formulation makes the message <strong>query-dependent</strong>: the same graph edge <span class="arithmatex">\( (u, r', v) \)</span> contributes differently to different queries, because the message is modulated by the query relation <span class="arithmatex">\( r_q \)</span>. This is the crucial distinction from a standard heterogeneous GNN: NBFNet messages are not just a function of the edge type but of the edge type <em>conditioned on the specific query being answered</em>.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">NBFNet Is Just Bellman-Ford with Learned Weights</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage offering encouragement about NBFNet">
+Every component of NBFNet has a direct Bellman-Ford analogue: the initialization seeds reasoning from the query source; the iteration propagates query-conditioned information along edges; the message function computes edge-traversal relevance for the specific query; the scoring MLP reads off the final reachability estimate. If you've implemented message-passing GNNs, you've already implemented the hardest part of NBFNet — the only additions are the query-conditioned initialization and the relation-modulated message function. The conceptual leap is not architectural but interpretive: instead of computing node features, you are computing query-specific reachability representations.</p>
+</div>
+<h3 id="1354-nbfnet-as-a-gnn">13.5.4 NBFNet as a GNN<a class="headerlink" href="#1354-nbfnet-as-a-gnn" title="Permanent link">¶</a></h3>
+<p>NBFNet is formally a GNN operating on the heterogeneous relational graph <span class="arithmatex">\( G = (\mathcal{E}, \mathcal{T}, \mathcal{R}) \)</span>. The T Bellman-Ford iterations are T message-passing layers; the edge messages are relation-type-dependent; the initialization is query-dependent rather than feature-dependent. All training techniques from Chapters 7–8 apply directly: mini-batch training by sampling query triples, dropout on message activations, layer normalization between iterations, and early stopping on validation MRR.</p>
+<p>The key computational distinction from Query2Box is that NBFNet runs one forward pass <em>per query</em>, producing fresh representations for all entities conditioned on that specific query — whereas Query2Box runs one forward pass to train the entity and relation embeddings, then applies fixed embeddings at inference time. This makes NBFNet <span class="arithmatex">\( O(|\mathcal{T}| \cdot T) \)</span> per query vs. Query2Box's <span class="arithmatex">\( O(|\mathcal{E}| \cdot d) \)</span> per query — NBFNet is cheaper on sparse KGs, more expensive on dense ones.</p>
+<hr>
+<h2 id="136-complete-implementation">13.6 Complete Implementation<a class="headerlink" href="#136-complete-implementation" title="Permanent link">¶</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">MessagePassing</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># ══════════════════════════════════════════════════════════════════════════════</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Part 1: Query2Box — Core Geometric Operators</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># ══════════════════════════════════════════════════════════════════════════════</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="k">class</span><span class="w"> </span><span class="nc">BoxEmbedding</span><span class="p">:</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="w">    </span><span class="sd">"""A hyper-rectangle Box(c, o) with center c ∈ R^d and half-widths o ≥ 0."""</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>    <span class="c1"># (..., d)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">offset</span> <span class="o">=</span> <span class="n">offset</span>    <span class="c1"># (..., d) — all entries ≥ 0</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_emb</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">lam</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.02</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="w">        </span><span class="sd">"""d_box = d_out + λ · d_in  (L1 norm over dimensions)."""</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="n">diff</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">entity_emb</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">)</span>               <span class="c1"># (..., d)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>        <span class="n">d_out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">diff</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>        <span class="n">d_in</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">-</span> <span class="n">torch</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="n">diff</span><span class="p">),</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>        <span class="k">return</span> <span class="n">d_out</span> <span class="o">+</span> <span class="n">lam</span> <span class="o">*</span> <span class="n">d_in</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="k">class</span><span class="w"> </span><span class="nc">Query2Box</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="sd">    Query2Box: Reasoning over KGs in Vector Space using Box Embeddings</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="sd">    Ren et al., ICLR 2020.</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="sd">    Entity embeddings: point vectors (zero-offset boxes).</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="sd">    Relation parameters: center shift r_c, offset shift r_o.</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="sd">    Supports query types: 1p, 2p, 3p, 2i, 3i, pi, ip.</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="sd">    """</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_entities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">num_relations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">400</span><span class="p">):</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">dim</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>        <span class="c1"># Learnable parameters</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span>  <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_entities</span><span class="p">,</span>  <span class="n">dim</span><span class="p">)</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rel_center</span>  <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_relations</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>   <span class="c1"># center shift per relation</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rel_offset</span>  <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_relations</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>   <span class="c1"># offset shift per relation</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>        <span class="c1"># Intersection MLPs</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">inter_att</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>        <span class="p">)</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">inter_off</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dim</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sigmoid</span><span class="p">()</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>        <span class="p">)</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span>  <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_center</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span>  <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rel_offset</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span>   <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>    <span class="c1"># ── Geometric operators ────────────────────────────────────────────────</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">project</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">:</span> <span class="n">BoxEmbedding</span><span class="p">,</span> <span class="n">rel</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BoxEmbedding</span><span class="p">:</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="w">        </span><span class="sd">"""Follow relation rel from box: shift center, expand offset."""</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>        <span class="n">rc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rel_center</span><span class="p">(</span><span class="n">rel</span><span class="p">)</span>                             <span class="c1"># (B, d)</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>        <span class="n">ro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rel_offset</span><span class="p">(</span><span class="n">rel</span><span class="p">)</span>                             <span class="c1"># (B, d)</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>        <span class="k">return</span> <span class="n">BoxEmbedding</span><span class="p">(</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>            <span class="n">center</span><span class="o">=</span><span class="n">box</span><span class="o">.</span><span class="n">center</span> <span class="o">+</span> <span class="n">rc</span><span class="p">,</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>            <span class="n">offset</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="n">ro</span><span class="p">),</span>              <span class="c1"># ensures offset ≥ 0</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>        <span class="p">)</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">boxes</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BoxEmbedding</span><span class="p">:</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="w">        </span><span class="sd">"""Logical AND: attention-weighted center + shrunk offset."""</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>        <span class="n">centers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">center</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># (B, k, d)</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>        <span class="n">offsets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">b</span><span class="o">.</span><span class="n">offset</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">boxes</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># (B, k, d)</span>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>        <span class="c1"># Attention over centers</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>        <span class="n">attn</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inter_att</span><span class="p">(</span><span class="n">centers</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>           <span class="c1"># (B, k, d)</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>        <span class="n">new_center</span> <span class="o">=</span> <span class="p">(</span><span class="n">attn</span> <span class="o">*</span> <span class="n">centers</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>                   <span class="c1"># (B, d)</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>        <span class="c1"># Offset: sigmoid-shrink of element-wise min</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>        <span class="n">min_off</span>  <span class="o">=</span> <span class="n">offsets</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>                       <span class="c1"># (B, d)</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>        <span class="n">mean_off</span> <span class="o">=</span> <span class="n">offsets</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>                             <span class="c1"># (B, d)</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>        <span class="n">new_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inter_off</span><span class="p">(</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>            <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">min_off</span><span class="p">,</span> <span class="n">mean_off</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>        <span class="p">)</span> <span class="o">*</span> <span class="n">min_off</span>                                                <span class="c1"># (B, d)</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>        <span class="k">return</span> <span class="n">BoxEmbedding</span><span class="p">(</span><span class="n">new_center</span><span class="p">,</span> <span class="n">new_offset</span><span class="p">)</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">anchor_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity_idx</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BoxEmbedding</span><span class="p">:</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a><span class="w">        </span><span class="sd">"""Entity → zero-offset box (point embedding)."""</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>        <span class="n">emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span><span class="p">(</span><span class="n">entity_idx</span><span class="p">)</span>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>        <span class="k">return</span> <span class="n">BoxEmbedding</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">emb</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">emb</span><span class="p">))</span>
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_box</span><span class="p">:</span> <span class="n">BoxEmbedding</span><span class="p">,</span> <span class="n">tail_idx</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a><span class="w">        </span><span class="sd">"""f(q, t) = -d_box(e_t, query_box)."""</span>
+</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>        <span class="k">return</span> <span class="o">-</span><span class="n">query_box</span><span class="o">.</span><span class="n">distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span><span class="p">(</span><span class="n">tail_idx</span><span class="p">))</span>
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>
+</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>    <span class="c1"># ── Query-type forward methods ─────────────────────────────────────────</span>
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward_1p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="n">rel</span><span class="p">):</span>
+</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a><span class="w">        </span><span class="sd">"""1-hop: (head, rel, ?)."""</span>
+</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anchor_box</span><span class="p">(</span><span class="n">head</span><span class="p">),</span> <span class="n">rel</span><span class="p">)</span>
+</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>
+</span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward_2p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">):</span>
+</span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a><span class="w">        </span><span class="sd">"""2-hop path: (head, (r1, r2), ?)."""</span>
+</span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">anchor_box</span><span class="p">(</span><span class="n">head</span><span class="p">),</span> <span class="n">r1</span><span class="p">),</span> <span class="n">r2</span><span class="p">)</span>
+</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a>
+</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward_2i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">r2</span><span class="p">):</span>
+</span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a><span class="w">        </span><span class="sd">"""2-intersection: two 1-hop chains sharing the answer variable."""</span>
+</span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersect</span><span class="p">([</span>
+</span><span id="__span-0-108"><a id="__codelineno-0-108" name="__codelineno-0-108" href="#__codelineno-0-108"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">forward_1p</span><span class="p">(</span><span class="n">h1</span><span class="p">,</span> <span class="n">r1</span><span class="p">),</span>
+</span><span id="__span-0-109"><a id="__codelineno-0-109" name="__codelineno-0-109" href="#__codelineno-0-109"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">forward_1p</span><span class="p">(</span><span class="n">h2</span><span class="p">,</span> <span class="n">r2</span><span class="p">),</span>
+</span><span id="__span-0-110"><a id="__codelineno-0-110" name="__codelineno-0-110" href="#__codelineno-0-110"></a>        <span class="p">])</span>
+</span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111" href="#__codelineno-0-111"></a>
+</span><span id="__span-0-112"><a id="__codelineno-0-112" name="__codelineno-0-112" href="#__codelineno-0-112"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward_pi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h1</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">h2</span><span class="p">,</span> <span class="n">r3</span><span class="p">):</span>
+</span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113" href="#__codelineno-0-113"></a><span class="w">        </span><span class="sd">"""pi: 2-hop chain AND a 1-hop chain."""</span>
+</span><span id="__span-0-114"><a id="__codelineno-0-114" name="__codelineno-0-114" href="#__codelineno-0-114"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">intersect</span><span class="p">([</span>
+</span><span id="__span-0-115"><a id="__codelineno-0-115" name="__codelineno-0-115" href="#__codelineno-0-115"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">forward_2p</span><span class="p">(</span><span class="n">h1</span><span class="p">,</span> <span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">),</span>
+</span><span id="__span-0-116"><a id="__codelineno-0-116" name="__codelineno-0-116" href="#__codelineno-0-116"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">forward_1p</span><span class="p">(</span><span class="n">h2</span><span class="p">,</span> <span class="n">r3</span><span class="p">),</span>
+</span><span id="__span-0-117"><a id="__codelineno-0-117" name="__codelineno-0-117" href="#__codelineno-0-117"></a>        <span class="p">])</span>
+</span><span id="__span-0-118"><a id="__codelineno-0-118" name="__codelineno-0-118" href="#__codelineno-0-118"></a>
+</span><span id="__span-0-119"><a id="__codelineno-0-119" name="__codelineno-0-119" href="#__codelineno-0-119"></a>
+</span><span id="__span-0-120"><a id="__codelineno-0-120" name="__codelineno-0-120" href="#__codelineno-0-120"></a><span class="c1"># ══════════════════════════════════════════════════════════════════════════════</span>
+</span><span id="__span-0-121"><a id="__codelineno-0-121" name="__codelineno-0-121" href="#__codelineno-0-121"></a><span class="c1"># Part 2: NBFNet — Neural Bellman-Ford for KG Link Prediction</span>
+</span><span id="__span-0-122"><a id="__codelineno-0-122" name="__codelineno-0-122" href="#__codelineno-0-122"></a><span class="c1"># ══════════════════════════════════════════════════════════════════════════════</span>
+</span><span id="__span-0-123"><a id="__codelineno-0-123" name="__codelineno-0-123" href="#__codelineno-0-123"></a>
+</span><span id="__span-0-124"><a id="__codelineno-0-124" name="__codelineno-0-124" href="#__codelineno-0-124"></a><span class="k">class</span><span class="w"> </span><span class="nc">NBFNetLayer</span><span class="p">(</span><span class="n">MessagePassing</span><span class="p">):</span>
+</span><span id="__span-0-125"><a id="__codelineno-0-125" name="__codelineno-0-125" href="#__codelineno-0-125"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-126"><a id="__codelineno-0-126" name="__codelineno-0-126" href="#__codelineno-0-126"></a><span class="sd">    One Bellman-Ford iteration:</span>
+</span><span id="__span-0-127"><a id="__codelineno-0-127" name="__codelineno-0-127" href="#__codelineno-0-127"></a><span class="sd">      message f(h_u, r') = h_u ⊙ W_r' r_q  (DistMult-style, query-conditioned)</span>
+</span><span id="__span-0-128"><a id="__codelineno-0-128" name="__codelineno-0-128" href="#__codelineno-0-128"></a><span class="sd">      aggregate: sum over incoming edges</span>
+</span><span id="__span-0-129"><a id="__codelineno-0-129" name="__codelineno-0-129" href="#__codelineno-0-129"></a><span class="sd">      update: GRU recurrent step</span>
+</span><span id="__span-0-130"><a id="__codelineno-0-130" name="__codelineno-0-130" href="#__codelineno-0-130"></a><span class="sd">    """</span>
+</span><span id="__span-0-131"><a id="__codelineno-0-131" name="__codelineno-0-131" href="#__codelineno-0-131"></a>
+</span><span id="__span-0-132"><a id="__codelineno-0-132" name="__codelineno-0-132" href="#__codelineno-0-132"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="__span-0-133"><a id="__codelineno-0-133" name="__codelineno-0-133" href="#__codelineno-0-133"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">aggr</span><span class="o">=</span><span class="s1">'add'</span><span class="p">)</span>
+</span><span id="__span-0-134"><a id="__codelineno-0-134" name="__codelineno-0-134" href="#__codelineno-0-134"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">W_rel</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-0-135"><a id="__codelineno-0-135" name="__codelineno-0-135" href="#__codelineno-0-135"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">gru</span>   <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRUCell</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>
+</span><span id="__span-0-136"><a id="__codelineno-0-136" name="__codelineno-0-136" href="#__codelineno-0-136"></a>
+</span><span id="__span-0-137"><a id="__codelineno-0-137" name="__codelineno-0-137" href="#__codelineno-0-137"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">edge_rel_emb</span><span class="p">,</span> <span class="n">query_rel_emb</span><span class="p">):</span>
+</span><span id="__span-0-138"><a id="__codelineno-0-138" name="__codelineno-0-138" href="#__codelineno-0-138"></a>        <span class="n">agg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">propagate</span><span class="p">(</span>
+</span><span id="__span-0-139"><a id="__codelineno-0-139" name="__codelineno-0-139" href="#__codelineno-0-139"></a>            <span class="n">edge_index</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">,</span>
+</span><span id="__span-0-140"><a id="__codelineno-0-140" name="__codelineno-0-140" href="#__codelineno-0-140"></a>            <span class="n">edge_rel_emb</span><span class="o">=</span><span class="n">edge_rel_emb</span><span class="p">,</span>
+</span><span id="__span-0-141"><a id="__codelineno-0-141" name="__codelineno-0-141" href="#__codelineno-0-141"></a>            <span class="n">query_rel_emb</span><span class="o">=</span><span class="n">query_rel_emb</span><span class="p">,</span>
+</span><span id="__span-0-142"><a id="__codelineno-0-142" name="__codelineno-0-142" href="#__codelineno-0-142"></a>        <span class="p">)</span>
+</span><span id="__span-0-143"><a id="__codelineno-0-143" name="__codelineno-0-143" href="#__codelineno-0-143"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">gru</span><span class="p">(</span><span class="n">agg</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+</span><span id="__span-0-144"><a id="__codelineno-0-144" name="__codelineno-0-144" href="#__codelineno-0-144"></a>
+</span><span id="__span-0-145"><a id="__codelineno-0-145" name="__codelineno-0-145" href="#__codelineno-0-145"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h_j</span><span class="p">,</span> <span class="n">edge_rel_emb</span><span class="p">,</span> <span class="n">query_rel_emb_j</span><span class="p">):</span>
+</span><span id="__span-0-146"><a id="__codelineno-0-146" name="__codelineno-0-146" href="#__codelineno-0-146"></a>        <span class="c1"># h_j ⊙ W(r') applied to query relation — ties edge traversal to query</span>
+</span><span id="__span-0-147"><a id="__codelineno-0-147" name="__codelineno-0-147" href="#__codelineno-0-147"></a>        <span class="k">return</span> <span class="n">h_j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">W_rel</span><span class="p">(</span><span class="n">edge_rel_emb</span><span class="p">)</span> <span class="o">*</span> <span class="n">query_rel_emb_j</span>
+</span><span id="__span-0-148"><a id="__codelineno-0-148" name="__codelineno-0-148" href="#__codelineno-0-148"></a>
+</span><span id="__span-0-149"><a id="__codelineno-0-149" name="__codelineno-0-149" href="#__codelineno-0-149"></a>
+</span><span id="__span-0-150"><a id="__codelineno-0-150" name="__codelineno-0-150" href="#__codelineno-0-150"></a><span class="k">class</span><span class="w"> </span><span class="nc">NBFNet</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-151"><a id="__codelineno-0-151" name="__codelineno-0-151" href="#__codelineno-0-151"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-152"><a id="__codelineno-0-152" name="__codelineno-0-152" href="#__codelineno-0-152"></a><span class="sd">    Neural Bellman-Ford Network (Zhu et al., NeurIPS 2021).</span>
+</span><span id="__span-0-153"><a id="__codelineno-0-153" name="__codelineno-0-153" href="#__codelineno-0-153"></a>
+</span><span id="__span-0-154"><a id="__codelineno-0-154" name="__codelineno-0-154" href="#__codelineno-0-154"></a><span class="sd">    Forward pass for query (src, rel_q, ?):</span>
+</span><span id="__span-0-155"><a id="__codelineno-0-155" name="__codelineno-0-155" href="#__codelineno-0-155"></a><span class="sd">      1. Initialize h_src = r_q, h_other = 0</span>
+</span><span id="__span-0-156"><a id="__codelineno-0-156" name="__codelineno-0-156" href="#__codelineno-0-156"></a><span class="sd">      2. Run T Bellman-Ford layers (message-passing with relation-conditioned messages)</span>
+</span><span id="__span-0-157"><a id="__codelineno-0-157" name="__codelineno-0-157" href="#__codelineno-0-157"></a><span class="sd">      3. Score all entities via MLP(h_v^(T))</span>
+</span><span id="__span-0-158"><a id="__codelineno-0-158" name="__codelineno-0-158" href="#__codelineno-0-158"></a><span class="sd">    """</span>
+</span><span id="__span-0-159"><a id="__codelineno-0-159" name="__codelineno-0-159" href="#__codelineno-0-159"></a>
+</span><span id="__span-0-160"><a id="__codelineno-0-160" name="__codelineno-0-160" href="#__codelineno-0-160"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161" href="#__codelineno-0-161"></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-0-162"><a id="__codelineno-0-162" name="__codelineno-0-162" href="#__codelineno-0-162"></a>        <span class="n">num_entities</span><span class="p">:</span>  <span class="nb">int</span><span class="p">,</span>
+</span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163" href="#__codelineno-0-163"></a>        <span class="n">num_relations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164" href="#__codelineno-0-164"></a>        <span class="n">hidden_dim</span><span class="p">:</span>    <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span>
+</span><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165" href="#__codelineno-0-165"></a>        <span class="n">num_layers</span><span class="p">:</span>    <span class="nb">int</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span>
+</span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166" href="#__codelineno-0-166"></a>    <span class="p">):</span>
+</span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167" href="#__codelineno-0-167"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-168"><a id="__codelineno-0-168" name="__codelineno-0-168" href="#__codelineno-0-168"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">num_entities</span>  <span class="o">=</span> <span class="n">num_entities</span>
+</span><span id="__span-0-169"><a id="__codelineno-0-169" name="__codelineno-0-169" href="#__codelineno-0-169"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span>    <span class="o">=</span> <span class="n">hidden_dim</span>
+</span><span id="__span-0-170"><a id="__codelineno-0-170" name="__codelineno-0-170" href="#__codelineno-0-170"></a>
+</span><span id="__span-0-171"><a id="__codelineno-0-171" name="__codelineno-0-171" href="#__codelineno-0-171"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">relation_emb</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_relations</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>
+</span><span id="__span-0-172"><a id="__codelineno-0-172" name="__codelineno-0-172" href="#__codelineno-0-172"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+</span><span id="__span-0-173"><a id="__codelineno-0-173" name="__codelineno-0-173" href="#__codelineno-0-173"></a>            <span class="n">NBFNetLayer</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">)</span>
+</span><span id="__span-0-174"><a id="__codelineno-0-174" name="__codelineno-0-174" href="#__codelineno-0-174"></a>        <span class="p">])</span>
+</span><span id="__span-0-175"><a id="__codelineno-0-175" name="__codelineno-0-175" href="#__codelineno-0-175"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">score_mlp</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+</span><span id="__span-0-176"><a id="__codelineno-0-176" name="__codelineno-0-176" href="#__codelineno-0-176"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+</span><span id="__span-0-177"><a id="__codelineno-0-177" name="__codelineno-0-177" href="#__codelineno-0-177"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-0-178"><a id="__codelineno-0-178" name="__codelineno-0-178" href="#__codelineno-0-178"></a>        <span class="p">)</span>
+</span><span id="__span-0-179"><a id="__codelineno-0-179" name="__codelineno-0-179" href="#__codelineno-0-179"></a>
+</span><span id="__span-0-180"><a id="__codelineno-0-180" name="__codelineno-0-180" href="#__codelineno-0-180"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_idx</span><span class="p">,</span> <span class="n">rel_idx</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">edge_type</span><span class="p">):</span>
+</span><span id="__span-0-181"><a id="__codelineno-0-181" name="__codelineno-0-181" href="#__codelineno-0-181"></a><span class="w">        </span><span class="sd">"""</span>
+</span><span id="__span-0-182"><a id="__codelineno-0-182" name="__codelineno-0-182" href="#__codelineno-0-182"></a><span class="sd">        Returns scores: (num_entities,) — higher = more likely answer.</span>
+</span><span id="__span-0-183"><a id="__codelineno-0-183" name="__codelineno-0-183" href="#__codelineno-0-183"></a><span class="sd">        src_idx: int (query head entity)</span>
+</span><span id="__span-0-184"><a id="__codelineno-0-184" name="__codelineno-0-184" href="#__codelineno-0-184"></a><span class="sd">        rel_idx: scalar tensor (query relation)</span>
+</span><span id="__span-0-185"><a id="__codelineno-0-185" name="__codelineno-0-185" href="#__codelineno-0-185"></a><span class="sd">        """</span>
+</span><span id="__span-0-186"><a id="__codelineno-0-186" name="__codelineno-0-186" href="#__codelineno-0-186"></a>        <span class="n">N</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_entities</span>
+</span><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187" href="#__codelineno-0-187"></a>        <span class="n">device</span> <span class="o">=</span> <span class="n">edge_index</span><span class="o">.</span><span class="n">device</span>
+</span><span id="__span-0-188"><a id="__codelineno-0-188" name="__codelineno-0-188" href="#__codelineno-0-188"></a>
+</span><span id="__span-0-189"><a id="__codelineno-0-189" name="__codelineno-0-189" href="#__codelineno-0-189"></a>        <span class="c1"># Relation embeddings for each edge and for the query</span>
+</span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190" href="#__codelineno-0-190"></a>        <span class="n">edge_rel_emb</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relation_emb</span><span class="p">(</span><span class="n">edge_type</span><span class="p">)</span>          <span class="c1"># (E, d)</span>
+</span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191" href="#__codelineno-0-191"></a>        <span class="n">q_rel</span>         <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relation_emb</span><span class="p">(</span><span class="n">rel_idx</span><span class="p">)</span>             <span class="c1"># (d,)</span>
+</span><span id="__span-0-192"><a id="__codelineno-0-192" name="__codelineno-0-192" href="#__codelineno-0-192"></a>        <span class="n">query_rel_all</span> <span class="o">=</span> <span class="n">q_rel</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>       <span class="c1"># (N, d)</span>
+</span><span id="__span-0-193"><a id="__codelineno-0-193" name="__codelineno-0-193" href="#__codelineno-0-193"></a>
+</span><span id="__span-0-194"><a id="__codelineno-0-194" name="__codelineno-0-194" href="#__codelineno-0-194"></a>        <span class="c1"># Query-conditioned initialization: source gets query relation embedding</span>
+</span><span id="__span-0-195"><a id="__codelineno-0-195" name="__codelineno-0-195" href="#__codelineno-0-195"></a>        <span class="n">h</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-0-196"><a id="__codelineno-0-196" name="__codelineno-0-196" href="#__codelineno-0-196"></a>        <span class="n">h</span><span class="p">[</span><span class="n">src_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">q_rel</span>
+</span><span id="__span-0-197"><a id="__codelineno-0-197" name="__codelineno-0-197" href="#__codelineno-0-197"></a>
+</span><span id="__span-0-198"><a id="__codelineno-0-198" name="__codelineno-0-198" href="#__codelineno-0-198"></a>        <span class="c1"># T Bellman-Ford iterations</span>
+</span><span id="__span-0-199"><a id="__codelineno-0-199" name="__codelineno-0-199" href="#__codelineno-0-199"></a>        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+</span><span id="__span-0-200"><a id="__codelineno-0-200" name="__codelineno-0-200" href="#__codelineno-0-200"></a>            <span class="n">h</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">edge_rel_emb</span><span class="p">,</span> <span class="n">query_rel_all</span><span class="p">)</span>
+</span><span id="__span-0-201"><a id="__codelineno-0-201" name="__codelineno-0-201" href="#__codelineno-0-201"></a>
+</span><span id="__span-0-202"><a id="__codelineno-0-202" name="__codelineno-0-202" href="#__codelineno-0-202"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_mlp</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>                   <span class="c1"># (N,)</span>
+</span><span id="__span-0-203"><a id="__codelineno-0-203" name="__codelineno-0-203" href="#__codelineno-0-203"></a>
+</span><span id="__span-0-204"><a id="__codelineno-0-204" name="__codelineno-0-204" href="#__codelineno-0-204"></a>
+</span><span id="__span-0-205"><a id="__codelineno-0-205" name="__codelineno-0-205" href="#__codelineno-0-205"></a><span class="c1"># ══════════════════════════════════════════════════════════════════════════════</span>
+</span><span id="__span-0-206"><a id="__codelineno-0-206" name="__codelineno-0-206" href="#__codelineno-0-206"></a><span class="c1"># Part 3: Training NBFNet on a Toy KG</span>
+</span><span id="__span-0-207"><a id="__codelineno-0-207" name="__codelineno-0-207" href="#__codelineno-0-207"></a><span class="c1"># ══════════════════════════════════════════════════════════════════════════════</span>
+</span><span id="__span-0-208"><a id="__codelineno-0-208" name="__codelineno-0-208" href="#__codelineno-0-208"></a>
+</span><span id="__span-0-209"><a id="__codelineno-0-209" name="__codelineno-0-209" href="#__codelineno-0-209"></a><span class="k">def</span><span class="w"> </span><span class="nf">train_nbfnet_demo</span><span class="p">():</span>
+</span><span id="__span-0-210"><a id="__codelineno-0-210" name="__codelineno-0-210" href="#__codelineno-0-210"></a><span class="w">    </span><span class="sd">"""Minimal training loop demonstrating NBFNet on 6 entities, 3 relations."""</span>
+</span><span id="__span-0-211"><a id="__codelineno-0-211" name="__codelineno-0-211" href="#__codelineno-0-211"></a>    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-0-212"><a id="__codelineno-0-212" name="__codelineno-0-212" href="#__codelineno-0-212"></a>
+</span><span id="__span-0-213"><a id="__codelineno-0-213" name="__codelineno-0-213" href="#__codelineno-0-213"></a>    <span class="c1"># Toy KG: 6 entities, 3 relations</span>
+</span><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214" href="#__codelineno-0-214"></a>    <span class="c1"># (0)-r0-&gt;(1)-r1-&gt;(4)   [2-hop: 0→1→4]</span>
+</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215" href="#__codelineno-0-215"></a>    <span class="c1"># (0)-r0-&gt;(2)-r1-&gt;(5)   [2-hop: 0→2→5]</span>
+</span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216" href="#__codelineno-0-216"></a>    <span class="c1"># (3)-r2-&gt;(1)</span>
+</span><span id="__span-0-217"><a id="__codelineno-0-217" name="__codelineno-0-217" href="#__codelineno-0-217"></a>    <span class="n">edges_src</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+</span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218" href="#__codelineno-0-218"></a>    <span class="n">edges_tgt</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+</span><span id="__span-0-219"><a id="__codelineno-0-219" name="__codelineno-0-219" href="#__codelineno-0-219"></a>    <span class="n">edge_types</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+</span><span id="__span-0-220"><a id="__codelineno-0-220" name="__codelineno-0-220" href="#__codelineno-0-220"></a>    <span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">edges_src</span><span class="p">,</span> <span class="n">edges_tgt</span><span class="p">])</span>
+</span><span id="__span-0-221"><a id="__codelineno-0-221" name="__codelineno-0-221" href="#__codelineno-0-221"></a>
+</span><span id="__span-0-222"><a id="__codelineno-0-222" name="__codelineno-0-222" href="#__codelineno-0-222"></a>    <span class="n">model</span>     <span class="o">=</span> <span class="n">NBFNet</span><span class="p">(</span><span class="n">num_entities</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">num_relations</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</span><span id="__span-0-223"><a id="__codelineno-0-223" name="__codelineno-0-223" href="#__codelineno-0-223"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+</span><span id="__span-0-224"><a id="__codelineno-0-224" name="__codelineno-0-224" href="#__codelineno-0-224"></a>
+</span><span id="__span-0-225"><a id="__codelineno-0-225" name="__codelineno-0-225" href="#__codelineno-0-225"></a>    <span class="c1"># Positive triples to train on</span>
+</span><span id="__span-0-226"><a id="__codelineno-0-226" name="__codelineno-0-226" href="#__codelineno-0-226"></a>    <span class="n">pos_triples</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)]</span>
+</span><span id="__span-0-227"><a id="__codelineno-0-227" name="__codelineno-0-227" href="#__codelineno-0-227"></a>
+</span><span id="__span-0-228"><a id="__codelineno-0-228" name="__codelineno-0-228" href="#__codelineno-0-228"></a>    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">300</span><span class="p">):</span>
+</span><span id="__span-0-229"><a id="__codelineno-0-229" name="__codelineno-0-229" href="#__codelineno-0-229"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-0-230"><a id="__codelineno-0-230" name="__codelineno-0-230" href="#__codelineno-0-230"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+</span><span id="__span-0-231"><a id="__codelineno-0-231" name="__codelineno-0-231" href="#__codelineno-0-231"></a>        <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">rel</span><span class="p">,</span> <span class="n">tgt</span> <span class="ow">in</span> <span class="n">pos_triples</span><span class="p">:</span>
+</span><span id="__span-0-232"><a id="__codelineno-0-232" name="__codelineno-0-232" href="#__codelineno-0-232"></a>            <span class="n">scores</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">rel</span><span class="p">),</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">edge_types</span><span class="p">)</span>
+</span><span id="__span-0-233"><a id="__codelineno-0-233" name="__codelineno-0-233" href="#__codelineno-0-233"></a>            <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+</span><span id="__span-0-234"><a id="__codelineno-0-234" name="__codelineno-0-234" href="#__codelineno-0-234"></a>            <span class="n">labels</span><span class="p">[</span><span class="n">tgt</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+</span><span id="__span-0-235"><a id="__codelineno-0-235" name="__codelineno-0-235" href="#__codelineno-0-235"></a>            <span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span> <span class="o">+</span> <span class="n">F</span><span class="o">.</span><span class="n">binary_cross_entropy_with_logits</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+</span><span id="__span-0-236"><a id="__codelineno-0-236" name="__codelineno-0-236" href="#__codelineno-0-236"></a>        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-0-237"><a id="__codelineno-0-237" name="__codelineno-0-237" href="#__codelineno-0-237"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-0-238"><a id="__codelineno-0-238" name="__codelineno-0-238" href="#__codelineno-0-238"></a>        <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-0-239"><a id="__codelineno-0-239" name="__codelineno-0-239" href="#__codelineno-0-239"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2"> | Loss: </span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-240"><a id="__codelineno-0-240" name="__codelineno-0-240" href="#__codelineno-0-240"></a>
+</span><span id="__span-0-241"><a id="__codelineno-0-241" name="__codelineno-0-241" href="#__codelineno-0-241"></a>    <span class="c1"># Evaluate: query (entity 0, relation 0, ?)</span>
+</span><span id="__span-0-242"><a id="__codelineno-0-242" name="__codelineno-0-242" href="#__codelineno-0-242"></a>    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+</span><span id="__span-0-243"><a id="__codelineno-0-243" name="__codelineno-0-243" href="#__codelineno-0-243"></a>        <span class="n">scores</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">edge_types</span><span class="p">)</span>
+</span><span id="__span-0-244"><a id="__codelineno-0-244" name="__codelineno-0-244" href="#__codelineno-0-244"></a>        <span class="n">top_k</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+</span><span id="__span-0-245"><a id="__codelineno-0-245" name="__codelineno-0-245" href="#__codelineno-0-245"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Query (0, r0, ?) — top-3 answers: </span><span class="si">{</span><span class="n">top_k</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-246"><a id="__codelineno-0-246" name="__codelineno-0-246" href="#__codelineno-0-246"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Expected answers: entities 1 and 2 (both at rank 1 or 2)"</span><span class="p">)</span>
+</span><span id="__span-0-247"><a id="__codelineno-0-247" name="__codelineno-0-247" href="#__codelineno-0-247"></a>
+</span><span id="__span-0-248"><a id="__codelineno-0-248" name="__codelineno-0-248" href="#__codelineno-0-248"></a>
+</span><span id="__span-0-249"><a id="__codelineno-0-249" name="__codelineno-0-249" href="#__codelineno-0-249"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+</span><span id="__span-0-250"><a id="__codelineno-0-250" name="__codelineno-0-250" href="#__codelineno-0-250"></a>    <span class="n">train_nbfnet_demo</span><span class="p">()</span>
+</span></code></pre></div>
+<hr>
+<h2 id="137-benchmark-results">13.7 Benchmark Results<a class="headerlink" href="#137-benchmark-results" title="Permanent link">¶</a></h2>
+<p>Multi-hop query answering is evaluated on FB15k-237 using the EPFO query shapes defined in §13.2.2. The table reports MRR (mean reciprocal rank, filtered, higher is better) for each query type.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>1p</th>
+<th>2p</th>
+<th>3p</th>
+<th>2i</th>
+<th>3i</th>
+<th>pi</th>
+<th>ip</th>
+<th>Year</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GQE (point)</td>
+<td>35.0</td>
+<td>7.2</td>
+<td>5.3</td>
+<td>23.3</td>
+<td>34.6</td>
+<td>16.5</td>
+<td>10.7</td>
+<td>2018</td>
+</tr>
+<tr>
+<td>Query2Box</td>
+<td>40.6</td>
+<td>14.2</td>
+<td>11.6</td>
+<td>29.8</td>
+<td>42.7</td>
+<td>22.9</td>
+<td>16.5</td>
+<td>2020</td>
+</tr>
+<tr>
+<td>BetaE (+negation)</td>
+<td>39.0</td>
+<td>10.9</td>
+<td>10.0</td>
+<td>28.8</td>
+<td>42.5</td>
+<td>22.4</td>
+<td>12.6</td>
+<td>2020</td>
+</tr>
+<tr>
+<td>CQD</td>
+<td>46.7</td>
+<td>18.1</td>
+<td>14.0</td>
+<td>35.3</td>
+<td>49.8</td>
+<td>26.0</td>
+<td>21.7</td>
+<td>2021</td>
+</tr>
+<tr>
+<td><strong>NBFNet</strong></td>
+<td><strong>55.0</strong></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>2021</td>
+</tr>
+</tbody>
+</table>
+<p>Sources: Hamilton et al. (2018), Ren et al. (2020), Arakelyan et al. (2021), Zhu et al. (2021).</p>
+<p>Three patterns stand out. First, Query2Box substantially outperforms GQE on all conjunctive query types (2i, 3i, pi, ip), confirming that geometric box regions capture logical AND far more effectively than point averaging. Second, BetaE slightly underperforms Query2Box on 1p and 2p queries despite its theoretical advantage on negation — its probabilistic parameterization adds optimization complexity that hurts on non-negation queries. Third, NBFNet achieves the highest 1p MRR by a substantial margin (55.0 vs. 46.7 for CQD), demonstrating that graph-structure-aware propagation extracts substantially more signal from KG topology than embedding lookup alone. NBFNet's absence from multi-hop columns reflects its quadratic entity-pair scaling for those query types, which remains an open engineering challenge.</p>
+<hr>
+<h2 id="138-microsim-query-box-traversal">13.8 MicroSim: Query Box Traversal<a class="headerlink" href="#138-microsim-query-box-traversal" title="Permanent link">¶</a></h2>
+<iframe src="../../sims/ch13-kg-query-traversal/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch13-kg-query-traversal/main.html">Run Query2Box Multi-Hop Traversal Fullscreen</a></p>
+<hr>
+<h2 id="139-common-pitfalls">13.9 Common Pitfalls<a class="headerlink" href="#139-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>Applying Query2Box to negated conditions.</strong> Query2Box's box geometry cannot represent the complement of a box. If your query workload includes NOT operators, apply BetaE or a dedicated negation-capable model; never use Query2Box's distance function on negated conditions, as the geometric semantics break down entirely and the resulting scores are arbitrary.</p>
+<p><strong>Training on only one query type and expecting multi-type generalization.</strong> The intersection operator's MLPs (<span class="arithmatex">\( f_\text{att} \)</span> and <span class="arithmatex">\( f_\text{off} \)</span>) have no gradient signal unless training examples include conjunctive queries. A model trained solely on 1p queries will have randomly initialized intersection parameters; when queried with 2i or 3i queries at inference, results are meaningless. Always include training examples of every query type you intend to support at inference time.</p>
+<p><strong>Using naive binary cross-entropy without positive reweighting in NBFNet.</strong> A single query <span class="arithmatex">\( (e_s, r, ?) \)</span> has one or a few positive answers out of <span class="arithmatex">\( |\mathcal{E}| \)</span> entities. Naive BCE with uniform weights produces models that predict near-zero for all entities (a trivially low-loss solution for imbalanced classification). Use a loss that explicitly rewards high scores for positive answers: margin-based losses, focal loss, or positive reweighting with a factor proportional to <span class="arithmatex">\( |\mathcal{E}| / n_{\text{pos}} \)</span>.</p>
+<p><strong>Conflating query embedding inference cost with NBFNet inference cost.</strong> Query2Box scores all entities against a query box in one vectorized operation — <span class="arithmatex">\( O(|\mathcal{E}|) \)</span>. NBFNet requires T message-passing iterations over the full KG edge set per query — <span class="arithmatex">\( O(T \cdot |\mathcal{T}|) \)</span>. For KGs with 100M+ triples, NBFNet's per-query cost becomes substantial. Check your inference latency requirements before choosing NBFNet for production deployment; for latency-sensitive systems, Query2Box's constant-time scoring is often preferred.</p>
+<p><strong>Using the unfiltered evaluation protocol.</strong> Just as in single-triple link prediction (Chapter 12), multi-hop query evaluation must filter out known-correct triples from the candidate ranking. On complex query types (2i, pi, ip), multiple entities can simultaneously satisfy the query conditions; all of them must be filtered before computing the rank of any specific test answer. Evaluating without filtering inflates apparent difficulty and makes models look systematically worse than they are.</p>
+<hr>
+<h2 id="1310-exercises">13.10 Exercises<a class="headerlink" href="#1310-exercises" title="Permanent link">¶</a></h2>
+<p><strong>Remember</strong></p>
+<ol>
+<li>
+<p>Define a 2i (2-chain intersection) query using formal notation. Write out the biomedical example from §13.1 as a 2i query, identifying the anchor entities, relation types, and intermediate variables.</p>
+</li>
+<li>
+<p>State the Query2Box projection operator and explain in one sentence why the offset uses <span class="arithmatex">\( \text{softplus} \)</span> rather than a direct sum with the learned offset shift.</p>
+</li>
+</ol>
+<p><strong>Understand</strong></p>
+<ol>
+<li>
+<p>Derive the expected recall of multi-hop graph traversal on an incomplete KG. If a KG has edge completeness rate <span class="arithmatex">\( p \)</span> (each true edge is present independently with probability <span class="arithmatex">\( p \)</span>), show that an L-hop path query has expected recall <span class="arithmatex">\( p^L \)</span>. Compute the expected recall for <span class="arithmatex">\( p = 0.7 \)</span> at <span class="arithmatex">\( L = 1, 2, 3, 4, 5 \)</span> and explain why this motivates embedding-based query answering.</p>
+</li>
+<li>
+<p>Explain why logical OR cannot be represented by a box intersection in Query2Box, and why logical NOT cannot be represented by any box. Are there other geometric primitives (e.g., ellipsoids, convex hulls, polytopes) that would better support disjunction? What tradeoffs would they introduce?</p>
+</li>
+</ol>
+<p><strong>Apply</strong></p>
+<ol>
+<li>
+<p>For a 3i query (three 1-hop chains sharing an answer variable), write out the full Query2Box computation using the operators from §13.4. Then implement a <code>forward_3i(h1, r1, h2, r2, h3, r3)</code> method for the <code>Query2Box</code> class in §13.6, and verify that it produces a box with smaller offset than any single-chain box.</p>
+</li>
+<li>
+<p>Trace through two NBFNet Bellman-Ford iterations for the query <span class="arithmatex">\( (\text{entity 0},\ r_0,\ ?) \)</span> on the toy KG in §13.6 (8 edges, 6 entities). Show <span class="arithmatex">\( \mathbf{h}^{(0)} \)</span>, <span class="arithmatex">\( \mathbf{h}^{(1)} \)</span>, and <span class="arithmatex">\( \mathbf{h}^{(2)} \)</span> for entities 0, 1, and 2. Which entity should have the highest score at <span class="arithmatex">\( \mathbf{h}^{(2)} \)</span> and why?</p>
+</li>
+</ol>
+<p><strong>Analyze</strong></p>
+<ol>
+<li>
+<p>Compare the asymptotic inference complexities of Query2Box, GQE, and NBFNet for answering a 3-hop path query (3p) over a KG with <span class="arithmatex">\( |\mathcal{E}| \)</span> entities, <span class="arithmatex">\( |\mathcal{T}| \)</span> triples, embedding dimension <span class="arithmatex">\( d \)</span>, and <span class="arithmatex">\( T = 6 \)</span> Bellman-Ford layers. Under what conditions (in terms of the ratio <span class="arithmatex">\( |\mathcal{T}| / |\mathcal{E}| \)</span>) is NBFNet cheaper than Query2Box per query?</p>
+</li>
+<li>
+<p>The benchmark table shows CQD achieving higher MRR than Query2Box on all complex query types. CQD decomposes queries into individual triple scores and combines them via continuous t-norm operators (product t-norm for AND, probabilistic sum for OR). Analyze the key architectural difference between CQD and Query2Box: which model has more inductive bias for logical structure, and which is more dependent on the quality of the underlying entity embeddings? Predict which model would generalize better to query types unseen during training.</p>
+</li>
+</ol>
+<p><strong>Evaluate</strong></p>
+<ol>
+<li>
+<p>A practitioner has a biomedical KG with 500K entities and 50M triples. They need to answer complex conjunctive queries (up to 4 chains, 3 hops each) in under 100ms per query at inference time. Evaluate the feasibility of using (a) Query2Box and (b) NBFNet for this deployment. Estimate the approximate inference time for each approach (provide your assumptions), and recommend a deployment strategy.</p>
+</li>
+<li>
+<p>The NBFNet paper (Zhu et al. 2021) reports that 6 Bellman-Ford iterations (T=6) is sufficient to achieve near-optimal performance on FB15k-237. Evaluate this claim: what theoretical property of Bellman-Ford guarantees convergence in finite iterations on a finite graph, and how does that translate to NBFNet's learned version? Is T=6 likely to be sufficient for a KG with diameter much larger than 6 (e.g., a protein interaction network with diameter 20+)?</p>
+</li>
+</ol>
+<p><strong>Create</strong></p>
+<ol>
+<li>
+<p>Design a unified architecture, BoxBFNet, that combines Query2Box's box geometry with NBFNet's graph propagation. Specifically: (a) define box-valued node representations <span class="arithmatex">\( \text{Box}(\mathbf{c}_v, \mathbf{o}_v) \)</span>; (b) define a box-valued message function for edge propagation; (c) define aggregation of multiple incoming box messages using the Query2Box intersection operator; and (d) define the final scoring function for answer entities. Analyze which EPFO query types your architecture would support and what its computational complexity would be.</p>
+</li>
+<li>
+<p>Temporal KG queries add a time dimension: triples <span class="arithmatex">\( (h, r, t, \tau) \)</span> are valid only at timestamp <span class="arithmatex">\( \tau \)</span>, and multi-hop queries may span different time points (e.g., "Who was the president of France in 1990 and also served as a minister before 1985?"). Propose an extension of the Query2Box framework to handle temporal conjunctive queries: define a temporal box <span class="arithmatex">\( \text{TBox}(\mathbf{c}, \mathbf{o}, [t_\text{start}, t_\text{end}]) \)</span>, specify how projection and intersection handle the time interval, and discuss what new failure modes arise when the time intervals of two chains in a 2i query do not overlap.</p>
+</li>
+</ol>
+<hr>
+<h2 id="1311-further-reading">13.11 Further Reading<a class="headerlink" href="#1311-further-reading" title="Permanent link">¶</a></h2>
+<p><strong>Hamilton, W. L., et al. (2018). Embedding Logical Queries on Knowledge Graphs.</strong> <em>NeurIPS 2018.</em> Introduced GQE and the canonical EPFO query benchmark (1p, 2p, 3p, 2i, 3i, pi, ip) that all subsequent multi-hop KG reasoning papers use for evaluation. Although GQE is now outperformed on every metric, the benchmark design and evaluation protocol remain the field standard. <a href="https://arxiv.org/abs/1806.01445">arXiv:1806.01445</a></p>
+<p><strong>Ren, H., et al. (2020). Query2Box: Reasoning over Knowledge Graphs in Vector Space using Box Embeddings.</strong> <em>ICLR 2020.</em> Introduced box embeddings for conjunctive KG query answering. The learnable intersection operator is the key contribution — demonstrating that geometric AND has a natural box-intersection implementation that outperforms point averaging on all conjunctive query types. <a href="https://arxiv.org/abs/2002.05969">arXiv:2002.05969</a></p>
+<p><strong>Ren, H., &amp; Leskovec, J. (2020). Beta Embeddings for Multi-Hop Logical Reasoning in Knowledge Graphs.</strong> <em>NeurIPS 2020.</em> Extended the query embedding paradigm to handle negation using Beta distribution embeddings, where complement distributions represent NOT naturally. Essential reference for applications requiring negation queries. <a href="https://arxiv.org/abs/2010.11465">arXiv:2010.11465</a></p>
+<p><strong>Zhu, Z., et al. (2021). Neural Bellman-Ford Networks: A General Graph Neural Network Framework for Link Prediction.</strong> <em>NeurIPS 2021.</em> Introduced NBFNet, achieving new state-of-the-art on FB15k-237 and WN18RR. The key insight — query-conditioned initialization enables Bellman-Ford-style path reasoning through the KG — is theoretically grounded and leads to a remarkably clean and effective implementation. <a href="https://arxiv.org/abs/2106.06935">arXiv:2106.06935</a></p>
+<p><strong>Arakelyan, E., et al. (2021). Complex Query Answering with Neural Link Predictors.</strong> <em>ICLR 2021.</em> Introduced CQD, which decomposes complex queries into triple scores and combines via continuous t-norm logic. Outperforms Query2Box on most query types while requiring no specialized geometric operators — an important baseline for the box embedding approach. <a href="https://arxiv.org/abs/2011.03459">arXiv:2011.03459</a></p>
+<p><strong>Sadeghian, A., et al. (2019). DRUM: End-To-End Differentiable Rule Mining over Knowledge Graphs.</strong> <em>NeurIPS 2019.</em> Represents the rule-learning approach to multi-hop reasoning, learning differentiable soft logical rules for KG completion. Complementary to the embedding-based approaches in this chapter, particularly relevant where interpretability of the reasoning chain is required. <a href="https://arxiv.org/abs/1909.03834">arXiv:1909.03834</a></p>
+<p><strong>Zhang, Z., et al. (2022). Knowledge Graph Reasoning with Relational Digraph.</strong> <em>WWW 2022.</em> Proposes a graph-theoretic formulation of multi-hop KG reasoning using relational directed graphs, unifying path-based and embedding-based approaches under a common framework. Provides complementary theoretical perspective on when and why graph-propagation methods like NBFNet outperform entity-level embedding approaches. <a href="https://arxiv.org/abs/2108.06040">arXiv:2108.06040</a></p>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Chapter 13 Complete — From Triples to Multi-Hop Reasoning</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating Chapter 13 completion">
+You've traversed the full arc from individual triple scoring to complex multi-hop conjunctive reasoning. The key design principles: use box embeddings when you need to answer conjunctive queries at scale with constant per-query inference cost; use NBFNet when single-hop link prediction accuracy is the priority and you can afford per-query graph propagation; use BetaE when your query workload includes negation. Chapter 14 takes one more step — asking whether KG reasoning can be made truly universal, transferring across entirely different knowledge graphs without retraining, via foundation models for KGs.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../12-knowledge-graph-embeddings/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

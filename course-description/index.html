@@ -1,0 +1,2089 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A detailed course description for Graph Neural Networks and Machine Learning with Graphs including overview, topics covered and learning objectives in the format of the 2001 Bloom Taxonomy">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/course-description/">
+      
+      
+        <link rel="prev" href="../about/">
+      
+      
+        <link rel="next" href="../chapters/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Course Description for Graph Neural Networks and Machine Learning with Graphs - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../css/extra.css">
+    
+      <link rel="stylesheet" href="../css/mascot.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Course Description for Graph Neural Networks and Machine Learning with Graphs">
+  <meta property="og:description" content="A detailed course description for Graph Neural Networks and Machine Learning with Graphs including overview, topics covered and learning objectives in the format of the 2001 Bloom Taxonomy">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/course-description/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Course Description for Graph Neural Networks and Machine Learning with Graphs">
+  <meta name="twitter:description" content="A detailed course description for Graph Neural Networks and Machine Learning with Graphs including overview, topics covered and learning objectives in the format of the 2001 Bloom Taxonomy">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#course-description-machine-learning-with-graphs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Course Description for Graph Neural Networks and Machine Learning with Graphs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#course-title" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Course Title
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subtitle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subtitle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspiration-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspiration &amp; Standard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#target-audience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target Audience
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Required
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#helpful-but-taught-in-chapter-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Helpful but taught in Chapter 0
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-structure-26-chapters-comprehensive-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter Structure (26 Chapters — Comprehensive Coverage)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter Structure (26 Chapters — Comprehensive Coverage)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#part-0-prerequisites-chapters-01" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 0: Prerequisites (Chapters 0–1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-1-classical-graph-analysis-chapters-25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 1: Classical Graph Analysis (Chapters 2–5)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-2-graph-neural-networks-chapters-611" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 2: Graph Neural Networks (Chapters 6–11)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-3-knowledge-graphs-and-reasoning-chapters-1214" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 3: Knowledge Graphs and Reasoning (Chapters 12–14)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-4-graphs-in-the-wild-chapters-1519" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 4: Graphs in the Wild (Chapters 15–19)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-5-scalability-and-generation-chapters-2022" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 5: Scalability and Generation (Chapters 20–22)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-6-frontiers-chapters-2326" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 6: Frontiers (Chapters 23–26)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning Objectives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Learning Objectives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remember-level-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remember (Level 1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understand-level-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understand (Level 2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply-level-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apply (Level 3)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze-level-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analyze (Level 4)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluate-level-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluate (Level 5)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-level-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create (Level 6)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pedagogical-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pedagogical Design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-makes-this-textbook-better-than-cs224w" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Makes This Textbook Better Than CS224W
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#style-and-technology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Style and Technology
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benchmark-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benchmark References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#explicitly-out-of-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explicitly Out of Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommended-companion-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Companion Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../chapters/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#course-title" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Course Title
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subtitle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Subtitle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inspiration-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inspiration &amp; Standard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#target-audience" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Target Audience
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#required" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Required
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#helpful-but-taught-in-chapter-0" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Helpful but taught in Chapter 0
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-structure-26-chapters-comprehensive-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter Structure (26 Chapters — Comprehensive Coverage)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter Structure (26 Chapters — Comprehensive Coverage)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#part-0-prerequisites-chapters-01" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 0: Prerequisites (Chapters 0–1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-1-classical-graph-analysis-chapters-25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 1: Classical Graph Analysis (Chapters 2–5)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-2-graph-neural-networks-chapters-611" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 2: Graph Neural Networks (Chapters 6–11)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-3-knowledge-graphs-and-reasoning-chapters-1214" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 3: Knowledge Graphs and Reasoning (Chapters 12–14)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-4-graphs-in-the-wild-chapters-1519" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 4: Graphs in the Wild (Chapters 15–19)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-5-scalability-and-generation-chapters-2022" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 5: Scalability and Generation (Chapters 20–22)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-6-frontiers-chapters-2326" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 6: Frontiers (Chapters 23–26)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#learning-objectives" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Learning Objectives
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Learning Objectives">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remember-level-1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remember (Level 1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understand-level-2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understand (Level 2)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply-level-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apply (Level 3)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze-level-4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analyze (Level 4)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluate-level-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluate (Level 5)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-level-6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create (Level 6)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pedagogical-design" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Pedagogical Design
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-makes-this-textbook-better-than-cs224w" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Makes This Textbook Better Than CS224W
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#style-and-technology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Style and Technology
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benchmark-references" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Benchmark References
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#explicitly-out-of-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Explicitly Out of Scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recommended-companion-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Recommended Companion Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/course-description.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="course-description-machine-learning-with-graphs">Course Description: Machine Learning with Graphs<a class="headerlink" href="#course-description-machine-learning-with-graphs" title="Permanent link">¶</a></h1>
+<h2 id="course-title">Course Title<a class="headerlink" href="#course-title" title="Permanent link">¶</a></h2>
+<p><strong>Graph Neural Networks and Machine Learning with Graphs</strong></p>
+<h2 id="subtitle">Subtitle<a class="headerlink" href="#subtitle" title="Permanent link">¶</a></h2>
+<p><em>A Comprehensive Intelligent Textbook — From Graph Theory to Foundation Models</em></p>
+<h2 id="inspiration-standard">Inspiration &amp; Standard<a class="headerlink" href="#inspiration-standard" title="Permanent link">¶</a></h2>
+<p>This textbook is built from the materials of Stanford CS224W (Jure Leskovec) but is designed to <strong>exceed</strong> that course in depth, accessibility, completeness, and interactivity. Where the course relies on lectures to fill in the gaps between terse slides, this textbook is fully self-contained. Where the course must choose between classical and modern topics due to time constraints, this textbook covers both.</p>
+<hr>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">¶</a></h2>
+<p>Complex data can be represented as a graph of relationships between objects. Such networks are a fundamental tool for modeling social, technological, and biological systems. This textbook provides a rigorous, intuition-first, and deeply interactive treatment of machine learning on graphs — from classical graph algorithms and shallow node embeddings, through modern Graph Neural Networks (GNNs), to frontier topics like Graph Transformers, Knowledge Graph Foundation Models, and LLM+GNN integration.</p>
+<p><strong>Topics include:</strong>
+- Graph theory fundamentals and real-world network properties
+- Classical graph algorithms (PageRank, label propagation, community detection)
+- Shallow node embeddings (DeepWalk, node2vec, matrix factorization)
+- Graph Neural Networks: GCN, GraphSAGE, GAT, GIN, and beyond
+- GNN theory: expressiveness, WL test, over-smoothing, over-squashing
+- Graph Transformers (Graphormer, GPS, SAN)
+- Heterogeneous graphs and relational data
+- Knowledge graph embeddings and multi-hop reasoning
+- GNNs for recommender systems, drug discovery, and social networks
+- Scalable GNN training on billion-node graphs
+- Deep generative models for graphs
+- LLMs + GNNs, agents on graphs, graph foundation models
+- Frequent subgraph mining and motif analysis</p>
+<hr>
+<h2 id="target-audience">Target Audience<a class="headerlink" href="#target-audience" title="Permanent link">¶</a></h2>
+<p>This textbook is designed for:
+- <strong>Graduate students</strong> in CS, computational biology, data science, or any field with relational data
+- <strong>Advanced undergraduates</strong> who have completed an ML course and want to go deeper on graphs
+- <strong>Practitioners</strong> building recommendation engines, drug discovery pipelines, fraud detection systems, or knowledge bases
+- <strong>Researchers</strong> entering graph ML who want a unified, up-to-date reference</p>
+<hr>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<h3 id="required">Required<a class="headerlink" href="#required" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Programming:</strong> Python proficiency; NumPy/Pandas familiarity</li>
+<li><strong>Linear algebra:</strong> Matrix multiplication, eigenvalues/eigenvectors, SVD</li>
+<li><strong>Probability &amp; statistics:</strong> Probability distributions, expectations, Bayes' theorem</li>
+<li><strong>ML fundamentals:</strong> Supervised/unsupervised learning, gradient descent, backpropagation</li>
+</ul>
+<h3 id="helpful-but-taught-in-chapter-0">Helpful but taught in Chapter 0<a class="headerlink" href="#helpful-but-taught-in-chapter-0" title="Permanent link">¶</a></h3>
+<ul>
+<li>PyTorch and automatic differentiation</li>
+<li>Graph theory basics (we introduce from scratch)</li>
+<li>PyTorch Geometric (PyG)</li>
+</ul>
+<hr>
+<h2 id="chapter-structure-26-chapters-comprehensive-coverage">Chapter Structure (26 Chapters — Comprehensive Coverage)<a class="headerlink" href="#chapter-structure-26-chapters-comprehensive-coverage" title="Permanent link">¶</a></h2>
+<p>The textbook is organized into 6 parts. It covers <strong>all</strong> topics from both the 2021 and 2025 CS224W offerings, plus dedicated prerequisite and application chapters not in the course.</p>
+<h3 id="part-0-prerequisites-chapters-01">Part 0: Prerequisites (Chapters 0–1)<a class="headerlink" href="#part-0-prerequisites-chapters-01" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Chapter</th>
+<th>Title</th>
+<th>CS224W Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Math &amp; Programming Prerequisites</td>
+<td>❌ Not covered in CS224W</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Introduction to Graphs and Networks</td>
+<td>✅ Lecture 1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Chapter 0 covers:</strong> Linear algebra review (matrix operations, eigendecomposition, SVD), probability review, PyTorch basics, PyTorch Geometric installation and first graph, NetworkX tutorial. <em>This is the chapter that makes the textbook self-contained.</em></p>
+<h3 id="part-1-classical-graph-analysis-chapters-25">Part 1: Classical Graph Analysis (Chapters 2–5)<a class="headerlink" href="#part-1-classical-graph-analysis-chapters-25" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Chapter</th>
+<th>Title</th>
+<th>CS224W Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td>Graph Properties and Traditional ML Features</td>
+<td>✅ 2021 Lecture 2 / ❌ dropped from 2025</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Node Embeddings: DeepWalk and node2vec</td>
+<td>✅ Both years</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Link Analysis and PageRank</td>
+<td>✅ 2021 Lecture 4 / ❌ dropped from 2025</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Label Propagation and Semi-Supervised Learning</td>
+<td>✅ 2021 Lecture 5 / ❌ dropped from 2025</td>
+</tr>
+</tbody>
+</table>
+<h3 id="part-2-graph-neural-networks-chapters-611">Part 2: Graph Neural Networks (Chapters 6–11)<a class="headerlink" href="#part-2-graph-neural-networks-chapters-611" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Chapter</th>
+<th>Title</th>
+<th>CS224W Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6</td>
+<td>GNN Foundations: Message Passing and GCN</td>
+<td>✅ Both years</td>
+</tr>
+<tr>
+<td>7</td>
+<td>GNN Design Space: GraphSAGE and GAT</td>
+<td>✅ Both years</td>
+</tr>
+<tr>
+<td>8</td>
+<td>GNN Training, Augmentation, and Practical Tips</td>
+<td>✅ 2025 Lecture 5</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Theory of GNNs: Expressiveness and the WL Test</td>
+<td>✅ Both years</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Designing Powerful Encoders: GIN and Beyond</td>
+<td>✅ 2025 Lecture 7</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Graph Transformers</td>
+<td>✅ 2025 Lecture 8</td>
+</tr>
+</tbody>
+</table>
+<h3 id="part-3-knowledge-graphs-and-reasoning-chapters-1214">Part 3: Knowledge Graphs and Reasoning (Chapters 12–14)<a class="headerlink" href="#part-3-knowledge-graphs-and-reasoning-chapters-1214" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Chapter</th>
+<th>Title</th>
+<th>CS224W Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>12</td>
+<td>Knowledge Graph Embeddings</td>
+<td>✅ Both years</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Reasoning over Knowledge Graphs</td>
+<td>✅ 2021 Lecture 11</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Knowledge Graph Foundation Models</td>
+<td>✅ 2025 Lecture 15</td>
+</tr>
+</tbody>
+</table>
+<h3 id="part-4-graphs-in-the-wild-chapters-1519">Part 4: Graphs in the Wild (Chapters 15–19)<a class="headerlink" href="#part-4-graphs-in-the-wild-chapters-1519" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Chapter</th>
+<th>Title</th>
+<th>CS224W Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>15</td>
+<td>Heterogeneous Graphs</td>
+<td>✅ 2025 Lecture 9</td>
+</tr>
+<tr>
+<td>16</td>
+<td>GNNs for Recommender Systems</td>
+<td>✅ Both years</td>
+</tr>
+<tr>
+<td>17</td>
+<td>Relational Deep Learning</td>
+<td>✅ 2025 Lectures 12–13</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Community Structure in Networks</td>
+<td>✅ 2021 Lecture 14 / ❌ dropped from 2025</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Frequent Subgraph Mining</td>
+<td>✅ 2021 Lecture 12 / ❌ dropped from 2025</td>
+</tr>
+</tbody>
+</table>
+<h3 id="part-5-scalability-and-generation-chapters-2022">Part 5: Scalability and Generation (Chapters 20–22)<a class="headerlink" href="#part-5-scalability-and-generation-chapters-2022" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Chapter</th>
+<th>Title</th>
+<th>CS224W Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>20</td>
+<td>Scaling GNNs to Billion-Node Graphs</td>
+<td>✅ 2021 Lecture 17</td>
+</tr>
+<tr>
+<td>21</td>
+<td>Deep Generative Models for Graphs</td>
+<td>✅ Both years</td>
+</tr>
+<tr>
+<td>22</td>
+<td>Temporal and Dynamic Graphs</td>
+<td>❌ Not a dedicated lecture in CS224W</td>
+</tr>
+</tbody>
+</table>
+<h3 id="part-6-frontiers-chapters-2326">Part 6: Frontiers (Chapters 23–26)<a class="headerlink" href="#part-6-frontiers-chapters-2326" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Chapter</th>
+<th>Title</th>
+<th>CS224W Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>23</td>
+<td>Advanced GNN Topics: In-Context Learning and Uncertainty</td>
+<td>✅ 2025 Lecture 14</td>
+</tr>
+<tr>
+<td>24</td>
+<td>LLMs + GNNs: Text-Attributed Graphs and Joint Training</td>
+<td>✅ 2025 Lecture 16</td>
+</tr>
+<tr>
+<td>25</td>
+<td>Agents + Graphs</td>
+<td>✅ 2025 Lecture 17</td>
+</tr>
+<tr>
+<td>26</td>
+<td>Conclusion: The GNN Design Space and Open Problems</td>
+<td>✅ Both years</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Total: 27 chapters</strong> (26 + prerequisites) vs. 19 lectures in CS224W.
+<strong>New material not in CS224W at all:</strong> Chapters 0, 22 (temporal graphs), and expanded applications throughout.</p>
+<hr>
+<h2 id="learning-objectives">Learning Objectives<a class="headerlink" href="#learning-objectives" title="Permanent link">¶</a></h2>
+<p>Using Bloom's Taxonomy (2001 revision), students who complete this textbook will be able to:</p>
+<h3 id="remember-level-1">Remember (Level 1)<a class="headerlink" href="#remember-level-1" title="Permanent link">¶</a></h3>
+<ul>
+<li>Recall the definitions of: graph, node, edge, adjacency matrix, degree, path, connected component, subgraph, clique, bipartite graph, heterogeneous graph</li>
+<li>List the four main graph ML tasks: node classification, link prediction, graph classification, graph generation</li>
+<li>Recall the names and key equations of: GCN, GraphSAGE, GAT, GIN, GraphRNN, TransE, RotatE, LightGCN, Graphormer</li>
+<li>State the Weisfeiler-Lehman graph isomorphism test procedure</li>
+</ul>
+<h3 id="understand-level-2">Understand (Level 2)<a class="headerlink" href="#understand-level-2" title="Permanent link">¶</a></h3>
+<ul>
+<li>Explain why message passing generalizes convolution from grids to irregular graphs</li>
+<li>Describe the difference between transductive and inductive learning with concrete examples</li>
+<li>Summarize why sum aggregation is strictly more expressive than mean or max for graph isomorphism</li>
+<li>Explain the power-law degree distribution and why it appears in real-world networks</li>
+<li>Describe how PageRank solves the spider-trap and dead-end problems via teleportation</li>
+<li>Explain the geometric intuition behind TransE, ComplEx, and RotatE for different relation patterns</li>
+<li>Describe what over-smoothing is, why it occurs, and three ways to mitigate it</li>
+</ul>
+<h3 id="apply-level-3">Apply (Level 3)<a class="headerlink" href="#apply-level-3" title="Permanent link">¶</a></h3>
+<ul>
+<li>Implement GCN, GraphSAGE, GAT, and GIN from scratch in PyTorch and using PyTorch Geometric</li>
+<li>Apply node2vec for unsupervised node embedding with the appropriate p/q settings</li>
+<li>Use the Open Graph Benchmark (OGB) pipeline to train and evaluate a GNN on a standard benchmark</li>
+<li>Apply knowledge graph embedding methods (TransE, RotatE) to link prediction tasks</li>
+<li>Build a LightGCN recommender system on a user-item interaction graph</li>
+<li>Train a scalable GNN using neighbor sampling or cluster-based mini-batching</li>
+<li>Generate molecular graphs conditioned on target properties using GCPN</li>
+</ul>
+<h3 id="analyze-level-4">Analyze (Level 4)<a class="headerlink" href="#analyze-level-4" title="Permanent link">¶</a></h3>
+<ul>
+<li>Analyze the expressive power of a GNN architecture and identify non-isomorphic graphs it fails to distinguish</li>
+<li>Compare GCN, GraphSAGE, GAT, and GIN architecturally and empirically across node and graph classification tasks</li>
+<li>Examine why certain relation patterns (symmetry, antisymmetry, inversion, composition) require different KG embedding geometry</li>
+<li>Decompose the trade-offs between accuracy and scalability for different GNN sampling strategies</li>
+<li>Evaluate the impact of graph structure vs. node features for a given dataset</li>
+</ul>
+<h3 id="evaluate-level-5">Evaluate (Level 5)<a class="headerlink" href="#evaluate-level-5" title="Permanent link">¶</a></h3>
+<ul>
+<li>Assess when graph structure adds value over feature-only baselines</li>
+<li>Critically evaluate a GNN paper's experimental setup for potential confounders (data leakage, unfair baselines)</li>
+<li>Judge which pooling strategy is appropriate for a graph classification task given graph size and structure</li>
+<li>Compare GNN-based approaches to classical graph algorithms for a specific problem</li>
+<li>Evaluate the appropriateness of different KG embedding methods given a dataset's relation patterns</li>
+</ul>
+<h3 id="create-level-6">Create (Level 6)<a class="headerlink" href="#create-level-6" title="Permanent link">¶</a></h3>
+<ul>
+<li>Design a novel end-to-end GNN system for a domain-specific task (drug interaction, fraud detection, traffic)</li>
+<li>Construct a knowledge graph from raw data and develop a reasoning pipeline</li>
+<li>Build interactive MicroSim visualizations of key GNN concepts using p5.js</li>
+<li>Develop and tune a GNN that achieves competitive performance on an OGB benchmark</li>
+<li>Write a well-structured literature review connecting classical graph algorithms to modern GNN approaches</li>
+</ul>
+<hr>
+<h2 id="pedagogical-design">Pedagogical Design<a class="headerlink" href="#pedagogical-design" title="Permanent link">¶</a></h2>
+<p>Every chapter follows this structure:
+1. <strong>Motivation</strong> — real-world problem that this chapter's methods solve
+2. <strong>Intuition first</strong> — visual explanation before any math
+3. <strong>Mathematical formalism</strong> — full derivations with LaTeX
+4. <strong>Algorithm / pseudocode</strong> — step-by-step procedure
+5. <strong>PyTorch implementation</strong> — complete, runnable code
+6. <strong>MicroSim</strong> — interactive p5.js visualization of the key concept
+7. <strong>Empirical results</strong> — benchmark performance with up-to-date numbers
+8. <strong>Common pitfalls</strong> — what goes wrong and how to fix it
+9. <strong>Research extensions</strong> — open problems and recent work
+10. <strong>Chapter summary</strong> — key equations and concepts
+11. <strong>Exercises</strong> — Bloom's taxonomy-aligned questions at all 6 levels
+12. <strong>Further reading</strong> — 5–8 key papers with annotated descriptions</p>
+<hr>
+<h2 id="what-makes-this-textbook-better-than-cs224w">What Makes This Textbook Better Than CS224W<a class="headerlink" href="#what-makes-this-textbook-better-than-cs224w" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>CS224W Course</th>
+<th>This Textbook</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Topic coverage</td>
+<td>19 lectures (2025 drops 5 classical topics)</td>
+<td>26 chapters (covers all 2021 + 2025 topics + more)</td>
+</tr>
+<tr>
+<td>Prerequisite material</td>
+<td>Assumed, not taught</td>
+<td>Full Chapter 0: math + PyTorch + PyG</td>
+</tr>
+<tr>
+<td>Explanations</td>
+<td>Slide bullets + live lecture</td>
+<td>Full prose derivations, worked examples</td>
+</tr>
+<tr>
+<td>Intuition</td>
+<td>Conveyed verbally in lecture</td>
+<td>Written out before every formalism</td>
+</tr>
+<tr>
+<td>Interactivity</td>
+<td>None (slides + colabs)</td>
+<td>MicroSims for every key concept</td>
+</tr>
+<tr>
+<td>Code</td>
+<td>6 Colabs, partial</td>
+<td>Complete runnable examples in every chapter</td>
+</tr>
+<tr>
+<td>Exercises</td>
+<td>3 HWs + 5 Colabs</td>
+<td>6-level Bloom's exercises per chapter</td>
+</tr>
+<tr>
+<td>Temporal graphs</td>
+<td>Brief mention</td>
+<td>Dedicated Chapter 22</td>
+</tr>
+<tr>
+<td>Benchmark results</td>
+<td>2021-era numbers</td>
+<td>Up-to-date 2024–2025 results</td>
+</tr>
+<tr>
+<td>Accessibility</td>
+<td>Requires lecture audio</td>
+<td>Fully self-contained</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="style-and-technology">Style and Technology<a class="headerlink" href="#style-and-technology" title="Permanent link">¶</a></h2>
+<ul>
+<li><strong>Format:</strong> MkDocs with Material theme</li>
+<li><strong>Math:</strong> LaTeX via MathJax; all major results stated as numbered theorems/propositions</li>
+<li><strong>Code:</strong> Python with PyTorch Geometric; every snippet is self-contained and runnable</li>
+<li><strong>Interactivity:</strong> p5.js MicroSims for: message passing, random walk, WL color refinement, PageRank power iteration, KG geometry, graph generation</li>
+<li><strong>Learning graph:</strong> 250+ concepts with full dependency DAG</li>
+<li><strong>Glossary:</strong> ISO 11179-compliant definitions for all key terms</li>
+<li><strong>Reading level:</strong> Graduate-level rigor; Flesch-Kincaid Grade ~15</li>
+</ul>
+<hr>
+<h2 id="benchmark-references">Benchmark References<a class="headerlink" href="#benchmark-references" title="Permanent link">¶</a></h2>
+<p>Primary evaluation datasets:
+- <strong>OGB (ogbn-arxiv, ogbn-products, ogbg-molhiv, ogbg-molpcba, ogbl-collab)</strong> — standard node/graph/link benchmarks
+- <strong>Cora, CiteSeer, PubMed</strong> — classic citation networks
+- <strong>TUDatasets</strong> — graph classification benchmarks
+- <strong>FB15k-237, WN18RR</strong> — knowledge graph completion
+- <strong>MovieLens-1M</strong> — recommendation
+- <strong>ZINC</strong> — molecular property prediction
+- <strong>RelBench</strong> — relational databases</p>
+<hr>
+<h2 id="explicitly-out-of-scope">Explicitly Out of Scope<a class="headerlink" href="#explicitly-out-of-scope" title="Permanent link">¶</a></h2>
+<p>The following topics are intentionally <strong>not covered</strong> in this textbook:</p>
+<ul>
+<li><strong>Reinforcement learning on graphs</strong> — graph-structured state/action spaces, GNN-based policy networks, and graph-based reward shaping are excluded; learners should consult dedicated RL textbooks for this intersection.</li>
+<li><strong>Graph signal processing (beyond GCN spectral derivation)</strong> — the full GSP literature (filterbanks, graph wavelets, spectral clustering via Laplacian eigenvectors) is covered only insofar as it motivates the GCN derivation in Chapter 6; deeper GSP theory is out of scope.</li>
+<li><strong>Streaming and dynamic graph algorithms</strong> — temporal graphs (Chapter 22) covers event-based and snapshot models for GNNs, but classical streaming algorithms (e.g., triangle counting under memory constraints) and fully online graph processing are not covered.</li>
+<li><strong>Hardware-level GNN optimization</strong> — GPU kernel design, sparse tensor formats for graphs, and chip-level inference optimization are not addressed; the focus stays at the software/model level.</li>
+<li><strong>Survey of GNN libraries beyond PyTorch Geometric</strong> — DGL, Spektral, GraphNets, and JAX-based frameworks are not covered; all code examples use PyTorch Geometric exclusively.</li>
+<li><strong>Continuous-time differential equations on graphs</strong> — neural ODEs on graphs and diffusion-PDE interpretations of GNNs are touched on briefly in the theory chapter but not developed in depth.</li>
+<li><strong>Quantum computing on graphs</strong> — quantum graph algorithms and quantum GNNs are entirely out of scope.</li>
+</ul>
+<hr>
+<h2 id="recommended-companion-resources">Recommended Companion Resources<a class="headerlink" href="#recommended-companion-resources" title="Permanent link">¶</a></h2>
+<ul>
+<li><a href="https://www.cs.mcgill.ca/~wlh/grl_book/">Graph Representation Learning</a> — Hamilton (free) — closest textbook companion</li>
+<li><a href="http://www.cs.cornell.edu/home/kleinber/networks-book/">Networks, Crowds, and Markets</a> — Easley &amp; Kleinberg (free) — social network background</li>
+<li><a href="http://networksciencebook.com">Network Science</a> — Barabási (free) — complex network properties</li>
+<li><a href="https://archives.leni.sh/stanford/CS224w.pdf">CS224W Course Notes PDF</a> — compact formula reference</li>
+<li><a href="https://pytorch-geometric.readthedocs.io/">PyTorch Geometric Docs</a> — primary coding reference</li>
+</ul>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../about/" class="md-footer__link md-footer__link--prev" aria-label="Previous: About">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                About
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../chapters/" class="md-footer__link md-footer__link--next" aria-label="Next: List of Chapters">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                List of Chapters
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

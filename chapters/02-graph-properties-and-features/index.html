@@ -1,0 +1,3681 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Covers classical graph feature engineering — random graph models, centrality measures, graphlets, the Weisfeiler-Lehman kernel, and Katz similarity — showing how to represent graphs for traditional ML before GNNs existed.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/02-graph-properties-and-features/">
+      
+      
+        <link rel="prev" href="../01-intro-to-graphs/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 2: Graph Properties and Traditional ML Features - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 2: Graph Properties and Traditional ML Features">
+  <meta property="og:description" content="Covers classical graph feature engineering — random graph models, centrality measures, graphlets, the Weisfeiler-Lehman kernel, and Katz similarity — showing how to represent graphs for traditional ML before GNNs existed.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/02-graph-properties-and-features/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 2: Graph Properties and Traditional ML Features">
+  <meta name="twitter:description" content="Covers classical graph feature engineering — random graph models, centrality measures, graphlets, the Weisfeiler-Lehman kernel, and Katz similarity — showing how to represent graphs for traditional ML before GNNs existed.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-2-graph-properties-and-traditional-ml-features" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 2: Graph Properties and Traditional ML Features
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_4" id="__nav_4_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivating-example-predicting-friendships-before-deep-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motivating Example: Predicting Friendships Before Deep Learning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#21-random-graph-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 Random Graph Models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.1 Random Graph Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#211-the-erdosrenyi-random-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.1 The Erdős–Rényi Random Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#212-the-giant-component" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.2 The Giant Component
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#213-the-barabasialbert-model-and-preferential-attachment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.3 The Barabási–Albert Model and Preferential Attachment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#214-small-world-networks-and-scale-free-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1.4 Small-World Networks and Scale-Free Networks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#22-transitivity-and-the-clustering-coefficient" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 Transitivity and the Clustering Coefficient
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#23-node-centrality-measures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 Node Centrality Measures
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.3 Node Centrality Measures">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#231-eigenvector-centrality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3.1 Eigenvector Centrality
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#232-betweenness-centrality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3.2 Betweenness Centrality
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#233-closeness-centrality" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3.3 Closeness Centrality
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#24-network-motifs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 Network Motifs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#25-graphlets-and-the-graphlet-degree-vector" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.5 Graphlets and the Graphlet Degree Vector
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#26-graph-kernels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6 Graph Kernels
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.6 Graph Kernels">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#261-the-graphlet-kernel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6.1 The Graphlet Kernel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#262-the-weisfeiler-lehman-kernel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.6.2 The Weisfeiler-Lehman Kernel
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#27-link-similarity-katz-index" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.7 Link Similarity: Katz Index
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#28-why-hand-crafted-features-are-limiting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.8 Why Hand-Crafted Features Are Limiting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#29-computing-graph-features-with-networkx-and-snap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.9 Computing Graph Features with NetworkX and SNAP
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.9 Computing Graph Features with NetworkX and SNAP">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#291-snap-stanford-network-analysis-platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.9.1 SNAP: Stanford Network Analysis Platform
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#210-microsim-wl-color-refinement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.10 MicroSim: WL Color Refinement
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.10 MicroSim: WL Color Refinement">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-wl-color-refinement-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: WL Color Refinement Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#211-benchmark-link-prediction-heuristics-on-standard-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.11 Benchmark: Link Prediction Heuristics on Standard Datasets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#212-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.12 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#213-chapter-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.13 Chapter Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#214-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.14 Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2.14 Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analyze
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#215-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.15 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    2. Graph Properties and Traditional ML Features
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/02-graph-properties-and-features/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-2-graph-properties-and-traditional-ml-features">Chapter 2: Graph Properties and Traditional ML Features<a class="headerlink" href="#chapter-2-graph-properties-and-traditional-ml-features" title="Permanent link">¶</a></h1>
+<p><strong>Part 1: Classical Graph Analysis</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Covers classical graph feature engineering — degree statistics, centrality measures, graphlets, the Weisfeiler-Lehman kernel, and network motifs — showing how to represent graphs for traditional ML before GNNs existed.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 18 concepts from the learning graph:</p>
+<ol>
+<li>Small-World Network</li>
+<li>Scale-Free Network</li>
+<li>Erdős–Rényi Random Graph</li>
+<li>Barabási–Albert Model</li>
+<li>Preferential Attachment</li>
+<li>Giant Component</li>
+<li>Transitivity</li>
+<li>Local Clustering Coefficient</li>
+<li>Betweenness Centrality</li>
+<li>Closeness Centrality</li>
+<li>Eigenvector Centrality</li>
+<li>Network Motif</li>
+<li>Graphlet</li>
+<li>Graphlet Degree Vector</li>
+<li>Graph Kernel</li>
+<li>Weisfeiler-Lehman Kernel</li>
+<li>Katz Similarity</li>
+<li>SNAP</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../01-intro-to-graphs/">Chapter 1: Introduction to Graphs and Networks</a></li>
+</ul>
+<hr>
+<h2 id="motivating-example-predicting-friendships-before-deep-learning">Motivating Example: Predicting Friendships Before Deep Learning<a class="headerlink" href="#motivating-example-predicting-friendships-before-deep-learning" title="Permanent link">¶</a></h2>
+<p>In the mid-2000s, LinkedIn faced a deceptively hard problem: given a professional network of millions of users, which pairs of currently unconnected people are likely to know each other in real life? Recommending the right connections would grow the network; recommending the wrong ones would annoy users into churning.</p>
+<p>At the time, no graph neural networks existed. Instead, LinkedIn's engineers computed a suite of hand-crafted graph features for every candidate pair of nodes: how many mutual connections did they share? How many paths of length two ran between them? What fraction of their neighborhoods overlapped? Each of these heuristics captured a different facet of network proximity, and combining them in a logistic regression produced recommendations good enough to dramatically accelerate network growth.</p>
+<p>This approach — turning a graph into a feature vector through careful engineering — is not just historical curiosity. It establishes the vocabulary of structural similarity that GNNs later learned to compute automatically. Understanding what these features measure, and why they fall short, is the essential context for appreciating why representation learning on graphs is worth the added complexity.</p>
+<p>This chapter covers that vocabulary in full: the random graph models that characterize real networks, the centrality measures that rank nodes by their structural importance, the graphlet-based features that describe local topology, and the graph kernels that compare entire graphs. Along the way, we will quantify exactly where hand-crafted features hit their ceiling — setting the stage for the learning-based approaches in the chapters that follow.</p>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">From Intuition to Measurement</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage welcoming students to Chapter 2">
+Chapter 1 gave you the language of graphs. This chapter gives you the <em>measurement tools</em>. Every structural property here — centrality, motif counts, WL colors — answers the question: "What is this node or graph <em>like</em>, quantitatively?" That question is the engine of all classical graph ML. By the end of this chapter, you will also understand exactly why those measurements are not enough — which is what makes Graph Neural Networks necessary.</p>
+</div>
+<hr>
+<h2 id="21-random-graph-models">2.1 Random Graph Models<a class="headerlink" href="#21-random-graph-models" title="Permanent link">¶</a></h2>
+<p>Before characterizing real networks, we need a baseline: what would a graph look like if structure were purely random? Two generative models serve this purpose, producing graphs that are easy to analyze mathematically but structurally impoverished compared to real-world networks. This gap between the random baseline and reality is precisely what the properties in this chapter are designed to capture.</p>
+<h3 id="211-the-erdosrenyi-random-graph">2.1.1 The Erdős–Rényi Random Graph<a class="headerlink" href="#211-the-erdosrenyi-random-graph" title="Permanent link">¶</a></h3>
+<p>The <strong>Erdős–Rényi random graph</strong> <span class="arithmatex">\(G(n, p)\)</span> is the simplest random graph model: generate <span class="arithmatex">\(n\)</span> nodes, and include each of the <span class="arithmatex">\(\binom{n}{2}\)</span> possible edges independently with probability <span class="arithmatex">\(p\)</span>.</p>
+<p>Key properties of <span class="arithmatex">\(G(n, p)\)</span>:</p>
+<ul>
+<li><strong>Expected number of edges:</strong> <span class="arithmatex">\(p\binom{n}{2} \approx pn^2/2\)</span></li>
+<li><strong>Expected degree:</strong> <span class="arithmatex">\(\bar{d} = p(n-1)\)</span></li>
+<li><strong>Degree distribution:</strong> Binomial (Poisson for large <span class="arithmatex">\(n\)</span>) — concentrated tightly around <span class="arithmatex">\(\bar{d}\)</span></li>
+<li><strong>Clustering coefficient:</strong> <span class="arithmatex">\(C \approx p\)</span> — triangles are rare for small <span class="arithmatex">\(p\)</span></li>
+<li><strong>Average path length:</strong> <span class="arithmatex">\(\bar{\ell} \approx \log n / \log \bar{d}\)</span></li>
+</ul>
+<p>The crucial limitation: <span class="arithmatex">\(G(n,p)\)</span> produces graphs where all nodes have approximately the same degree, forming no hubs. Real networks are nothing like this.</p>
+<h3 id="212-the-giant-component">2.1.2 The Giant Component<a class="headerlink" href="#212-the-giant-component" title="Permanent link">¶</a></h3>
+<p>A remarkable phase transition governs connectivity in <span class="arithmatex">\(G(n, p)\)</span>: as <span class="arithmatex">\(p\)</span> increases, the graph transitions abruptly from a collection of small isolated components to a state where a single <strong>giant component</strong> contains most nodes.</p>
+<p>The transition occurs at the critical threshold <span class="arithmatex">\(p_c = 1/n\)</span>, or equivalently at average degree <span class="arithmatex">\(\bar{d} = 1\)</span>:</p>
+<ul>
+<li>When <span class="arithmatex">\(\bar{d} &lt; 1\)</span>: only small components, largest has <span class="arithmatex">\(O(\log n)\)</span> nodes</li>
+<li>When <span class="arithmatex">\(\bar{d} = 1\)</span>: a giant component appears, containing <span class="arithmatex">\(O(n^{2/3})\)</span> nodes</li>
+<li>When <span class="arithmatex">\(\bar{d} &gt; 1\)</span>: the giant component grows rapidly, containing <span class="arithmatex">\(O(n)\)</span> nodes</li>
+</ul>
+<p>This phase transition has deep consequences for graph ML: algorithms that assume connectivity — shortest paths, random walks, label propagation — require the giant component to exist. When computing properties on real-world graphs, always check that the relevant nodes lie in the same component.</p>
+<h3 id="213-the-barabasialbert-model-and-preferential-attachment">2.1.3 The Barabási–Albert Model and Preferential Attachment<a class="headerlink" href="#213-the-barabasialbert-model-and-preferential-attachment" title="Permanent link">¶</a></h3>
+<p>The <strong>Barabási–Albert (BA) model</strong> explains how hubs arise. It generates graphs through an incremental process governed by <strong>preferential attachment</strong>: new nodes join the network one at a time, and each new node connects to <span class="arithmatex">\(m\)</span> existing nodes with probability proportional to their current degree.</p>
+<p>Formally, the probability that a new node connects to existing node <span class="arithmatex">\(i\)</span> is:</p>
+<div class="arithmatex">\[\Pi(i) = \frac{d_i}{\sum_j d_j}\]</div>
+<p>"The rich get richer" — popular nodes attract even more connections. The resulting degree distribution follows a power law <span class="arithmatex">\(P(k) \propto k^{-3}\)</span>, producing the scale-free structure observed in real networks. The BA model generates graphs with a small number of high-degree hubs and a long tail of low-degree nodes.</p>
+<p>The table below summarizes the structural contrast between the ER model, the BA model, and a real social network (the Karate Club graph):</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>ER <span class="arithmatex">\(G(34, 0.14)\)</span></th>
+<th>BA (<span class="arithmatex">\(n=34, m=2\)</span>)</th>
+<th>Karate Club</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Avg. degree</td>
+<td>4.5</td>
+<td>4.0</td>
+<td>4.59</td>
+</tr>
+<tr>
+<td>Max. degree</td>
+<td>~8 (typical)</td>
+<td>~15 (typical)</td>
+<td>17</td>
+</tr>
+<tr>
+<td>Degree distribution</td>
+<td>Poisson</td>
+<td>Power-law</td>
+<td>Heavy-tailed</td>
+</tr>
+<tr>
+<td>Clustering coefficient</td>
+<td>~0.14</td>
+<td>~0.05</td>
+<td>0.571</td>
+</tr>
+<tr>
+<td>Avg. path length</td>
+<td>~2.5</td>
+<td>~2.4</td>
+<td>2.41</td>
+</tr>
+</tbody>
+</table>
+<p>The ER model roughly matches path lengths but dramatically underestimates clustering. The BA model produces realistic hubs but also underestimates clustering. Neither captures the combination of high clustering <em>and</em> short paths found in real social networks — that combination is the defining signature of small-world structure.</p>
+<h3 id="214-small-world-networks-and-scale-free-networks">2.1.4 Small-World Networks and Scale-Free Networks<a class="headerlink" href="#214-small-world-networks-and-scale-free-networks" title="Permanent link">¶</a></h3>
+<p>A <strong>small-world network</strong> is characterized by two simultaneous properties:</p>
+<ol>
+<li><strong>High clustering</strong> — most neighbors of a node know each other</li>
+<li><strong>Short average path length</strong> — any two nodes are connected by a short chain</li>
+</ol>
+<p>The Watts-Strogatz model achieves this by starting with a regular ring lattice (high clustering) and randomly rewiring a small fraction of edges (introducing shortcuts that dramatically reduce path length).</p>
+<p>A <strong>scale-free network</strong> is characterized by a power-law degree distribution <span class="arithmatex">\(P(k) \propto k^{-\gamma}\)</span> with <span class="arithmatex">\(\gamma \in (2, 3)\)</span> for most real networks. Scale-free networks are scale-invariant — the degree distribution looks the same regardless of the scale at which you zoom in — and they arise naturally from preferential attachment dynamics.</p>
+<p>Many real networks exhibit <em>both</em> properties simultaneously: they are small-world <em>and</em> scale-free. The coexistence of these properties, absent in both ER and BA models, is one of the central puzzles of empirical network science and the key motivation for studying real-network structure rather than theoretical random graphs.</p>
+<hr>
+<h2 id="22-transitivity-and-the-clustering-coefficient">2.2 Transitivity and the Clustering Coefficient<a class="headerlink" href="#22-transitivity-and-the-clustering-coefficient" title="Permanent link">¶</a></h2>
+<p><strong>Transitivity</strong> (or <em>global clustering</em>) measures the overall tendency for connected triples of nodes to close into triangles:</p>
+<div class="arithmatex">\[T = \frac{3 \times \text{(number of triangles)}}{\text{(number of connected triples)}}\]</div>
+<p>A connected triple is any path of length 2 (three nodes <span class="arithmatex">\(u\)</span>-<span class="arithmatex">\(v\)</span>-<span class="arithmatex">\(w\)</span> where <span class="arithmatex">\((u,v)\)</span> and <span class="arithmatex">\((v,w)\)</span> are edges). Transitivity counts what fraction of those triples are "closed" by the edge <span class="arithmatex">\((u,w)\)</span>.</p>
+<p>The <strong>local clustering coefficient</strong> <span class="arithmatex">\(C_v\)</span> of a node <span class="arithmatex">\(v\)</span> with degree <span class="arithmatex">\(d_v\)</span> is the fraction of <span class="arithmatex">\(v\)</span>'s neighbors that are connected to each other:</p>
+<div class="arithmatex">\[C_v = \frac{|\{(u,w) \in E : u, w \in \mathcal{N}(v)\}|}{\binom{d_v}{2}} = \frac{2 \cdot e_v}{d_v(d_v - 1)}\]</div>
+<p>where <span class="arithmatex">\(e_v\)</span> is the number of edges among <span class="arithmatex">\(v\)</span>'s neighbors. The <strong>average clustering coefficient</strong> <span class="arithmatex">\(\bar{C} = \frac{1}{n}\sum_v C_v\)</span> is the standard summary statistic. For the Karate Club graph, <span class="arithmatex">\(\bar{C} = 0.571\)</span> — dramatically higher than the ER baseline of <span class="arithmatex">\(\approx p = 0.14\)</span>.</p>
+<p>Clustering coefficient is one of the most powerful discriminative features between graph types. Social networks have high clustering (<span class="arithmatex">\(\bar{C} \approx 0.3\text{–}0.6\)</span>); biological interaction networks have moderate clustering (<span class="arithmatex">\(\bar{C} \approx 0.1\text{–}0.3\)</span>); technological networks (internet routers) have lower clustering. It is also central to the small-world characterization: small-world networks are defined as having <span class="arithmatex">\(\bar{C} \gg \bar{C}_{\text{random}}\)</span> while maintaining <span class="arithmatex">\(\bar{\ell} \approx \bar{\ell}_{\text{random}}\)</span>.</p>
+<hr>
+<h2 id="23-node-centrality-measures">2.3 Node Centrality Measures<a class="headerlink" href="#23-node-centrality-measures" title="Permanent link">¶</a></h2>
+<p>Node centrality measures answer a single question: <em>which nodes are most important?</em> Different centrality measures formalize "importance" differently, and each captures a distinct aspect of structural position.</p>
+<p>Before examining the formulas, it is worth noting their shared motivation. In the Karate Club graph, node 0 (the instructor) and node 33 (the club president) are the two most influential members — the social network split along the boundary between their factions. Each centrality measure should rank these two nodes highly, but for different structural reasons.</p>
+<h3 id="231-eigenvector-centrality">2.3.1 Eigenvector Centrality<a class="headerlink" href="#231-eigenvector-centrality" title="Permanent link">¶</a></h3>
+<p>A node is important if it is connected to other important nodes. This circular reasoning leads to a self-consistent definition: the <strong>eigenvector centrality</strong> score <span class="arithmatex">\(c_v\)</span> satisfies:</p>
+<div class="arithmatex">\[c_v = \frac{1}{\lambda} \sum_{u \in \mathcal{N}(v)} c_u\]</div>
+<p>In matrix form: <span class="arithmatex">\(\lambda \mathbf{c} = \mathbf{A}\mathbf{c}\)</span>, which means <span class="arithmatex">\(\mathbf{c}\)</span> is an eigenvector of the adjacency matrix <span class="arithmatex">\(\mathbf{A}\)</span> with eigenvalue <span class="arithmatex">\(\lambda\)</span>. By the Perron-Frobenius theorem, the unique non-negative solution is the eigenvector corresponding to the largest eigenvalue <span class="arithmatex">\(\lambda_1\)</span>. Nodes with high eigenvector centrality are connected to many well-connected nodes — a node in the periphery has low eigenvector centrality even if it has high degree, if its neighbors are themselves peripheral.</p>
+<p>PageRank (which we study in Chapter 3) is a modified version of eigenvector centrality that handles directed graphs and prevents rank from concentrating on sink nodes.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Eigenvector Centrality Is a Fixed Point, Not a Formula</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage explaining the recursive nature of eigenvector centrality">
+The recursive definition of eigenvector centrality — "important nodes are connected to important nodes" — might feel circular, but it is actually a fixed point equation. The power iteration algorithm resolves it: start with all nodes having equal centrality, then repeatedly update each node's score as the sum of its neighbors' scores, then normalize. This process converges to the leading eigenvector. This is exactly the same iterative aggregation-and-normalize pattern that every GNN layer implements. Eigenvector centrality is, in a real sense, a one-dimensional GNN with a fixed aggregation rule and no learned weights. Your neighbors have insights too.</p>
+</div>
+<h3 id="232-betweenness-centrality">2.3.2 Betweenness Centrality<a class="headerlink" href="#232-betweenness-centrality" title="Permanent link">¶</a></h3>
+<p>A node is important if many shortest paths pass through it — it acts as a bridge or bottleneck. <strong>Betweenness centrality</strong> quantifies this:</p>
+<div class="arithmatex">\[C_B(v) = \sum_{s \neq v \neq t} \frac{\sigma_{st}(v)}{\sigma_{st}}\]</div>
+<p>where <span class="arithmatex">\(\sigma_{st}\)</span> is the total number of shortest paths from <span class="arithmatex">\(s\)</span> to <span class="arithmatex">\(t\)</span>, and <span class="arithmatex">\(\sigma_{st}(v)\)</span> is the number of those paths that pass through <span class="arithmatex">\(v\)</span>. A high-betweenness node, if removed, would dramatically increase path lengths between many pairs of nodes.</p>
+<p>In the Karate Club graph, node 0 (instructor) has the highest betweenness centrality because all communication between the two factions passes through it (before the split). Betweenness centrality identifies bridges, gatekeepers, and brokers — structurally quite different from high-degree hubs.</p>
+<p>Brandes' algorithm computes betweenness centrality in <span class="arithmatex">\(O(nm)\)</span> time for unweighted graphs and <span class="arithmatex">\(O(nm + n^2 \log n)\)</span> for weighted graphs — efficient enough for graphs with tens of thousands of nodes.</p>
+<h3 id="233-closeness-centrality">2.3.3 Closeness Centrality<a class="headerlink" href="#233-closeness-centrality" title="Permanent link">¶</a></h3>
+<p>A node is important if it can reach all other nodes quickly. <strong>Closeness centrality</strong> is the reciprocal of the average shortest path distance to all other nodes:</p>
+<div class="arithmatex">\[C_C(v) = \frac{n-1}{\sum_{u \neq v} d(v, u)}\]</div>
+<p>The normalization by <span class="arithmatex">\(n-1\)</span> ensures scores are comparable across graphs of different sizes. A central node in the "middle" of a graph has high closeness; a peripheral node has low closeness because it must travel many hops to reach nodes on the other side.</p>
+<p>Closeness centrality is sensitive to graph connectivity: for disconnected graphs, it is only defined on the giant component, or with modified formulations that assign infinite distance to unreachable pairs. The standard workaround is to compute closeness only within the largest connected component.</p>
+<p>The following table summarizes the three centrality measures for the top-5 nodes in the Karate Club graph. The three measures often agree on major hubs but diverge sharply on peripheral nodes:</p>
+<table>
+<thead>
+<tr>
+<th>Node</th>
+<th>Eigenvector</th>
+<th>Betweenness</th>
+<th>Closeness</th>
+<th>Ground truth role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0.356</td>
+<td>0.437</td>
+<td>0.569</td>
+<td>Instructor (faction leader)</td>
+</tr>
+<tr>
+<td>33</td>
+<td>0.313</td>
+<td>0.304</td>
+<td>0.559</td>
+<td>President (faction leader)</td>
+</tr>
+<tr>
+<td>2</td>
+<td>0.300</td>
+<td>0.143</td>
+<td>0.559</td>
+<td>Bridge member</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0.267</td>
+<td>0.053</td>
+<td>0.493</td>
+<td>Close associate of node 0</td>
+</tr>
+<tr>
+<td>32</td>
+<td>0.245</td>
+<td>0.145</td>
+<td>0.515</td>
+<td>Close associate of node 33</td>
+</tr>
+</tbody>
+</table>
+<p><em>Values computed with NetworkX. Eigenvector centrality is normalized to the leading eigenvector.</em></p>
+<hr>
+<h2 id="24-network-motifs">2.4 Network Motifs<a class="headerlink" href="#24-network-motifs" title="Permanent link">¶</a></h2>
+<p>Beyond single-node statistics, the <em>local structural patterns</em> that recur throughout a network carry important information. A <strong>network motif</strong> is a small subgraph pattern that appears significantly more often in a real network than in random graphs with the same degree sequence.</p>
+<p>Milo et al. (2002) identified four canonical 3-node directed motifs in transcriptional regulatory networks: the feed-forward loop, the bifan, the single-input module, and the multi-input module. Each motif corresponds to a functional circuit: the feed-forward loop acts as a sign-sensitive delay; the bifan synchronizes multiple targets. The vocabulary of motifs provides a compact, interpretable description of a network's local structure.</p>
+<p>Motif analysis requires:</p>
+<ol>
+<li>Enumerating all subgraphs of size <span class="arithmatex">\(k\)</span> in the target network (typically <span class="arithmatex">\(k = 3\)</span> or <span class="arithmatex">\(4\)</span>)</li>
+<li>Computing their frequency</li>
+<li>Comparing to frequency in randomized null-model graphs with the same degree sequence</li>
+<li>Defining <span class="arithmatex">\(Z\)</span>-scores: <span class="arithmatex">\(Z_i = (F_i^{\text{real}} - \mu_i^{\text{random}}) / \sigma_i^{\text{random}}\)</span></li>
+</ol>
+<p>The normalized <span class="arithmatex">\(Z\)</span>-score vector across all motif types is called the <strong>network significance profile</strong> — a compact fingerprint of the network's functional organization.</p>
+<hr>
+<h2 id="25-graphlets-and-the-graphlet-degree-vector">2.5 Graphlets and the Graphlet Degree Vector<a class="headerlink" href="#25-graphlets-and-the-graphlet-degree-vector" title="Permanent link">¶</a></h2>
+<p><strong>Graphlets</strong> are small, connected, non-isomorphic induced subgraphs. Unlike motifs (which apply to directed graphs and use statistical enrichment), graphlets are defined for undirected graphs and are used as topological descriptors without a null model comparison.</p>
+<p>There are 2 graphlets on 2 nodes (<span class="arithmatex">\(g_1\)</span>: edge), 2 on 3 nodes (<span class="arithmatex">\(g_2\)</span>: path, <span class="arithmatex">\(g_3\)</span>: triangle), and 6 on 4 nodes (<span class="arithmatex">\(g_4\)</span>–<span class="arithmatex">\(g_8\)</span>: path, star, cycle, "diamond", <span class="arithmatex">\(K_4\)</span>), for a total of 30 distinct graphlets on 2–5 nodes. Each graphlet has multiple topologically distinct <em>node positions</em> (called <em>automorphism orbits</em>): a node can be the center of a 3-star or an endpoint of a 3-star, and these are structurally different.</p>
+<p>The <strong>Graphlet Degree Vector (GDV)</strong> of a node <span class="arithmatex">\(v\)</span> is a 73-dimensional vector (for graphlets of size 2–5) where entry <span class="arithmatex">\(i\)</span> counts the number of times node <span class="arithmatex">\(v\)</span> appears at orbit <span class="arithmatex">\(i\)</span> across all graphlets in the graph. The GDV is a rich structural fingerprint: two nodes with identical GDVs occupy structurally equivalent positions in their respective graphs.</p>
+<p>The GDV generalizes the degree — which is just orbit 0 (number of edges, i.e., appearances in the <span class="arithmatex">\(g_1\)</span> graphlet) — to encode the full local topology out to 5-node neighborhoods. Graphlet-based features substantially outperform degree and clustering coefficient alone for protein function prediction and other biological network analysis tasks.</p>
+<hr>
+<h2 id="26-graph-kernels">2.6 Graph Kernels<a class="headerlink" href="#26-graph-kernels" title="Permanent link">¶</a></h2>
+<p>A <strong>graph kernel</strong> is a function <span class="arithmatex">\(K(G, G')\)</span> that measures the similarity between two graphs. Kernels enable off-the-shelf kernel machines (SVMs, Gaussian processes) to be applied directly to graph-structured data. The kernel must be symmetric and positive semi-definite — the same requirements as any valid Mercer kernel.</p>
+<p>Two closely related kernels anchor the field.</p>
+<h3 id="261-the-graphlet-kernel">2.6.1 The Graphlet Kernel<a class="headerlink" href="#261-the-graphlet-kernel" title="Permanent link">¶</a></h3>
+<p>The <strong>graphlet kernel</strong> compares graphs by their graphlet frequency distributions. For each graph <span class="arithmatex">\(G\)</span>, compute the normalized graphlet count vector <span class="arithmatex">\(\mathbf{f}_G\)</span> (how often each of the <span class="arithmatex">\(k\)</span> graphlet types appears). The graphlet kernel is:</p>
+<div class="arithmatex">\[K_{\text{graphlet}}(G, G') = \mathbf{f}_G^{\top} \mathbf{f}_{G'}\]</div>
+<p>This is simply the dot product of two normalized histogram vectors. Its limitation is computational cost: counting all graphlets of size <span class="arithmatex">\(k\)</span> requires <span class="arithmatex">\(O(n^k)\)</span> time, which becomes prohibitive for <span class="arithmatex">\(k \geq 5\)</span> on large graphs.</p>
+<h3 id="262-the-weisfeiler-lehman-kernel">2.6.2 The Weisfeiler-Lehman Kernel<a class="headerlink" href="#262-the-weisfeiler-lehman-kernel" title="Permanent link">¶</a></h3>
+<p>The <strong>Weisfeiler-Lehman (WL) kernel</strong> avoids the graphlet enumeration bottleneck by replacing subgraph counting with an iterative node-labeling process inspired by the Weisfeiler-Lehman graph isomorphism test.</p>
+<p>The WL refinement procedure works as follows. We will define these steps precisely before connecting them to the kernel:</p>
+<ul>
+<li><strong>Initialization (step 0):</strong> Assign each node an initial label equal to its degree (or a uniform label for unlabeled graphs).</li>
+<li><strong>Aggregation (step <span class="arithmatex">\(t\)</span>):</strong> For each node <span class="arithmatex">\(v\)</span>, collect the multiset of labels of all its neighbors <span class="arithmatex">\(\mathcal{N}(v)\)</span> and concatenate them with <span class="arithmatex">\(v\)</span>'s own label.</li>
+<li><strong>Hashing (step <span class="arithmatex">\(t\)</span>):</strong> Map each concatenated string to a new compact label via a hash function, producing a new label for every node.</li>
+<li><strong>Termination:</strong> Repeat aggregation and hashing for <span class="arithmatex">\(T\)</span> iterations, or until no new label refinements occur.</li>
+</ul>
+<p>After <span class="arithmatex">\(T\)</span> iterations, each node has been assigned a sequence of labels <span class="arithmatex">\((\ell_v^0, \ell_v^1, \ldots, \ell_v^T)\)</span>. The label <span class="arithmatex">\(\ell_v^t\)</span> encodes the structure of <span class="arithmatex">\(v\)</span>'s <span class="arithmatex">\(t\)</span>-hop neighborhood. The feature vector for graph <span class="arithmatex">\(G\)</span> at iteration <span class="arithmatex">\(t\)</span> counts how many nodes in <span class="arithmatex">\(G\)</span> have each label at that iteration.</p>
+<p>The WL kernel is the sum of linear kernels over all iterations:</p>
+<div class="arithmatex">\[K_{\text{WL}}(G, G') = \sum_{t=0}^{T} \mathbf{f}_{G,t}^{\top} \mathbf{f}_{G',t}\]</div>
+<p>The WL kernel runs in <span class="arithmatex">\(O(nm)\)</span> time — linear in the number of edges — making it tractable for large graphs. It is also <em>provably expressive</em>: it can distinguish any pair of graphs that the WL isomorphism test can distinguish, and it is strictly more powerful than the graphlet kernel on most graph families.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">The WL Kernel Is a Preview of Chapter 9</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encouraging students through the WL kernel">
+If the WL kernel procedure sounds familiar, that is because it is essentially one step of message passing — the operation at the heart of every GNN. In Chapter 9, we will prove that any message-passing GNN is <em>at most</em> as expressive as the WL test (and most popular GNNs are strictly <em>less</em> expressive). The WL kernel is not just a historical artifact; it is the theoretical ceiling against which GNN expressiveness is measured. Understanding it now makes the expressiveness results in Chapters 9 and 10 much more natural.</p>
+</div>
+<hr>
+<h2 id="27-link-similarity-katz-index">2.7 Link Similarity: Katz Index<a class="headerlink" href="#27-link-similarity-katz-index" title="Permanent link">¶</a></h2>
+<p>Link-level features estimate the likelihood that two currently unconnected nodes will form an edge — the link prediction problem. Several heuristics exist, ranging from simple to computationally intensive.</p>
+<p>We have already introduced common-neighbor count, Jaccard coefficient, and Adamic-Adar index in Chapter 1's code examples. Here we focus on the most powerful classical heuristic: <strong>Katz similarity</strong>, which considers <em>all</em> paths between two nodes, not just paths of length 2.</p>
+<p>The Katz similarity between nodes <span class="arithmatex">\(u\)</span> and <span class="arithmatex">\(v\)</span> is:</p>
+<div class="arithmatex">\[S_{uv}^{\text{Katz}} = \sum_{l=1}^{\infty} \beta^l (\mathbf{A}^l)_{uv}\]</div>
+<p>where <span class="arithmatex">\((\mathbf{A}^l)_{uv}\)</span> counts the number of walks of length <span class="arithmatex">\(l\)</span> between <span class="arithmatex">\(u\)</span> and <span class="arithmatex">\(v\)</span>, and <span class="arithmatex">\(\beta \in (0, 1/\lambda_1)\)</span> is a damping factor that ensures the series converges. Short paths contribute more than long paths (since <span class="arithmatex">\(\beta &lt; 1\)</span> and <span class="arithmatex">\(\beta^l \to 0\)</span>).</p>
+<p>This infinite sum has a closed form. Summing the geometric series:</p>
+<div class="arithmatex">\[\mathbf{S}^{\text{Katz}} = \sum_{l=1}^{\infty} \beta^l \mathbf{A}^l = (\mathbf{I} - \beta\mathbf{A})^{-1} - \mathbf{I}\]</div>
+<p>This matrix inversion is <span class="arithmatex">\(O(n^3)\)</span> for dense matrices but can be approximated efficiently using sparse solvers or truncated series. Katz similarity is the most expressive classical link prediction heuristic because it integrates structural information from all path lengths simultaneously, not just 1-hop or 2-hop neighborhoods.</p>
+<hr>
+<h2 id="28-why-hand-crafted-features-are-limiting">2.8 Why Hand-Crafted Features Are Limiting<a class="headerlink" href="#28-why-hand-crafted-features-are-limiting" title="Permanent link">¶</a></h2>
+<p>The features in this chapter are powerful and remain competitive on many benchmarks. But they have three fundamental limitations that motivated the shift to representation learning.</p>
+<p><strong>Task-specificity.</strong> Each feature was designed with a specific task in mind. Betweenness centrality was designed for network flow; clustering coefficient for social cohesion; graphlet degree vectors for biological network comparison. When the task changes — from node classification to link prediction to graph classification — the feature engineering process must restart.</p>
+<p><strong>Non-adaptivity.</strong> The features are computed from graph structure alone, independent of any target labels. A GNN, by contrast, learns features that are directly optimized for the prediction task at hand. Two graphs with identical graphlet degree vectors might have very different classification labels — a distinction that GNNs can learn to capture but fixed features cannot.</p>
+<p><strong>Combinatorial explosion.</strong> Graphlet features become computationally intractable beyond <span class="arithmatex">\(k=5\)</span> nodes. But real prediction tasks often require understanding structure at larger scales. GNNs can aggregate information over arbitrarily deep neighborhoods, subject only to over-smoothing constraints, without the exponential enumeration cost.</p>
+<p>The solution — as we will see starting in Chapter 3 — is to learn node representations automatically: map each node to a dense vector in <span class="arithmatex">\(\mathbb{R}^d\)</span> such that structurally similar nodes have similar vectors. The chapters that follow build from shallow embedding methods to deep GNNs, each learning increasingly expressive representations.</p>
+<hr>
+<h2 id="29-computing-graph-features-with-networkx-and-snap">2.9 Computing Graph Features with NetworkX and SNAP<a class="headerlink" href="#29-computing-graph-features-with-networkx-and-snap" title="Permanent link">¶</a></h2>
+<p>With the conceptual framework in place, we can now compute all the properties discussed in this chapter using NetworkX. Before reading the code, a brief orientation: <code>nx.betweenness_centrality()</code> and <code>nx.closeness_centrality()</code> return Python dictionaries mapping node IDs to centrality scores. <code>nx.eigenvector_centrality()</code> uses power iteration internally; the <code>max_iter</code> parameter controls the maximum number of iterations (default 100 is usually sufficient). The <code>nx.find_cliques()</code> function uses the Bron-Kerbosch algorithm and returns a generator of maximal cliques.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># ── Load Karate Club ──────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">n</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># ── Random graph baselines ────────────────────────────────────────────────────</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># ER baseline with same n and average degree</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">p</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">G_er</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">erdos_renyi_graph</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># BA model with same n and approximate average degree m=2</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">G_ba</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">barabasi_albert_graph</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"Karate"</span><span class="p">,</span> <span class="n">G</span><span class="p">),</span> <span class="p">(</span><span class="s2">"ER"</span><span class="p">,</span> <span class="n">G_er</span><span class="p">),</span> <span class="p">(</span><span class="s2">"BA"</span><span class="p">,</span> <span class="n">G_ba</span><span class="p">)]:</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">giant</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">connected_components</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">)</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">g_sub</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">giant</span><span class="p">)</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">:"</span><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Giant component: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">giant</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Clustering coeff: </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">average_clustering</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="k">if</span> <span class="n">nx</span><span class="o">.</span><span class="n">is_connected</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Avg path length:  </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">average_shortest_path_length</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="c1"># ── Node centrality measures ──────────────────────────────────────────────────</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="c1"># Each returns a dict {node: centrality_score}</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="n">degree_cent</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">degree_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>           <span class="c1"># normalized degree</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">eigen_cent</span>  <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">eigenvector_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">between_cent</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">betweenness_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">normalized</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="n">close_cent</span>  <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">closeness_centrality</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="n">cluster_per_node</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">clustering</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>             <span class="c1"># local clustering coeff</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="c1"># Print top-5 nodes by each measure</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">cent</span> <span class="ow">in</span> <span class="p">[(</span><span class="s2">"Degree"</span><span class="p">,</span> <span class="n">degree_cent</span><span class="p">),</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>                   <span class="p">(</span><span class="s2">"Eigenvector"</span><span class="p">,</span> <span class="n">eigen_cent</span><span class="p">),</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>                   <span class="p">(</span><span class="s2">"Betweenness"</span><span class="p">,</span> <span class="n">between_cent</span><span class="p">),</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>                   <span class="p">(</span><span class="s2">"Closeness"</span><span class="p">,</span> <span class="n">close_cent</span><span class="p">)]:</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>    <span class="n">ranked</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">cent</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:</span><span class="mi">5</span><span class="p">]</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Top-5 by </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> centrality:"</span><span class="p">)</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">ranked</span><span class="p">:</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Node </span><span class="si">{</span><span class="n">node</span><span class="si">:</span><span class="s2">2d</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="c1"># ── Transitivity (global clustering) ─────────────────────────────────────────</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Transitivity (global clustering): </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">transitivity</span><span class="p">(</span><span class="n">G</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Avg clustering coefficient:        </span><span class="si">{</span><span class="n">nx</span><span class="o">.</span><span class="n">average_clustering</span><span class="p">(</span><span class="n">G</span><span class="p">)</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="c1"># Note: transitivity != avg clustering; they weight triangles differently.</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="c1"># ── Katz similarity (matrix formulation) ─────────────────────────────────────</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="c1"># Choose beta &lt; 1/largest eigenvalue for convergence</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="n">A</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_numpy_array</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="n">eigenvalues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="n">lambda_max</span>  <span class="o">=</span> <span class="n">eigenvalues</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="n">beta</span> <span class="o">=</span> <span class="mf">0.8</span> <span class="o">/</span> <span class="n">lambda_max</span>                         <span class="c1"># safe damping factor</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="c1"># S = (I - beta*A)^{-1} - I</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="n">I</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="n">S_katz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">I</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">A</span><span class="p">)</span> <span class="o">-</span> <span class="n">I</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="c1"># Top-5 node pairs by Katz similarity (excluding self-pairs)</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">S_katz</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="n">top_pairs_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">S_katz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)[</span><span class="o">-</span><span class="mi">5</span><span class="p">:],</span> <span class="n">S_katz</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Top-5 node pairs by Katz similarity:"</span><span class="p">)</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">top_pairs_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">top_pairs_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>    <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>        <span class="n">connected</span> <span class="o">=</span> <span class="s2">"✓ edge exists"</span> <span class="k">if</span> <span class="n">G</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">else</span> <span class="s2">"✗ no edge (link prediction candidate)"</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  (</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">S_katz</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">connected</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="c1"># ── Local clustering and motif counting ──────────────────────────────────────</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="c1"># Count triangles (the simplest 3-node motif)</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="n">triangles_per_node</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">triangles</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>            <span class="c1"># dict: {node: num_triangles_involving_node}</span>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="n">total_triangles</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">triangles_per_node</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">//</span> <span class="mi">3</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Total triangles: </span><span class="si">{</span><span class="n">total_triangles</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># 45 in Karate Club</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="c1"># Count 3-node paths (for transitivity denominator)</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a><span class="n">connected_triples</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>    <span class="n">d</span> <span class="o">*</span> <span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">degree</span><span class="p">()</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a><span class="p">)</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Connected triples: </span><span class="si">{</span><span class="n">connected_triples</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Manual transitivity: </span><span class="si">{</span><span class="mi">3</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">total_triangles</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">connected_triples</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a><span class="c1"># ── Network motifs (undirected 3-node motifs) ─────────────────────────────────</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a><span class="c1"># In an undirected graph, there are exactly 2 connected 3-node subgraphs:</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a><span class="c1"># paths (P3) and triangles (K3).</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a><span class="c1"># For directed motif analysis, the 'grakel' library provides full motif counting.</span>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a><span class="n">k3_count</span> <span class="o">=</span> <span class="n">total_triangles</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Undirected 3-node motifs:"</span><span class="p">)</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Triangles (K3): </span><span class="si">{</span><span class="n">k3_count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Paths (P3):     </span><span class="si">{</span><span class="n">connected_triples</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">k3_count</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="291-snap-stanford-network-analysis-platform">2.9.1 SNAP: Stanford Network Analysis Platform<a class="headerlink" href="#291-snap-stanford-network-analysis-platform" title="Permanent link">¶</a></h3>
+<p><strong>SNAP</strong> (Stanford Network Analysis Platform) is a high-performance C++ graph library with a Python wrapper (<code>snap-stanford</code>). It is designed for large-scale network analysis — graphs with billions of nodes and edges — where NetworkX's Python-native data structures become bottlenecks.</p>
+<p>SNAP excels at network statistics on massive graphs: computing degree distributions, connected components, and neighborhood analysis on graphs too large for NetworkX. It uses compressed adjacency lists and batched operations to achieve 10–100× speedups on large graphs.</p>
+<p>The SNAP Python API mirrors NetworkX's interface for core operations:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Install: pip install snap-stanford</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">snap</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Load a graph from an edge list file</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">G_snap</span> <span class="o">=</span> <span class="n">snap</span><span class="o">.</span><span class="n">LoadEdgeList</span><span class="p">(</span><span class="n">snap</span><span class="o">.</span><span class="n">TUNGraph</span><span class="p">,</span> <span class="s2">"karate.txt"</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Nodes: </span><span class="si">{</span><span class="n">G_snap</span><span class="o">.</span><span class="n">GetNodes</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Edges: </span><span class="si">{</span><span class="n">G_snap</span><span class="o">.</span><span class="n">GetEdges</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># Compute degree distribution</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">DegToCntV</span> <span class="o">=</span> <span class="n">snap</span><span class="o">.</span><span class="n">TIntPrV</span><span class="p">()</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">snap</span><span class="o">.</span><span class="n">GetDegCnt</span><span class="p">(</span><span class="n">G_snap</span><span class="p">,</span> <span class="n">DegToCntV</span><span class="p">)</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">DegToCntV</span><span class="p">:</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  degree </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">GetVal1</span><span class="p">()</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">GetVal2</span><span class="p">()</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="c1"># Betweenness centrality (faster than NetworkX on large graphs)</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">Nodes</span><span class="p">,</span> <span class="n">Edges</span> <span class="o">=</span> <span class="n">snap</span><span class="o">.</span><span class="n">TIntFltH</span><span class="p">(),</span> <span class="n">snap</span><span class="o">.</span><span class="n">TIntFltH</span><span class="p">()</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="n">snap</span><span class="o">.</span><span class="n">GetBetweennessCentr</span><span class="p">(</span><span class="n">G_snap</span><span class="p">,</span> <span class="n">Nodes</span><span class="p">,</span> <span class="n">Edges</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span></code></pre></div>
+<p>For this textbook's running examples — the Karate Club graph (34 nodes) and ogbn-arxiv (169K nodes) — NetworkX is fully adequate. SNAP becomes essential when analyzing billion-node graphs such as the full Facebook social graph or the complete web crawl datasets.</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Know Your Library for the Scale of Your Problem</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving a practical tip about library selection">
+NetworkX is the right tool for exploration and prototyping: it is easy to use, has 70+ graph algorithms built in, and its objects are easy to inspect. SNAP is the right tool for production analysis on large graphs. PyTorch Geometric (which we introduce in Chapter 6) is the right tool for GNN training. These three libraries are not in competition — they occupy different spots in the stack. A common workflow: use NetworkX to understand a new dataset, use SNAP to compute statistics at scale if needed, then use PyG to train your model. Using NetworkX to train on ogbn-products (2.4 billion edges) will work, slowly; using PyG to compute betweenness centrality is like using a hammer to write a letter.</p>
+</div>
+<hr>
+<h2 id="210-microsim-wl-color-refinement">2.10 MicroSim: WL Color Refinement<a class="headerlink" href="#210-microsim-wl-color-refinement" title="Permanent link">¶</a></h2>
+<p>The interactive simulation below runs the Weisfeiler-Lehman color refinement procedure on two graphs simultaneously. Use the <strong>Step</strong> button to advance one refinement iteration, or <strong>Auto</strong> to animate the process. When two nodes in different graphs receive the same color, they appear identical to the WL test — and would be indistinguishable to a message-passing GNN.</p>
+<h4 id="diagram-wl-color-refinement-simulator">Diagram: WL Color Refinement Simulator<a class="headerlink" href="#diagram-wl-color-refinement-simulator" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch02-wl-refinement/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch02-wl-refinement/main.html">Run WL Color Refinement Simulator Fullscreen</a></p>
+<hr>
+<h2 id="211-benchmark-link-prediction-heuristics-on-standard-datasets">2.11 Benchmark: Link Prediction Heuristics on Standard Datasets<a class="headerlink" href="#211-benchmark-link-prediction-heuristics-on-standard-datasets" title="Permanent link">¶</a></h2>
+<p>The following table compares the classical link prediction heuristics covered in this chapter against GNN-based approaches on two OGB benchmarks. All results are AUC-ROC (higher is better); random = 0.50.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>ogbl-collab</th>
+<th>ogbl-citation2</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Common Neighbors</td>
+<td>0.583</td>
+<td>0.516</td>
+<td>Hand-crafted</td>
+</tr>
+<tr>
+<td>Jaccard Coefficient</td>
+<td>0.572</td>
+<td>0.512</td>
+<td>Hand-crafted</td>
+</tr>
+<tr>
+<td>Adamic-Adar</td>
+<td>0.588</td>
+<td>0.521</td>
+<td>Hand-crafted</td>
+</tr>
+<tr>
+<td>Katz (<span class="arithmatex">\(\beta = 0.005\)</span>)</td>
+<td>0.631</td>
+<td>0.628</td>
+<td>Hand-crafted</td>
+</tr>
+<tr>
+<td>GCN (2-layer)</td>
+<td>0.443</td>
+<td>0.853</td>
+<td>GNN</td>
+</tr>
+<tr>
+<td>GraphSAGE (2-layer)</td>
+<td>0.486</td>
+<td>0.826</td>
+<td>GNN</td>
+</tr>
+<tr>
+<td>SEAL (WL + GNN)</td>
+<td><strong>0.643</strong></td>
+<td><strong>0.877</strong></td>
+<td>GNN + WL</td>
+</tr>
+</tbody>
+</table>
+<p><em>Sources: Hu et al. (2020), OGB leaderboard (2024). Note that on ogbl-collab, Katz similarity outperforms simple GCN — a reminder that hand-crafted features remain competitive on some benchmarks. SEAL combines WL-based subgraph extraction with a GNN, achieving state-of-the-art on both.</em></p>
+<p><strong>Key takeaway:</strong> Katz similarity — the most powerful hand-crafted heuristic — beats GCN on ogbl-collab, where graph structure carries most of the signal. On ogbl-citation2, where node features (paper abstracts) carry strong signal, GNNs dominate. The choice between feature engineering and GNNs is task-dependent, not axiomatic.</p>
+<hr>
+<h2 id="212-common-pitfalls">2.12 Common Pitfalls<a class="headerlink" href="#212-common-pitfalls" title="Permanent link">¶</a></h2>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Four Traps in Classical Graph Feature Computation</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning about common pitfalls in graph feature computation">
+Each of these errors produces plausible-looking numbers, making them easy to overlook during a quick sanity check. They are most dangerous in research settings where you compare your method against a classical baseline — a miscomputed baseline can make your GNN look better than it actually is.</p>
+</div>
+<p><strong>1. Confusing transitivity with average clustering coefficient</strong></p>
+<p><code>nx.transitivity(G)</code> and <code>nx.average_clustering(G)</code> both measure triangle closure but weight differently. Transitivity is the ratio of triangles to triples over the <em>entire</em> graph (a node with 100 neighbors contributes <span class="arithmatex">\(100 \times 99/2 = 4950\)</span> triples, dominating the count). Average clustering is the mean of <em>per-node</em> clustering coefficients (every node contributes equally, regardless of degree). For graphs with high-degree hubs — including most real networks — these two measures can differ substantially. Always specify which one you report.</p>
+<p><strong>2. Using betweenness centrality without normalization on graphs of different sizes</strong></p>
+<p>By default, <code>nx.betweenness_centrality(G, normalized=False)</code> returns raw counts of shortest paths. When comparing centrality across graphs of different sizes, always pass <code>normalized=True</code>, which divides by <span class="arithmatex">\((n-1)(n-2)\)</span> for undirected graphs. A node in a 1000-node graph has raw betweenness up to ~500,000; in a 100-node graph, up to ~5,000. Raw comparison is meaningless.</p>
+<p><strong>3. Choosing a <span class="arithmatex">\(\beta\)</span> for Katz similarity without checking convergence</strong></p>
+<p>The Katz series <span class="arithmatex">\(\sum_l \beta^l \mathbf{A}^l\)</span> converges only when <span class="arithmatex">\(\beta &lt; 1/\lambda_{\max}(\mathbf{A})\)</span>. If you choose <span class="arithmatex">\(\beta\)</span> too large, the matrix inversion <span class="arithmatex">\((\mathbf{I} - \beta\mathbf{A})^{-1}\)</span> will be computed on a singular or nearly-singular matrix, producing numerically meaningless results or a <code>LinAlgError</code>. Always compute the spectral radius first with <code>np.linalg.eigvalsh(A)[-1]</code> and set <span class="arithmatex">\(\beta = 0.8 / \lambda_{\max}\)</span>.</p>
+<p><strong>4. Computing graphlet counts on a multigraph or a graph with self-loops</strong></p>
+<p>Standard graphlet-counting algorithms assume simple graphs (no self-loops, no parallel edges). If your graph has self-loops (which GNNs often add intentionally via <span class="arithmatex">\(\hat{\mathbf{A}} = \mathbf{A} + \mathbf{I}\)</span>), remove them before computing graphlets: <code>G.remove_edges_from(nx.selfloop_edges(G))</code>. Leaving self-loops in will inflate triangle counts and graphlet frequencies, making comparisons to published results incorrect.</p>
+<hr>
+<h2 id="213-chapter-summary">2.13 Chapter Summary<a class="headerlink" href="#213-chapter-summary" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Definition</th>
+<th>Practical Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Erdős–Rényi <span class="arithmatex">\(G(n,p)\)</span></td>
+<td>Random graph, edges added independently with prob. <span class="arithmatex">\(p\)</span></td>
+<td>Null model baseline for real networks</td>
+</tr>
+<tr>
+<td>BA model</td>
+<td>Preferential attachment: new nodes favor high-degree neighbors</td>
+<td>Explains power-law degree distributions</td>
+</tr>
+<tr>
+<td>Giant component</td>
+<td>Largest connected subgraph</td>
+<td>Phase transition at <span class="arithmatex">\(\bar{d}=1\)</span>; check before path-length algorithms</td>
+</tr>
+<tr>
+<td>Clustering coeff. <span class="arithmatex">\(C_v\)</span></td>
+<td>Fraction of <span class="arithmatex">\(v\)</span>'s neighbors that are connected</td>
+<td>Social vs. biological vs. tech network fingerprinting</td>
+</tr>
+<tr>
+<td>Eigenvector centrality</td>
+<td>Leading eigenvector of <span class="arithmatex">\(\mathbf{A}\)</span>; "important if neighbors are important"</td>
+<td>Basis of PageRank (Ch 3)</td>
+</tr>
+<tr>
+<td>Betweenness <span class="arithmatex">\(C_B(v)\)</span></td>
+<td>Fraction of shortest paths through <span class="arithmatex">\(v\)</span></td>
+<td>Identifies bridges and brokers</td>
+</tr>
+<tr>
+<td>Closeness <span class="arithmatex">\(C_C(v)\)</span></td>
+<td>Reciprocal of avg path length to all others</td>
+<td>Identifies structurally central nodes</td>
+</tr>
+<tr>
+<td>Network motif</td>
+<td>Over-represented small subgraph pattern</td>
+<td>Functional circuit building blocks</td>
+</tr>
+<tr>
+<td>Graphlet / GDV</td>
+<td>Induced subgraph type / 73-dim frequency vector</td>
+<td>Rich local topology descriptor</td>
+</tr>
+<tr>
+<td>WL kernel</td>
+<td>Iterative color refinement + histogram dot product</td>
+<td>Efficient graph similarity; GNN expressiveness bound</td>
+</tr>
+<tr>
+<td>Katz similarity</td>
+<td>Weighted sum over all-length paths: <span class="arithmatex">\((\mathbf{I}-\beta\mathbf{A})^{-1}-\mathbf{I}\)</span></td>
+<td>Best classical link prediction heuristic</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="214-exercises">2.14 Exercises<a class="headerlink" href="#214-exercises" title="Permanent link">¶</a></h2>
+<p><em>12 exercises across all six levels of Bloom's Taxonomy.</em></p>
+<h3 id="remember">Remember<a class="headerlink" href="#remember" title="Permanent link">¶</a></h3>
+<p><strong>2.1.</strong> Write the formula for betweenness centrality <span class="arithmatex">\(C_B(v)\)</span> and closeness centrality <span class="arithmatex">\(C_C(v)\)</span>. For each, state what <span class="arithmatex">\(\sigma_{st}\)</span>, <span class="arithmatex">\(\sigma_{st}(v)\)</span>, and <span class="arithmatex">\(d(v, u)\)</span> represent.</p>
+<p><strong>2.2.</strong> Describe the four steps of the Weisfeiler-Lehman refinement procedure in plain language. What is the output of each step, and what graph property does the label after <span class="arithmatex">\(t\)</span> iterations encode?</p>
+<h3 id="understand">Understand<a class="headerlink" href="#understand" title="Permanent link">¶</a></h3>
+<p><strong>2.3.</strong> Explain why the Erdős–Rényi model fails to reproduce two key properties of real social networks. What structural mechanism in the Barabási–Albert model produces power-law degree distributions? Why does the BA model <em>also</em> fail to reproduce one important real-network property?</p>
+<p><strong>2.4.</strong> Eigenvector centrality and PageRank both use the leading eigenvector of a matrix, but PageRank is preferred for directed graphs. Explain why eigenvector centrality breaks down for directed graphs (hint: consider a node that receives no incoming edges) and how PageRank's teleportation mechanism fixes this.</p>
+<h3 id="apply">Apply<a class="headerlink" href="#apply" title="Permanent link">¶</a></h3>
+<p><strong>2.5.</strong> Using NetworkX, compute the four centrality measures (degree, eigenvector, betweenness, closeness) for every node in the Karate Club graph. For each measure, report the top-3 nodes. Where do the four measures agree? Where do they disagree? Explain the disagreements in terms of the network structure.</p>
+<p><strong>2.6.</strong> Implement Katz similarity from scratch using NumPy on the Karate Club adjacency matrix. Set <span class="arithmatex">\(\beta = 0.8/\lambda_{\max}\)</span>. Report the top-10 node pairs by Katz similarity that do <em>not</em> currently share an edge. Do these pairs correspond to nodes that belong to the same faction (according to the Karate Club ground-truth labels)?</p>
+<h3 id="analyze">Analyze<a class="headerlink" href="#analyze" title="Permanent link">¶</a></h3>
+<p><strong>2.7.</strong> Generate three graphs of the same size (<span class="arithmatex">\(n=200\)</span>, <span class="arithmatex">\(\bar{d}=6\)</span>): an Erdős–Rényi random graph, a Barabási–Albert graph, and a Watts-Strogatz small-world graph. Compute for each: (a) degree distribution (plot histograms), (b) average clustering coefficient, (c) average shortest path length, (d) transitivity. Analyze: which properties distinguish the three models, and which are similar? What does this tell you about the limits of path-length and clustering statistics as graph classifiers?</p>
+<p><strong>2.8.</strong> The graphlet kernel and the WL kernel both produce feature vectors for graph comparison, but they differ in computational complexity and expressiveness. Analyze the trade-offs: (a) What is the time complexity of each for a graph with <span class="arithmatex">\(n\)</span> nodes and <span class="arithmatex">\(m\)</span> edges? (b) Under what graph structures would the graphlet kernel distinguish two graphs that the WL kernel cannot? (c) Under what conditions is the WL kernel strictly more expressive than the graphlet kernel?</p>
+<h3 id="evaluate">Evaluate<a class="headerlink" href="#evaluate" title="Permanent link">¶</a></h3>
+<p><strong>2.9.</strong> The benchmark table in this chapter shows that Katz similarity outperforms 2-layer GCN on the ogbl-collab link prediction benchmark, while GCN dominates on ogbl-citation2. Evaluate two competing explanations: (1) GCNs overfit on ogbl-collab because of its smaller size, or (2) Katz similarity captures a different and more relevant structural signal on ogbl-collab. Design an experiment using publicly available OGB data that would distinguish between these explanations.</p>
+<p><strong>2.10.</strong> A practitioner proposes to use the 73-dimensional Graphlet Degree Vector as a node feature vector for a GNN. The GNN would use GDVs as <span class="arithmatex">\(\mathbf{X}\)</span> (replacing or supplementing raw features). Evaluate this proposal: what are the advantages over using raw degree as the only structural feature? What are the computational and theoretical limitations? When would this proposal likely improve performance, and when would it likely not?</p>
+<h3 id="create">Create<a class="headerlink" href="#create" title="Permanent link">¶</a></h3>
+<p><strong>2.11.</strong> Design a graph feature engineering pipeline for the following task: given a co-authorship graph (nodes = researchers, edges = co-authored at least one paper, node features = research area), predict which pairs of researchers who have never collaborated will collaborate within the next year. Your design must specify: (a) at least 4 hand-crafted link features, (b) at least 2 node-level features per endpoint, (c) how to combine these features into a single feature vector per candidate pair, and (d) which classification algorithm you would apply and why. Implement the feature extraction for the Karate Club graph as a proxy dataset.</p>
+<p><strong>2.12.</strong> Implement a simplified version of the WL graph kernel from scratch in Python without using any graph kernel library. Your implementation should: (a) take two NetworkX graphs and an integer <span class="arithmatex">\(T\)</span> as input, (b) run <span class="arithmatex">\(T\)</span> rounds of WL color refinement on each graph, (c) compute the WL kernel value as the dot product of the normalized label-count histograms summed across all rounds, and (d) return a <span class="arithmatex">\(K \times K\)</span> kernel matrix for a list of <span class="arithmatex">\(K\)</span> graphs. Test your implementation on at least 5 Karate Club subgraphs and verify that isomorphic graphs receive the same kernel value.</p>
+<hr>
+<h2 id="215-further-reading">2.15 Further Reading<a class="headerlink" href="#215-further-reading" title="Permanent link">¶</a></h2>
+<p><strong>[1] Shervashidze, Schweitzer, van Leeuwen, Mehlhorn &amp; Borgwardt (2011) — Weisfeiler-Lehman Graph Kernels.</strong> <em>Journal of Machine Learning Research 12.</em>
+The definitive paper on WL kernels. Sections 3–5 are most relevant: the WL subtree kernel derivation, its relationship to the WL isomorphism test, and the proof of its expressive power. The runtime analysis (<span class="arithmatex">\(O(nhT)\)</span> for <span class="arithmatex">\(h\)</span> = hash function cost) explains why WL kernels scaled to graphs where graphlet kernels were intractable.</p>
+<p><strong>[2] Milo, Shen-Orr, Itzkovitz, Kashtan, Chklovskii &amp; Alon (2002) — Network Motifs: Simple Building Blocks of Complex Networks.</strong> <em>Science 298(5594).</em>
+The paper that introduced the network motif concept and the <span class="arithmatex">\(Z\)</span>-score significance profile. The biological examples (transcription networks in bacteria vs. yeast vs. neuronal wiring) make the motif vocabulary concrete. Short and accessible.</p>
+<p><strong>[3] Przulj (2007) — Biological Network Comparison Using Graphlet Degree Distribution.</strong> <em>Bioinformatics 23(2).</em>
+Introduces the 73-dimensional GDV and applies it to protein-protein interaction networks. The comparison of yeast, fly, and worm PPI networks using GDVs demonstrates that graphlet-based features reveal biological organization invisible to simpler degree-based statistics.</p>
+<p><strong>[4] Adamic &amp; Adar (2003) — Friends and Neighbors on the Web.</strong> <em>Social Networks 25(3).</em>
+The paper that introduced the Adamic-Adar link prediction index. Readable in under 30 minutes. The key insight — that rare common neighbors are more informative than common ones — is formalized as <span class="arithmatex">\(\sum_w 1/\log d_w\)</span> and remains a competitive baseline two decades later.</p>
+<p><strong>[5] Katz (1953) — A New Status Index Derived from Sociometric Analysis.</strong> <em>Psychometrika 18(1).</em>
+The original Katz index paper, written for sociology but completely rigorous. The derivation of the closed-form matrix inverse is elegant and directly applicable. This 1953 paper anticipated the path-counting perspective that underlies much of modern graph learning.</p>
+<p><strong>[6] Hamilton (2020) — Graph Representation Learning (book), Chapter 2.</strong> <em>Free PDF online.</em>
+The most concise graduate-level treatment of traditional graph features. Section 2.3 on graph kernels is particularly useful — it connects the graphlet kernel, WL kernel, and random walk kernel in a unified kernel framework, which helps clarify why WL became the dominant approach.</p>
+<p><strong>[7] Leskovec &amp; Sosič (2016) — SNAP: A General-Purpose Network Analysis and Graph-Mining Library.</strong> <em>ACM Transactions on Intelligent Systems and Technology 8(1).</em>
+Describes the SNAP system design: its compressed graph representations, algorithm portfolio, and performance on billion-node graphs. Table 1 in the paper benchmarks SNAP against NetworkX and iGraph on several operations — the 10–100× speedup numbers are relevant context for deciding when to switch from NetworkX.</p>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Chapter 2 Done — You Have the Measurement Tools!</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating with graph-node confetti">
+You can now characterize any graph quantitatively: its random model type, its centrality landscape, its local motif vocabulary, its WL color signature. These are the tools that kept graph ML alive before deep learning arrived on graphs — and several of them (especially Katz similarity and WL refinement) still appear as components in state-of-the-art GNN systems. In Chapter 3, we take the first step toward learned representations: shallow node embeddings that compress graph structure into dense vectors without any task-specific supervision. Connect the dots and the pattern emerges.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../01-intro-to-graphs/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

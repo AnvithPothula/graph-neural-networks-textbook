@@ -1,0 +1,3576 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Mini-batch training strategies for GNNs at scale: neighbor sampling, cluster-based batching, GraphSAINT, and pre-computation via SIGN.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/20-scaling-gnns/">
+      
+      
+        <link rel="prev" href="../19-subgraph-mining/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 20: Scaling GNNs to Billion-Node Graphs - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 20: Scaling GNNs to Billion-Node Graphs">
+  <meta property="og:description" content="Mini-batch training strategies for GNNs at scale: neighbor sampling, cluster-based batching, GraphSAINT, and pre-computation via SIGN.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/20-scaling-gnns/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 20: Scaling GNNs to Billion-Node Graphs">
+  <meta name="twitter:description" content="Mini-batch training strategies for GNNs at scale: neighbor sampling, cluster-based batching, GraphSAINT, and pre-computation via SIGN.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-20-scaling-gnns-to-billion-node-graphs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 20: Scaling GNNs to Billion-Node Graphs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_22" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_22" id="__nav_4_22_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_22_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_22">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#201-the-scalability-crisis-in-graph-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.1 The Scalability Crisis in Graph Learning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#202-the-neighbor-explosion-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.2 The Neighbor Explosion Problem
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="20.2 The Neighbor Explosion Problem">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-neighbor-explosion-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Neighbor Explosion Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#203-neighbor-sampling-stochastic-mini-batching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.3 Neighbor Sampling: Stochastic Mini-Batching
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#204-layer-wise-sampling-fastgcn-and-ladies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.4 Layer-Wise Sampling: FastGCN and LADIES
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#205-cluster-gcn-graph-partitioning-for-mini-batching" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.5 Cluster-GCN: Graph Partitioning for Mini-Batching
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#206-graphsaint-sampling-the-whole-subgraph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.6 GraphSAINT: Sampling the Whole Subgraph
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#207-sign-decoupling-propagation-from-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.7 SIGN: Decoupling Propagation from Learning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="20.7 SIGN: Decoupling Propagation from Learning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-sign-architecture-vs-neighbor-sampling-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: SIGN Architecture vs. Neighbor Sampling Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#208-choosing-your-scaling-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.8 Choosing Your Scaling Strategy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#209-benchmark-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.9 Benchmark Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2010-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.10 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2011-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.11 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2012-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        20.12 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    20. Scaling GNNs to Billion-Node Graphs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/20-scaling-gnns/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-20-scaling-gnns-to-billion-node-graphs">Chapter 20: Scaling GNNs to Billion-Node Graphs<a class="headerlink" href="#chapter-20-scaling-gnns-to-billion-node-graphs" title="Permanent link">¶</a></h1>
+<p><strong>Part 5: Scalability and Generation</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Addresses the fundamental scalability challenge of GNN training on billion-node graphs through neighbor sampling, cluster-based mini-batching, GraphSAINT, and the SIGN architecture.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 9 concepts from the learning graph:</p>
+<ol>
+<li>Neighbor Sampling</li>
+<li>GraphSAINT</li>
+<li>Cluster-GCN</li>
+<li>LADIES Sampler</li>
+<li>Layer-Wise Sampling</li>
+<li>Historical Embeddings (SIGN)</li>
+<li>Graph Partitioning</li>
+<li>Graph Sampling Strategy</li>
+<li>SIGN Architecture</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../06-gnn-foundations/">Chapter 6: GNN Foundations: Message Passing and GCN</a></li>
+<li><a href="../07-gnn-design-space/">Chapter 7: GNN Design Space: GraphSAGE and GAT</a></li>
+<li><a href="../08-gnn-training/">Chapter 8: GNN Training, Augmentation, and Practical Tips</a></li>
+<li><a href="../18-community-structure/">Chapter 18: Community Structure in Networks</a></li>
+<li><a href="../19-subgraph-mining/">Chapter 19: Frequent Subgraph Mining</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Aggregating at Scale</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waves hello">
+Every architecture we have studied so far — GCN, GraphSAGE, GAT, GIN, Graph Transformers — has one thing in common: each forward pass touches the entire graph. That works when your graph has 34 nodes (hello, Karate Club) or even 170,000 (ogbn-arxiv on a single GPU). It breaks catastrophically when your graph has 3 billion nodes and you need to train before Tuesday. This chapter is about how the field solved that problem — not by making GNNs less powerful, but by being smarter about which parts of the graph each training step actually needs to see.</p>
+</div>
+<h2 id="201-the-scalability-crisis-in-graph-learning">20.1 The Scalability Crisis in Graph Learning<a class="headerlink" href="#201-the-scalability-crisis-in-graph-learning" title="Permanent link">¶</a></h2>
+<p>The commercial success of GNNs is inseparable from a brutal practical constraint: the graphs that matter most are far too large to fit in GPU memory. Pinterest's recommendation graph contains over 3 billion nodes and 18 billion edges. The Microsoft Academic Graph tracks 250 million publications connected by citation links. The ogbn-papers100M benchmark — a curated subset of academic literature — contains 111 million nodes and 1.6 billion edges. Training even a two-layer GCN on these graphs in the standard full-batch mode would require storing dense activation matrices <span class="arithmatex">\( H^{(l)} \in \mathbb{R}^{n \times d} \)</span> that occupy hundreds of gigabytes of memory, far exceeding the capacity of any individual accelerator.</p>
+<p>To appreciate why this is a hard problem, recall the full-batch GCN update rule from Chapter 6:</p>
+<div class="arithmatex">\[
+H^{(l+1)} = \sigma\!\left(\hat{A}\, H^{(l)}\, W^{(l)}\right)
+\]</div>
+<p>where <span class="arithmatex">\( \hat{A} = \tilde{D}^{-1/2} \tilde{A}\, \tilde{D}^{-1/2} \)</span> is the symmetrically normalized adjacency matrix with self-loops, and <span class="arithmatex">\( H^{(l)} \in \mathbb{R}^{n \times d} \)</span> stores one embedding vector per node at layer <span class="arithmatex">\( l \)</span>. For a graph with <span class="arithmatex">\( n = 10^8 \)</span> nodes and embedding dimension <span class="arithmatex">\( d = 256 \)</span>, each activation matrix occupies <span class="arithmatex">\( 10^8 \times 256 \times 4 \)</span> bytes = 102 GB — six times the memory of an A100 GPU. Even if we could fit the activations, the adjacency matrix <span class="arithmatex">\( \hat{A} \)</span> itself would require dense storage on the order of <span class="arithmatex">\( n^2 \)</span> entries, which is clearly infeasible. Sparse storage brings this down to <span class="arithmatex">\( O(m) \)</span> where <span class="arithmatex">\( m \)</span> is the number of edges, but multiplying sparse <span class="arithmatex">\( \hat{A} \)</span> against dense <span class="arithmatex">\( H^{(l)} \)</span> still requires touching all <span class="arithmatex">\( n \)</span> rows of <span class="arithmatex">\( H^{(l)} \)</span> in each layer — which cannot be parallelized across mini-batches without special care.</p>
+<p>The solution adopted by the field is <strong>mini-batch training</strong>: partition the training computation into small batches, each touching only a subgraph of manageable size. But unlike mini-batch training in standard neural networks — where sampling a random subset of training examples is trivially straightforward — GNN mini-batching is complicated by <strong>graph topology</strong>. A node's embedding at layer <span class="arithmatex">\( L \)</span> depends on its neighbors' embeddings at layer <span class="arithmatex">\( L-1 \)</span>, which depend on their neighbors at layer <span class="arithmatex">\( L-2 \)</span>, and so on recursively. To compute the embedding of a single target node correctly, you may need to touch a large fraction of the entire graph. Understanding exactly how large that fraction is — and the different strategies for controlling it — is the central subject of this chapter.</p>
+<h2 id="202-the-neighbor-explosion-problem">20.2 The Neighbor Explosion Problem<a class="headerlink" href="#202-the-neighbor-explosion-problem" title="Permanent link">¶</a></h2>
+<p>The core obstacle to GNN mini-batching is <strong>neighborhood explosion</strong>: the recursive dependency structure of message passing causes the number of nodes that must be loaded to grow exponentially with GNN depth.</p>
+<p>To be precise, define the <span class="arithmatex">\( l \)</span>-hop neighborhood of a node <span class="arithmatex">\( v \)</span> as:</p>
+<div class="arithmatex">\[
+\mathcal{N}^l(v) = \{u \in V : d(u, v) \leq l\}
+\]</div>
+<p>where <span class="arithmatex">\( d(u, v) \)</span> is the shortest-path distance. For a graph with mean degree <span class="arithmatex">\( \bar{d} \)</span>, the size of this set grows roughly as:</p>
+<div class="arithmatex">\[
+|\mathcal{N}^l(v)| \approx \bar{d}^{\,l}
+\]</div>
+<p>assuming the graph is locally tree-like (no short cycles) — a reasonable approximation for many real-world networks in their sparse regime. For a social graph with <span class="arithmatex">\( \bar{d} = 50 \)</span> and a 3-layer GNN, each target node requires loading up to <span class="arithmatex">\( 50^3 = 125{,}000 \)</span> nodes. For a mini-batch of 512 target nodes, that is up to 64 million node operations per training step — before any parameters are updated. This is the reinforcing loop that makes deep GNNs on large graphs computationally explosive.</p>
+<p>Before examining the methods that tame this explosion, the following causal loop diagram formalizes the dynamics at play.</p>
+<h4 id="diagram-neighbor-explosion-causal-loop-diagram">Diagram: Neighbor Explosion Causal Loop Diagram<a class="headerlink" href="#diagram-neighbor-explosion-causal-loop-diagram" title="Permanent link">¶</a></h4>
+<pre class="mermaid"><code>flowchart LR
+    L["GNN Depth\n(L layers)"] --&gt;|"(+) each hop\n×avg degree"| RF["Receptive Field\nSize ≈ d̄ᴸ"]
+    D["Mean Node\nDegree d̄"] --&gt;|"(+) higher degree\nfaster expansion"| RF
+    RF --&gt;|"(+) more nodes\nto load"| C["Compute\nCost O(d̄ᴸ)"]
+    C --&gt;|"(+) more compute\nslows"| T["Training\nTime"]
+    T --&gt;|"(-) slow training\npressures shallower"| L
+
+    C --&gt;|"(+) high cost\nmotivates"| K["Fan-out Budget\n(K per hop)"]
+    K --&gt;|"(-) caps each\nhop's width"| RF
+
+    click L href "#202-the-neighbor-explosion-problem" "GNN depth L — each additional layer multiplies required nodes by avg degree d̄"
+    click D href "#202-the-neighbor-explosion-problem" "Mean node degree d̄ — power-law hub nodes accelerate expansion dramatically"
+    click RF href "#202-the-neighbor-explosion-problem" "Receptive field size — all nodes influencing the target; grows as d̄ᴸ without sampling"
+    click C href "#202-the-neighbor-explosion-problem" "Compute cost — scales exponentially with depth under full neighborhood expansion"
+    click T href "#202-the-neighbor-explosion-problem" "Wall-clock training time — makes hyperparameter search impractical at large scale"
+    click K href "#203-neighbor-sampling" "Fan-out budget K per hop — caps neighborhood width, converting O(d̄ᴸ) to O(Kᴸ)"
+
+    style L fill:#ffebee,stroke:#c62828
+    style RF fill:#ffebee,stroke:#c62828
+    style C fill:#ffebee,stroke:#c62828
+    style T fill:#ffebee,stroke:#c62828
+    style D fill:#fff3e0,stroke:#e65100
+    style K fill:#e3f2fd,stroke:#1565c0</code></pre>
+<table>
+<thead>
+<tr>
+<th>Loop</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1: Exponential Expansion</td>
+<td>Reinforcing</td>
+<td>More GNN layers → receptive field grows as <span class="arithmatex">\( \bar{d}^L \)</span> → exponential compute → longer training</td>
+</tr>
+<tr>
+<td>B1: Depth Ceiling</td>
+<td>Balancing</td>
+<td>Slow training time creates pressure to reduce depth, closing the reinforcing loop</td>
+</tr>
+<tr>
+<td>B2: Sampling Discipline</td>
+<td>Balancing</td>
+<td>High compute motivates adding a fan-out budget <span class="arithmatex">\( K \)</span>, which caps the receptive field and linearizes cost</td>
+</tr>
+</tbody>
+</table>
+<p>The diagram captures two essential feedback dynamics. The <strong>R1: Exponential Expansion</strong> loop (L → RF → C → T) is reinforcing: deeper GNNs demand more nodes, which demand more compute, which increases training time. Left unchecked, this loop makes depth three or more layers impractical on large graphs. Two balancing loops counteract it. <strong>B1: Depth Ceiling</strong> closes the R1 loop: slow training creates empirical pressure to reduce depth, eventually terminating the reinforcing expansion. <strong>B2: Sampling Discipline</strong> is the engineering intervention that enables deep GNNs at scale: a fan-out budget <span class="arithmatex">\( K \)</span> caps the receptive field size, converting exponential <span class="arithmatex">\( O(\bar{d}^L) \)</span> compute into polynomial <span class="arithmatex">\( O(K^L) \)</span> compute. The remainder of this chapter examines the design choices hidden inside that sampling budget.</p>
+<p>The table below gives concrete numbers illustrating the explosion at different depths and degree regimes.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">GNN Depth <span class="arithmatex">\( L \)</span></th>
+<th style="text-align: center;">Mean Degree <span class="arithmatex">\( \bar{d} \)</span></th>
+<th style="text-align: right;">Receptive Field Size <span class="arithmatex">\( \bar{d}^L \)</span></th>
+<th style="text-align: right;">Nodes Loaded (batch 512)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">51,200</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: right;">1,000</td>
+<td style="text-align: right;">512,000</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: right;">2,500</td>
+<td style="text-align: right;">1,280,000</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: right;">125,000</td>
+<td style="text-align: right;">64,000,000</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">100</td>
+<td style="text-align: right;">1,000,000</td>
+<td style="text-align: right;">512,000,000</td>
+</tr>
+</tbody>
+</table>
+<p>At depth 3 with <span class="arithmatex">\( \bar{d} = 50 \)</span>, a mini-batch of 512 target nodes requires loading over 64 million node feature vectors — more than the entire ogbn-arxiv graph — just for one gradient step. The scalability challenge is not academic; it is the central engineering problem that every production GNN deployment must solve.</p>
+<h2 id="203-neighbor-sampling-stochastic-mini-batching">20.3 Neighbor Sampling: Stochastic Mini-Batching<a class="headerlink" href="#203-neighbor-sampling-stochastic-mini-batching" title="Permanent link">¶</a></h2>
+<p>The most widely deployed solution to neighborhood explosion is <strong>neighbor sampling</strong>, introduced as part of the GraphSAGE framework in Chapter 7 and formalized here for mini-batch training. The key idea is to replace the complete neighborhood <span class="arithmatex">\( \mathcal{N}(v) \)</span> at each layer with a uniformly sampled subset of fixed size <span class="arithmatex">\( K \)</span> — a <strong>fan-out</strong> hyperparameter that bounds the receptive field growth.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Two Sources of Error</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage considers tradeoffs">
+Sampling introduces <strong>variance</strong> — the gradient estimate based on a sampled neighborhood is a noisy version of the true gradient. But something subtle happens to the <strong>bias</strong>: under uniform neighbor sampling, the sampled aggregation is an unbiased estimator of the true aggregation only when the aggregator is a mean (as in GraphSAGE-mean). Sum and max aggregators behave differently under sampling. Before adopting a sampling strategy, think carefully about which aggregator you plan to use and whether the sampled gradient remains an unbiased estimator of the full-graph gradient.</p>
+</div>
+<p>Under neighbor sampling, the sampled SAGE aggregation at layer <span class="arithmatex">\( l \)</span> for node <span class="arithmatex">\( v \)</span> is:</p>
+<div class="arithmatex">\[
+h_v^{(l)} = \sigma\!\left(W^{(l)} \cdot \text{CONCAT}\!\left(h_v^{(l-1)},\; \frac{1}{K}\sum_{u \in \tilde{\mathcal{N}}_K(v)} h_u^{(l-1)}\right)\right)
+\]</div>
+<p>where <span class="arithmatex">\( \tilde{\mathcal{N}}_K(v) \)</span> is a size-<span class="arithmatex">\( K \)</span> uniform random sample from <span class="arithmatex">\( \mathcal{N}(v) \)</span>. The recursion unrolls across all <span class="arithmatex">\( L \)</span> layers, so computing <span class="arithmatex">\( h_v^{(L)} \)</span> requires: a sample of <span class="arithmatex">\( K \)</span> nodes at layer <span class="arithmatex">\( L-1 \)</span>, a sample of <span class="arithmatex">\( K \)</span> neighbors for each of those <span class="arithmatex">\( K \)</span> nodes at layer <span class="arithmatex">\( L-2 \)</span>, and so forth. The total nodes loaded per target node is bounded by <span class="arithmatex">\( K^L \)</span> — polynomial rather than exponential, with the savings proportional to <span class="arithmatex">\( (\bar{d}/K)^L \)</span>.</p>
+<p>PyTorch Geometric implements this entire pipeline through the <code>NeighborLoader</code> class. The following code trains a three-layer GraphSAGE model on ogbn-arxiv using neighbor sampling with fan-outs of 15 at each layer. Before reading the code, note the key parameters: <code>num_neighbors</code> is a list of fan-out sizes per layer (outermost layer first when interpreting from the target node's perspective), <code>batch_size</code> controls target-node batch size, and <code>shuffle=True</code> randomizes the order of training nodes across epochs.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Planetoid</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">NeighborLoader</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">SAGEConv</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">ogb.nodeproppred</span><span class="w"> </span><span class="kn">import</span> <span class="n">PygNodePropPredDataset</span><span class="p">,</span> <span class="n">Evaluator</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Load ogbn-arxiv (170K nodes, 1.2M edges, 40 classes)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">PygNodePropPredDataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'ogbn-arxiv'</span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">split_idx</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_idx_split</span><span class="p">()</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># NeighborLoader samples fan-out neighbors per hop</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># num_neighbors=[15, 10, 5] means:</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1">#   Layer 3 (closest to output): 5 neighbors sampled</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1">#   Layer 2: 10 neighbors sampled</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1">#   Layer 1 (closest to input): 15 neighbors sampled</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="c1"># input_nodes restricts target nodes to the training set</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">train_loader</span> <span class="o">=</span> <span class="n">NeighborLoader</span><span class="p">(</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">data</span><span class="p">,</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n">num_neighbors</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>  <span class="c1"># 3-hop fan-out (outermost first)</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n">batch_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">input_nodes</span><span class="o">=</span><span class="n">split_idx</span><span class="p">[</span><span class="s1">'train'</span><span class="p">],</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="p">)</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="k">class</span><span class="w"> </span><span class="nc">GraphSAGE</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SAGEConv</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">))</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SAGEConv</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">))</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SAGEConv</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">))</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">):</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">conv</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">):</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>                <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>                <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>        <span class="k">return</span> <span class="n">x</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">'cuda'</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">'cpu'</span><span class="p">)</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="n">model</span> <span class="o">=</span> <span class="n">GraphSAGE</span><span class="p">(</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>    <span class="n">in_channels</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">num_node_features</span><span class="p">,</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>    <span class="n">hidden_channels</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>    <span class="n">out_channels</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="n">loader</span><span class="p">):</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>        <span class="c1"># batch.x contains features for all nodes in the sampled subgraph</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>        <span class="c1"># batch.y[:batch.batch_size] contains labels for target nodes only</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>            <span class="n">out</span><span class="p">[:</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">],</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>            <span class="n">batch</span><span class="o">.</span><span class="n">y</span><span class="p">[:</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>        <span class="p">)</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>        <span class="n">total_loss</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>    <span class="k">return</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span>
+</span></code></pre></div>
+<p>A key implementation detail: <code>NeighborLoader</code> returns a mini-batch in which the first <code>batch.batch_size</code> nodes are the target nodes, and subsequent nodes are the sampled neighbors needed to compute those targets' embeddings. Only <code>out[:batch.batch_size]</code> contributes to the loss — the neighbor embeddings are intermediate computations. This structure is consistent across all neighbor-sampling frameworks and must be handled correctly to avoid inadvertently computing loss on auxiliary nodes.</p>
+<h2 id="204-layer-wise-sampling-fastgcn-and-ladies">20.4 Layer-Wise Sampling: FastGCN and LADIES<a class="headerlink" href="#204-layer-wise-sampling-fastgcn-and-ladies" title="Permanent link">¶</a></h2>
+<p>Neighbor sampling (§20.3) samples neighbors <strong>node-wise</strong>: for each target node, independently sample <span class="arithmatex">\( K \)</span> neighbors. This is intuitive but produces a separate computation graph for every node, leading to high variance in gradient estimates and redundant feature loads (the same high-degree node may be sampled repeatedly across different target nodes in the same mini-batch).</p>
+<p><strong>Layer-wise sampling</strong> takes a different approach: instead of sampling neighborhoods one node at a time, it samples a fixed set of nodes per layer to serve as the "active" nodes for that entire layer. The active nodes at layer <span class="arithmatex">\( l \)</span> interact with the active nodes at layer <span class="arithmatex">\( l-1 \)</span> via sampled edges. This produces a shared computation graph for the entire mini-batch, reducing redundant loads.</p>
+<p><strong>FastGCN</strong> (Chen et al., 2018) formalizes this as importance sampling. Let <span class="arithmatex">\( q_l(u) \)</span> be an importance distribution over nodes at layer <span class="arithmatex">\( l \)</span>. FastGCN computes the layer-<span class="arithmatex">\( l \)</span> embedding using importance-weighted aggregation:</p>
+<div class="arithmatex">\[
+h_v^{(l)} = \sigma\!\left(\frac{1}{n}\sum_{u \in \mathcal{N}(v)} \frac{\hat{A}_{vu}}{q_l(u)} h_u^{(l-1)}\right), \quad u \sim q_l
+\]</div>
+<p>where <span class="arithmatex">\( q_l(u) \propto \|\hat{A}_{:,u}\|_2 \)</span> — the column norm of the normalized adjacency, which reflects how influential node <span class="arithmatex">\( u \)</span> is across all potential target nodes. Sampling high-importance nodes more frequently reduces variance compared to uniform sampling.</p>
+<p><strong>LADIES</strong> (Layer-dependent Importance Sampling, Zou et al., 2019) extends FastGCN by making the sampling distribution at layer <span class="arithmatex">\( l \)</span> depend on which nodes were selected at layer <span class="arithmatex">\( l+1 \)</span>. Specifically, for target nodes selected at the output layer, LADIES computes the induced importance scores only over their actual neighbors, not over the entire node set. This layer-dependent conditioning reduces variance substantially because nodes that cannot possibly contribute to the current batch's gradients are excluded from sampling. The LADIES sampler selects <span class="arithmatex">\( s_l \)</span> nodes at layer <span class="arithmatex">\( l \)</span> with probabilities proportional to:</p>
+<div class="arithmatex">\[
+p_l(u) \propto \sum_{v \in \mathcal{S}_{l+1}} \hat{A}_{vu}^2
+\]</div>
+<p>where <span class="arithmatex">\( \mathcal{S}_{l+1} \)</span> is the set of active nodes at layer <span class="arithmatex">\( l+1 \)</span>. This constructs an upper-bounded, layer-dependent neighborhood that shares computation more efficiently than node-wise sampling while maintaining lower gradient variance than FastGCN's global importance distribution.</p>
+<p>The trade-off between the three sampling families is summarized in the following table, which covers concepts we have now fully introduced.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Sampling Unit</th>
+<th>Variance</th>
+<th>Memory Efficiency</th>
+<th>Independence of Nodes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Neighbor Sampling (SAGE)</td>
+<td>Node-wise</td>
+<td>High</td>
+<td>Moderate</td>
+<td>Independent per target</td>
+</tr>
+<tr>
+<td>FastGCN</td>
+<td>Layer-wise (global)</td>
+<td>Medium</td>
+<td>High</td>
+<td>Shared across batch</td>
+</tr>
+<tr>
+<td>LADIES</td>
+<td>Layer-wise (local)</td>
+<td>Low</td>
+<td>High</td>
+<td>Shared, layer-conditioned</td>
+</tr>
+</tbody>
+</table>
+<h2 id="205-cluster-gcn-graph-partitioning-for-mini-batching">20.5 Cluster-GCN: Graph Partitioning for Mini-Batching<a class="headerlink" href="#205-cluster-gcn-graph-partitioning-for-mini-batching" title="Permanent link">¶</a></h2>
+<div class="admonition mascot-tip">
+<p class="admonition-title">The Community Detection Connection</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage offers a tip">
+Chapter 18 introduced community detection as a way to find dense internal structure in networks. Cluster-GCN exploits exactly this structure for a different purpose: by partitioning the graph into communities and training on one community at a time, most of a node's neighbors are within the same mini-batch. Cross-cluster edges are dropped during training — a form of controlled graph augmentation that the Louvain and METIS algorithms make computationally cheap to compute once and reuse across all epochs.</p>
+</div>
+<p>A conceptually distinct approach to GNN mini-batching treats the problem as a <strong>graph partitioning</strong> problem. The idea behind <strong>Cluster-GCN</strong> (Chiang et al., 2019) is to partition the graph <span class="arithmatex">\( G \)</span> into <span class="arithmatex">\( c \)</span> clusters <span class="arithmatex">\( \mathcal{G}_1, \ldots, \mathcal{G}_c \)</span> using a graph partitioning algorithm, then train on one cluster <span class="arithmatex">\( \mathcal{G}_t \)</span> per mini-batch. Within a cluster, nodes are densely connected, so the intra-cluster edges provide high-quality neighborhood information. Between clusters, edges are dropped: a node near the boundary of cluster <span class="arithmatex">\( \mathcal{G}_t \)</span> treats nodes in <span class="arithmatex">\( \mathcal{G}_{t' \neq t} \)</span> as non-existent during the mini-batch.</p>
+<p>Graph partitioning is performed using <strong>METIS</strong> (Karypis and Kumar, 1998), a multilevel graph partitioning algorithm that recursively coarsens the graph, partitions the coarsened version, and then uncoarsens the partition while refining the cut. The objective is to minimize the number of inter-cluster edges (the <strong>edge cut</strong>) subject to roughly equal cluster sizes. Because node embeddings at the same layer within a cluster depend only on intra-cluster neighbors, the Cluster-GCN loss for cluster <span class="arithmatex">\( \mathcal{G}_t \)</span> is:</p>
+<div class="arithmatex">\[
+\mathcal{L}^{(t)} = \frac{1}{|\mathcal{G}_t|} \sum_{v \in \mathcal{G}_t} \ell\!\left(f_\theta(v; \mathcal{G}_t),\, y_v\right)
+\]</div>
+<p>where <span class="arithmatex">\( f_\theta(v; \mathcal{G}_t) \)</span> denotes the GNN applied to the restricted subgraph. Critically, the memory required for one mini-batch is <span class="arithmatex">\( O(|\mathcal{G}_t|) \)</span> — bounded by cluster size, not full graph size — and no inter-cluster messages need to be fetched.</p>
+<p>The gradient variance introduced by dropping cross-cluster edges is controlled by <strong>stochastic partition mixing</strong>: instead of using a single cluster per mini-batch, randomly combine <span class="arithmatex">\( p \)</span> clusters <span class="arithmatex">\( \mathcal{G}_{t_1} \cup \ldots \cup \mathcal{G}_{t_p} \)</span> and use all edges among the combined node set. This recovers some cross-partition edges while maintaining bounded mini-batch size.</p>
+<p>The following code demonstrates ClusterGCN training using PyG's <code>ClusterData</code> and <code>ClusterLoader</code>. Before running, note that <code>ClusterData</code> computes the METIS partition once and saves it to disk — subsequent epochs reload the partition rather than recomputing it. The <code>num_parts</code> parameter controls the number of clusters (typically <span class="arithmatex">\( c = \lceil n / \text{target-cluster-size} \rceil \)</span>), and <code>log</code> prints partition quality statistics.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">ClusterData</span><span class="p">,</span> <span class="n">ClusterLoader</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c1"># Partition the graph into 1500 clusters (≈113 nodes/cluster for ogbn-arxiv)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># METIS minimizes inter-cluster edges, so intra-cluster density is high</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">cluster_data</span> <span class="o">=</span> <span class="n">ClusterData</span><span class="p">(</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">data</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">num_parts</span><span class="o">=</span><span class="mi">1500</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">recursive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># Standard METIS (non-recursive)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>         <span class="c1"># Print partitioning statistics</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">save_dir</span><span class="o">=</span><span class="s1">'./cluster_cache/'</span>  <span class="c1"># Cache on disk; reload in future epochs</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">)</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># ClusterLoader randomly samples clusters and collates them into mini-batches</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1"># batch_size=20 combines 20 clusters (~2260 nodes) per gradient step</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">cluster_loader</span> <span class="o">=</span> <span class="n">ClusterLoader</span><span class="p">(</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    <span class="n">cluster_data</span><span class="p">,</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="n">batch_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="p">)</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="k">def</span><span class="w"> </span><span class="nf">train_cluster</span><span class="p">(</span><span class="n">loader</span><span class="p">):</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>        <span class="c1"># batch contains a combined subgraph of randomly sampled clusters</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>        <span class="c1"># No batching offset needed; all nodes in batch are training targets</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>        <span class="c1"># Mask to training nodes only (batch may contain val/test nodes from the clusters)</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>        <span class="n">mask</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">train_mask</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">batch</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>        <span class="n">total_loss</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="o">*</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>    <span class="k">return</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">split_idx</span><span class="p">[</span><span class="s1">'train'</span><span class="p">]</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span>
+</span></code></pre></div>
+<p>The most important practical difference from <code>NeighborLoader</code> is that there is no "target node offset": all nodes in the cluster batch may contribute to the loss (subject to the training mask), because all neighbors needed for any node's embedding are present in the same cluster by construction.</p>
+<h2 id="206-graphsaint-sampling-the-whole-subgraph">20.6 GraphSAINT: Sampling the Whole Subgraph<a class="headerlink" href="#206-graphsaint-sampling-the-whole-subgraph" title="Permanent link">¶</a></h2>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">A Different Way to Think About Batching</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encourages">
+Neighbor sampling builds mini-batches bottom-up: start from target nodes and expand outward. Cluster-GCN builds them by partitioning. GraphSAINT tries a third approach: sample a random subgraph first, then train a complete GNN on that subgraph. It sounds similar to Cluster-GCN, but the key difference is how the subgraph is sampled — and how the resulting training bias is corrected. If you find the first two approaches unsatisfying, GraphSAINT's normalizing coefficients are worth studying carefully.</p>
+</div>
+<p><strong>GraphSAINT</strong> (Graph Sampling-based Inductive Learning Method, Zeng et al., 2020) decouples the mini-batch construction from the GNN architecture: rather than adapting the GNN to sample during training, it samples a subgraph <span class="arithmatex">\( \mathcal{G}_s \)</span> first, then applies any standard GNN on <span class="arithmatex">\( \mathcal{G}_s \)</span> intact. This makes GraphSAINT architecture-agnostic — the same sampler can be used with GCN, GraphSAGE, GAT, or any other message-passing model.</p>
+<p>Three subgraph samplers are available:</p>
+<ul>
+<li><strong>Node sampler</strong>: Sample <span class="arithmatex">\( r \)</span> nodes uniformly at random, then include all edges between selected nodes. Fast, but high-degree nodes appear disproportionately often.</li>
+<li><strong>Edge sampler</strong>: Sample <span class="arithmatex">\( r \)</span> edges uniformly at random, then include both endpoints. Preserves graph connectivity better than node sampling.</li>
+<li><strong>Random walk sampler</strong>: Start <span class="arithmatex">\( r \)</span> random walks of length <span class="arithmatex">\( l \)</span>, then include all nodes and edges touched by the walks. Concentrates sampling in locally dense regions, reducing cross-cluster edge loss.</li>
+</ul>
+<p>Each sampler introduces a <strong>sampling bias</strong>: nodes or edges that appear more frequently in the sampled subgraph receive more gradient updates. GraphSAINT corrects for this bias using <strong>normalization coefficients</strong> that downweight frequently sampled elements. For node <span class="arithmatex">\( v \)</span> with sampling probability <span class="arithmatex">\( p_v \)</span> and edge <span class="arithmatex">\( (u,v) \)</span> with sampling probability <span class="arithmatex">\( p_{uv} \)</span>, the normalized loss is:</p>
+<div class="arithmatex">\[
+\mathcal{L} = \frac{1}{|\mathcal{V}_s|} \sum_{v \in \mathcal{V}_s} \frac{\ell(f_\theta(v; \mathcal{G}_s), y_v)}{p_v}, \qquad A_{uv}^{\text{norm}} = \frac{A_{uv}}{p_{uv}}
+\]</div>
+<p>where <span class="arithmatex">\( p_v \)</span> and <span class="arithmatex">\( p_{uv} \)</span> are pre-computed analytically for the node and edge samplers, or estimated by counting empirical frequencies from a few trial sampling runs. With correct normalization, the GraphSAINT estimator is an unbiased estimator of the full-graph gradient — a theoretical guarantee that neither neighbor sampling nor Cluster-GCN provides in general.</p>
+<p>The following code shows GraphSAINT training with the random walk sampler, which empirically delivers the best accuracy-efficiency trade-off on most benchmarks.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">GraphSAINTRandomWalkSampler</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># GraphSAINTRandomWalkSampler samples subgraphs via random walks</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># walk_length: number of steps in each random walk</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># num_steps: number of random walks started per mini-batch</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># sample_coverage: number of mini-batches used to estimate normalization coefficients</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1">#   (higher = more accurate bias correction, but slower initialization)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">saint_loader</span> <span class="o">=</span> <span class="n">GraphSAINTRandomWalkSampler</span><span class="p">(</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">data</span><span class="p">,</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">batch_size</span><span class="o">=</span><span class="mi">6000</span><span class="p">,</span>    <span class="c1"># target subgraph node count</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">walk_length</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>       <span class="c1"># 2-hop random walks</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">num_steps</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>         <span class="c1"># gradient steps per epoch (not mini-batch count)</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="n">sample_coverage</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="c1"># mini-batches used to estimate normalization coefficients</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">save_dir</span><span class="o">=</span><span class="s1">'./saint_cache/'</span><span class="p">,</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="n">log</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="p">)</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="k">def</span><span class="w"> </span><span class="nf">train_saint</span><span class="p">(</span><span class="n">loader</span><span class="p">):</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>        <span class="n">batch</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>        <span class="c1"># batch.edge_norm contains the normalization coefficients for edges</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>        <span class="c1"># batch.node_norm contains the normalization coefficients for nodes</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>        <span class="c1"># Apply node normalization to de-bias the loss</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>            <span class="n">out</span><span class="p">[</span><span class="n">batch</span><span class="o">.</span><span class="n">train_mask</span><span class="p">],</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>            <span class="n">batch</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">batch</span><span class="o">.</span><span class="n">train_mask</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>            <span class="n">reduction</span><span class="o">=</span><span class="s1">'none'</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>        <span class="p">)</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="p">(</span><span class="n">loss</span> <span class="o">*</span> <span class="n">batch</span><span class="o">.</span><span class="n">node_norm</span><span class="p">[</span><span class="n">batch</span><span class="o">.</span><span class="n">train_mask</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>        <span class="n">total_loss</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>    <span class="k">return</span> <span class="n">total_loss</span>
+</span></code></pre></div>
+<h2 id="207-sign-decoupling-propagation-from-learning">20.7 SIGN: Decoupling Propagation from Learning<a class="headerlink" href="#207-sign-decoupling-propagation-from-learning" title="Permanent link">¶</a></h2>
+<p>All three approaches above — neighbor sampling, Cluster-GCN, and GraphSAINT — perform graph operations inside the training loop: each gradient step requires loading graph structure and propagating messages along edges. For very large graphs, this message-passing overhead dominates training time regardless of how cleverly the neighborhoods are sampled.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Staleness vs. Freshness</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warns about staleness">
+Historical embeddings — cached node representations from previous epochs — appear in several GNN scaling methods as a way to avoid re-computing neighbor features from scratch. The appeal is obvious: if node u's embedding hasn't changed much since the last epoch, we can reuse it instead of re-propagating. The danger is equally obvious: stale embeddings introduce bias proportional to how much the model has changed since the cache was written. Use historical embeddings only when your model changes slowly (late in training or with small learning rates) and always monitor accuracy on the validation set to catch stale-embedding degradation.</p>
+</div>
+<p><strong>SIGN</strong> (Scalable Inception Graph Neural Networks, Rossi et al., 2020) eliminates in-loop graph operations entirely by adopting a <strong>pre-computation</strong> paradigm. The key insight is that for a GNN with linear aggregation (such as GCN or any polynomial filter), all graph-dependent computations can be performed once, offline, before training begins. What remains for the neural network to learn is a purely local function of pre-computed feature vectors.</p>
+<p>Concretely, define the family of pre-computed diffusion operators <span class="arithmatex">\( \{\Omega_k\}_{k=0}^{K} \)</span> applied to the node feature matrix <span class="arithmatex">\( X \)</span>:</p>
+<div class="arithmatex">\[
+\hat{X}_k = \Omega_k X, \quad k = 0, 1, \ldots, K
+\]</div>
+<p>Common choices for <span class="arithmatex">\( \Omega_k \)</span> include:</p>
+<ul>
+<li><span class="arithmatex">\( \hat{A}^k \)</span> — the <span class="arithmatex">\( k \)</span>-th power of the symmetrically normalized adjacency (GCN-style diffusion)</li>
+<li><span class="arithmatex">\( D^{-1}A^k \)</span> — random walk diffusion</li>
+<li><span class="arithmatex">\( \frac{1}{k+1}\sum_{j=0}^{k} \hat{A}^j \)</span> — mean pooling of all hops up to <span class="arithmatex">\( k \)</span> (the SIGN "inception" trick)</li>
+</ul>
+<p>The SIGN architecture concatenates all <span class="arithmatex">\( K+1 \)</span> diffusion outputs and passes the result through a shared MLP:</p>
+<div class="arithmatex">\[
+Z_v = \text{MLP}\!\left(\text{CONCAT}\!\left(\hat{X}_0[v],\, \hat{X}_1[v],\, \ldots,\, \hat{X}_K[v]\right)\right)
+\]</div>
+<p>where <span class="arithmatex">\( \hat{X}_k[v] \)</span> denotes row <span class="arithmatex">\( v \)</span> of <span class="arithmatex">\( \hat{X}_k \)</span>. Crucially, once <span class="arithmatex">\( \hat{X}_0, \hat{X}_1, \ldots, \hat{X}_K \)</span> are computed offline, training the MLP involves no graph operations whatsoever — it is a standard mini-batch MLP training problem on a dataset of <span class="arithmatex">\( n \)</span> feature vectors, each of dimension <span class="arithmatex">\( (K+1) \times d \)</span>. Mini-batch sampling is trivially unbiased, and training speed is bounded only by the MLP's FLOPs, not by graph traversal. The offline pre-computation of <span class="arithmatex">\( \hat{X}_k \)</span> is a matrix-vector product that can be performed efficiently using sparse-dense multiplication in <span class="arithmatex">\( O(m \cdot d) \)</span> time per hop.</p>
+<p>This approach also naturally incorporates the concept of <strong>historical embeddings</strong>: the <span class="arithmatex">\( \hat{X}_k \)</span> tensors are computed once and stored, acting as a perfect "historical record" of each node's neighborhood at hop <span class="arithmatex">\( k \)</span>. Unlike the stale embeddings warning above, there is no staleness issue here because the pre-computed features are frozen and the neural network's parameters update independently.</p>
+<p>The following code illustrates SIGN pre-computation and training. Before reviewing it, note the key separation: <code>precompute_sign_features</code> runs once before the training loop, and the training loop itself is a standard batched MLP update with no graph loader.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="n">SIGN</span> <span class="k">as</span> <span class="n">SIGNTransform</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="c1"># Step 1: Pre-compute diffusion features offline</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="c1"># SIGNTransform computes A^0 X, A^1 X, ..., A^K X and stores as data.xs[0..K]</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># K=3: captures up to 3-hop neighborhood information</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">transform</span> <span class="o">=</span> <span class="n">SIGNTransform</span><span class="p">(</span><span class="n">K</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>  <span class="c1"># K is the number of diffusion hops</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">data_sign</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="c1"># data_sign.xs is a list of K+1 tensors:</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1">#   data_sign.xs[0] = X (zero-hop, original features)</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="c1">#   data_sign.xs[1] = A_hat @ X (one-hop diffusion)</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="c1">#   data_sign.xs[2] = A_hat^2 @ X (two-hop diffusion)</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="c1">#   data_sign.xs[3] = A_hat^3 @ X (three-hop diffusion)</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="k">class</span><span class="w"> </span><span class="nc">SIGNModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a><span class="w">    </span><span class="sd">"""SIGN: Concatenate K+1 diffusion levels, pass through shared MLP."""</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">K</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">K</span> <span class="o">=</span> <span class="n">K</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">dropout</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>        <span class="c1"># One linear layer per diffusion level (inception-style)</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">lins</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>        <span class="p">])</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>        <span class="c1"># Final classifier on concatenated outputs</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">((</span><span class="n">K</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">hidden_channels</span><span class="p">),</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">),</span>
+</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">((</span><span class="n">K</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">),</span>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">),</span>
+</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">),</span>
+</span><span id="__span-3-36"><a id="__codelineno-3-36" name="__codelineno-3-36" href="#__codelineno-3-36"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">),</span>
+</span><span id="__span-3-37"><a id="__codelineno-3-37" name="__codelineno-3-37" href="#__codelineno-3-37"></a>        <span class="p">)</span>
+</span><span id="__span-3-38"><a id="__codelineno-3-38" name="__codelineno-3-38" href="#__codelineno-3-38"></a>
+</span><span id="__span-3-39"><a id="__codelineno-3-39" name="__codelineno-3-39" href="#__codelineno-3-39"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
+</span><span id="__span-3-40"><a id="__codelineno-3-40" name="__codelineno-3-40" href="#__codelineno-3-40"></a>        <span class="c1"># xs: list of K+1 tensors, each shape (batch, in_channels)</span>
+</span><span id="__span-3-41"><a id="__codelineno-3-41" name="__codelineno-3-41" href="#__codelineno-3-41"></a>        <span class="n">outs</span> <span class="o">=</span> <span class="p">[</span><span class="n">lin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">lin</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lins</span><span class="p">,</span> <span class="n">xs</span><span class="p">)]</span>
+</span><span id="__span-3-42"><a id="__codelineno-3-42" name="__codelineno-3-42" href="#__codelineno-3-42"></a>        <span class="n">out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">outs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-3-43"><a id="__codelineno-3-43" name="__codelineno-3-43" href="#__codelineno-3-43"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+</span><span id="__span-3-44"><a id="__codelineno-3-44" name="__codelineno-3-44" href="#__codelineno-3-44"></a>
+</span><span id="__span-3-45"><a id="__codelineno-3-45" name="__codelineno-3-45" href="#__codelineno-3-45"></a><span class="c1"># Step 2: Standard mini-batch MLP training — no graph operations!</span>
+</span><span id="__span-3-46"><a id="__codelineno-3-46" name="__codelineno-3-46" href="#__codelineno-3-46"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">TensorDataset</span>
+</span><span id="__span-3-47"><a id="__codelineno-3-47" name="__codelineno-3-47" href="#__codelineno-3-47"></a>
+</span><span id="__span-3-48"><a id="__codelineno-3-48" name="__codelineno-3-48" href="#__codelineno-3-48"></a><span class="c1"># Combine all diffusion features and labels into a flat dataset</span>
+</span><span id="__span-3-49"><a id="__codelineno-3-49" name="__codelineno-3-49" href="#__codelineno-3-49"></a><span class="n">xs_train</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">split_idx</span><span class="p">[</span><span class="s1">'train'</span><span class="p">]]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data_sign</span><span class="o">.</span><span class="n">xs</span><span class="p">]</span>
+</span><span id="__span-3-50"><a id="__codelineno-3-50" name="__codelineno-3-50" href="#__codelineno-3-50"></a><span class="n">ys_train</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">split_idx</span><span class="p">[</span><span class="s1">'train'</span><span class="p">]]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-3-51"><a id="__codelineno-3-51" name="__codelineno-3-51" href="#__codelineno-3-51"></a><span class="n">train_dataset</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="o">*</span><span class="n">xs_train</span><span class="p">,</span> <span class="n">ys_train</span><span class="p">)</span>
+</span><span id="__span-3-52"><a id="__codelineno-3-52" name="__codelineno-3-52" href="#__codelineno-3-52"></a><span class="n">train_loader_sign</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">50000</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-3-53"><a id="__codelineno-3-53" name="__codelineno-3-53" href="#__codelineno-3-53"></a>
+</span><span id="__span-3-54"><a id="__codelineno-3-54" name="__codelineno-3-54" href="#__codelineno-3-54"></a><span class="n">sign_model</span> <span class="o">=</span> <span class="n">SIGNModel</span><span class="p">(</span>
+</span><span id="__span-3-55"><a id="__codelineno-3-55" name="__codelineno-3-55" href="#__codelineno-3-55"></a>    <span class="n">in_channels</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">num_node_features</span><span class="p">,</span>
+</span><span id="__span-3-56"><a id="__codelineno-3-56" name="__codelineno-3-56" href="#__codelineno-3-56"></a>    <span class="n">hidden_channels</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+</span><span id="__span-3-57"><a id="__codelineno-3-57" name="__codelineno-3-57" href="#__codelineno-3-57"></a>    <span class="n">out_channels</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span>
+</span><span id="__span-3-58"><a id="__codelineno-3-58" name="__codelineno-3-58" href="#__codelineno-3-58"></a>    <span class="n">K</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-3-59"><a id="__codelineno-3-59" name="__codelineno-3-59" href="#__codelineno-3-59"></a><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-3-60"><a id="__codelineno-3-60" name="__codelineno-3-60" href="#__codelineno-3-60"></a>
+</span><span id="__span-3-61"><a id="__codelineno-3-61" name="__codelineno-3-61" href="#__codelineno-3-61"></a><span class="n">optimizer_sign</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">sign_model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+</span><span id="__span-3-62"><a id="__codelineno-3-62" name="__codelineno-3-62" href="#__codelineno-3-62"></a>
+</span><span id="__span-3-63"><a id="__codelineno-3-63" name="__codelineno-3-63" href="#__codelineno-3-63"></a><span class="k">def</span><span class="w"> </span><span class="nf">train_sign</span><span class="p">(</span><span class="n">loader</span><span class="p">):</span>
+</span><span id="__span-3-64"><a id="__codelineno-3-64" name="__codelineno-3-64" href="#__codelineno-3-64"></a>    <span class="n">sign_model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-3-65"><a id="__codelineno-3-65" name="__codelineno-3-65" href="#__codelineno-3-65"></a>    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-3-66"><a id="__codelineno-3-66" name="__codelineno-3-66" href="#__codelineno-3-66"></a>    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span>
+</span><span id="__span-3-67"><a id="__codelineno-3-67" name="__codelineno-3-67" href="#__codelineno-3-67"></a>        <span class="o">*</span><span class="n">xs</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+</span><span id="__span-3-68"><a id="__codelineno-3-68" name="__codelineno-3-68" href="#__codelineno-3-68"></a>        <span class="n">optimizer_sign</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-3-69"><a id="__codelineno-3-69" name="__codelineno-3-69" href="#__codelineno-3-69"></a>        <span class="n">out</span> <span class="o">=</span> <span class="n">sign_model</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+</span><span id="__span-3-70"><a id="__codelineno-3-70" name="__codelineno-3-70" href="#__codelineno-3-70"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span id="__span-3-71"><a id="__codelineno-3-71" name="__codelineno-3-71" href="#__codelineno-3-71"></a>        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-3-72"><a id="__codelineno-3-72" name="__codelineno-3-72" href="#__codelineno-3-72"></a>        <span class="n">optimizer_sign</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-3-73"><a id="__codelineno-3-73" name="__codelineno-3-73" href="#__codelineno-3-73"></a>        <span class="n">total_loss</span> <span class="o">+=</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+</span><span id="__span-3-74"><a id="__codelineno-3-74" name="__codelineno-3-74" href="#__codelineno-3-74"></a>    <span class="k">return</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="p">)</span>
+</span></code></pre></div>
+<p>The absence of a graph loader inside <code>train_sign</code> is the signature of SIGN's design: graph topology has been fully absorbed into the pre-computed feature tensors, and training is purely a multi-input MLP optimization. This makes SIGN extremely scalable: the training loop can run on CPUs without any graph infrastructure, and the pre-computation step can be parallelized across the graph independently of the training hardware.</p>
+<h4 id="diagram-sign-architecture-vs-neighbor-sampling-architecture">Diagram: SIGN Architecture vs. Neighbor Sampling Architecture<a class="headerlink" href="#diagram-sign-architecture-vs-neighbor-sampling-architecture" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch20-sign-vs-sampling/main.html" width="100%" height="572px" scrolling="no"></iframe>
+<p><a href="../../sims/ch20-sign-vs-sampling/main.html">Run SIGN Architecture vs. Neighbor Sampling Architecture Fullscreen</a></p>
+<h2 id="208-choosing-your-scaling-strategy">20.8 Choosing Your Scaling Strategy<a class="headerlink" href="#208-choosing-your-scaling-strategy" title="Permanent link">¶</a></h2>
+<p>The four families of methods — neighbor sampling, layer-wise sampling, subgraph sampling (Cluster-GCN and GraphSAINT), and pre-computation (SIGN) — occupy different points in the accuracy-efficiency trade-off space. Choosing among them depends on the graph size, model depth, available hardware, and whether training-time graph access is feasible. The following table summarizes the key dimensions, drawing on the concepts fully introduced in the preceding sections.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th style="text-align: center;">Gradient Bias</th>
+<th style="text-align: center;">Memory per Batch</th>
+<th style="text-align: center;">Graph Access During Training</th>
+<th>Best For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Neighbor Sampling</td>
+<td style="text-align: center;">Unbiased (mean agg.)</td>
+<td style="text-align: center;"><span class="arithmatex">\(O(K^L)\)</span> nodes</td>
+<td style="text-align: center;">Yes (online)</td>
+<td>Moderate graphs, deep models</td>
+</tr>
+<tr>
+<td>FastGCN</td>
+<td style="text-align: center;">Unbiased</td>
+<td style="text-align: center;"><span class="arithmatex">\(O(s \cdot L)\)</span></td>
+<td style="text-align: center;">Yes (online)</td>
+<td>When layer-shared compute matters</td>
+</tr>
+<tr>
+<td>LADIES</td>
+<td style="text-align: center;">Unbiased</td>
+<td style="text-align: center;"><span class="arithmatex">\(O(s \cdot L)\)</span></td>
+<td style="text-align: center;">Yes (online)</td>
+<td>Low-variance layer sampling</td>
+</tr>
+<tr>
+<td>Cluster-GCN</td>
+<td style="text-align: center;">Biased (cut edges)</td>
+<td style="text-align: center;">(O(</td>
+<td style="text-align: center;">\mathcal{G}_t</td>
+<td>))</td>
+</tr>
+<tr>
+<td>GraphSAINT</td>
+<td style="text-align: center;">Unbiased (w/ norm.)</td>
+<td style="text-align: center;">(O(</td>
+<td style="text-align: center;">\mathcal{G}_s</td>
+<td>))</td>
+</tr>
+<tr>
+<td>SIGN</td>
+<td style="text-align: center;">Unbiased</td>
+<td style="text-align: center;"><span class="arithmatex">\(O(n \cdot (K+1) \cdot d)\)</span> precompute</td>
+<td style="text-align: center;">No (offline only)</td>
+<td>Billion-node static graphs</td>
+</tr>
+</tbody>
+</table>
+<p>Three practical heuristics guide the choice:</p>
+<ul>
+<li>If the graph fits on one machine and you need 3+ GNN layers with full neighborhood access, use <strong>neighbor sampling</strong> with <code>NeighborLoader</code>. It is the simplest to implement correctly.</li>
+<li>If the graph is very large but can be partitioned into clusters that each fit in GPU memory, use <strong>Cluster-GCN</strong> — the one-time METIS partitioning cost is amortized across all epochs.</li>
+<li>If the graph is static (not updated between training runs) and you want maximum throughput, use <strong>SIGN</strong> — no graph infrastructure is needed at training time, and the pre-computation is a one-time cost.</li>
+</ul>
+<h2 id="209-benchmark-results">20.9 Benchmark Results<a class="headerlink" href="#209-benchmark-results" title="Permanent link">¶</a></h2>
+<p>The following table reports test accuracy on ogbn-arxiv (169,343 nodes, 1,166,243 edges, 40 classes) for the methods covered in this chapter. All results use the official OGB evaluation pipeline with standard train/validation/test splits. The variance is reported over five runs with different random seeds.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th style="text-align: center;">Test Accuracy</th>
+<th style="text-align: center;">Val Accuracy</th>
+<th style="text-align: center;">Training Time/Epoch</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full-batch GCN</td>
+<td style="text-align: center;">71.74 ± 0.29%</td>
+<td style="text-align: center;">73.00%</td>
+<td style="text-align: center;">12s</td>
+<td>Kipf &amp; Welling, 2017</td>
+</tr>
+<tr>
+<td>GraphSAGE (neighbor sampling, <span class="arithmatex">\(K=15\)</span>)</td>
+<td style="text-align: center;">71.49 ± 0.27%</td>
+<td style="text-align: center;">73.23%</td>
+<td style="text-align: center;">4.2s</td>
+<td>Hamilton et al., 2017</td>
+</tr>
+<tr>
+<td>Cluster-GCN</td>
+<td style="text-align: center;">72.04 ± 0.26%</td>
+<td style="text-align: center;">73.74%</td>
+<td style="text-align: center;">3.1s</td>
+<td>Chiang et al., 2019</td>
+</tr>
+<tr>
+<td>GraphSAINT (random walk)</td>
+<td style="text-align: center;">71.84 ± 0.16%</td>
+<td style="text-align: center;">73.61%</td>
+<td style="text-align: center;">2.8s</td>
+<td>Zeng et al., 2020</td>
+</tr>
+<tr>
+<td>SIGN (<span class="arithmatex">\(K=3\)</span>)</td>
+<td style="text-align: center;">71.95 ± 0.11%</td>
+<td style="text-align: center;">73.23%</td>
+<td style="text-align: center;">1.4s</td>
+<td>Rossi et al., 2020</td>
+</tr>
+<tr>
+<td>SIGN (<span class="arithmatex">\(K=3\)</span>) + labels</td>
+<td style="text-align: center;"><strong>73.23 ± 0.06%</strong></td>
+<td style="text-align: center;"><strong>74.80%</strong></td>
+<td style="text-align: center;">1.6s</td>
+<td>Rossi et al., 2020</td>
+</tr>
+</tbody>
+</table>
+<p>Several observations are worth noting. First, all sampling-based methods achieve accuracy within 1% of full-batch training while reducing per-epoch training time by 3–9×. Second, SIGN achieves the lowest training-time variance across seeds — the standard deviation of 0.06% vs. 0.27–0.29% for sampling methods reflects the elimination of stochastic neighborhood construction. Third, incorporating label propagation (the "+ labels" row) gives SIGN a meaningful accuracy boost with minimal additional cost, because label information can also be pre-diffused offline.</p>
+<h2 id="2010-common-pitfalls">20.10 Common Pitfalls<a class="headerlink" href="#2010-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>Confusing mini-batch size with subgraph size.</strong> When using <code>NeighborLoader</code>, <code>batch_size</code> refers to the number of target nodes, not the number of nodes loaded into GPU memory. At fan-out <span class="arithmatex">\( K = 15 \)</span> and depth <span class="arithmatex">\( L = 3 \)</span>, each target node loads up to <span class="arithmatex">\( 15^3 = 3{,}375 \)</span> additional nodes. A "mini-batch" of 1,024 target nodes can load over 3.4 million nodes into memory — potentially exceeding GPU capacity on dense graphs.</p>
+<p><strong>Forgetting to apply the training mask after subgraph sampling.</strong> Cluster-GCN and GraphSAINT batches contain validation and test nodes from the sampled region, not only training nodes. Failing to apply <code>batch.train_mask</code> computes loss on nodes with unknown labels (zeroed-out or corrupted labels), introducing training noise that is hard to diagnose.</p>
+<p><strong>Using stale normalization coefficients.</strong> GraphSAINT's normalization coefficients <span class="arithmatex">\( p_v \)</span> and <span class="arithmatex">\( p_{uv} \)</span> are estimated empirically by running the sampler for <code>sample_coverage</code> mini-batches before training. If the sampler's behavior changes (e.g., different random seed or dataset version), the cached coefficients become incorrect and must be re-estimated.</p>
+<p><strong>Pre-computing SIGN diffusion on the wrong adjacency matrix.</strong> SIGN's accuracy is sensitive to whether <span class="arithmatex">\( \hat{A} = D^{-1/2} A D^{-1/2} \)</span> (symmetric normalization) or <span class="arithmatex">\( D^{-1} A \)</span> (row normalization) is used. The two produce qualitatively different diffusion behaviors — symmetric normalization emphasizes low-degree nodes, while row normalization treats all rows equally. Always match the normalization in pre-computation to the normalization assumed by your GNN architecture.</p>
+<p><strong>Ignoring the training-to-inference discrepancy in neighbor sampling.</strong> During inference, the full neighborhood must be used (no sampling) to obtain consistent embeddings. If your inference code accidentally samples neighbors at test time, you will observe high-variance and systematically lower test accuracy than the training curves suggest.</p>
+<h2 id="2011-further-reading">20.11 Further Reading<a class="headerlink" href="#2011-further-reading" title="Permanent link">¶</a></h2>
+<p>The following papers provide the technical depth behind the methods introduced in this chapter:</p>
+<ul>
+<li>
+<p><strong>Hamilton, Ying, and Leskovec (2017) — Inductive Representation Learning on Large Graphs.</strong> The GraphSAGE paper that introduced neighbor sampling for GNN mini-batching; the inductive setting (training on one graph, applying to unseen nodes) is equally important for scaling. <a href="https://arxiv.org/abs/1706.02216">arXiv:1706.02216</a></p>
+</li>
+<li>
+<p><strong>Chen, Ma, and Xiao (2018) — FastGCN: Fast Learning with GCNs via Importance Sampling.</strong> Derives the importance-sampling formulation for layer-wise sampling and proves variance bounds that justify the <span class="arithmatex">\( \|\hat{A}_{:,u}\|_2 \)</span> distribution. <a href="https://arxiv.org/abs/1801.10247">arXiv:1801.10247</a></p>
+</li>
+<li>
+<p><strong>Zou et al. (2019) — Stochastic Training of GCNs with LADIES.</strong> Introduces layer-dependent importance sampling; the variance reduction proof relative to FastGCN is technically illuminating. <a href="https://arxiv.org/abs/1905.12405">arXiv:1905.12405</a></p>
+</li>
+<li>
+<p><strong>Chiang et al. (2019) — Cluster-GCN: An Efficient Algorithm for Training Deep and Large GCNs.</strong> The graph partitioning approach; Section 4 analyzes the variance of the stochastic gradient estimator under cluster sampling and derives the stochastic multiple-cluster mixing strategy. <a href="https://arxiv.org/abs/1905.07953">arXiv:1905.07953</a></p>
+</li>
+<li>
+<p><strong>Zeng et al. (2020) — GraphSAINT: Graph Sampling Based Inductive Learning Method.</strong> Derives unbiased normalization coefficients for node, edge, and random-walk samplers; Appendix B provides a clear proof of gradient unbiasedness. <a href="https://arxiv.org/abs/1907.04931">arXiv:1907.04931</a></p>
+</li>
+<li>
+<p><strong>Rossi et al. (2020) — SIGN: Scalable Inception Graph Neural Networks.</strong> The pre-computation paradigm; Table 2 benchmarks SIGN against all major GNN architectures on ogbn-arxiv, ogbn-products, and Flickr at 10–1000× faster training than full-batch GCN. <a href="https://arxiv.org/abs/2004.11198">arXiv:2004.11198</a></p>
+</li>
+<li>
+<p><strong>Ying et al. (2018) — PinSage: Graph Convolutional Neural Networks for Web-Scale Recommender Systems.</strong> Demonstrates neighbor sampling at 3 billion nodes in a production recommender system; the producer-consumer training pipeline and importance-based neighbor selection are key engineering innovations. <a href="https://arxiv.org/abs/1806.01973">arXiv:1806.01973</a></p>
+</li>
+</ul>
+<h2 id="2012-exercises">20.12 Exercises<a class="headerlink" href="#2012-exercises" title="Permanent link">¶</a></h2>
+<p>The following 12 exercises span all six levels of Bloom's Taxonomy, progressing from recall to creative application.</p>
+<p><strong>Remembering</strong></p>
+<ol>
+<li>
+<p>Define neighborhood explosion and write the formula for the expected receptive field size <span class="arithmatex">\( |\mathcal{N}^L(v)| \)</span> in terms of mean degree <span class="arithmatex">\( \bar{d} \)</span> and GNN depth <span class="arithmatex">\( L \)</span>. For a graph with <span class="arithmatex">\( \bar{d} = 20 \)</span> and <span class="arithmatex">\( L = 4 \)</span>, compute the expected receptive field size.</p>
+</li>
+<li>
+<p>List the three subgraph samplers offered by GraphSAINT and briefly describe how each constructs the sampled subgraph (one sentence per sampler).</p>
+</li>
+</ol>
+<p><strong>Understanding</strong></p>
+<ol>
+<li>
+<p>Explain why neighbor sampling is an unbiased gradient estimator for GraphSAGE with mean aggregation but is biased for GraphSAGE with max aggregation. What property of the mean makes it sampling-invariant?</p>
+</li>
+<li>
+<p>Cluster-GCN drops edges between clusters during training. Explain the trade-off this creates between gradient variance and computational efficiency. Why does stochastic multiple-cluster mixing improve this trade-off?</p>
+</li>
+</ol>
+<p><strong>Applying</strong></p>
+<ol>
+<li>
+<p>Adapt the <code>NeighborLoader</code> code from §20.3 to use fan-outs <span class="arithmatex">\( [25, 15] \)</span> (two layers) and <code>batch_size=2048</code>. Explain how changing from three layers to two layers affects (a) the maximum nodes loaded per mini-batch and (b) the model's theoretical receptive field.</p>
+</li>
+<li>
+<p>The SIGN pre-computation in §20.7 uses <span class="arithmatex">\( K = 3 \)</span>. Modify the code to use <span class="arithmatex">\( K = 5 \)</span> and describe what additional neighborhood information the two new diffusion levels <span class="arithmatex">\( \hat{X}_4 \)</span> and <span class="arithmatex">\( \hat{X}_5 \)</span> capture relative to <span class="arithmatex">\( \hat{X}_3 \)</span>.</p>
+</li>
+</ol>
+<p><strong>Analyzing</strong></p>
+<ol>
+<li>
+<p>Compare the training-time memory requirements of neighbor sampling (fan-out <span class="arithmatex">\( K = 15 \)</span>, depth <span class="arithmatex">\( L = 3 \)</span>, batch size 1024) versus SIGN (<span class="arithmatex">\( K = 3 \)</span>) on a graph with <span class="arithmatex">\( n = 10^6 \)</span> nodes and feature dimension <span class="arithmatex">\( d = 128 \)</span>. Assume 4 bytes per float. Which method uses less GPU memory during a training step? Show your calculations.</p>
+</li>
+<li>
+<p>The causal loop diagram in §20.2 identifies two balancing loops: B1 (Depth Ceiling) and B2 (Sampling Discipline). For a production team that cannot reduce GNN depth (because accuracy drops), which loop provides relief? Describe a concrete engineering intervention that activates this loop, using LADIES as an example.</p>
+</li>
+</ol>
+<p><strong>Evaluating</strong></p>
+<ol>
+<li>
+<p>A practitioner claims: "Cluster-GCN is always better than GraphSAINT because METIS produces lower-variance mini-batches." Evaluate this claim. Under what graph characteristics would GraphSAINT outperform Cluster-GCN, and vice versa? Consider both accuracy and efficiency in your analysis.</p>
+</li>
+<li>
+<p>SIGN achieves the lowest variance across seeds in the benchmark table (§20.9). A colleague argues this means SIGN should always be preferred over sampling methods. Identify two scenarios where SIGN's pre-computation assumption fails and a sampling-based approach would be more appropriate.</p>
+</li>
+</ol>
+<p><strong>Creating</strong></p>
+<ol>
+<li>
+<p>Design a hybrid scaling strategy that combines SIGN's pre-computation paradigm with a learned attention mechanism (similar to GAT). Specifically: (a) describe how you would pre-compute attention-weighted diffusion features offline, (b) identify the limitation of doing so, and (c) propose a two-stage training procedure that pre-computes an approximation offline and refines it online.</p>
+</li>
+<li>
+<p>Propose a new sampling strategy for dynamic graphs, where edges are added and deleted over time. Your strategy must: (a) handle edge insertions and deletions without recomputing the full partition, (b) maintain gradient unbiasedness, and (c) work with GNNs of depth <span class="arithmatex">\( L \geq 2 \)</span>. Sketch the normalization coefficient update rule when an edge <span class="arithmatex">\( (u, v) \)</span> is added.</p>
+</li>
+</ol>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">You've Conquered the Scalability Wall</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrates">
+You now understand the full landscape of GNN scaling strategies — from the neighborhood explosion that makes full-batch training on large graphs impossible, to the four families of methods that tame it: neighbor sampling, layer-wise sampling, subgraph sampling (Cluster-GCN and GraphSAINT), and pre-computation (SIGN). Each method makes a different bet about where to spend computation: online graph traversal versus offline pre-computation, exact neighborhoods versus sampled approximations, biased gradients versus unbiased ones with normalization overhead. The billion-node graphs that power modern recommendation systems, drug discovery pipelines, and knowledge bases all rely on these ideas. Next, we turn to a different challenge entirely: not how to scale GNNs, but how to use them to generate new graphs from scratch.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../19-subgraph-mining/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

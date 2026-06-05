@@ -1,0 +1,3621 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Designs GNNs that are provably maximally expressive — GIN achieves the 1-WL upper bound — and explores SGC, APPNP, PNA, ID-GNN, higher-order GNNs, subgraph GNNs, and stochastic depth as principled extensions.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/10-powerful-gnns/">
+      
+      
+        <link rel="prev" href="../09-gnn-theory/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 10: Designing Powerful Encoders: GIN and Beyond - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 10: Designing Powerful Encoders: GIN and Beyond">
+  <meta property="og:description" content="Designs GNNs that are provably maximally expressive — GIN achieves the 1-WL upper bound — and explores SGC, APPNP, PNA, ID-GNN, higher-order GNNs, subgraph GNNs, and stochastic depth as principled extensions.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/10-powerful-gnns/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 10: Designing Powerful Encoders: GIN and Beyond">
+  <meta name="twitter:description" content="Designs GNNs that are provably maximally expressive — GIN achieves the 1-WL upper bound — and explores SGC, APPNP, PNA, ID-GNN, higher-order GNNs, subgraph GNNs, and stochastic depth as principled extensions.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-10-designing-powerful-encoders-gin-and-beyond" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 10: Designing Powerful Encoders: GIN and Beyond
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_12" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_12" id="__nav_4_12_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_12_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_12">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivating-example-drug-discovery-and-structural-isomers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motivating Example: Drug Discovery and Structural Isomers
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#101-gin-full-1-wl-power-in-practice" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1 GIN: Full 1-WL Power in Practice
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.1 GIN: Full 1-WL Power in Practice">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1011-the-gin-layer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1.1 The GIN Layer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1012-graph-level-readout-layer-wise-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.1.2 Graph-Level Readout: Layer-Wise Aggregation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#102-simple-graph-convolution-sgc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2 Simple Graph Convolution (SGC)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.2 Simple Graph Convolution (SGC)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1021-derivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.2.1 Derivation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#103-appnp-decoupling-propagation-from-prediction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3 APPNP: Decoupling Propagation from Prediction
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.3 APPNP: Decoupling Propagation from Prediction">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1031-connection-to-personalized-pagerank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3.1 Connection to Personalized PageRank
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1032-advantages-over-gcn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.3.2 Advantages Over GCN
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#104-principal-neighborhood-aggregation-pna" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4 Principal Neighborhood Aggregation (PNA)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.4 Principal Neighborhood Aggregation (PNA)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1041-multiple-aggregators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4.1 Multiple Aggregators
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1042-degree-scalers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4.2 Degree Scalers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1043-pna-update-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.4.3 PNA Update Rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#105-identity-aware-gnns-id-gnn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.5 Identity-Aware GNNs (ID-GNN)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#106-higher-order-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.6 Higher-Order GNNs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.6 Higher-Order GNNs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1061-k-gnn-and-delta-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.6.1 k-GNN and Delta-Networks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1062-applications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.6.2 Applications
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#107-subgraph-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.7 Subgraph GNNs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.7 Subgraph GNNs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1071-the-esan-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.7.1 The ESAN Framework
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1072-ds-gnn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.7.2 DS-GNN
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#108-pairnorm-principled-normalization-for-expressive-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.8 PairNorm: Principled Normalization for Expressive GNNs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#109-stochastic-depth-for-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.9 Stochastic Depth for GNNs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1010-structural-encodings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.10 Structural Encodings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1011-code-gcn-vs-graphsage-vs-gat-vs-gin-vs-pna" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.11 Code: GCN vs. GraphSAGE vs. GAT vs. GIN vs. PNA
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10.11 Code: GCN vs. GraphSAGE vs. GAT vs. GIN vs. PNA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-gin-vs-gcn-expressiveness-microsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: GIN vs. GCN Expressiveness MicroSim
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1012-benchmark-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.12 Benchmark Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1013-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.13 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1014-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.14 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1015-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10.15 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    10. Designing Powerful Encoders: GIN and Beyond
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/10-powerful-gnns/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-10-designing-powerful-encoders-gin-and-beyond">Chapter 10: Designing Powerful Encoders: GIN and Beyond<a class="headerlink" href="#chapter-10-designing-powerful-encoders-gin-and-beyond" title="Permanent link">¶</a></h1>
+<p><strong>Part 2: Graph Neural Networks</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Designs GNNs that are provably maximally expressive — GIN achieves the 1-WL upper bound — and explores SGC, APPNP, PNA, ID-GNN, higher-order GNNs, subgraph GNNs, and stochastic depth as principled extensions beyond 1-WL.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 9 concepts from the learning graph:</p>
+<ol>
+<li>Jumping Knowledge Network (JK-Net)</li>
+<li>Simple Graph Convolution (SGC)</li>
+<li>APPNP</li>
+<li>Principal Neighbourhood Aggregation (PNA)</li>
+<li>Identity-Aware GNN (ID-GNN)</li>
+<li>k-GNN and δ-k-GNN</li>
+<li>Subgraph GNN (ESAN / DS-GNN)</li>
+<li>PairNorm</li>
+<li>Stochastic Depth (GNN)</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../06-gnn-foundations/">Chapter 6: GNN Foundations: Message Passing and GCN</a></li>
+<li><a href="../07-gnn-design-space/">Chapter 7: GNN Design Space: GraphSAGE and GAT</a></li>
+<li><a href="../08-gnn-training/">Chapter 8: GNN Training, Augmentation, and Practical Tips</a></li>
+<li><a href="../09-gnn-theory/">Chapter 9: Theory of GNNs: Expressiveness and the WL Test</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Welcome to Chapter 10 — Building the Right Tool for the Job</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+Chapter 9 established the ceiling: no standard message-passing GNN can surpass the 1-WL test, and mean and max aggregation fall strictly below it. Now we build. This chapter designs GNNs that either <em>achieve</em> the 1-WL ceiling precisely, <em>surpass</em> it through architectural innovation, or <em>simplify</em> gracefully for settings where 1-WL power is unnecessary. Each architecture in this chapter is not an arbitrary engineering choice — it is a principled response to a specific theoretical limitation of previous designs. By the end, you will be able to select the right encoder for a given task based on the structural properties that task requires the model to detect.</p>
+</div>
+<h2 id="motivating-example-drug-discovery-and-structural-isomers">Motivating Example: Drug Discovery and Structural Isomers<a class="headerlink" href="#motivating-example-drug-discovery-and-structural-isomers" title="Permanent link">¶</a></h2>
+<p>In computational drug discovery, two molecules can share the same molecular formula (same atom types and counts) and even the same local neighborhood structure for every atom, yet have dramatically different pharmacological properties — different binding affinities, toxicity profiles, and metabolic pathways. These <strong>structural isomers</strong> differ in global topology: the arrangement of rings, the position of a substituent group on a ring, or the number of fused ring systems.</p>
+<p>A 1-WL-bounded GNN cannot distinguish these molecules. It assigns the same embedding to any node whose local subtree structure matches, regardless of global position. For drug discovery — where the difference between a therapeutic compound and a toxic one may hinge on whether a nitrogen atom appears at position 3 or position 5 of a ring — this limitation is not academic; it directly predicts model failure on real targets. The architectures in this chapter are designed precisely to overcome these limitations.</p>
+<hr>
+<h2 id="101-gin-full-1-wl-power-in-practice">10.1 GIN: Full 1-WL Power in Practice<a class="headerlink" href="#101-gin-full-1-wl-power-in-practice" title="Permanent link">¶</a></h2>
+<p>Chapter 9 established that the Graph Isomorphism Network (GIN) achieves the maximum expressiveness possible for any MPNN — the 1-WL upper bound. Here we examine its practical implementation in full detail: the layer structure, the graph-level readout strategy, and the engineering choices that determine whether GIN's theoretical advantages translate to empirical gains.</p>
+<h3 id="1011-the-gin-layer">10.1.1 The GIN Layer<a class="headerlink" href="#1011-the-gin-layer" title="Permanent link">¶</a></h3>
+<p>Each GIN layer applies a multi-layer perceptron to the sum of the node's own embedding and its neighbors' embeddings:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(k+1)} = \text{MLP}^{(k)}\!\left((1 + \epsilon^{(k)}) \cdot \mathbf{h}_v^{(k)} + \sum_{u \in \mathcal{N}(v)} \mathbf{h}_u^{(k)}\right)
+\]</div>
+<p>Three implementation details determine performance in practice:</p>
+<p><strong>The MLP depth</strong>: The theorem of Xu et al. (2019) requires the MLP to be a <em>universal approximator</em> — it must be capable of approximating any injective function on the domain of possible embeddings. In practice, a two-layer MLP with batch normalization between layers is sufficient. Single-layer linear maps are not sufficient: they cannot approximate non-linear injections on the embedding space.</p>
+<p><strong>Batch normalization placement</strong>: Batch normalization should be applied <em>inside</em> the MLP, between the first and second linear layers — not before the GINConv call or after it. Normalizing after the full GIN layer would remove the magnitude information that sum aggregation preserves, partially defeating the purpose of using sum over mean.</p>
+<p><strong>The ε parameter</strong>: Setting <span class="arithmatex">\( \epsilon = 0 \)</span> (fixed) works well in practice for most tasks. The theoretical justification for a non-zero ε is that it prevents a node from confusing "I have no neighbors with embedding <span class="arithmatex">\( \mathbf{a} \)</span>" with "I have one neighbor with embedding <span class="arithmatex">\( \mathbf{a} \)</span> and my own embedding is 0." In practice, when embeddings are initialized randomly and features are non-zero, the distinction is preserved even with ε = 0.</p>
+<h3 id="1012-graph-level-readout-layer-wise-aggregation">10.1.2 Graph-Level Readout: Layer-Wise Aggregation<a class="headerlink" href="#1012-graph-level-readout-layer-wise-aggregation" title="Permanent link">¶</a></h3>
+<p>For graph classification, GIN uses a graph-level readout that aggregates across all layers, not just the final layer:</p>
+<div class="arithmatex">\[
+\mathbf{h}_G = \text{CONCAT}\!\left(\text{READOUT}\!\left(\left\{\!\left\{ \mathbf{h}_v^{(k)} : v \in V \right\}\!\right\}\right)\ \Big|\ k = 0, 1, \ldots, K\right)
+\]</div>
+<p>where READOUT is typically sum pooling. This is equivalent to applying Jumping Knowledge aggregation at the graph level: the final graph representation concatenates the layer-0 (initial feature), layer-1, ..., layer-K global sum poolings. This design captures structural features at multiple scales — layer-0 captures individual node features, layer-1 captures 1-hop structure, layer-k captures k-hop structure — and is one reason GIN outperforms simple readout architectures.</p>
+<p>After concatenation, a linear layer or shallow MLP maps the concatenated graph representation to the output class logits.</p>
+<hr>
+<h2 id="102-simple-graph-convolution-sgc">10.2 Simple Graph Convolution (SGC)<a class="headerlink" href="#102-simple-graph-convolution-sgc" title="Permanent link">¶</a></h2>
+<p>Not every task requires the full expressiveness of GIN or even GCN. The <strong>Simple Graph Convolution (SGC)</strong> (Wu et al., 2019) asks: how much of GCN's performance comes from the non-linear activations between layers, and how much comes purely from the multi-hop smoothing of features?</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Sage Thinks: Simplification Is Sometimes Strength</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking">
+Before dismissing SGC as "too simple," consider what it removes: all non-linear activations between GCN layers. What remains is a linear model on features smoothed by <span class="arithmatex">\( K \)</span> hops of graph diffusion. On homophilic graphs where the label signal is smooth (nearby nodes share labels), multi-hop smoothing reduces noise and the non-linearities add almost nothing. SGC is linear, interpretable, and trains in a fraction of the time. The lesson isn't "simple is always better" — it's "understand what your model actually needs before adding complexity."</p>
+</div>
+<h3 id="1021-derivation">10.2.1 Derivation<a class="headerlink" href="#1021-derivation" title="Permanent link">¶</a></h3>
+<p>A <span class="arithmatex">\( K \)</span>-layer GCN without activations collapses to a single matrix multiplication:</p>
+<div class="arithmatex">\[
+H^{(K)} = \underbrace{\hat{A} \cdot \hat{A} \cdots \hat{A}}_{K \text{ times}} X W^{(1)} W^{(2)} \cdots W^{(K)} = \hat{A}^K X W
+\]</div>
+<p>where <span class="arithmatex">\( \hat{A} = \tilde{D}^{-1/2} \tilde{A} \tilde{D}^{-1/2} \)</span> is the normalized adjacency with self-loops, and <span class="arithmatex">\( W = W^{(1)} W^{(2)} \cdots W^{(K)} \)</span> is the product of all weight matrices (itself just a single weight matrix). SGC precomputes the fixed propagation <span class="arithmatex">\( \hat{A}^K X \)</span> once before training, then applies a simple linear classifier:</p>
+<div class="arithmatex">\[
+\hat{Y} = \text{softmax}\!\left(\hat{A}^K X W\right)
+\]</div>
+<p><strong>Training</strong>: Since the propagated features <span class="arithmatex">\( \tilde{X} = \hat{A}^K X \)</span> are fixed (computed once, not backpropagated through), SGC trains as a simple logistic regression on <span class="arithmatex">\( \tilde{X} \)</span>. This reduces training time by orders of magnitude compared to GCN — the feature computation is <span class="arithmatex">\( O(K|E|d) \)</span> once, and training is <span class="arithmatex">\( O(|V_L| d C) \)</span> per epoch, where <span class="arithmatex">\( C \)</span> is the number of classes.</p>
+<p><strong>When SGC works</strong>: On Cora, CiteSeer, and PubMed — all highly homophilic citation networks — SGC achieves accuracy within 1–2% of GCN despite being linear. This suggests that GCN's non-linearities are not the source of its advantage on these benchmarks; the multi-hop propagation is. SGC fails on heterophilic graphs and graph classification tasks where the non-linear interaction between features from different neighbors is critical.</p>
+<p><strong>Limitation</strong>: The product <span class="arithmatex">\( \hat{A}^K \)</span> has the same over-smoothing problem as deep GCN. For large <span class="arithmatex">\( K \)</span>, SGC propagation spreads features globally and loses local structure. In practice, <span class="arithmatex">\( K \in \{1, 2\} \)</span> is used for most node classification benchmarks.</p>
+<hr>
+<h2 id="103-appnp-decoupling-propagation-from-prediction">10.3 APPNP: Decoupling Propagation from Prediction<a class="headerlink" href="#103-appnp-decoupling-propagation-from-prediction" title="Permanent link">¶</a></h2>
+<p>Both GCN and SGC conflate two distinct operations: (1) <strong>feature transformation</strong> — learning a non-linear mapping from raw features to a task-relevant representation — and (2) <strong>graph propagation</strong> — smoothing the representation over the neighborhood. GCN interleaves these operations at every layer, making it impossible to tune them independently.</p>
+<p><strong>Approximate Personalized Propagation of Neural Predictions (APPNP)</strong> (Klicpera et al., 2019) disentangles them:</p>
+<p><strong>Step 1 — Predict</strong>: Apply a neural network (MLP or any architecture) to the raw node features, producing initial predictions:</p>
+<div class="arithmatex">\[
+\mathbf{z}_v^{(0)} = f_\theta(\mathbf{x}_v)
+\]</div>
+<p><strong>Step 2 — Propagate</strong>: Iteratively propagate the initial predictions using personalized PageRank-style diffusion for <span class="arithmatex">\( K \)</span> steps:</p>
+<div class="arithmatex">\[
+\mathbf{z}_v^{(k+1)} = (1 - \alpha) \sum_{u \in \mathcal{N}(v) \cup \{v\}} \frac{\mathbf{z}_u^{(k)}}{\sqrt{\deg(u) \deg(v)}} + \alpha \mathbf{z}_v^{(0)}
+\]</div>
+<p>where <span class="arithmatex">\( \alpha \in (0, 1) \)</span> is the <strong>teleportation probability</strong> — at each step, with probability <span class="arithmatex">\( \alpha \)</span>, the propagation returns to the initial prediction <span class="arithmatex">\( \mathbf{z}_v^{(0)} \)</span> rather than continuing to diffuse.</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Tip: APPNP's Teleportation Prevents Over-Smoothing Structurally</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving a tip">
+The α teleportation parameter is not just a regularization hyperparameter — it is a structural anti-smoothing mechanism. Each propagation step mixes the current prediction with the initial neural-network prediction, providing a "memory" that prevents all nodes from converging to the same embedding. With α &gt; 0, even infinite propagation steps do not destroy local information: the stationary distribution of the propagation is personalized to each node's starting point <span class="arithmatex">\( \mathbf{z}_v^{(0)} \)</span>. In practice, α = 0.1 (90% propagation, 10% return to origin) and K = 10 propagation steps outperforms GCN on Cora, CiteSeer, and ogbn-arxiv.</p>
+</div>
+<h3 id="1031-connection-to-personalized-pagerank">10.3.1 Connection to Personalized PageRank<a class="headerlink" href="#1031-connection-to-personalized-pagerank" title="Permanent link">¶</a></h3>
+<p>The propagation rule above is the power iteration for the personalized PageRank matrix:</p>
+<div class="arithmatex">\[
+\Pi_{\text{PPR}} = \alpha (I - (1-\alpha) \hat{A})^{-1}
+\]</div>
+<p>where <span class="arithmatex">\( \hat{A} = \tilde{D}^{-1/2} \tilde{A} \tilde{D}^{-1/2} \)</span>. The closed-form solution to the propagation is <span class="arithmatex">\( Z^{(\infty)} = \Pi_{\text{PPR}} Z^{(0)} \)</span>, which can be computed exactly for small graphs or approximated by the <span class="arithmatex">\( K \)</span>-step power iteration for large ones.</p>
+<p>Personalized PageRank has a crucial property: it assigns non-zero weight to <em>all</em> nodes in the graph, not just the <span class="arithmatex">\( K \)</span>-hop neighborhood. For node <span class="arithmatex">\( v \)</span>, the PPR score of distant node <span class="arithmatex">\( u \)</span> decays geometrically with the random walk hitting time — providing a principled mechanism for long-range information aggregation without over-smoothing.</p>
+<h3 id="1032-advantages-over-gcn">10.3.2 Advantages Over GCN<a class="headerlink" href="#1032-advantages-over-gcn" title="Permanent link">¶</a></h3>
+<p>APPNP separates the depth of the prediction network (which can be a deep MLP tuned for feature capacity) from the depth of propagation (which can be large, e.g., K = 10, without over-smoothing). GCN conflates both into the number of GCNConv layers, forcing a tradeoff between feature transformation depth and propagation depth. APPNP eliminates this tradeoff.</p>
+<p>The training graph for the feature network <span class="arithmatex">\( f_\theta \)</span> is entirely label-driven — no graph structure needed. The graph structure enters only in the propagation step, which has no trainable parameters. This separation makes APPNP more interpretable and allows precomputing the PPR matrix offline.</p>
+<hr>
+<h2 id="104-principal-neighborhood-aggregation-pna">10.4 Principal Neighborhood Aggregation (PNA)<a class="headerlink" href="#104-principal-neighborhood-aggregation-pna" title="Permanent link">¶</a></h2>
+<p>Chapter 9 showed that no single aggregation function — sum, mean, or max — is universally optimal. Sum is injective on multisets but sensitive to scale; mean loses count information; max loses multiplicity. <strong>Principal Neighborhood Aggregation (PNA)</strong> (Corso et al., 2020) proposes combining multiple aggregators and scalers into a single rich representation.</p>
+<h3 id="1041-multiple-aggregators">10.4.1 Multiple Aggregators<a class="headerlink" href="#1041-multiple-aggregators" title="Permanent link">¶</a></h3>
+<p>PNA computes four aggregators over the neighborhood <span class="arithmatex">\( \mathcal{N}(v) \)</span>:</p>
+<ul>
+<li><strong>Mean</strong>: <span class="arithmatex">\( \mu(\{\mathbf{h}_u\}) = \frac{1}{|\mathcal{N}(v)|} \sum_{u} \mathbf{h}_u \)</span></li>
+<li><strong>Maximum</strong>: <span class="arithmatex">\( \text{max}(\{\mathbf{h}_u\}) = \max_u \mathbf{h}_u \)</span> (element-wise)</li>
+<li><strong>Minimum</strong>: <span class="arithmatex">\( \text{min}(\{\mathbf{h}_u\}) = \min_u \mathbf{h}_u \)</span> (element-wise)</li>
+<li><strong>Standard deviation</strong>: <span class="arithmatex">\( \sigma(\{\mathbf{h}_u\}) = \sqrt{\frac{1}{|\mathcal{N}(v)|} \sum_u (\mathbf{h}_u - \mu)^2} \)</span></li>
+</ul>
+<p>The standard deviation aggregator is particularly useful: it is the only aggregator in this set that explicitly captures distributional <em>spread</em> rather than just the mean or extreme values.</p>
+<h3 id="1042-degree-scalers">10.4.2 Degree Scalers<a class="headerlink" href="#1042-degree-scalers" title="Permanent link">¶</a></h3>
+<p>Beyond multiple aggregators, PNA applies three <strong>degree scalers</strong> — multiplicative factors derived from the node's degree that adjust the aggregated embedding for degree heterogeneity:</p>
+<ul>
+<li><strong>Identity (I)</strong>: no scaling, <span class="arithmatex">\( s = 1 \)</span>.</li>
+<li><strong>Amplification (A)</strong>: <span class="arithmatex">\( s = \log(\deg(v) + 1) / \delta \)</span>, where <span class="arithmatex">\( \delta \)</span> is the mean log-degree in the training set. High-degree nodes receive amplified signals.</li>
+<li><strong>Attenuation (D)</strong>: <span class="arithmatex">\( s = \delta / \log(\deg(v) + 1) \)</span>. High-degree nodes receive attenuated signals.</li>
+</ul>
+<p>The intuition is that the degree of a node fundamentally changes the statistical properties of its neighborhood aggregation: for a degree-1 node, the mean equals the single neighbor's embedding; for a degree-100 node, the mean is a smoothed aggregate of 100 signals. The amplification and attenuation scalers encode this difference explicitly, allowing the model to learn different behaviors for high- and low-degree nodes.</p>
+<h3 id="1043-pna-update-rule">10.4.3 PNA Update Rule<a class="headerlink" href="#1043-pna-update-rule" title="Permanent link">¶</a></h3>
+<p>The PNA update concatenates all (aggregator, scaler) combinations — <span class="arithmatex">\( 4 \times 3 = 12 \)</span> in the full configuration — into a single large vector, then projects it:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(k+1)} = f^{(k)}\!\left(\mathbf{h}_v^{(k)},\ \bigg\|_{(A, s) \in \mathcal{A} \times \mathcal{S}}\ s \cdot A\!\left(\left\{\!\left\{ \mathbf{h}_u^{(k)} : u \in \mathcal{N}(v) \right\}\!\right\}\right)\right)
+\]</div>
+<p>where <span class="arithmatex">\( \| \)</span> denotes concatenation, <span class="arithmatex">\( \mathcal{A} \)</span> is the set of aggregators, <span class="arithmatex">\( \mathcal{S} \)</span> is the set of scalers, and <span class="arithmatex">\( f^{(k)} \)</span> is a linear projection (reducing the dimension before passing to the next layer). The concatenated vector has dimension <span class="arithmatex">\( |\mathcal{A}| \times |\mathcal{S}| \times d \)</span> before projection.</p>
+<p><strong>Computational cost</strong>: PNA computes <span class="arithmatex">\( |\mathcal{A}| = 4 \)</span> aggregators per layer instead of 1, at roughly <span class="arithmatex">\( 4\times \)</span> the memory cost of a single-aggregator GNN. For most molecular property prediction tasks, this cost is acceptable given the improved accuracy.</p>
+<p><strong>When PNA shines</strong>: On the ZINC molecular dataset (graph regression of penalized logP) and OGB molecular benchmarks, PNA consistently outperforms GIN and GCN because molecular properties depend on the statistical distribution of the local chemical environment — exactly what the multi-aggregator design captures.</p>
+<hr>
+<h2 id="105-identity-aware-gnns-id-gnn">10.5 Identity-Aware GNNs (ID-GNN)<a class="headerlink" href="#105-identity-aware-gnns-id-gnn" title="Permanent link">¶</a></h2>
+<p>Even GIN — the maximally 1-WL-powerful MPNN — cannot distinguish nodes that have identical computation graphs. Two nodes in different parts of the same graph (or in different graphs) that have identical rooted subtree structures will receive the same embedding, even if their <em>global</em> positions in the graph are entirely different. This limitation bites whenever the target property depends on where a node is in the graph, not just what its local structure looks like.</p>
+<p><strong>Identity-Aware GNNs (ID-GNN)</strong> (You et al., 2021) overcome this by running the GNN with the target node distinctively marked. The computation for node <span class="arithmatex">\( v \)</span> uses a <em>heterogeneous</em> message-passing scheme that distinguishes messages <em>from</em> the target node from messages from all other nodes:</p>
+<div class="arithmatex">\[
+\mathbf{h}_u^{(k+1)} = \sigma\!\left(W_{\text{other}}^{(k)} \cdot \text{AGG}\!\left(\left\{\!\left\{ \mathbf{h}_w^{(k)} : w \in \mathcal{N}(u),\ w \neq v \right\}\!\right\}\right) + W_{\text{self}}^{(k)} \cdot \mathbf{h}_v^{(k)}\right)
+\]</div>
+<p>for the target node <span class="arithmatex">\( v \)</span> being computed. Every other node <span class="arithmatex">\( u \)</span> in the graph uses the same standard GNN update. The result is that the final embedding of node <span class="arithmatex">\( v \)</span> depends not just on its own local structure, but on the structural relationship between <span class="arithmatex">\( v \)</span> and every other node in its <span class="arithmatex">\( K \)</span>-hop neighborhood.</p>
+<p><strong>Theoretical result</strong>: ID-GNN is strictly more powerful than 1-WL GNNs. Specifically, it can distinguish any pair of non-isomorphic graphs that 1-WL fails on (in the sense that some node pair is distinguishable), while 1-WL GNNs cannot. The key insight is that the identity injection breaks the symmetry that causes identical computation graphs: two nodes that are symmetric under the graph's automorphism group can now be distinguished because the identity injection breaks that symmetry.</p>
+<p><strong>Efficient implementation</strong>: Running a separate GNN computation for every node in the graph would cost <span class="arithmatex">\( O(|V|) \)</span> times the standard GNN cost — prohibitive for large graphs. ID-GNN amortizes this by sampling a small number of nodes to serve as identity-injected roots per mini-batch, computing their embeddings exactly, and using the standard GNN for the remaining nodes. This sampling strategy introduces a small bias but reduces the computational overhead to a manageable constant factor.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Warning: Higher-Order GNNs Trade Expressiveness for Scalability</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning">
+The theoretical hierarchy is clear: k-WL GNNs are strictly more powerful than 1-WL for every k ≥ 2. The practical hierarchy is less straightforward: a 3-WL GNN on a graph with 1,000 nodes requires operating on <span class="arithmatex">\( 10^9 \)</span> node triples — likely infeasible on any current hardware. Before reaching for a higher-order architecture, ask whether the task genuinely requires distinguishing the graphs that 1-WL fails on. For many real benchmarks, the answer is no, and a carefully tuned GIN with structural features achieves comparable or better results at a fraction of the cost.</p>
+</div>
+<hr>
+<h2 id="106-higher-order-gnns">10.6 Higher-Order GNNs<a class="headerlink" href="#106-higher-order-gnns" title="Permanent link">¶</a></h2>
+<p>The k-WL hierarchy (Chapter 9) provides the theoretical backbone for architectures that operate on <span class="arithmatex">\( k \)</span>-tuples of nodes. <strong>Higher-order GNNs</strong> implement this computationally by maintaining embeddings for every ordered <span class="arithmatex">\( k \)</span>-tuple <span class="arithmatex">\( (v_1, \ldots, v_k) \in V^k \)</span> and updating them by aggregating over adjacent tuples.</p>
+<h3 id="1061-k-gnn-and-delta-networks">10.6.1 k-GNN and Delta-Networks<a class="headerlink" href="#1061-k-gnn-and-delta-networks" title="Permanent link">¶</a></h3>
+<p>The <strong><span class="arithmatex">\( k \)</span>-GNN</strong> framework (Maron et al., 2019) defines a message-passing scheme on the complete <span class="arithmatex">\( k \)</span>-dimensional tensor of node tuples. For <span class="arithmatex">\( k = 2 \)</span>, each node pair <span class="arithmatex">\( (u, v) \)</span> has an embedding <span class="arithmatex">\( \mathbf{h}_{uv}^{(t)} \)</span>, and the update aggregates over all triples containing the pair:</p>
+<div class="arithmatex">\[
+\mathbf{h}_{uv}^{(t+1)} = \sigma\!\left(W_1 \mathbf{h}_{uv}^{(t)} + W_2 \sum_{w \in V} \mathbf{h}_{uw}^{(t)} + W_3 \sum_{w \in V} \mathbf{h}_{wv}^{(t)}\right)
+\]</div>
+<p>The aggregation sums over all "neighbors" of the tuple in the tensor-product graph. Node-level embeddings are recovered by marginalizing: <span class="arithmatex">\( \mathbf{h}_v^{(T)} = \sum_u \mathbf{h}_{uv}^{(T)} \)</span>.</p>
+<p>For <span class="arithmatex">\( k = 2 \)</span>, the computation operates on <span class="arithmatex">\( n^2 \)</span> tuple embeddings; for <span class="arithmatex">\( k = 3 \)</span>, on <span class="arithmatex">\( n^3 \)</span>. Memory scales as <span class="arithmatex">\( O(n^k \cdot d) \)</span> and computation as <span class="arithmatex">\( O(n^{k+1} \cdot d) \)</span> per layer — exponential growth that limits practical use to small graphs (molecular graphs with typically 10–50 atoms).</p>
+<p><strong><span class="arithmatex">\( \delta \)</span>-k-GNN</strong> (Morris et al., 2020) is a sparsified version that operates only on tuples where all elements are within <span class="arithmatex">\( r \)</span> hops of each other in the original graph, dramatically reducing the number of active tuples from <span class="arithmatex">\( O(n^k) \)</span> to <span class="arithmatex">\( O(n \cdot d^{k-1}_{\text{max}}) \)</span> where <span class="arithmatex">\( d_{\text{max}} \)</span> is the maximum degree. This makes k-GNNs tractable on molecular graphs while maintaining higher-order expressiveness.</p>
+<h3 id="1062-applications">10.6.2 Applications<a class="headerlink" href="#1062-applications" title="Permanent link">¶</a></h3>
+<p>Higher-order GNNs achieve state-of-the-art on molecular property prediction benchmarks that require counting cycles and ring systems. On the ZINC molecular regression dataset, the 3-WL <span class="arithmatex">\( \delta \)</span>-k-GNN reaches MAE below 0.09, compared to 0.16 for GIN — a 44% reduction in error that directly corresponds to the model's ability to count rings in the molecular structure.</p>
+<hr>
+<h2 id="107-subgraph-gnns">10.7 Subgraph GNNs<a class="headerlink" href="#107-subgraph-gnns" title="Permanent link">¶</a></h2>
+<p><strong>Subgraph GNNs</strong> achieve expressiveness beyond 1-WL by running standard GNNs on <em>subgraphs</em> rather than the full graph, then aggregating the subgraph-level representations.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">Complex Architecture, Simple Intuition</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encouraging">
+The core idea behind subgraph GNNs is elegant: if a standard GNN cannot distinguish a node's global position because it only sees local structure, run the GNN separately on each node's local subgraph — where the node of interest <em>is</em> the global context. The subgraph GNN sees different structure for every node, even if those nodes have identical computation graphs in the original graph. The implementation details are involved, but the motivation is straightforward.</p>
+</div>
+<h3 id="1071-the-esan-framework">10.7.1 The ESAN Framework<a class="headerlink" href="#1071-the-esan-framework" title="Permanent link">¶</a></h3>
+<p><strong>Equivariant Subgraph Aggregation Networks (ESAN)</strong> (Zhao et al., 2022) formalize this idea. For each node <span class="arithmatex">\( v \in V \)</span>, define a subgraph <span class="arithmatex">\( G_v = (V_v, E_v)  \)</span> — typically the ego graph (the induced subgraph of <span class="arithmatex">\( v \)</span> and its <span class="arithmatex">\( r \)</span>-hop neighbors). Each subgraph is processed by a standard GNN:</p>
+<div class="arithmatex">\[
+\mathbf{h}_{G_v} = \text{GNN}\!\left(G_v,\ \mathbf{x}^{G_v}\right)
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{x}^{G_v} \)</span> is the feature matrix restricted to <span class="arithmatex">\( V_v \)</span>, optionally augmented with a marking that identifies node <span class="arithmatex">\( v \)</span> as the "root" of the subgraph (analogous to ID-GNN's identity injection).</p>
+<p>The full graph's node embedding is then:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v = \text{AGG}_v\!\left(\left\{\!\left\{ \mathbf{h}_{G_u} : u \in \mathcal{N}(v) \cup \{v\} \right\}\!\right\}\right)
+\]</div>
+<p>aggregating the subgraph representations of all neighboring nodes.</p>
+<p><strong>Theoretical power</strong>: ESAN with root marking is strictly more powerful than 1-WL. It can detect the presence of specific subgraph patterns (triangles, 4-cycles, 5-cycles) because each subgraph computation sees the pattern within the ego graph, even when the pattern spans the ego graph boundary in a way that 1-WL cannot detect.</p>
+<p><strong>Computational cost</strong>: Running a separate GNN on each of <span class="arithmatex">\( |V| \)</span> ego subgraphs multiplies the computation by <span class="arithmatex">\( |V| \)</span> relative to a single-graph GNN. For small molecules (20–50 nodes), this is acceptable. For large citation graphs (100K+ nodes), it is not — subgraph GNNs are predominantly used for molecular property prediction and graph classification on TUDatasets.</p>
+<h3 id="1072-ds-gnn">10.7.2 DS-GNN<a class="headerlink" href="#1072-ds-gnn" title="Permanent link">¶</a></h3>
+<p><strong>Deep Sets Graph Neural Network (DS-GNN)</strong> (Bevilacqua et al., 2022) is a related approach that treats the collection of subgraphs as a set and processes it with a symmetry-aware architecture, maintaining equivariance to permutations of both the node ordering within each subgraph and the ordering of the subgraph collection itself.</p>
+<hr>
+<h2 id="108-pairnorm-principled-normalization-for-expressive-gnns">10.8 PairNorm: Principled Normalization for Expressive GNNs<a class="headerlink" href="#108-pairnorm-principled-normalization-for-expressive-gnns" title="Permanent link">¶</a></h2>
+<p>Chapter 8 introduced PairNorm as a practical remedy for over-smoothing. Here we revisit it from the perspective of expressive GNN design, where normalization becomes a tool for <em>preserving</em> the discriminative capacity that powerful aggregators create.</p>
+<p>The core tension is this: deeper GNNs have larger receptive fields and can in principle distinguish nodes based on more distant structural information. But depth causes over-smoothing, which destroys exactly that discriminative capacity. PairNorm resolves this tension by enforcing a minimum pairwise distance between node embeddings at each layer, regardless of depth.</p>
+<p>Formally, PairNorm centers and normalizes the embedding matrix after each layer:</p>
+<div class="arithmatex">\[
+\tilde{\mathbf{h}}_v = s \cdot \frac{\mathbf{h}_v - \boldsymbol{\mu}}{\sqrt{\frac{1}{|V|} \sum_{u \in V} \|\mathbf{h}_u - \boldsymbol{\mu}\|^2}}
+\]</div>
+<p>where <span class="arithmatex">\( \boldsymbol{\mu} = \frac{1}{|V|} \sum_v \mathbf{h}_v \)</span> and <span class="arithmatex">\( s \)</span> is a target scale. This guarantees that the mean squared distance between any two node embeddings is exactly <span class="arithmatex">\( s^2 \)</span> after normalization — the embedding space is stretched or contracted to maintain separation.</p>
+<p><strong>In the context of GIN</strong>: Applying PairNorm between GIN layers allows GIN to be trained 10–20 layers deep without the embedding collapse that would otherwise occur. The result is a more expressive model: deep GIN with PairNorm can aggregate information from a larger <span class="arithmatex">\( K \)</span>-hop neighborhood while maintaining the injectivity that gives GIN its 1-WL power.</p>
+<p><strong>Interaction with batch normalization</strong>: PairNorm and BN normalize along different axes. BN normalizes each feature dimension across nodes in the batch (preserving pairwise distances up to feature-wise scaling). PairNorm normalizes each node's embedding length relative to the global mean (preserving relative direction while controlling absolute magnitude). They are complementary and can be used in sequence: BN first, then PairNorm.</p>
+<hr>
+<h2 id="109-stochastic-depth-for-gnns">10.9 Stochastic Depth for GNNs<a class="headerlink" href="#109-stochastic-depth-for-gnns" title="Permanent link">¶</a></h2>
+<p><strong>Stochastic depth</strong> (Huang et al., 2016, adapted for GNNs) randomly drops entire GNN layers during training, replacing each dropped layer with an identity map (passing through the previous layer's embedding unchanged):</p>
+<div class="arithmatex">\[
+\mathbf{H}^{(k+1)} = \begin{cases} \text{GNNLayer}^{(k)}(\mathbf{H}^{(k)}) &amp; \text{with probability } 1 - p_k \\ \mathbf{H}^{(k)} &amp; \text{with probability } p_k \end{cases}
+\]</div>
+<p>where <span class="arithmatex">\( p_k \)</span> is the drop probability for layer <span class="arithmatex">\( k \)</span>, typically increasing linearly with depth: <span class="arithmatex">\( p_k = k / K \cdot p_{\text{max}} \)</span> for a <span class="arithmatex">\( K \)</span>-layer network. Earlier layers are rarely dropped (they contribute foundational transformations); later layers are dropped frequently (they contribute more specialized refinements).</p>
+<p><strong>Theoretical interpretation</strong>: Stochastic depth is equivalent to training an implicit ensemble of networks of varying depths. At each training step, a random subset of layers is active, producing a different effective depth. At inference, all layers are used (with activations scaled by <span class="arithmatex">\( 1 - p_k \)</span>), effectively averaging the ensemble's predictions.</p>
+<p><strong>Benefits for GNNs</strong>:</p>
+<ol>
+<li><strong>Regularization</strong>: exposing the model to shorter effective paths regularizes against overfitting, analogous to dropout but at the layer level.</li>
+<li><strong>Depth tolerance</strong>: by occasionally skipping intermediate layers, the model learns representations that are useful at multiple depths — making it more robust to the choice of total depth.</li>
+<li><strong>Training speed</strong>: on average, a fraction <span class="arithmatex">\( \sum_k p_k / K \)</span> of layer computations are skipped per training step, reducing training wall-clock time by a corresponding amount.</li>
+<li><strong>Over-smoothing mitigation</strong>: because some training steps use fewer message-passing iterations, the model sees representations at a range of smoothing levels, indirectly learning more local (less smoothed) representations at intermediate layers.</li>
+</ol>
+<p>Stochastic depth is most beneficial for very deep GNNs (more than 8 layers) where over-smoothing and overfitting are the primary failure modes. For shallow architectures (2–4 layers), the regularization benefit is marginal.</p>
+<hr>
+<h2 id="1010-structural-encodings">10.10 Structural Encodings<a class="headerlink" href="#1010-structural-encodings" title="Permanent link">¶</a></h2>
+<p>Beyond the architectural choices described above, a complementary approach is to precompute structural features and append them to the input node features before any GNN layer. These <strong>structural encodings</strong> give the GNN access to information it could not derive from local message passing alone.</p>
+<p>Three encodings are in widespread use:</p>
+<p><strong>Random Walk Structural Encoding (RWSE)</strong>: For each node <span class="arithmatex">\( v \)</span>, compute the <span class="arithmatex">\( k \)</span>-step random walk landing probability <span class="arithmatex">\( p_{vv}^{(k)} \)</span> — the probability that a <span class="arithmatex">\( k \)</span>-step random walk starting at <span class="arithmatex">\( v \)</span> returns to <span class="arithmatex">\( v \)</span>. The vector <span class="arithmatex">\( [p_{vv}^{(1)}, p_{vv}^{(2)}, \ldots, p_{vv}^{(K)}] \)</span> encodes structural properties: <span class="arithmatex">\( p_{vv}^{(2)} \)</span> is proportional to the degree, <span class="arithmatex">\( p_{vv}^{(3)} \)</span> encodes triangle participation, and <span class="arithmatex">\( p_{vv}^{(6)} \)</span> encodes hexagonal ring participation (critical for aromatic chemistry). A GNN augmented with RWSE can detect triangle and ring structure without any architectural modification, because the encoding provides this information as input features.</p>
+<p><strong>Laplacian Eigenvector Positional Encoding (LapPE)</strong>: The <span class="arithmatex">\( k \)</span> smallest non-trivial eigenvectors of the graph Laplacian <span class="arithmatex">\( L = D - A \)</span> are used as node positional features. The <span class="arithmatex">\( i \)</span>-th eigenvector <span class="arithmatex">\( \mathbf{u}_i \)</span> encodes a notion of "spectral position" in the graph — nodes that are spectrally close receive similar <span class="arithmatex">\( \mathbf{u}_i \)</span> values. LapPE gives GNNs a sense of global position, making them aware of a node's location in the global graph structure. It is the standard positional encoding for graph transformer architectures (Chapter 11).</p>
+<p><strong>Graphlet Degree Vectors (GDV)</strong>: Count the occurrences of each node in each of the 73 graphlet orbit types (all subgraphs of up to 5 nodes). The GDV is a 73-dimensional vector that encodes the node's structural role in extreme detail. GDVs are highly informative but expensive to compute (<span class="arithmatex">\( O(d^4 n) \)</span>) and may overfit when the training set is small.</p>
+<hr>
+<h2 id="1011-code-gcn-vs-graphsage-vs-gat-vs-gin-vs-pna">10.11 Code: GCN vs. GraphSAGE vs. GAT vs. GIN vs. PNA<a class="headerlink" href="#1011-code-gcn-vs-graphsage-vs-gat-vs-gin-vs-pna" title="Permanent link">¶</a></h2>
+<p>The following code implements all five major architectures on the MUTAG and PROTEINS graph classification benchmarks, providing a direct comparison of their expressiveness and training dynamics. Before reading the code, note the key design parameters: all models use <code>num_layers = 3</code>, <code>hidden_channels = 64</code>, and <code>global_add_pool</code> for the graph-level readout. The only architectural difference is the message-passing layer type — isolating the effect of the aggregation strategy.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span><span class="n">GCNConv</span><span class="p">,</span> <span class="n">SAGEConv</span><span class="p">,</span> <span class="n">GATConv</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                                 <span class="n">GINConv</span><span class="p">,</span> <span class="n">PNAConv</span><span class="p">,</span> <span class="n">global_add_pool</span><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">TUDataset</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataLoader</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneHotDegree</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">degree</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Load MUTAG with one-hot degree features</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">TUDataset</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">'data/TU'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'MUTAG'</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>                    <span class="n">transform</span><span class="o">=</span><span class="n">OneHotDegree</span><span class="p">(</span><span class="n">max_degree</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">train_data</span><span class="p">,</span> <span class="n">test_data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[:</span><span class="mi">150</span><span class="p">],</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">150</span><span class="p">:]</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">test_loader</span>  <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_data</span><span class="p">,</span>  <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">in_ch</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">num_node_features</span>   <span class="c1"># 5 (one-hot degree)</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">hid</span>   <span class="o">=</span> <span class="mi">64</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">out</span>   <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">num_classes</span>          <span class="c1"># 2</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="c1"># ── GCN ──────────────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="k">class</span><span class="w"> </span><span class="nc">GCN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>            <span class="n">GCNConv</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">hid</span><span class="p">),</span> <span class="n">GCNConv</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">hid</span><span class="p">),</span> <span class="n">GCNConv</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">hid</span><span class="p">)])</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">lin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        <span class="k">for</span> <span class="n">conv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">:</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin</span><span class="p">(</span><span class="n">global_add_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="p">))</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="c1"># ── GraphSAGE ─────────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="k">class</span><span class="w"> </span><span class="nc">SAGE</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>            <span class="n">SAGEConv</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">hid</span><span class="p">),</span> <span class="n">SAGEConv</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">hid</span><span class="p">),</span> <span class="n">SAGEConv</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">hid</span><span class="p">)])</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">lin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>        <span class="k">for</span> <span class="n">conv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">:</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin</span><span class="p">(</span><span class="n">global_add_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="p">))</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="c1"># ── GAT ───────────────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="k">class</span><span class="w"> </span><span class="nc">GAT</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">GATConv</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">hid</span> <span class="o">//</span> <span class="n">heads</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">)</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">GATConv</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">hid</span> <span class="o">//</span> <span class="n">heads</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">)</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv3</span> <span class="o">=</span> <span class="n">GATConv</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">hid</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">lin</span>   <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv3</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin</span><span class="p">(</span><span class="n">global_add_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="p">))</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="c1"># ── GIN ───────────────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="k">def</span><span class="w"> </span><span class="nf">make_gin_mlp</span><span class="p">(</span><span class="n">in_c</span><span class="p">,</span> <span class="n">out_c</span><span class="p">):</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_c</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">out_c</span><span class="p">),</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">out_c</span><span class="p">),</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">out_c</span><span class="p">,</span> <span class="n">out_c</span><span class="p">),</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>    <span class="p">)</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="k">class</span><span class="w"> </span><span class="nc">GIN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>            <span class="n">GINConv</span><span class="p">(</span><span class="n">make_gin_mlp</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">hid</span><span class="p">)),</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>            <span class="n">GINConv</span><span class="p">(</span><span class="n">make_gin_mlp</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">hid</span><span class="p">)),</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>            <span class="n">GINConv</span><span class="p">(</span><span class="n">make_gin_mlp</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">hid</span><span class="p">)),</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>        <span class="p">])</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>        <span class="c1"># Layer-wise readout: pool at each layer and concatenate</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">lin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hid</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>        <span class="n">layer_outs</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>        <span class="k">for</span> <span class="n">conv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">:</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>            <span class="n">layer_outs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">global_add_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="p">))</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">layer_outs</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a><span class="c1"># ── PNA ───────────────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a><span class="c1"># PNA requires pre-computing the degree histogram for the amplification scaler</span>
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a><span class="n">deg_hist</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a><span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">train_data</span><span class="p">:</span>
+</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>    <span class="n">d</span> <span class="o">=</span> <span class="n">degree</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">num_nodes</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>    <span class="n">deg_hist</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">minlength</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a><span class="k">class</span><span class="w"> </span><span class="nc">PNA</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>        <span class="n">agg</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'mean'</span><span class="p">,</span> <span class="s1">'min'</span><span class="p">,</span> <span class="s1">'max'</span><span class="p">,</span> <span class="s1">'std'</span><span class="p">]</span>
+</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>        <span class="n">sca</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'identity'</span><span class="p">,</span> <span class="s1">'amplification'</span><span class="p">,</span> <span class="s1">'attenuation'</span><span class="p">]</span>
+</span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+</span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a>            <span class="n">PNAConv</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">hid</span><span class="p">,</span> <span class="n">aggregators</span><span class="o">=</span><span class="n">agg</span><span class="p">,</span> <span class="n">scalers</span><span class="o">=</span><span class="n">sca</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="n">deg_hist</span><span class="p">),</span>
+</span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a>            <span class="n">PNAConv</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span>   <span class="n">hid</span><span class="p">,</span> <span class="n">aggregators</span><span class="o">=</span><span class="n">agg</span><span class="p">,</span> <span class="n">scalers</span><span class="o">=</span><span class="n">sca</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="n">deg_hist</span><span class="p">),</span>
+</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a>            <span class="n">PNAConv</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span>   <span class="n">hid</span><span class="p">,</span> <span class="n">aggregators</span><span class="o">=</span><span class="n">agg</span><span class="p">,</span> <span class="n">scalers</span><span class="o">=</span><span class="n">sca</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="n">deg_hist</span><span class="p">),</span>
+</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>        <span class="p">])</span>
+</span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">lin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hid</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+</span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a>
+</span><span id="__span-0-108"><a id="__codelineno-0-108" name="__codelineno-0-108" href="#__codelineno-0-108"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+</span><span id="__span-0-109"><a id="__codelineno-0-109" name="__codelineno-0-109" href="#__codelineno-0-109"></a>        <span class="k">for</span> <span class="n">conv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">:</span>
+</span><span id="__span-0-110"><a id="__codelineno-0-110" name="__codelineno-0-110" href="#__codelineno-0-110"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111" href="#__codelineno-0-111"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin</span><span class="p">(</span><span class="n">global_add_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="p">))</span>
+</span><span id="__span-0-112"><a id="__codelineno-0-112" name="__codelineno-0-112" href="#__codelineno-0-112"></a>
+</span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113" href="#__codelineno-0-113"></a><span class="c1"># ── Training loop ─────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-114"><a id="__codelineno-0-114" name="__codelineno-0-114" href="#__codelineno-0-114"></a><span class="k">def</span><span class="w"> </span><span class="nf">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+</span><span id="__span-0-115"><a id="__codelineno-0-115" name="__codelineno-0-115" href="#__codelineno-0-115"></a>    <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</span><span id="__span-0-116"><a id="__codelineno-0-116" name="__codelineno-0-116" href="#__codelineno-0-116"></a>    <span class="n">best_test</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span id="__span-0-117"><a id="__codelineno-0-117" name="__codelineno-0-117" href="#__codelineno-0-117"></a>    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+</span><span id="__span-0-118"><a id="__codelineno-0-118" name="__codelineno-0-118" href="#__codelineno-0-118"></a>        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-0-119"><a id="__codelineno-0-119" name="__codelineno-0-119" href="#__codelineno-0-119"></a>        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">train_loader</span><span class="p">:</span>
+</span><span id="__span-0-120"><a id="__codelineno-0-120" name="__codelineno-0-120" href="#__codelineno-0-120"></a>            <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-0-121"><a id="__codelineno-0-121" name="__codelineno-0-121" href="#__codelineno-0-121"></a>            <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">batch</span><span class="p">),</span>
+</span><span id="__span-0-122"><a id="__codelineno-0-122" name="__codelineno-0-122" href="#__codelineno-0-122"></a>                            <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-0-123"><a id="__codelineno-0-123" name="__codelineno-0-123" href="#__codelineno-0-123"></a>            <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-0-124"><a id="__codelineno-0-124" name="__codelineno-0-124" href="#__codelineno-0-124"></a>        <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span id="__span-0-125"><a id="__codelineno-0-125" name="__codelineno-0-125" href="#__codelineno-0-125"></a>        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+</span><span id="__span-0-126"><a id="__codelineno-0-126" name="__codelineno-0-126" href="#__codelineno-0-126"></a>            <span class="n">correct</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+</span><span id="__span-0-127"><a id="__codelineno-0-127" name="__codelineno-0-127" href="#__codelineno-0-127"></a>                <span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">edge_index</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">batch</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">d</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</span><span id="__span-0-128"><a id="__codelineno-0-128" name="__codelineno-0-128" href="#__codelineno-0-128"></a>                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">test_loader</span><span class="p">)</span>
+</span><span id="__span-0-129"><a id="__codelineno-0-129" name="__codelineno-0-129" href="#__codelineno-0-129"></a>            <span class="n">best_test</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_test</span><span class="p">,</span> <span class="n">correct</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">test_data</span><span class="p">))</span>
+</span><span id="__span-0-130"><a id="__codelineno-0-130" name="__codelineno-0-130" href="#__codelineno-0-130"></a>    <span class="k">return</span> <span class="n">best_test</span>
+</span><span id="__span-0-131"><a id="__codelineno-0-131" name="__codelineno-0-131" href="#__codelineno-0-131"></a>
+</span><span id="__span-0-132"><a id="__codelineno-0-132" name="__codelineno-0-132" href="#__codelineno-0-132"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'Model'</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="s1">'MUTAG Test Acc'</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-133"><a id="__codelineno-0-133" name="__codelineno-0-133" href="#__codelineno-0-133"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">28</span><span class="p">)</span>
+</span><span id="__span-0-134"><a id="__codelineno-0-134" name="__codelineno-0-134" href="#__codelineno-0-134"></a><span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">Model</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">'GCN'</span><span class="p">,</span> <span class="n">GCN</span><span class="p">),</span> <span class="p">(</span><span class="s1">'SAGE'</span><span class="p">,</span> <span class="n">SAGE</span><span class="p">),</span> <span class="p">(</span><span class="s1">'GAT'</span><span class="p">,</span> <span class="n">GAT</span><span class="p">),</span>
+</span><span id="__span-0-135"><a id="__codelineno-0-135" name="__codelineno-0-135" href="#__codelineno-0-135"></a>                    <span class="p">(</span><span class="s1">'GIN'</span><span class="p">,</span> <span class="n">GIN</span><span class="p">),</span> <span class="p">(</span><span class="s1">'PNA'</span><span class="p">,</span> <span class="n">PNA</span><span class="p">)]:</span>
+</span><span id="__span-0-136"><a id="__codelineno-0-136" name="__codelineno-0-136" href="#__codelineno-0-136"></a>    <span class="n">acc</span> <span class="o">=</span> <span class="n">run</span><span class="p">(</span><span class="n">Model</span><span class="p">())</span>
+</span><span id="__span-0-137"><a id="__codelineno-0-137" name="__codelineno-0-137" href="#__codelineno-0-137"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">&lt;12</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">acc</span><span class="si">:</span><span class="s2">&gt;15.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Expected output on MUTAG (approximate, single run):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Model        MUTAG Test Acc
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>----------------------------
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>GCN                  0.7368
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>SAGE                 0.7632
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>GAT                  0.7632
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>GIN                  0.8947
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>PNA                  0.8947
+</span></code></pre></div>
+<p>GIN and PNA both approach the 1-WL ceiling on MUTAG. GCN's mean aggregation falls noticeably short. The near-parity between GIN and PNA on MUTAG reflects that MUTAG's distinguishing features are captured within 1-WL power; on more complex benchmarks (ZINC, ogbg-molhiv), PNA's multi-aggregator design provides additional lift.</p>
+<h4 id="diagram-gin-vs-gcn-expressiveness-microsim">Diagram: GIN vs. GCN Expressiveness MicroSim<a class="headerlink" href="#diagram-gin-vs-gcn-expressiveness-microsim" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch10-gin-gcn-expressiveness/main.html" width="100%" height="542px" scrolling="no"></iframe>
+<p><a href="../../sims/ch10-gin-gcn-expressiveness/main.html">Run GIN vs. GCN Expressiveness MicroSim Fullscreen</a></p>
+<hr>
+<h2 id="1012-benchmark-results">10.12 Benchmark Results<a class="headerlink" href="#1012-benchmark-results" title="Permanent link">¶</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>MUTAG (%)</th>
+<th>PROTEINS (%)</th>
+<th>ZINC MAE</th>
+<th>ogbg-molhiv AUC</th>
+<th>Citation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GCN (mean)</td>
+<td>74.2 ± 6.1</td>
+<td>75.7 ± 0.6</td>
+<td>0.367</td>
+<td>0.757 ± 0.017</td>
+<td>Kipf &amp; Welling (2017)</td>
+</tr>
+<tr>
+<td>GraphSAGE (max)</td>
+<td>76.0 ± 6.0</td>
+<td>75.9 ± 0.9</td>
+<td>0.398</td>
+<td>0.761 ± 0.016</td>
+<td>Hamilton et al. (2017)</td>
+</tr>
+<tr>
+<td>GIN (sum+MLP)</td>
+<td>89.4 ± 5.6</td>
+<td>76.2 ± 2.8</td>
+<td>0.163</td>
+<td>0.775 ± 0.014</td>
+<td>Xu et al. (2019)</td>
+</tr>
+<tr>
+<td>PNA</td>
+<td>89.0 ± 4.9</td>
+<td><strong>78.0 ± 1.8</strong></td>
+<td>0.142</td>
+<td><strong>0.795 ± 0.008</strong></td>
+<td>Corso et al. (2020)</td>
+</tr>
+<tr>
+<td>APPNP</td>
+<td>83.3 ± —</td>
+<td>77.4 ± —</td>
+<td>—</td>
+<td>—</td>
+<td>Klicpera et al. (2019)</td>
+</tr>
+<tr>
+<td>SGC</td>
+<td>81.0 ± —</td>
+<td>75.1 ± —</td>
+<td>—</td>
+<td>—</td>
+<td>Wu et al. (2019)</td>
+</tr>
+<tr>
+<td>ID-GNN</td>
+<td>88.3 ± 7.2</td>
+<td>77.1 ± 1.6</td>
+<td>—</td>
+<td>—</td>
+<td>You et al. (2021)</td>
+</tr>
+<tr>
+<td>δ-k-GNN (k=3)</td>
+<td><strong>92.0 ± 6.0</strong></td>
+<td>77.8 ± 2.0</td>
+<td><strong>0.091</strong></td>
+<td>—</td>
+<td>Morris et al. (2020)</td>
+</tr>
+</tbody>
+</table>
+<p>Lower MAE is better for ZINC. Higher AUC and accuracy are better for all other metrics.</p>
+<hr>
+<h2 id="1013-common-pitfalls">10.13 Common Pitfalls<a class="headerlink" href="#1013-common-pitfalls" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Using GIN for node classification without adjusting the readout.</strong> GIN's multi-layer global sum pooling readout is designed for graph classification. For node classification, each node's final-layer embedding is used directly — no pooling. In this setting, GIN and GCN with sum aggregation perform similarly, because the expressiveness advantage of GIN comes from distinguishing graph-level structure, not individual node neighborhoods.</p>
+</li>
+<li>
+<p><strong>Setting SGC's propagation depth K too high.</strong> SGC is equivalent to a GCN with K linear layers. At K = 8 or 10, the propagated features are nearly smooth global means — useful for very homophilic graphs but destructive for any task requiring local discrimination. Use K ∈ {1, 2, 3} and check whether additional hops add accuracy on a held-out validation set.</p>
+</li>
+<li>
+<p><strong>Applying APPNP to heterophilic graphs without adjusting α.</strong> The teleportation probability α controls how strongly each node's prediction is anchored to its own initial neural network output vs. its smoothed neighborhood. On heterophilic graphs (where neighbors have different labels), high α (e.g., 0.5) preserves the individual prediction and reduces harmful smoothing; low α (e.g., 0.1) is more appropriate for homophilic graphs.</p>
+</li>
+<li>
+<p><strong>Computing PNA degree statistics on the test graph.</strong> The amplification and attenuation scalers in PNA require a degree histogram to normalize the log-degree. This histogram must be computed on the training set only. Including test-graph nodes in the degree histogram constitutes data leakage.</p>
+</li>
+<li>
+<p><strong>Forgetting that ID-GNN and subgraph GNNs change the complexity class of the problem.</strong> A 3-layer GIN runs in <span class="arithmatex">\( O(K \cdot |E| \cdot d) \)</span>; a 3-layer subgraph GIN runs in <span class="arithmatex">\( O(K \cdot |E| \cdot |V| \cdot d) \)</span> — a factor of <span class="arithmatex">\( |V| \)</span> more expensive. For citation graphs with 100K+ nodes, this is infeasible. Always estimate the actual compute cost before choosing an architecture.</p>
+</li>
+</ol>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Chapter 10 Complete — Your Encoder Toolkit Is Full</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating">
+You've now worked through the complete spectrum of GNN expressiveness: from the simplest possible model (SGC) to architectures that provably exceed the 1-WL barrier (ID-GNN, subgraph GNNs, k-GNNs). More importantly, you understand <em>why</em> each architecture is designed the way it is — what theoretical limitation it overcomes, and at what computational cost. This knowledge lets you match the right encoder to any graph learning task, without resorting to trial-and-error architecture search. In Chapter 11, we step beyond message passing entirely and examine Graph Transformers — architectures that bring attention-based global computation to graph data.</p>
+</div>
+<hr>
+<h2 id="1014-exercises">10.14 Exercises<a class="headerlink" href="#1014-exercises" title="Permanent link">¶</a></h2>
+<p><strong>Remember (Recall and Identify)</strong></p>
+<ol>
+<li>
+<p>List the four aggregators used in PNA and state what property each one captures that the others do not. Which aggregator is unique in capturing distributional spread rather than a central tendency or extreme value?</p>
+</li>
+<li>
+<p>State the two-step procedure of APPNP: what operation is performed in Step 1 and what operation in Step 2? What is the purpose of the teleportation probability α, and what pathology does it prevent?</p>
+</li>
+</ol>
+<p><strong>Understand (Explain and Interpret)</strong></p>
+<ol>
+<li>
+<p>Explain why SGC collapses a K-layer GCN without activations to a single linear transformation. What algebraic property of linear functions makes this possible, and why does the same collapse not occur in a nonlinear GCN?</p>
+</li>
+<li>
+<p>ID-GNN is described as "strictly more powerful than 1-WL GNNs." Explain the mechanism by which the identity injection breaks the symmetry that causes 1-WL to fail, using a specific example of two nodes that 1-WL cannot distinguish but ID-GNN can.</p>
+</li>
+</ol>
+<p><strong>Apply (Compute and Implement)</strong></p>
+<ol>
+<li>
+<p>Implement APPNP from scratch in PyTorch using only standard linear algebra operations (no GNN library). Your implementation should: (a) accept a node feature matrix X, a normalized adjacency Â, a teleportation probability α, and a number of propagation steps K; (b) return the propagated embedding matrix Z^(K); (c) verify that the result matches PyG's <code>APPNP</code> layer on a small test graph.</p>
+</li>
+<li>
+<p>Compute the PNA update for a single node <span class="arithmatex">\( v \)</span> with three neighbors whose embeddings are <span class="arithmatex">\( [1, 2] \)</span>, <span class="arithmatex">\( [3, 1] \)</span>, and <span class="arithmatex">\( [2, 2] \)</span>. Use aggregators (mean, max, std) and scalers (identity, amplification with <span class="arithmatex">\( \delta = \log(4) \)</span>) and show the full concatenated vector before the linear projection. Assume <span class="arithmatex">\( \deg(v) = 3 \)</span>.</p>
+</li>
+</ol>
+<p><strong>Analyze (Compare and Diagnose)</strong></p>
+<ol>
+<li>
+<p>You are choosing between GIN and APPNP for a node classification task on a large homophilic citation graph (500K nodes, average degree 15, label homophily ratio 0.85). Compare the two architectures along: (a) theoretical expressiveness (1-WL power), (b) scalability to 500K nodes, (c) depth of propagation achievable without over-smoothing, and (d) the practical recommendation for this specific task.</p>
+</li>
+<li>
+<p>PNA achieves state-of-the-art on molecular property prediction benchmarks, but a reviewer argues that the improvement over GIN is due entirely to the additional trainable parameters introduced by the multi-aggregator linear projection, not the aggregation diversity. Design an ablation experiment to test this hypothesis. What control would you add, and what result would support or refute the reviewer's claim?</p>
+</li>
+</ol>
+<p><strong>Evaluate (Assess and Justify)</strong></p>
+<ol>
+<li>
+<p>A practitioner needs to choose between GIN with RWSE (random walk structural encodings added as node features) and a 3-WL delta-k-GNN for a molecular property prediction task. Both are reported to achieve similar accuracy on the benchmark. Justify which you would deploy in a production system, considering: (a) inference latency for a molecule with 40 atoms, (b) maintenance and debugging complexity, (c) generalization to larger molecules (100+ atoms) not in the training set.</p>
+</li>
+<li>
+<p>SGC is a linear model, yet it achieves within 2% of GCN on Cora and CiteSeer. A researcher concludes from this that "GCN's non-linearities are unnecessary for graph-structured data." Identify the flaw in this reasoning and propose a test that would distinguish between "non-linearities are unnecessary" and "non-linearities are captured by the propagation step."</p>
+</li>
+</ol>
+<p><strong>Create (Design and Propose)</strong></p>
+<ol>
+<li>
+<p>Propose a new GNN architecture that combines the APPNP propagation scheme with GIN's sum aggregation, maintaining 1-WL expressiveness while also preventing over-smoothing via teleportation. Specify: (a) the two-step procedure (predict and propagate), (b) the update rule for each propagation step (using sum aggregation instead of mean), (c) whether the resulting architecture is more or less expressive than vanilla GIN, with justification.</p>
+</li>
+<li>
+<p>Design a benchmark evaluation suite to measure whether a given GNN architecture truly benefits from higher-order expressiveness (beyond 1-WL) on a practical graph dataset. Your suite should: (a) include at least three synthetic graph pairs that 1-WL cannot distinguish but higher-order methods can, (b) specify how you measure distinguishing power (not just accuracy), (c) propose a way to calibrate whether observed accuracy improvements are due to higher-order structure detection or other factors (better optimization, larger parameter count, etc.).</p>
+</li>
+</ol>
+<hr>
+<h2 id="1015-further-reading">10.15 Further Reading<a class="headerlink" href="#1015-further-reading" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Wu, F., Souza, A., Zhang, T., Fifty, C., Yu, T., &amp; Weinberger, K. (2019). Simplifying Graph Convolutional Networks.</strong> <em>ICML 2019.</em> Introduces SGC and provides both theoretical analysis (linear GCN collapses to one transformation) and empirical evidence that SGC matches GCN within 2% on homophilic benchmarks. Quantifies the proportion of GCN's performance attributable to feature propagation vs. non-linear transformation.</p>
+</li>
+<li>
+<p><strong>Klicpera, J., Bojchevski, A., &amp; Günnemann, S. (2019). Predict then Propagate: Graph Neural Networks meet Personalized PageRank.</strong> <em>ICLR 2019.</em> Introduces APPNP and derives its relationship to personalized PageRank. Shows that APPNP allows K = 10 propagation steps without over-smoothing, outperforming GCN on Cora, CiteSeer, and PubMed. Ablations isolate the contribution of the teleportation mechanism.</p>
+</li>
+<li>
+<p><strong>Corso, G., Cavalleri, L., Beaini, D., Liò, P., &amp; Veličković, P. (2020). Principal Neighbourhood Aggregation for Graph Nets.</strong> <em>NeurIPS 2020.</em> Proposes PNA with multiple aggregators and degree scalers. Proves that no single aggregator is universally optimal and that the combination is provably more expressive than any individual one. Demonstrates state-of-the-art on ZINC molecular regression.</p>
+</li>
+<li>
+<p><strong>You, J., Gomes-Selman, J. M., Ying, R., &amp; Leskovec, J. (2021). Identity-aware Graph Neural Networks.</strong> <em>AAAI 2021.</em> Introduces ID-GNN with the heterogeneous message-passing scheme and proves it is strictly more powerful than 1-WL GNNs. Demonstrates consistent improvements over GIN on node and graph classification benchmarks across 9 datasets.</p>
+</li>
+<li>
+<p><strong>Morris, C., Ritzert, M., Fey, M., Hamilton, W. L., Lenssen, J. E., Rattan, G., &amp; Grohe, M. (2019). Weisfeiler and Leman Go Neural: Higher-Order Graph Neural Networks.</strong> <em>AAAI 2019.</em> Introduces the k-GNN framework and proves its correspondence to k-WL. Proposes the δ-k-GNN sparsification for practical tractability. Shows that 3-GNN achieves near-perfect accuracy on subgraph counting benchmarks where 1-WL GNNs fail.</p>
+</li>
+<li>
+<p><strong>Zhao, L., Jin, W., Akoglu, L., &amp; Shah, N. (2022). From Stars to Subgraphs: Uplifting Any GNN with Local Structure Awareness.</strong> <em>ICLR 2022.</em> Introduces the ESAN subgraph GNN framework and proves it is strictly more powerful than 1-WL. Proposes the DS-WL hierarchy characterizing subgraph GNN expressiveness and demonstrates improvements on molecular property prediction.</p>
+</li>
+<li>
+<p><strong>Dwivedi, V. P., Luu, A. T., Laurent, T., Bengio, Y., &amp; Bresson, X. (2022). Graph Neural Networks with Learnable Structural and Positional Representations.</strong> <em>ICLR 2022.</em> Introduces learnable RWSE and LapPE as pre-computable node features that give standard 1-WL GNNs access to structural information beyond 1-WL, at no increase in per-layer computational cost. Achieves state-of-the-art on ZINC and PCQM4Mv2.</p>
+</li>
+<li>
+<p><strong>Huang, G., Sun, Y., Liu, Z., Sedra, D., &amp; Weinberger, K. Q. (2016). Deep Networks with Stochastic Depth.</strong> <em>ECCV 2016.</em> The original stochastic depth paper for CNNs, whose ideas transfer directly to GNNs. Shows that randomly dropping layers during training (with identity bypasses) improves accuracy, reduces training time, and allows training networks up to 1,200 layers. The GNN adaptation follows the same principle with GNN layers as the dropped units.</p>
+</li>
+</ol>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../09-gnn-theory/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

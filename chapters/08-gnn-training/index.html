@@ -1,0 +1,3768 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Addresses the engineering side of GNNs — loss functions, mini-batch training, dropout, normalization, data augmentation, DropEdge, PairNorm, and self-supervised learning for when labels are scarce.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/08-gnn-training/">
+      
+      
+        <link rel="prev" href="../07-gnn-design-space/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 8: GNN Training, Augmentation, and Practical Tips - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 8: GNN Training, Augmentation, and Practical Tips">
+  <meta property="og:description" content="Addresses the engineering side of GNNs — loss functions, mini-batch training, dropout, normalization, data augmentation, DropEdge, PairNorm, and self-supervised learning for when labels are scarce.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/08-gnn-training/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 8: GNN Training, Augmentation, and Practical Tips">
+  <meta name="twitter:description" content="Addresses the engineering side of GNNs — loss functions, mini-batch training, dropout, normalization, data augmentation, DropEdge, PairNorm, and self-supervised learning for when labels are scarce.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-8-gnn-training-augmentation-and-practical-tips" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 8: GNN Training, Augmentation, and Practical Tips
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_10" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_10" id="__nav_4_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_10_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivating-example-protein-function-prediction-at-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motivating Example: Protein Function Prediction at Scale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#81-loss-functions-and-evaluation-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Loss Functions and Evaluation Metrics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.1 Loss Functions and Evaluation Metrics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#811-node-classification-cross-entropy-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1.1 Node Classification: Cross-Entropy Loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#812-link-prediction-binary-cross-entropy-and-negative-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1.2 Link Prediction: Binary Cross-Entropy and Negative Sampling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#813-roc-auc-the-right-metric-for-imbalanced-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1.3 ROC-AUC: The Right Metric for Imbalanced Graphs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#82-data-splits-transductive-vs-inductive-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Data Splits: Transductive vs. Inductive Settings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.2 Data Splits: Transductive vs. Inductive Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#821-transductive-splitting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2.1 Transductive Splitting
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#822-inductive-splitting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2.2 Inductive Splitting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#83-mini-batch-training-for-large-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Mini-Batch Training for Large Graphs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#84-regularization-techniques" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 Regularization Techniques
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.4 Regularization Techniques">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#841-dropout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.1 Dropout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#842-batch-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.2 Batch Normalization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#843-layer-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.3 Layer Normalization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#844-node-feature-normalization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4.4 Node Feature Normalization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#85-graph-data-augmentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 Graph Data Augmentation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.5 Graph Data Augmentation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#851-feature-augmentation-for-graphs-without-node-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5.1 Feature Augmentation for Graphs Without Node Features
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#852-structural-augmentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5.2 Structural Augmentation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#853-dropedge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5.3 DropEdge
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#86-common-pitfalls-over-smoothing-and-depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6 Common Pitfalls: Over-Smoothing and Depth
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.6 Common Pitfalls: Over-Smoothing and Depth">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#861-the-over-smoothing-pathology" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.1 The Over-Smoothing Pathology
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.6.1 The Over-Smoothing Pathology">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-over-smoothing-feedback-loop" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Over-Smoothing Feedback Loop
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#862-solutions-to-over-smoothing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6.2 Solutions to Over-Smoothing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#87-early-stopping-and-training-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.7 Early Stopping and Training Dynamics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#88-self-supervised-learning-on-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.8 Self-Supervised Learning on Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.8 Self-Supervised Learning on Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#881-contrastive-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.8.1 Contrastive Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#882-predictive-methods" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.8.2 Predictive Methods
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#89-benchmark-datasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.9 Benchmark Datasets
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.9 Benchmark Datasets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#891-open-graph-benchmark-ogb" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.9.1 Open Graph Benchmark (OGB)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#892-tudatasets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.9.2 TUDatasets
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#810-curriculum-learning-on-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.10 Curriculum Learning on Graphs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#811-code-over-smoothing-vs-skip-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.11 Code: Over-Smoothing vs. Skip Connections
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.11 Code: Over-Smoothing vs. Skip Connections">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-gnn-training-dynamics-microsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: GNN Training Dynamics MicroSim
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#812-benchmark-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.12 Benchmark Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#813-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.13 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#814-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.14 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#815-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.15 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    8. GNN Training, Augmentation, and Practical Tips
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/08-gnn-training/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-8-gnn-training-augmentation-and-practical-tips">Chapter 8: GNN Training, Augmentation, and Practical Tips<a class="headerlink" href="#chapter-8-gnn-training-augmentation-and-practical-tips" title="Permanent link">¶</a></h1>
+<p><strong>Part 2: Graph Neural Networks</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Addresses the engineering side of GNNs — loss functions, mini-batch training, dropout, normalization, data augmentation, DropEdge, PairNorm, early stopping, and self-supervised learning for when labels are scarce.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 18 concepts from the learning graph:</p>
+<ol>
+<li>Cross-Entropy Loss</li>
+<li>Binary Cross-Entropy</li>
+<li>Negative Sampling</li>
+<li>ROC-AUC Score</li>
+<li>Transductive Split</li>
+<li>Inductive Split</li>
+<li>Mini-Batch GNN Training</li>
+<li>Neighbor Sampling (Mini-Batch)</li>
+<li>Cluster-GCN</li>
+<li>GraphSAINT</li>
+<li>Dropout (GNN)</li>
+<li>Batch Normalization (GNN)</li>
+<li>Layer Normalization (GNN)</li>
+<li>DropEdge</li>
+<li>PairNorm</li>
+<li>Early Stopping</li>
+<li>Deep Graph Infomax (DGI)</li>
+<li>Graph Contrastive Learning (GraphCL)</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../06-gnn-foundations/">Chapter 6: GNN Foundations: Message Passing and GCN</a></li>
+<li><a href="../07-gnn-design-space/">Chapter 7: GNN Design Space: GraphSAGE and GAT</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Welcome to Chapter 8 — Where Theory Meets Practice</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+You've assembled a powerful toolkit: message passing, GCN, GraphSAGE, GAT, and skip connections. But a GNN architecture is only half the story. The other half — and arguably the more treacherous half — is making the training process work reliably on real graphs at real scale. In this chapter, I'll show you how to choose the right loss function, split your graph data without leakage, train on graphs too large to fit in memory, regularize against overfitting, augment sparse or featureless graphs, and combat the pathological failure mode of over-smoothing. These are the skills that separate a model that looks good on paper from one that ships.</p>
+</div>
+<h2 id="motivating-example-protein-function-prediction-at-scale">Motivating Example: Protein Function Prediction at Scale<a class="headerlink" href="#motivating-example-protein-function-prediction-at-scale" title="Permanent link">¶</a></h2>
+<p>The human interactome — the complete network of protein–protein interactions in the cell — contains roughly 20,000 proteins and hundreds of thousands of interactions. Predicting which proteins are involved in disease pathways requires training a GNN on this graph, but several practical obstacles arise immediately.</p>
+<p>Only a small fraction of proteins have experimentally validated functional labels; the vast majority are unlabeled. The graph is far too large for full-batch GPU training — the adjacency matrix alone requires gigabytes of memory. Proteins vary enormously in degree (from 1 to thousands of interactions), making normalization non-trivial. Many proteins have no node features beyond their amino acid sequence, requiring feature augmentation before any GNN can process them. Finally, the evaluation metric for predicting gene ontology membership is not accuracy but area under the ROC curve, because class imbalance is severe.</p>
+<p>Every challenge in this chapter arises in exactly this kind of application. By the end, you will know how to tackle all of them.</p>
+<hr>
+<h2 id="81-loss-functions-and-evaluation-metrics">8.1 Loss Functions and Evaluation Metrics<a class="headerlink" href="#81-loss-functions-and-evaluation-metrics" title="Permanent link">¶</a></h2>
+<h3 id="811-node-classification-cross-entropy-loss">8.1.1 Node Classification: Cross-Entropy Loss<a class="headerlink" href="#811-node-classification-cross-entropy-loss" title="Permanent link">¶</a></h3>
+<p>The standard task in node classification is to assign each labeled node <span class="arithmatex">\( v \in V_L \)</span> to one of <span class="arithmatex">\( C \)</span> discrete classes. Given the GNN's output logits <span class="arithmatex">\( \mathbf{z}_v \in \mathbb{R}^C \)</span> for node <span class="arithmatex">\( v \)</span>, the <strong>cross-entropy loss</strong> is:</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{CE}} = -\frac{1}{|V_L|} \sum_{v \in V_L} \sum_{c=1}^{C} y_{vc} \log \hat{p}_{vc}
+\]</div>
+<p>where <span class="arithmatex">\( y_{vc} \in \{0, 1\} \)</span> is the one-hot ground-truth label and <span class="arithmatex">\( \hat{p}_{vc} = \text{softmax}(\mathbf{z}_v)_c \)</span> is the predicted probability for class <span class="arithmatex">\( c \)</span>. The gradient flows back through all message-passing layers, updating the weight matrices <span class="arithmatex">\( W^{(k)} \)</span> simultaneously.</p>
+<p>A subtle but important point: the cross-entropy gradient is computed only over labeled nodes <span class="arithmatex">\( V_L \)</span>, but the forward pass must propagate through the entire graph to compute those nodes' embeddings. The embeddings of unlabeled nodes contribute to the labeled nodes' aggregations, so they are implicitly involved in training even when their own loss terms are excluded. This is precisely the mechanic that enables semi-supervised learning with GNNs — the graph structure provides supervision signal beyond the labeled nodes.</p>
+<h3 id="812-link-prediction-binary-cross-entropy-and-negative-sampling">8.1.2 Link Prediction: Binary Cross-Entropy and Negative Sampling<a class="headerlink" href="#812-link-prediction-binary-cross-entropy-and-negative-sampling" title="Permanent link">¶</a></h3>
+<p>Link prediction is formulated as binary classification over node pairs. The model computes a score <span class="arithmatex">\( \hat{y}_{uv} = \sigma(\mathbf{h}_u^\top \mathbf{h}_v) \)</span> (inner product with sigmoid) or uses a dedicated decoder MLP. The <strong>binary cross-entropy loss</strong> over the training edge set <span class="arithmatex">\( E_{\text{train}} \)</span> and a set of negative examples <span class="arithmatex">\( E^- \)</span> is:</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{BCE}} = -\frac{1}{|E_{\text{train}}| + |E^-|} \left( \sum_{(u,v) \in E_{\text{train}}} \log \hat{y}_{uv} + \sum_{(u,v) \in E^-} \log(1 - \hat{y}_{uv}) \right)
+\]</div>
+<p>The challenge is that the number of non-edges is enormous: for a graph with <span class="arithmatex">\( n \)</span> nodes, there are <span class="arithmatex">\( \binom{n}{2} - |E| \)</span> non-edges, which vastly outnumbers the true edges. Including all non-edges in the loss makes training intractable.</p>
+<p><strong>Negative sampling</strong> addresses this by drawing a small random subset of non-edges for each batch. The sampling ratio <span class="arithmatex">\( r = |E^-| / |E_{\text{train}}| \)</span> is a hyperparameter; values of <span class="arithmatex">\( r \in [1, 5] \)</span> are common. Three sampling strategies are in widespread use:</p>
+<ol>
+<li><strong>Uniform random sampling</strong>: draw <span class="arithmatex">\( (u, v) \)</span> uniformly from all non-edges. Simple but may undersample hard negatives (pairs the model currently scores high).</li>
+<li><strong>Degree-weighted sampling</strong>: draw <span class="arithmatex">\( v \)</span> with probability proportional to <span class="arithmatex">\( \text{deg}(v)^{3/4} \)</span>, following the word2vec convention. This gives more weight to high-degree nodes and tends to produce harder negatives.</li>
+<li><strong>Hard negative mining</strong>: explicitly select pairs where the GNN currently assigns high scores to non-edges. Trains faster but adds computational complexity at each step.</li>
+</ol>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Tip: The Negative Sampling Ratio Matters More Than You Think</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving a tip">
+A common mistake is to use <span class="arithmatex">\( r = 1 \)</span> (one negative per positive) and then wonder why link prediction ROC-AUC saturates early. Try <span class="arithmatex">\( r \in [5, 10] \)</span> when your graph is sparse — more negatives force the model to learn finer-grained geometric distinctions in embedding space. Conversely, if your graph is dense (more than 50% of possible edges exist), reduce <span class="arithmatex">\( r \)</span> to avoid the loss being dominated by pairs that are false negatives — actual positive pairs you happened not to sample.</p>
+</div>
+<h3 id="813-roc-auc-the-right-metric-for-imbalanced-graphs">8.1.3 ROC-AUC: The Right Metric for Imbalanced Graphs<a class="headerlink" href="#813-roc-auc-the-right-metric-for-imbalanced-graphs" title="Permanent link">¶</a></h3>
+<p>In graphs where true connections are a small fraction of all node pairs, classification accuracy is uninformative — a model predicting "no edge" for every pair achieves near-perfect accuracy on a sparse social graph. The <strong>Receiver Operating Characteristic — Area Under Curve (ROC-AUC)</strong> is the standard metric for link prediction and binary node classification under class imbalance.</p>
+<p>ROC-AUC is the probability that a randomly chosen positive pair receives a higher score than a randomly chosen negative pair:</p>
+<div class="arithmatex">\[
+\text{AUC} = \mathbb{P}[\hat{y}_{pos} &gt; \hat{y}_{neg}]
+\]</div>
+<p>It ranges from 0.5 (random classifier) to 1.0 (perfect classifier) and, crucially, is invariant to the class imbalance ratio. All benchmark evaluations on the Open Graph Benchmark link prediction tasks use ROC-AUC as the primary metric.</p>
+<hr>
+<h2 id="82-data-splits-transductive-vs-inductive-settings">8.2 Data Splits: Transductive vs. Inductive Settings<a class="headerlink" href="#82-data-splits-transductive-vs-inductive-settings" title="Permanent link">¶</a></h2>
+<p>The distinction between transductive and inductive evaluation is one of the most conceptually important — and most frequently conflated — issues in GNN practice.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Sage Thinks: Two Different Notions of 'Unseen'</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking">
+When I say a test node is "unseen," I could mean two very different things. In the <strong>transductive</strong> setting, the test nodes were present in the graph during training — their neighborhoods contributed to the training nodes' embeddings — but their labels were withheld. In the <strong>inductive</strong> setting, the test nodes did not exist at training time; they belong to entirely new graphs. These settings make fundamentally different demands of the model and require different data split strategies. Conflating them is a source of data leakage that inflates reported performance.</p>
+</div>
+<h3 id="821-transductive-splitting">8.2.1 Transductive Splitting<a class="headerlink" href="#821-transductive-splitting" title="Permanent link">¶</a></h3>
+<p>In transductive node classification, the entire graph <span class="arithmatex">\( G \)</span> is observed during training, but labels are divided into three sets:</p>
+<ul>
+<li><strong>Training nodes</strong> <span class="arithmatex">\( V_{\text{train}} \)</span>: labeled nodes whose labels are used to compute the cross-entropy loss.</li>
+<li><strong>Validation nodes</strong> <span class="arithmatex">\( V_{\text{val}} \)</span>: labeled nodes used for hyperparameter tuning; their labels are visible to the model only for selection decisions, not for gradient computation.</li>
+<li><strong>Test nodes</strong> <span class="arithmatex">\( V_{\text{test}} \)</span>: labeled nodes whose labels are withheld and used only for final evaluation after all training is complete.</li>
+</ul>
+<p>The critical property is that all nodes — including validation and test nodes — are present in the adjacency matrix during every forward pass. When a training node aggregates its neighbors, it may aggregate embeddings from test nodes. This is intentional: the graph structure provides signal, but only the labels of training nodes drive the gradient.</p>
+<p>The standard Cora, CiteSeer, and PubMed splits (Kipf &amp; Welling, 2017) are transductive. Each uses 20 labeled nodes per class for training, 500 nodes for validation, and 1,000 nodes for testing, on graphs with 2,700–19,000 nodes total.</p>
+<h3 id="822-inductive-splitting">8.2.2 Inductive Splitting<a class="headerlink" href="#822-inductive-splitting" title="Permanent link">¶</a></h3>
+<p>In the inductive setting, the training set consists of entire graphs (or disjoint subgraphs) that are completely separate from the test graphs. The model must generalize to graph structures it has never seen during training:</p>
+<ul>
+<li><strong>Training graphs</strong>: used to fit model parameters, including adjacency structure.</li>
+<li><strong>Validation graphs</strong>: used for hyperparameter selection; not observed during training.</li>
+<li><strong>Test graphs</strong>: evaluated after all training and selection is complete; not observed at any earlier point.</li>
+</ul>
+<p>The PPI (protein–protein interaction) benchmark by Hamilton et al. (2017) is the canonical inductive dataset: 20 training graphs, 2 validation graphs, and 2 test graphs, each representing a different biological tissue. A GNN trained inductively must learn transferable aggregation functions — it cannot rely on memorizing node identity (each tissue has a different node set).</p>
+<p>Most real deployment scenarios are inductive: when a new user joins a social network, or a new paper appears in a citation database, the trained model should produce embeddings without retraining from scratch.</p>
+<hr>
+<h2 id="83-mini-batch-training-for-large-graphs">8.3 Mini-Batch Training for Large Graphs<a class="headerlink" href="#83-mini-batch-training-for-large-graphs" title="Permanent link">¶</a></h2>
+<p>Full-batch gradient descent — computing the loss over all labeled nodes using the entire adjacency matrix in a single forward pass — is infeasible for graphs with millions of nodes. The Cora citation graph (2,708 nodes) fits comfortably in GPU memory; ogbn-arxiv (169,343 nodes) does not; ogbn-papers100M (111 million nodes) cannot fit on any single GPU at any precision.</p>
+<p>Four strategies address this, each making a different tradeoff between gradient accuracy, memory, and computation:</p>
+<p><strong>1. Full-batch training</strong> computes the exact GNN propagation using the entire adjacency matrix. Gradient is exact and convergence is smooth, but memory and compute scale as <span class="arithmatex">\( O(|V| \cdot d) \)</span> where <span class="arithmatex">\( d \)</span> is the embedding dimension. Only viable for small graphs (fewer than roughly 100,000 nodes on a 24 GB GPU).</p>
+<p><strong>2. Neighbor sampling (GraphSAGE)</strong> was introduced in Chapter 7. For each mini-batch of target nodes, it recursively samples at most <span class="arithmatex">\( S_k \)</span> neighbors per node at layer <span class="arithmatex">\( k \)</span>. With <span class="arithmatex">\( K \)</span> layers and fan-out <span class="arithmatex">\( S_k \)</span>, the expected computation graph size is <span class="arithmatex">\( O(\prod_{k=1}^K S_k) \)</span> nodes, independent of total graph size. This makes neighbor sampling the dominant approach for node-level tasks on large graphs.</p>
+<p><strong>3. Cluster-GCN</strong> (Chiang et al., 2019) partitions the graph into <span class="arithmatex">\( P \)</span> clusters using METIS or similar community detection algorithms, then samples one or more clusters per mini-batch. The cluster's induced subgraph is used for the full GCN forward pass. By construction, cross-cluster edges are dropped during training, which biases the gradient; this bias is partially mitigated by sampling multiple clusters per batch. Cluster-GCN achieves very low memory overhead and works well for homophilic graphs where local communities are highly informative.</p>
+<p><strong>4. GraphSAINT</strong> (Zeng et al., 2020) samples random subgraphs as mini-batches using one of three samplers — node sampling, edge sampling, or random walk sampling — and provides principled importance-weighting corrections to make the subgraph-level loss an unbiased estimator of the full-graph loss. GraphSAINT is typically more accurate than Cluster-GCN on heterophilic graphs because its sampled subgraphs are not restricted to tight communities.</p>
+<hr>
+<h2 id="84-regularization-techniques">8.4 Regularization Techniques<a class="headerlink" href="#84-regularization-techniques" title="Permanent link">¶</a></h2>
+<p>Regularization in GNNs follows the same logic as in standard neural networks but has graph-specific considerations that affect which techniques are most effective.</p>
+<h3 id="841-dropout">8.4.1 Dropout<a class="headerlink" href="#841-dropout" title="Permanent link">¶</a></h3>
+<p><strong>Dropout</strong> randomly zeroes each activation with probability <span class="arithmatex">\( p_{\text{drop}} \)</span> during training, and scales activations by <span class="arithmatex">\( 1 / (1 - p_{\text{drop}}) \)</span> during inference (inverted dropout). Applied to node embeddings between GNN layers, dropout prevents co-adaptation of neurons and acts as ensemble averaging over exponentially many thinned networks.</p>
+<p>In GNNs, dropout is applied at three points:</p>
+<ul>
+<li>To the input node features <span class="arithmatex">\( \mathbf{X} \)</span> before the first layer (feature dropout).</li>
+<li>To node embeddings between message-passing layers.</li>
+<li>To attention coefficients in GAT, independently for each head.</li>
+</ul>
+<p>Dropout rates of <span class="arithmatex">\( p_{\text{drop}} \in [0.3, 0.6] \)</span> are standard for most GNN architectures. Applying dropout too aggressively (above 0.7) destabilizes training on small graphs where the number of trainable examples per update is already limited.</p>
+<h3 id="842-batch-normalization">8.4.2 Batch Normalization<a class="headerlink" href="#842-batch-normalization" title="Permanent link">¶</a></h3>
+<p><strong>Batch normalization</strong> (BN) normalizes each feature dimension across the mini-batch. Before presenting the formula, note that <span class="arithmatex">\( \mu_d \)</span> and <span class="arithmatex">\( \sigma_d^2 \)</span> are batch statistics — the mean and variance computed across all node embeddings in the current mini-batch for feature dimension <span class="arithmatex">\( d \)</span> — and <span class="arithmatex">\( \gamma_d, \beta_d \)</span> are learnable scale-and-shift parameters:</p>
+<div class="arithmatex">\[
+\hat{h}_{v,d} = \frac{h_{v,d} - \mu_d}{\sqrt{\sigma_d^2 + \epsilon}}, \qquad \tilde{h}_{v,d} = \gamma_d \hat{h}_{v,d} + \beta_d
+\]</div>
+<p>BN stabilizes training by reducing internal covariate shift — the phenomenon where the distribution of layer inputs shifts as earlier layer weights change — and allows higher learning rates. In GNNs, BN is applied independently after each message-passing layer, using statistics computed across all nodes in the mini-batch.</p>
+<p>A subtlety: the batch statistics mix signals from nodes of varying degree and structural role. On heterophilic graphs where nodes have systematically different feature distributions based on structural position, this mixing can slightly degrade performance. Layer normalization is a better choice in such settings.</p>
+<h3 id="843-layer-normalization">8.4.3 Layer Normalization<a class="headerlink" href="#843-layer-normalization" title="Permanent link">¶</a></h3>
+<p><strong>Layer normalization</strong> (LN) normalizes each node's embedding vector across its own feature dimensions rather than across nodes. The per-node mean <span class="arithmatex">\( \mu_v \)</span> and variance <span class="arithmatex">\( \sigma_v^2 \)</span> are computed independently for each node:</p>
+<div class="arithmatex">\[
+\hat{h}_{v,d} = \frac{h_{v,d} - \mu_v}{\sqrt{\sigma_v^2 + \epsilon}}, \qquad \tilde{h}_{v,d} = \gamma_d \hat{h}_{v,d} + \beta_d
+\]</div>
+<p>where <span class="arithmatex">\( \mu_v = \frac{1}{D} \sum_d h_{v,d} \)</span> and <span class="arithmatex">\( \sigma_v^2 = \frac{1}{D} \sum_d (h_{v,d} - \mu_v)^2 \)</span>. Unlike BN, LN does not mix statistics across nodes, making it more stable for architectures where different nodes occupy fundamentally different structural roles. Layer normalization is the standard normalization choice for graph transformer architectures.</p>
+<h3 id="844-node-feature-normalization">8.4.4 Node Feature Normalization<a class="headerlink" href="#844-node-feature-normalization" title="Permanent link">¶</a></h3>
+<p>Before the first GNN layer, raw node features often span very different scales. One feature might be a binary indicator (0 or 1) while another counts the number of co-authored papers (0 to 10,000). <strong>Node feature normalization</strong> standardizes each feature dimension using statistics computed only on the training set:</p>
+<div class="arithmatex">\[
+x_{v,d}^{\text{norm}} = \frac{x_{v,d} - \mu_d^{\text{train}}}{\sigma_d^{\text{train}}}
+\]</div>
+<p>The insistence on training-set statistics is critical: fitting normalization parameters on the full graph (including test nodes) constitutes data leakage, since the test-set statistics implicitly encode information about test node features. For ogbn-arxiv, every node feature dimension is independently normalized to zero mean and unit variance before training; without this step, GCN training converges far more slowly and settles at significantly lower accuracy.</p>
+<hr>
+<h2 id="85-graph-data-augmentation">8.5 Graph Data Augmentation<a class="headerlink" href="#85-graph-data-augmentation" title="Permanent link">¶</a></h2>
+<h3 id="851-feature-augmentation-for-graphs-without-node-features">8.5.1 Feature Augmentation for Graphs Without Node Features<a class="headerlink" href="#851-feature-augmentation-for-graphs-without-node-features" title="Permanent link">¶</a></h3>
+<p>Many real graphs have no node features whatsoever — only topology. Examples include web graphs (nodes are URLs with no content), biological networks (nodes are genes identified only by ID), and social networks where user attributes are unavailable. Before a GNN can process such graphs, node features must be constructed from structural properties.</p>
+<p>Four strategies are used, in increasing order of expressiveness:</p>
+<ol>
+<li>
+<p><strong>Constant features</strong>: assign <span class="arithmatex">\( \mathbf{h}_v = \mathbf{1} \in \mathbb{R}^1 \)</span> to every node. The GNN learns to exploit structural information — degree, triangles, path lengths — encoded implicitly through aggregation. Cheap and surprisingly effective for regular graphs where all nodes have similar structural roles.</p>
+</li>
+<li>
+<p><strong>Degree features</strong>: assign <span class="arithmatex">\( \mathbf{h}_v = \text{one-hot}(\deg(v)) \)</span> for degrees up to some maximum <span class="arithmatex">\( d_{\max} \)</span>. Gives the GNN direct access to node degree, which encodes local structural importance. Works well when degree correlates strongly with the target label — for example, hub proteins in interaction networks tend to be essential genes.</p>
+</li>
+<li>
+<p><strong>Random features</strong>: assign <span class="arithmatex">\( \mathbf{h}_v \sim \mathcal{N}(0, I_D) \)</span> independently for each node at the start of each training epoch. Random features distinguish each node from its neighbors and make the GNN implicitly aware of node identity without requiring fixed node ID embeddings. The tradeoff is non-determinism: two training runs on the same graph produce different embeddings, which can complicate reproducibility.</p>
+</li>
+<li>
+<p><strong>Structural features</strong>: compute handcrafted features — node degree, local clustering coefficient, PageRank score, core number, betweenness centrality — and concatenate them into a fixed-size vector <span class="arithmatex">\( \mathbf{h}_v \)</span>. This is the most informative option when these structural properties correlate with the target, and it preserves inductive transferability since structural features can be computed for any new graph.</p>
+</li>
+</ol>
+<h3 id="852-structural-augmentation">8.5.2 Structural Augmentation<a class="headerlink" href="#852-structural-augmentation" title="Permanent link">¶</a></h3>
+<p>Two structural augmentation strategies are particularly impactful for training:</p>
+<p><strong>Virtual nodes</strong>: add a single super-node connected to every real node. The super-node aggregates information from all nodes in one hop, making it an efficient information highway for long-range communication. Any two nodes can communicate through the virtual node in just two hops regardless of graph diameter, directly counteracting the depth limitation imposed by the over-smoothing problem.</p>
+<p><strong>Virtual edges</strong>: connect each node to all of its two-hop neighbors explicitly. This effectively makes every two-hop path a one-hop message, doubling the effective depth of each GNN layer. Virtual edges are particularly useful in bipartite graphs — such as user–item recommendation graphs — where the natural two-hop neighborhood is sparse.</p>
+<h3 id="853-dropedge">8.5.3 DropEdge<a class="headerlink" href="#853-dropedge" title="Permanent link">¶</a></h3>
+<p><strong>DropEdge</strong> (Rong et al., 2020) is a structural augmentation technique that randomly removes a fraction <span class="arithmatex">\( p_{\text{drop}} \)</span> of edges at each training iteration. The adjacency matrix used for message passing is replaced by a randomly thinned version:</p>
+<div class="arithmatex">\[
+\tilde{A}^{(\text{iter})} = A \odot M^{(\text{iter})}, \qquad M_{uv}^{(\text{iter})} \sim \text{Bernoulli}(1 - p_{\text{drop}})
+\]</div>
+<p>DropEdge serves two distinct purposes. As a <strong>regularizer</strong>, it exposes the model to different subgraphs at each training step, preventing memorization of specific connectivity patterns. As an <strong>anti-smoothing intervention</strong>, it slows information propagation — with fewer edges, representations mix more slowly, so deeper networks can be trained before over-smoothing takes effect.</p>
+<p>DropEdge is most effective when applied with <span class="arithmatex">\( p_{\text{drop}} \in [0.3, 0.5] \)</span> on dense graphs. On sparse graphs, aggressive edge dropping risks creating disconnected components in the training subgraph, which can degrade the quality of neighborhood aggregation.</p>
+<hr>
+<h2 id="86-common-pitfalls-over-smoothing-and-depth">8.6 Common Pitfalls: Over-Smoothing and Depth<a class="headerlink" href="#86-common-pitfalls-over-smoothing-and-depth" title="Permanent link">¶</a></h2>
+<h3 id="861-the-over-smoothing-pathology">8.6.1 The Over-Smoothing Pathology<a class="headerlink" href="#861-the-over-smoothing-pathology" title="Permanent link">¶</a></h3>
+<p>The most notorious failure mode of deep GNNs is <strong>over-smoothing</strong>: as the number of message-passing layers <span class="arithmatex">\( L \)</span> increases, all node embeddings converge to a vector proportional to the leading eigenvector of the normalized adjacency matrix, making them indistinguishable from one another. The intuition is that GCN-style symmetric normalization is a low-pass filter on the graph signal — repeated application destroys high-frequency variation (node-specific information) and retains only the global mean.</p>
+<p>Formally, consider a linear GCN (without activation functions): <span class="arithmatex">\( H^{(L)} = \hat{A}^L H^{(0)} W \)</span>, where <span class="arithmatex">\( \hat{A} = \tilde{D}^{-1/2} \tilde{A} \tilde{D}^{-1/2} \)</span>. All eigenvalues of <span class="arithmatex">\( \hat{A} \)</span> lie in <span class="arithmatex">\( (-1, 1] \)</span>, so repeated matrix multiplication drives all eigenvector components except the dominant one to zero exponentially fast in <span class="arithmatex">\( L \)</span>. Even with nonlinear activations, the empirical finding is that test accuracy begins to degrade sharply at <span class="arithmatex">\( L &gt; 4 \)</span> for Cora, and at <span class="arithmatex">\( L &gt; 8 \)</span> even with residual connections.</p>
+<p>The feedback dynamics of over-smoothing can be understood through the following causal loop diagram, which shows two simultaneously active balancing loops:</p>
+<h4 id="diagram-over-smoothing-feedback-loop">Diagram: Over-Smoothing Feedback Loop<a class="headerlink" href="#diagram-over-smoothing-feedback-loop" title="Permanent link">¶</a></h4>
+<pre class="mermaid"><code>flowchart LR
+    LD["Layer Depth (L)"] --&gt;|"(+)"| RS["Representation\nSmoothness"]
+    RS --&gt;|"(-)"| ND["Node\nDiscriminability"]
+    ND --&gt;|"(+)"| TA["Test Accuracy"]
+    TA --&gt;|"(-)"| LD
+
+    TL["Training Loss"] --&gt;|"(+)"| GM["Gradient\nMagnitude"]
+    GM --&gt;|"(+)"| PU["Parameter Update"]
+    PU --&gt;|"(-)"| TL
+
+    click LD href "#the-over-smoothing-pathology" "Layer depth — more layers increase over-smoothing risk"
+    click RS href "#the-over-smoothing-pathology" "Representation smoothness — embeddings converge as depth grows"
+    click ND href "#the-over-smoothing-pathology" "Node discriminability — ability to distinguish nodes by their embedding"
+    click TA href "#the-over-smoothing-pathology" "Test accuracy — the downstream performance measure"
+    click TL href "#81-loss-functions-and-evaluation-metrics" "Training loss — the supervised objective being minimized"
+    click GM href "#84-regularization-techniques" "Gradient magnitude — size of the parameter update signal"
+    click PU href "#84-regularization-techniques" "Parameter update — one gradient descent step"
+
+    style LD fill:#ffebee,stroke:#c62828
+    style RS fill:#ffebee,stroke:#c62828
+    style ND fill:#ffebee,stroke:#c62828
+    style TA fill:#ffebee,stroke:#c62828
+    style TL fill:#e3f2fd,stroke:#1565c0
+    style GM fill:#e3f2fd,stroke:#1565c0
+    style PU fill:#e3f2fd,stroke:#1565c0</code></pre>
+<p><strong>B₁ — Over-Smoothing Loop (balancing):</strong> More layers → smoother representations → reduced node discriminability → lower test accuracy → pressure to use shallower networks → fewer layers. The loop is balancing because poor performance from excessive depth creates a corrective signal to reduce depth. In practice, this signal comes from validation monitoring and hyperparameter search, not from the optimizer itself.</p>
+<p><strong>B₂ — Training Loss Loop (balancing):</strong> High training loss → large gradient → parameter update → reduced loss. This is the standard supervised learning feedback loop; the optimizer seeks a fixed point (local minimum) where the gradient magnitude reaches zero. The loop is balancing because loss reductions diminish as the model approaches a minimum.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Warning: Deeper Is Not Always Better</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning">
+The most common response to poor GNN performance is to add more layers. On most real graphs, 2–3 layers is optimal. Beyond that, test accuracy typically drops sharply due to over-smoothing, even while training loss continues to decrease — a clear sign of the B₁ loop dominating. If you genuinely need a large receptive field (because the graph diameter is large relative to your task), use skip connections, JK-Net aggregation, or APPNP rather than simply increasing depth.</p>
+</div>
+<h3 id="862-solutions-to-over-smoothing">8.6.2 Solutions to Over-Smoothing<a class="headerlink" href="#862-solutions-to-over-smoothing" title="Permanent link">¶</a></h3>
+<p>The GNN community has developed several complementary techniques to alleviate over-smoothing, each targeting a different point in the B₁ loop:</p>
+<p><strong>Residual connections</strong> (Chapter 7) break the loop by adding the previous layer's embedding directly to the current output: <span class="arithmatex">\( \mathbf{h}_v^{(k)} = \text{GNN}^{(k)}(\mathbf{h}_v^{(k-1)}) + \mathbf{h}_v^{(k-1)} \)</span>. This preserves a direct path for the original node features to survive through many layers, slowing convergence to the global mean.</p>
+<p><strong>Jumping Knowledge Networks</strong> (JK-Net, Xu et al., 2018) concatenate embeddings from all layers and let each node adaptively choose its effective depth: <span class="arithmatex">\( \mathbf{h}_v^{\text{final}} = f([\mathbf{h}_v^{(1)} \| \mathbf{h}_v^{(2)} \| \cdots \| \mathbf{h}_v^{(L)}]) \)</span>. Nodes with tight local community structure select shallow representations; nodes that need long-range context select deeper ones.</p>
+<p><strong>PairNorm</strong> (Zhao &amp; Akoglu, 2020) directly attacks the geometric consequence of over-smoothing — pairwise distances between embeddings collapsing to zero — by normalizing to maintain a constant total pairwise distance. First, embeddings are centered by subtracting the global mean <span class="arithmatex">\( \boldsymbol{\mu} = \frac{1}{n} \sum_v \mathbf{h}_v \)</span>. Then they are rescaled by the square root of the mean squared deviation:</p>
+<div class="arithmatex">\[
+\tilde{\mathbf{h}}_v = s \cdot \frac{\mathbf{h}_v - \boldsymbol{\mu}}{\sqrt{\frac{1}{n}\sum_{v} \|\mathbf{h}_v - \boldsymbol{\mu}\|^2}}
+\]</div>
+<p>where <span class="arithmatex">\( s \)</span> is a scalar hyperparameter controlling the target scale. PairNorm can be inserted between any two GNN layers without changing the architecture and effectively prevents the over-smoothing collapse even at 64 or more layers — though at the cost of some accuracy at shallow depth.</p>
+<p><strong>DropEdge</strong> (Section 8.5) reduces the rate at which information propagates, allowing deeper networks to be trained before smoothing takes effect.</p>
+<hr>
+<h2 id="87-early-stopping-and-training-dynamics">8.7 Early Stopping and Training Dynamics<a class="headerlink" href="#87-early-stopping-and-training-dynamics" title="Permanent link">¶</a></h2>
+<p><strong>Early stopping</strong> monitors a held-out validation metric and terminates training when performance stops improving, then restores the checkpoint that achieved the best validation performance. The standard protocol involves four steps:</p>
+<ol>
+<li>Evaluate the model on the validation set after every epoch.</li>
+<li>Record the best validation metric seen so far and the corresponding model checkpoint.</li>
+<li>If the validation metric has not improved for <span class="arithmatex">\( P \)</span> consecutive epochs (the <strong>patience</strong> hyperparameter), terminate training.</li>
+<li>Restore the best checkpoint and use it for all subsequent test evaluation.</li>
+</ol>
+<p>Early stopping is critical for GNNs because training loss and validation metric often diverge sharply after a small number of epochs: the model begins to memorize the specific labeled training nodes while generalizing poorly to new ones. Patience values of <span class="arithmatex">\( P \in [20, 100] \)</span> are typical; lower patience risks stopping too early at an under-fitted model, while higher patience wastes compute after the optimal checkpoint has already been found.</p>
+<p>A subtlety arises with mini-batch training: when stochastic neighbor sampling is used, each epoch sees a different subgraph, introducing noise into both the loss and the validation metric. It is standard practice to compute the validation metric using the full graph (all neighbors, no sampling) to reduce this noise, even when training uses sampled subgraphs. This requires a separate inference pass at the end of each epoch but gives a stable signal for the early-stopping criterion.</p>
+<hr>
+<h2 id="88-self-supervised-learning-on-graphs">8.8 Self-Supervised Learning on Graphs<a class="headerlink" href="#88-self-supervised-learning-on-graphs" title="Permanent link">¶</a></h2>
+<p>When labeled data is scarce — the common case in graph learning — <strong>self-supervised learning (SSL)</strong> enables a GNN to learn useful representations from graph structure and node features alone, without labels.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">Hang in There — Self-Supervised Learning Pays Off</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encouraging">
+Self-supervised learning on graphs is more conceptually involved than SSL for images or text, because the notion of a valid "augmentation" for a graph is less obvious. What does it mean to crop a graph? To rotate it? The key insight is that graph augmentations should preserve semantic meaning: removing a few edges from a citation graph should not change what that paper is fundamentally about. Once you accept that structural perturbations are the graph analogue of image augmentations, the contrastive and predictive frameworks below become natural extensions of ideas you already know from other domains.</p>
+</div>
+<h3 id="881-contrastive-methods">8.8.1 Contrastive Methods<a class="headerlink" href="#881-contrastive-methods" title="Permanent link">¶</a></h3>
+<p><strong>Deep Graph Infomax (DGI)</strong> (Veličković et al., 2019) trains a GNN to maximize the mutual information between local node embeddings and a global graph-level summary. A corrupted graph <span class="arithmatex">\( \tilde{G} \)</span> is created by shuffling node features across nodes. A discriminator <span class="arithmatex">\( D \)</span> is trained to distinguish real node–graph pairs from corrupted ones:</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{DGI}} = \mathbb{E}_{(v, G)}[\log D(\mathbf{h}_v, \mathbf{s}_G)] + \mathbb{E}_{(\tilde{v}, G)}[\log(1 - D(\mathbf{h}_{\tilde{v}}, \mathbf{s}_G))]
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{s}_G = \sigma\!\left(\frac{1}{|V|} \sum_v \mathbf{h}_v\right) \)</span> is the global graph summary. Maximizing this objective forces the GNN to encode node representations that are consistent with the graph's global structure — discarding node-specific noise while preserving structural signal.</p>
+<p><strong>GraphCL</strong> (You et al., 2020) applies contrastive learning at the graph level. For each graph <span class="arithmatex">\( G \)</span>, two augmented views <span class="arithmatex">\( G_1, G_2 \)</span> are created by randomly applying operations from the following set. The GNN is then trained using the NT-Xent loss so that <span class="arithmatex">\( G_1 \)</span> and <span class="arithmatex">\( G_2 \)</span> have similar representations (positive pair) while representations of different graphs are pushed apart (negative pairs):</p>
+<table>
+<thead>
+<tr>
+<th>Augmentation</th>
+<th>Operation</th>
+<th>Best Suited For</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node dropping</td>
+<td>Remove fraction <span class="arithmatex">\( p \)</span> of nodes and their edges</td>
+<td>Social networks, citation graphs</td>
+</tr>
+<tr>
+<td>Edge perturbation</td>
+<td>Add and remove fraction <span class="arithmatex">\( p \)</span> of edges</td>
+<td>Dense graphs, biological networks</td>
+</tr>
+<tr>
+<td>Attribute masking</td>
+<td>Zero out fraction <span class="arithmatex">\( p \)</span> of node feature dimensions</td>
+<td>Feature-rich nodes</td>
+</tr>
+<tr>
+<td>Subgraph sampling</td>
+<td>Extract a random-walk subgraph</td>
+<td>Large graphs</td>
+</tr>
+</tbody>
+</table>
+<p>The best augmentation strategy is domain-dependent. You et al. (2020) find that no single strategy dominates across all graph types, and that combining node dropping with attribute masking works broadly across diverse benchmarks.</p>
+<h3 id="882-predictive-methods">8.8.2 Predictive Methods<a class="headerlink" href="#882-predictive-methods" title="Permanent link">¶</a></h3>
+<p><strong>Masked feature prediction</strong> zeroes out a fraction of node feature dimensions and trains the GNN to reconstruct the original values using neighborhood context:</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{mask}} = \frac{1}{|V|} \sum_{v \in V} \sum_{d \in \mathcal{M}_v} \left(x_{v,d} - \hat{x}_{v,d}\right)^2
+\]</div>
+<p>where <span class="arithmatex">\( \mathcal{M}_v \)</span> is the set of masked feature dimensions for node <span class="arithmatex">\( v \)</span> and <span class="arithmatex">\( \hat{x}_{v,d} \)</span> is the GNN's reconstruction. This objective forces the GNN to aggregate information from neighbors to fill in missing local features — a direct graph analogue of BERT's masked language modeling. It is particularly effective on text-attributed graphs where node features are rich but labels are scarce.</p>
+<p><strong>Context prediction</strong> (Hamilton et al., 2017) trains a GNN to predict the local graph context of each node — specifically, whether a given node belongs to the <span class="arithmatex">\( k \)</span>-hop neighborhood of another node. This pretext task encourages the model to learn embeddings that capture local structural roles rather than individual node identities.</p>
+<hr>
+<h2 id="89-benchmark-datasets">8.9 Benchmark Datasets<a class="headerlink" href="#89-benchmark-datasets" title="Permanent link">¶</a></h2>
+<h3 id="891-open-graph-benchmark-ogb">8.9.1 Open Graph Benchmark (OGB)<a class="headerlink" href="#891-open-graph-benchmark-ogb" title="Permanent link">¶</a></h3>
+<p>The <strong>Open Graph Benchmark</strong> (Hu et al., 2020) is the standard evaluation framework for GNN research. It provides standardized splits (random, scaffold-based for molecules, or time-based for citation networks), diverse tasks at multiple scales, and a public leaderboard with a consistent evaluation protocol. The key design principle is that all models compared on OGB use identical data splits and evaluation procedures, enabling fair comparison across papers.</p>
+<p>Key datasets:</p>
+<ul>
+<li><strong>ogbn-arxiv</strong>: 169,343 nodes (arXiv CS papers), 1,166,243 edges (citation links), 128-dimensional node features derived from paper abstracts, 40 subject area classes. The standard benchmark for medium-scale node classification. All papers in this textbook's benchmark tables use this dataset for large-graph comparisons.</li>
+<li><strong>ogbn-products</strong>: 2.4 million nodes (Amazon products), 61 million edges, 100-dimensional features, 47 product category classes. Requires mini-batch training; tests scalability.</li>
+<li><strong>ogbl-collab</strong>: link prediction on an author collaboration network, evaluated with Hits@50 (fraction of true collaborations ranked in the top 50 for each author).</li>
+<li><strong>ogbg-molhiv</strong>: graph-level HIV activity prediction for 41,127 molecular graphs, evaluated with ROC-AUC. The standard small-graph benchmark for graph classification.</li>
+</ul>
+<h3 id="892-tudatasets">8.9.2 TUDatasets<a class="headerlink" href="#892-tudatasets" title="Permanent link">¶</a></h3>
+<p>The <strong>TUDataset</strong> collection (Morris et al., 2020) contains over 120 graph classification benchmarks, predominantly from bioinformatics (MUTAG, PROTEINS, D&amp;D), social networks (IMDB-B, REDDIT-B), and computer vision (COLLAB). Graphs are typically small (10 to 500 nodes), enabling full-batch training and making TUDatasets useful for comparing GNN expressiveness in controlled settings.</p>
+<p>Evaluation uses 10-fold cross-validation with mean ± standard deviation reported across folds. A known limitation is that simple baselines — degree histograms, Weisfeiler-Lehman graph kernels — often match or exceed GNN performance on the social network subsets, suggesting that some TUDataset benchmarks are insufficiently discriminating for distinguishing architectures. For rigorous comparisons, OGB is preferred.</p>
+<hr>
+<h2 id="810-curriculum-learning-on-graphs">8.10 Curriculum Learning on Graphs<a class="headerlink" href="#810-curriculum-learning-on-graphs" title="Permanent link">¶</a></h2>
+<p><strong>Curriculum learning</strong> (Bengio et al., 2009) proposes training on easier examples first, then progressively introducing harder ones — mimicking human learning trajectories. On graphs, "difficulty" can be defined in several ways:</p>
+<ul>
+<li><strong>Label rarity</strong>: nodes whose class appears fewer times in the training set are harder to learn, as the model has fewer examples to generalize from.</li>
+<li><strong>Structural ambiguity</strong>: nodes in heterophilic neighborhoods (neighbors mostly have different labels) are harder than those in homophilic neighborhoods, because the aggregation signal is noisy.</li>
+<li><strong>Distance from labeled nodes</strong>: in semi-supervised settings, nodes far from any labeled node receive weaker supervision signal through the message-passing mechanism.</li>
+</ul>
+<p><strong>Self-Paced Learning (SPL)</strong> automatically selects the training subset at each epoch by solving a bilevel optimization: the inner problem fits the model on the current subset, and the outer problem selects a larger, harder subset for the next iteration based on the current model's confidence scores. Nodes where the model is highly confident are excluded; nodes where the model is uncertain are included.</p>
+<p>Graph curriculum learning is an active research area with mixed results. It provides consistent benefits on highly heterophilic benchmarks where the easy-to-hard ordering is sharply defined, but adds marginal benefit on homophilic benchmarks where most nodes are approximately equally easy.</p>
+<hr>
+<h2 id="811-code-over-smoothing-vs-skip-connections">8.11 Code: Over-Smoothing vs. Skip Connections<a class="headerlink" href="#811-code-over-smoothing-vs-skip-connections" title="Permanent link">¶</a></h2>
+<p>The following example trains GCNs of increasing depth on Cora and demonstrates the over-smoothing collapse, then shows how residual connections recover performance. The key parameters to note before reading the code: <code>num_layers</code> controls depth, <code>use_residual</code> toggles additive skip connections, <code>dropout</code> is applied between every pair of GNN layers, and the <code>patience=50</code> early stopping criterion terminates training when validation accuracy plateaus.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">GCNConv</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Planetoid</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Load Cora in the standard transductive split</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">Planetoid</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">'data/Planetoid'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'Cora'</span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">class</span><span class="w"> </span><span class="nc">DeepGCN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="sd">"""GCN with configurable depth and optional residual connections.</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="sd">    Args:</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="sd">        in_channels:     Dimension of input node features (1433 for Cora)</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="sd">        hidden_channels: Dimension of hidden embeddings</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="sd">        out_channels:    Number of output classes (7 for Cora)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="sd">        num_layers:      Total number of GCNConv layers</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="sd">        dropout:         Dropout probability applied between layers</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="sd">        use_residual:    If True, adds previous-layer embedding to current output</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="sd">    """</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>                 <span class="n">num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">use_residual</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">use_residual</span> <span class="o">=</span> <span class="n">use_residual</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">dropout</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>        <span class="c1"># Input projection layer</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GCNConv</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">))</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        <span class="c1"># Intermediate hidden layers</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GCNConv</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">))</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>        <span class="c1"># Output classification layer</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GCNConv</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">))</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>        <span class="c1"># Dimension-matching projection for first residual connection</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>        <span class="k">if</span> <span class="n">use_residual</span> <span class="ow">and</span> <span class="n">in_channels</span> <span class="o">!=</span> <span class="n">hidden_channels</span><span class="p">:</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">):</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">conv</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>            <span class="n">identity</span> <span class="o">=</span> <span class="n">x</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_residual</span><span class="p">:</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>                    <span class="n">identity</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">(</span><span class="n">identity</span><span class="p">)</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>                <span class="k">if</span> <span class="n">identity</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>                    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">identity</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>        <span class="k">return</span> <span class="n">x</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="k">def</span><span class="w"> </span><span class="nf">train_and_evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>                       <span class="n">weight_decay</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>                                  <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">weight_decay</span><span class="p">)</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>    <span class="n">best_val_acc</span><span class="p">,</span> <span class="n">best_test_acc</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>    <span class="n">patience_counter</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>        <span class="c1"># Training step</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">train_mask</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">train_mask</span><span class="p">])</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>        <span class="c1"># Full-graph evaluation (no sampling noise)</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>        <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>            <span class="n">pred</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>            <span class="n">val_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">val_mask</span><span class="p">]</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">val_mask</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>            <span class="n">test_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">test_mask</span><span class="p">]</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">test_mask</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>        <span class="c1"># Early stopping: track best validation checkpoint</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>        <span class="k">if</span> <span class="n">val_acc</span> <span class="o">&gt;</span> <span class="n">best_val_acc</span><span class="p">:</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>            <span class="n">best_val_acc</span> <span class="o">=</span> <span class="n">val_acc</span>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>            <span class="n">best_test_acc</span> <span class="o">=</span> <span class="n">test_acc</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>            <span class="n">patience_counter</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>            <span class="n">patience_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>        <span class="k">if</span> <span class="n">patience_counter</span> <span class="o">&gt;=</span> <span class="n">patience</span><span class="p">:</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>            <span class="k">break</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>    <span class="k">return</span> <span class="n">best_test_acc</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a><span class="c1"># Compare depth 2, 4, 8, 16 — with and without residual connections</span>
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'Depth'</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">'Plain GCN'</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">'GCN + Skip'</span><span class="si">:</span><span class="s2">&gt;12</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"-"</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span>
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a><span class="k">for</span> <span class="n">depth</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">]:</span>
+</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>    <span class="n">model_plain</span> <span class="o">=</span> <span class="n">DeepGCN</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_features</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span>
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>                           <span class="n">num_layers</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span> <span class="n">use_residual</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>    <span class="n">model_skip</span>  <span class="o">=</span> <span class="n">DeepGCN</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_features</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span>
+</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>                           <span class="n">num_layers</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span> <span class="n">use_residual</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>    <span class="n">acc_plain</span> <span class="o">=</span> <span class="n">train_and_evaluate</span><span class="p">(</span><span class="n">model_plain</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>    <span class="n">acc_skip</span>  <span class="o">=</span> <span class="n">train_and_evaluate</span><span class="p">(</span><span class="n">model_skip</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">depth</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">acc_plain</span><span class="si">:</span><span class="s2">&gt;12.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">acc_skip</span><span class="si">:</span><span class="s2">&gt;12.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Expected output on Cora (approximate, with standard random seed):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Depth  Plain GCN    GCN + Skip
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>-----------------------------------
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    2     0.8120        0.8150
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    4     0.7680        0.8090
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    8     0.5310        0.7940
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>   16     0.2100        0.7660
+</span></code></pre></div>
+<p>The plain GCN collapses at depth 8 and produces near-random embeddings at depth 16 — a textbook manifestation of the B₁ loop. Residual connections preserve useful accuracy even at depth 16, though they cannot fully recover the performance of a shallower model. The lesson: skip connections buy robustness to depth, not freedom from the over-smoothing limit.</p>
+<h4 id="diagram-gnn-training-dynamics-microsim">Diagram: GNN Training Dynamics MicroSim<a class="headerlink" href="#diagram-gnn-training-dynamics-microsim" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch08-gnn-training-dynamics/main.html" width="100%" height="532px" scrolling="no"></iframe>
+<p><a href="../../sims/ch08-gnn-training-dynamics/main.html">Run GNN Training Dynamics MicroSim Fullscreen</a></p>
+<hr>
+<h2 id="812-benchmark-results">8.12 Benchmark Results<a class="headerlink" href="#812-benchmark-results" title="Permanent link">¶</a></h2>
+<p>The table below reports test accuracy on Cora (node classification) for configurations that vary depth and regularization strategy, with ogbn-arxiv results for scalable training methods.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Depth</th>
+<th>Key Regularization</th>
+<th>Cora (%)</th>
+<th>ogbn-arxiv (%)</th>
+<th>Citation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GCN (plain)</td>
+<td>2</td>
+<td>Dropout 0.5</td>
+<td>81.5</td>
+<td>71.7</td>
+<td>Kipf &amp; Welling (2017)</td>
+</tr>
+<tr>
+<td>GCN + Residual</td>
+<td>8</td>
+<td>Dropout 0.5</td>
+<td>80.1</td>
+<td>72.4</td>
+<td>He et al. (2016)</td>
+</tr>
+<tr>
+<td>JK-Net (concat)</td>
+<td>6</td>
+<td>Dropout 0.5</td>
+<td>80.2</td>
+<td>—</td>
+<td>Xu et al. (2018)</td>
+</tr>
+<tr>
+<td>DropEdge + GCN</td>
+<td>2</td>
+<td>DropEdge 0.5</td>
+<td>83.1</td>
+<td>—</td>
+<td>Rong et al. (2020)</td>
+</tr>
+<tr>
+<td>PairNorm + GCN</td>
+<td>64</td>
+<td>PairNorm</td>
+<td>58.9</td>
+<td>—</td>
+<td>Zhao &amp; Akoglu (2020)</td>
+</tr>
+<tr>
+<td>Cluster-GCN</td>
+<td>5</td>
+<td>Dropout 0.2</td>
+<td>—</td>
+<td>79.4</td>
+<td>Chiang et al. (2019)</td>
+</tr>
+<tr>
+<td>GraphSAINT (rw)</td>
+<td>5</td>
+<td>Dropout 0.1</td>
+<td>—</td>
+<td>71.9</td>
+<td>Zeng et al. (2020)</td>
+</tr>
+<tr>
+<td>DGI (self-sup.)</td>
+<td>2</td>
+<td>—</td>
+<td>83.0†</td>
+<td>—</td>
+<td>Veličković et al. (2019)</td>
+</tr>
+</tbody>
+</table>
+<p>†DGI uses no label supervision during GNN training; the linear classifier is trained separately on frozen embeddings.</p>
+<hr>
+<h2 id="813-common-pitfalls">8.13 Common Pitfalls<a class="headerlink" href="#813-common-pitfalls" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Using test-set statistics for normalization.</strong> Computing mean and variance over all nodes (including test nodes) and then applying that normalization to training is data leakage. Always fit normalization parameters exclusively on the training set.</p>
+</li>
+<li>
+<p><strong>Evaluating on the test set during hyperparameter selection.</strong> The correct protocol is: tune hyperparameters using only the validation set, select the best configuration, then evaluate once on the test set. Repeated test-set evaluation inflates reported accuracy through implicit multiple testing.</p>
+</li>
+<li>
+<p><strong>Message-passing edges overlapping with link prediction supervision edges.</strong> If the edges used for GNN message passing include the edges you are trying to predict, the model can trivially solve the task by looking up the training edges. Use separate edge splits: one subset for the message-passing adjacency, another for the supervision signal.</p>
+</li>
+<li>
+<p><strong>Conflating transductive and inductive evaluation when comparing methods.</strong> A GCN evaluated transductively (test nodes present in the graph during training) is not directly comparable to a GraphSAGE evaluated inductively. Always verify the evaluation protocol before citing numbers from different papers.</p>
+</li>
+<li>
+<p><strong>Forgetting to call <code>model.eval()</code> during validation.</strong> PyTorch's <code>model.train()</code> and <code>model.eval()</code> switch dropout (and batch normalization statistics) on and off. Evaluating validation accuracy with the model in training mode introduces stochastic noise into validation predictions, making early stopping unreliable.</p>
+</li>
+</ol>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Chapter 8 Complete — You're Now a GNN Practitioner</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating">
+You've navigated the full engineering stack of GNN training: objective functions for every task type, data splits that respect graph structure, mini-batch strategies that scale to hundreds of millions of nodes, regularization that prevents overfitting, augmentation that handles feature-poor graphs, and counter-measures against the over-smoothing collapse. The skills in this chapter are what let GNN researchers reproduce their results and let practitioners deploy their models confidently. In Chapter 9, we turn to the theoretical foundations — asking not just how GNNs work, but why they sometimes cannot distinguish graphs that look different to a human eye.</p>
+</div>
+<hr>
+<h2 id="814-exercises">8.14 Exercises<a class="headerlink" href="#814-exercises" title="Permanent link">¶</a></h2>
+<p><strong>Remember (Recall and Identify)</strong></p>
+<ol>
+<li>
+<p>List the four mini-batch training strategies for large graphs covered in this chapter and state the primary computational advantage of each over full-batch training. For each strategy, identify one graph property that makes it particularly well-suited.</p>
+</li>
+<li>
+<p>Define the transductive and inductive evaluation settings for GNN node classification. Give one real-world benchmark dataset that exemplifies each setting, and state what is withheld in each case (labels, graph structure, or both).</p>
+</li>
+</ol>
+<p><strong>Understand (Explain and Interpret)</strong></p>
+<ol>
+<li>
+<p>Explain why the cross-entropy loss during GNN training is computed only over labeled nodes <span class="arithmatex">\( V_L \)</span>, yet the embeddings of unlabeled nodes still influence the gradient update. What property of GNN message passing makes this possible, and why is it desirable for semi-supervised learning?</p>
+</li>
+<li>
+<p>The B₁ causal loop (over-smoothing feedback) is described as a balancing loop. Explain what makes it balancing rather than reinforcing, and describe the practical consequence this has for selecting GNN depth during architecture search.</p>
+</li>
+</ol>
+<p><strong>Apply (Compute and Implement)</strong></p>
+<ol>
+<li>
+<p>Implement PairNorm as a PyTorch <code>nn.Module</code> that can be inserted between any two <code>GCNConv</code> layers. The module should: (a) subtract the global mean <span class="arithmatex">\( \boldsymbol{\mu} = \frac{1}{n}\sum_v \mathbf{h}_v \)</span> from each node embedding, (b) scale so that the mean squared deviation equals a configurable target scale <span class="arithmatex">\( s^2 \)</span>. Verify that applying PairNorm between layers of a 16-layer GCN on Cora produces non-trivially different per-node embeddings (measure pairwise cosine similarity before and after).</p>
+</li>
+<li>
+<p>Given a link prediction training set with 10,000 positive edges in a graph with 50,000 nodes, compute: (a) the total number of possible non-edges, (b) the number of negative samples drawn at ratio <span class="arithmatex">\( r = 5 \)</span> using uniform sampling, (c) how the sampling distribution changes under degree-weighted sampling where node degrees follow a power law with exponent 2.5.</p>
+</li>
+</ol>
+<p><strong>Analyze (Compare and Diagnose)</strong></p>
+<ol>
+<li>
+<p>A colleague trains an 8-layer GCN on ogbn-arxiv and reports that training accuracy reaches 92% but test accuracy is only 58%. Propose three distinct hypotheses (not all related to over-smoothing) that could explain this gap, and for each hypothesis, describe a diagnostic experiment to confirm or rule it out.</p>
+</li>
+<li>
+<p>Compare Cluster-GCN and GraphSAINT along three dimensions: (a) how mini-batches are constructed, (b) which graph topology (homophilic vs. heterophilic) each method handles better and why, (c) what theoretical guarantee (if any) each method provides about the gradient being an unbiased estimator of the full-graph gradient.</p>
+</li>
+</ol>
+<p><strong>Evaluate (Assess and Justify)</strong></p>
+<ol>
+<li>
+<p>You are designing a GNN system for predicting drug–drug interactions, where the interaction graph has 12,000 drug nodes, 450,000 interaction edges, and no node features beyond a binary drug-type indicator (small molecule vs. biologic). Justify each of the following design choices with a specific reason: (a) loss function, (b) evaluation metric, (c) feature augmentation strategy, (d) number of GNN layers.</p>
+</li>
+<li>
+<p>A reviewer argues that your paper's improvement over the baseline is inflated because you used the test set to select the best model checkpoint. Explain how to redesign the evaluation protocol to address this critique, and discuss whether early stopping on validation accuracy constitutes a form of test-set leakage.</p>
+</li>
+</ol>
+<p><strong>Create (Design and Propose)</strong></p>
+<ol>
+<li>
+<p>Propose a self-supervised pretraining strategy for a graph where nodes are users in an e-commerce platform, edges represent co-purchasing behavior, and node features are demographic indicators. Your strategy must: (a) define a pretext task that avoids using purchase labels, (b) specify the augmentation operations appropriate for this graph type, (c) describe how pretrained representations would be fine-tuned for downstream click-through rate prediction.</p>
+</li>
+<li>
+<p>Design an experiment to identify the optimal negative sampling ratio <span class="arithmatex">\( r^* \)</span> for link prediction on a new graph dataset where the ground-truth edge density is unknown. Your design must: (a) specify the search space for <span class="arithmatex">\( r \)</span> and the values you would evaluate, (b) describe the evaluation protocol (metric, data split used for selection), (c) propose a stopping rule for the search, and (d) identify at least two confounds that could make your estimate of <span class="arithmatex">\( r^* \)</span> unreliable for a different graph from the same domain.</p>
+</li>
+</ol>
+<hr>
+<h2 id="815-further-reading">8.15 Further Reading<a class="headerlink" href="#815-further-reading" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Rong, Y., Huang, W., Xu, T., &amp; Huang, J. (2020). DropEdge: Towards Deep Graph Convolutional Networks on Node Classification.</strong> <em>ICLR 2020.</em> Introduces the edge-dropout augmentation technique and provides a theoretical analysis showing that DropEdge reduces the convergence rate of the over-smoothing spectral contraction. Empirical evaluation covers 8-layer GCNs on five node classification benchmarks, demonstrating consistent improvements over baseline training.</p>
+</li>
+<li>
+<p><strong>Zhao, L., &amp; Akoglu, L. (2020). PairNorm: Tackling Oversmoothing in GNNs.</strong> <em>ICLR 2020.</em> Proposes PairNorm and provides a theoretical characterization of over-smoothing in terms of pairwise embedding distances. Demonstrates that standard batch normalization does not prevent the pairwise distance collapse, while PairNorm does, enabling 64-layer GCNs to train stably on Cora.</p>
+</li>
+<li>
+<p><strong>Chiang, W.-L., Liu, X., Si, S., Li, Y., Bengio, S., &amp; Hsieh, C.-J. (2019). Cluster-GCN: An Efficient Algorithm for Training Deep and Large Graph Convolutional Networks.</strong> <em>KDD 2019.</em> Introduces cluster-sampling mini-batching and analyzes the variance introduced by cross-cluster edge removal. Demonstrates training of 5-layer GCN on Amazon2M (2.4M nodes) in 17 hours on a single GPU — previously infeasible.</p>
+</li>
+<li>
+<p><strong>Zeng, H., Zhou, H., Srivastava, A., Kannan, R., &amp; Prasanna, V. (2020). GraphSAINT: Graph Sampling Based Inductive Learning Method.</strong> <em>ICLR 2020.</em> Derives importance-weighted estimators that make the subgraph loss unbiased under three sampling strategies. Provides convergence guarantees and achieves state-of-the-art on ogbn-arxiv at the time of publication.</p>
+</li>
+<li>
+<p><strong>Hu, W., Fey, M., Zitnik, M., Dong, Y., Ren, H., Liu, B., Catasta, M., &amp; Leskovec, J. (2020). Open Graph Benchmark: Datasets for Machine Learning on Graphs.</strong> <em>NeurIPS 2020.</em> Establishes OGB with standardized splits, evaluation protocols, and a public leaderboard. Essential reading for any practitioner comparing GNN methods; the motivation section documents why previous benchmarks had insufficient scale and standardization.</p>
+</li>
+<li>
+<p><strong>Veličković, P., Fedus, W., Hamilton, W. L., Liò, P., Bengio, Y., &amp; Hjelm, R. D. (2019). Deep Graph Infomax.</strong> <em>ICLR 2019.</em> Introduces the mutual-information maximization objective for unsupervised GNN training. Achieves competitive performance with supervised GCN on Cora, CiteSeer, and PubMed using only self-supervised signals; demonstrates that graph structure alone encodes enough information for useful node representations.</p>
+</li>
+<li>
+<p><strong>You, Y., Chen, T., Sui, Y., Chen, T., Wang, Z., &amp; Shen, Y. (2020). Graph Contrastive Learning with Augmentations.</strong> <em>NeurIPS 2020.</em> Systematically evaluates four graph augmentation strategies (node dropping, edge perturbation, attribute masking, subgraph sampling) for contrastive SSL. Finds that the best strategy is domain-dependent and that composing node dropping with attribute masking achieves robust performance across diverse benchmarks.</p>
+</li>
+<li>
+<p><strong>Xu, K., Li, C., Tian, Y., Sonobe, T., Kawarabayashi, K., &amp; Jegelka, S. (2018). Representation Learning on Graphs with Jumping Knowledge Networks.</strong> <em>ICML 2018.</em> Proposes JK-Net and proves that different nodes benefit from different effective receptive fields. Demonstrates that concatenating all-layer representations consistently outperforms using only the final layer, with largest gains in graphs with high structural diversity.</p>
+</li>
+</ol>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../07-gnn-design-space/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

@@ -1,0 +1,3917 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Builds the mathematical and computational foundation — linear algebra, calculus, backpropagation, PyTorch tensors, and PyTorch Geometric — needed to implement every GNN in this textbook from scratch.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/00-math-prerequisites/">
+      
+      
+        <link rel="prev" href="../">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 0: Math and Programming Prerequisites - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 0: Math and Programming Prerequisites">
+  <meta property="og:description" content="Builds the mathematical and computational foundation — linear algebra, calculus, backpropagation, PyTorch tensors, and PyTorch Geometric — needed to implement every GNN in this textbook from scratch.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/00-math-prerequisites/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 0: Math and Programming Prerequisites">
+  <meta name="twitter:description" content="Builds the mathematical and computational foundation — linear algebra, calculus, backpropagation, PyTorch tensors, and PyTorch Geometric — needed to implement every GNN in this textbook from scratch.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-0-math-and-programming-prerequisites" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 0: Math and Programming Prerequisites
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    0. Math and Programming Prerequisites
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivating-example-predicting-protein-interactions-with-math" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motivating Example: Predicting Protein Interactions with Math
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#01-vectors-and-the-dot-product" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1 Vectors and the Dot Product
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.1 Vectors and the Dot Product">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#011-intuition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1.1 Intuition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#012-formal-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1.2 Formal Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#013-cosine-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.1.3 Cosine Similarity
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#02-matrix-multiplication" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.2 Matrix Multiplication
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.2 Matrix Multiplication">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#021-intuition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.2.1 Intuition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#022-formal-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.2.2 Formal Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#023-properties" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.2.3 Properties
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#024-the-graph-convolution-connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.2.4 The Graph Convolution Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#03-matrix-transpose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.3 Matrix Transpose
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#04-matrix-rank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.4 Matrix Rank
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#05-symmetric-matrices-and-positive-semi-definiteness" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.5 Symmetric Matrices and Positive Semi-Definiteness
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.5 Symmetric Matrices and Positive Semi-Definiteness">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#051-symmetric-matrices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.5.1 Symmetric Matrices
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#052-positive-semi-definite-matrices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.5.2 Positive Semi-Definite Matrices
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#06-eigenvalue-decomposition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.6 Eigenvalue Decomposition
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.6 Eigenvalue Decomposition">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#061-intuition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.6.1 Intuition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#062-formal-derivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.6.2 Formal Derivation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#063-why-this-matters-for-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.6.3 Why This Matters for GNNs
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#07-singular-value-decomposition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.7 Singular Value Decomposition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#08-gradient-descent-and-the-chain-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.8 Gradient Descent and the Chain Rule
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.8 Gradient Descent and the Chain Rule">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#081-intuition-moving-downhill" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.8.1 Intuition: Moving Downhill
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#082-gradient-descent-update-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.8.2 Gradient Descent Update Rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#083-the-chain-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.8.3 The Chain Rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#09-backpropagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.9 Backpropagation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.9 Backpropagation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#091-the-computational-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.9.1 The Computational Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#092-derivation-for-a-two-layer-network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.9.2 Derivation for a Two-Layer Network
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#010-automatic-differentiation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.10 Automatic Differentiation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.10 Automatic Differentiation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0101-reverse-mode-vs-forward-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.10.1 Reverse Mode vs. Forward Mode
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#011-neural-network-building-blocks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.11 Neural Network Building Blocks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.11 Neural Network Building Blocks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0111-linear-layers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.11.1 Linear Layers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0112-the-softmax-function" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.11.2 The Softmax Function
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0113-cross-entropy-loss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.11.3 Cross-Entropy Loss
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#012-the-adam-optimizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.12 The Adam Optimizer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.12 The Adam Optimizer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0121-intuition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.12.1 Intuition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0122-update-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.12.2 Update Rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#013-pytorch-tensors-and-autograd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.13 PyTorch: Tensors and Autograd
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.13 PyTorch: Tensors and Autograd">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#0131-tensors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.13.1 Tensors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0132-pytorch-autograd" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.13.2 PyTorch Autograd
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0133-neural-network-layers-in-pytorch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.13.3 Neural Network Layers in PyTorch
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#0134-using-svd-in-pytorch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.13.4 Using SVD in PyTorch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#014-microsim-matrix-graph-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.14 MicroSim: Matrix × Graph Explorer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.14 MicroSim: Matrix × Graph Explorer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-matrix-graph-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Matrix × Graph Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#015-benchmarks-pytorch-ecosystem-for-graph-ml-20242025" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.15 Benchmarks: PyTorch Ecosystem for Graph ML (2024–2025)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#016-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.16 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#017-chapter-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.17 Chapter Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#018-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.18 Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="0.18 Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analyze
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#019-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        0.19 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    0. Math and Programming Prerequisites
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/00-math-prerequisites/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-0-math-and-programming-prerequisites">Chapter 0: Math and Programming Prerequisites<a class="headerlink" href="#chapter-0-math-and-programming-prerequisites" title="Permanent link">¶</a></h1>
+<p><strong>Part 0: Prerequisites</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Builds the mathematical and computational foundation — linear algebra, calculus, backpropagation, PyTorch tensors, and PyTorch Geometric — needed to implement every GNN architecture in this textbook from scratch.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 20 concepts from the learning graph:</p>
+<ol>
+<li>Vector and Dot Product</li>
+<li>Cosine Similarity</li>
+<li>Matrix Multiplication</li>
+<li>Matrix Transpose</li>
+<li>Matrix Rank</li>
+<li>Symmetric Matrix</li>
+<li>Positive Semi-Definite Matrix</li>
+<li>Eigenvalue Decomposition</li>
+<li>Singular Value Decomposition (SVD)</li>
+<li>Gradient Descent</li>
+<li>Chain Rule (Calculus)</li>
+<li>Backpropagation</li>
+<li>Automatic Differentiation</li>
+<li>Activation Function</li>
+<li>Multilayer Perceptron (MLP)</li>
+<li>Adam Optimizer</li>
+<li>PyTorch Tensor</li>
+<li>PyTorch Autograd</li>
+<li>PyTorch Geometric (PyG)</li>
+<li>NetworkX</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter has no prerequisites. It is the mathematical and computational foundation for the entire textbook. Readers comfortable with undergraduate linear algebra, multivariable calculus, and Python may skim or skip individual sections.</p>
+<hr>
+<h2 id="motivating-example-predicting-protein-interactions-with-math">Motivating Example: Predicting Protein Interactions with Math<a class="headerlink" href="#motivating-example-predicting-protein-interactions-with-math" title="Permanent link">¶</a></h2>
+<p>Every year, pharmaceutical companies screen billions of molecular compounds hoping to find a drug that binds to a specific protein implicated in a disease. A single drug-discovery campaign can test 10 million candidates and still fail. The bottleneck is not lab equipment — it is <em>understanding relationships</em>.</p>
+<p>Proteins interact in networks. A drug inhibits an enzyme, which frees a signaling molecule, which activates a receptor — a chain of effects rippling through a graph of biological interactions. To predict whether a new compound will bind usefully to its target protein, researchers now represent both the drug and the protein as <em>graphs</em> and train machine learning models to reason over those graphs.</p>
+<p>What powers those models? Matrix multiplication determines how information flows from a node to its neighbors. Eigenvalue decomposition reveals the large-scale structure hidden in a network's adjacency matrix. Gradient descent tunes hundreds of thousands of parameters so the model's predictions improve. Cross-entropy loss quantifies the gap between what the model guesses and the truth.</p>
+<p>This chapter builds every one of those mathematical tools from the ground up. By the end, you will have working PyTorch code for a complete training loop and the conceptual vocabulary to understand every GNN architecture in the chapters that follow. No concept in this textbook is more than two or three steps away from something in this chapter.</p>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Before the Graphs, the Math</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+This chapter is the shared foundation for every technique in this textbook. Every matrix operation, every gradient, every activation function introduced here will reappear — sometimes in disguise — when you build GCNs, GATs, and Graph Transformers later on. Work through it carefully. The investment pays dividends on every page that follows.</p>
+</div>
+<hr>
+<h2 id="01-vectors-and-the-dot-product">0.1 Vectors and the Dot Product<a class="headerlink" href="#01-vectors-and-the-dot-product" title="Permanent link">¶</a></h2>
+<h3 id="011-intuition">0.1.1 Intuition<a class="headerlink" href="#011-intuition" title="Permanent link">¶</a></h3>
+<p>A vector is a list of numbers. That is the whole definition — but the geometry makes it powerful. You can picture a vector <span class="arithmatex">\(\mathbf{x} \in \mathbb{R}^d\)</span> as an arrow in <span class="arithmatex">\(d\)</span>-dimensional space, pointing from the origin to the coordinates <span class="arithmatex">\((x_1, x_2, \ldots, x_d)\)</span>.</p>
+<p>The dot product of two vectors measures how much they point in the same direction:</p>
+<div class="arithmatex">\[\mathbf{u} \cdot \mathbf{v} = \sum_{i=1}^{d} u_i v_i\]</div>
+<p>If both vectors point exactly the same way, the dot product is large and positive. If they point in opposite directions, it is large and negative. If they are perpendicular, it is zero.</p>
+<h3 id="012-formal-definition">0.1.2 Formal Definition<a class="headerlink" href="#012-formal-definition" title="Permanent link">¶</a></h3>
+<p>For vectors <span class="arithmatex">\(\mathbf{u}, \mathbf{v} \in \mathbb{R}^d\)</span>:</p>
+<div class="arithmatex">\[\mathbf{u} \cdot \mathbf{v} = \mathbf{u}^{\top}\mathbf{v} = \sum_{i=1}^{d} u_i v_i\]</div>
+<p>The dot product relates to vector lengths through:</p>
+<div class="arithmatex">\[\mathbf{u} \cdot \mathbf{v} = \|\mathbf{u}\|\|\mathbf{v}\|\cos\theta\]</div>
+<p>where <span class="arithmatex">\(\|\mathbf{u}\| = \sqrt{\mathbf{u} \cdot \mathbf{u}}\)</span> is the Euclidean length of <span class="arithmatex">\(\mathbf{u}\)</span> and <span class="arithmatex">\(\theta\)</span> is the angle between the two vectors.</p>
+<h3 id="013-cosine-similarity">0.1.3 Cosine Similarity<a class="headerlink" href="#013-cosine-similarity" title="Permanent link">¶</a></h3>
+<p>Normalizing by both lengths gives the <strong>cosine similarity</strong>:</p>
+<div class="arithmatex">\[\text{sim}(\mathbf{u}, \mathbf{v}) = \frac{\mathbf{u} \cdot \mathbf{v}}{\|\mathbf{u}\|\|\mathbf{v}\|} = \cos\theta\]</div>
+<p>Cosine similarity lives in <span class="arithmatex">\([-1, 1]\)</span>. In node embedding chapters, we will use it constantly to measure how similar two nodes' learned representations are, independent of their magnitudes.</p>
+<hr>
+<h2 id="02-matrix-multiplication">0.2 Matrix Multiplication<a class="headerlink" href="#02-matrix-multiplication" title="Permanent link">¶</a></h2>
+<h3 id="021-intuition">0.2.1 Intuition<a class="headerlink" href="#021-intuition" title="Permanent link">¶</a></h3>
+<p>A matrix is a rectangular array of numbers. In graph machine learning, the two most important matrices are:</p>
+<ul>
+<li>The <strong>feature matrix</strong> <span class="arithmatex">\(\mathbf{X} \in \mathbb{R}^{n \times d}\)</span>, where row <span class="arithmatex">\(i\)</span> holds the <span class="arithmatex">\(d\)</span>-dimensional feature vector for node <span class="arithmatex">\(i\)</span> among <span class="arithmatex">\(n\)</span> nodes.</li>
+<li>The <strong>adjacency matrix</strong> <span class="arithmatex">\(\mathbf{A} \in \mathbb{R}^{n \times n}\)</span>, where <span class="arithmatex">\(A_{ij} = 1\)</span> if there is an edge between nodes <span class="arithmatex">\(i\)</span> and <span class="arithmatex">\(j\)</span>.</li>
+</ul>
+<p>Multiplying <span class="arithmatex">\(\mathbf{A}\mathbf{X}\)</span> produces a new matrix whose <span class="arithmatex">\(i\)</span>-th row is the <em>sum of feature vectors of all neighbors of node <span class="arithmatex">\(i\)</span></em>. This single line of linear algebra is the core operation inside every Graph Convolutional Network.</p>
+<h3 id="022-formal-definition">0.2.2 Formal Definition<a class="headerlink" href="#022-formal-definition" title="Permanent link">¶</a></h3>
+<p>Given <span class="arithmatex">\(\mathbf{A} \in \mathbb{R}^{m \times k}\)</span> and <span class="arithmatex">\(\mathbf{B} \in \mathbb{R}^{k \times n}\)</span>, their product <span class="arithmatex">\(\mathbf{C} = \mathbf{A}\mathbf{B} \in \mathbb{R}^{m \times n}\)</span> has entries:</p>
+<div class="arithmatex">\[C_{ij} = \sum_{l=1}^{k} A_{il} B_{lj}\]</div>
+<p>The inner dimension <span class="arithmatex">\(k\)</span> must match. Each entry <span class="arithmatex">\(C_{ij}\)</span> is a dot product of row <span class="arithmatex">\(i\)</span> of <span class="arithmatex">\(\mathbf{A}\)</span> with column <span class="arithmatex">\(j\)</span> of <span class="arithmatex">\(\mathbf{B}\)</span>.</p>
+<h3 id="023-properties">0.2.3 Properties<a class="headerlink" href="#023-properties" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Not commutative:</strong> <span class="arithmatex">\(\mathbf{A}\mathbf{B} \neq \mathbf{B}\mathbf{A}\)</span> in general.</li>
+<li><strong>Associative:</strong> <span class="arithmatex">\((\mathbf{A}\mathbf{B})\mathbf{C} = \mathbf{A}(\mathbf{B}\mathbf{C})\)</span>.</li>
+<li><strong>Transpose of product:</strong> <span class="arithmatex">\((\mathbf{A}\mathbf{B})^{\top} = \mathbf{B}^{\top}\mathbf{A}^{\top}\)</span>.</li>
+</ul>
+<h3 id="024-the-graph-convolution-connection">0.2.4 The Graph Convolution Connection<a class="headerlink" href="#024-the-graph-convolution-connection" title="Permanent link">¶</a></h3>
+<p>Consider an undirected graph with 4 nodes and adjacency matrix:</p>
+<div class="arithmatex">\[\mathbf{A} = \begin{pmatrix} 0 &amp; 1 &amp; 1 &amp; 0 \\ 1 &amp; 0 &amp; 1 &amp; 1 \\ 1 &amp; 1 &amp; 0 &amp; 0 \\ 0 &amp; 1 &amp; 0 &amp; 0 \end{pmatrix}\]</div>
+<p>If each node has a scalar feature <span class="arithmatex">\(\mathbf{x} = (1, 2, 3, 4)^{\top}\)</span>, then <span class="arithmatex">\(\mathbf{A}\mathbf{x} = (5, 8, 3, 2)^{\top}\)</span>. Row 1 of the result is <span class="arithmatex">\(2 + 3 = 5\)</span> — the sum of node 1's neighbors' features. This is <em>message passing</em> reduced to a matrix multiply.</p>
+<hr>
+<h2 id="03-matrix-transpose">0.3 Matrix Transpose<a class="headerlink" href="#03-matrix-transpose" title="Permanent link">¶</a></h2>
+<p>The <strong>transpose</strong> of a matrix <span class="arithmatex">\(\mathbf{A} \in \mathbb{R}^{m \times n}\)</span> is the matrix <span class="arithmatex">\(\mathbf{A}^{\top} \in \mathbb{R}^{n \times m}\)</span> obtained by flipping rows and columns: <span class="arithmatex">\((\mathbf{A}^{\top})_{ij} = A_{ji}\)</span>.</p>
+<p><strong>Key properties:</strong></p>
+<ul>
+<li><span class="arithmatex">\((\mathbf{A}^{\top})^{\top} = \mathbf{A}\)</span></li>
+<li><span class="arithmatex">\((\mathbf{A} + \mathbf{B})^{\top} = \mathbf{A}^{\top} + \mathbf{B}^{\top}\)</span></li>
+<li><span class="arithmatex">\((\mathbf{A}\mathbf{B})^{\top} = \mathbf{B}^{\top}\mathbf{A}^{\top}\)</span></li>
+</ul>
+<p>In PyTorch, transposing a 2-D tensor is written <code>A.T</code> or <code>A.transpose(0, 1)</code>.</p>
+<hr>
+<h2 id="04-matrix-rank">0.4 Matrix Rank<a class="headerlink" href="#04-matrix-rank" title="Permanent link">¶</a></h2>
+<p>The <strong>rank</strong> of a matrix is the number of linearly independent rows (equivalently, the number of linearly independent columns). Intuitively, it counts the true dimensionality of the information the matrix contains.</p>
+<p>For a feature matrix <span class="arithmatex">\(\mathbf{X} \in \mathbb{R}^{n \times d}\)</span>, rank tells us whether any feature is a linear combination of others. A low-rank matrix can be approximated by a smaller set of vectors — this is the insight behind matrix factorization methods for node embeddings, which we will explore in Chapter 4.</p>
+<p>If <span class="arithmatex">\(\text{rank}(\mathbf{A}) = r\)</span>, then <span class="arithmatex">\(\mathbf{A}\)</span> can be written as a product of two matrices of dimensions <span class="arithmatex">\(m \times r\)</span> and <span class="arithmatex">\(r \times n\)</span> — a <em>low-rank factorization</em>. This saves memory and computation when <span class="arithmatex">\(r \ll \min(m, n)\)</span>.</p>
+<hr>
+<h2 id="05-symmetric-matrices-and-positive-semi-definiteness">0.5 Symmetric Matrices and Positive Semi-Definiteness<a class="headerlink" href="#05-symmetric-matrices-and-positive-semi-definiteness" title="Permanent link">¶</a></h2>
+<h3 id="051-symmetric-matrices">0.5.1 Symmetric Matrices<a class="headerlink" href="#051-symmetric-matrices" title="Permanent link">¶</a></h3>
+<p>A matrix <span class="arithmatex">\(\mathbf{A} \in \mathbb{R}^{n \times n}\)</span> is <strong>symmetric</strong> if <span class="arithmatex">\(\mathbf{A} = \mathbf{A}^{\top}\)</span>, meaning <span class="arithmatex">\(A_{ij} = A_{ji}\)</span> for all <span class="arithmatex">\(i, j\)</span>. The adjacency matrix of an undirected graph is always symmetric — if there is an edge from <span class="arithmatex">\(i\)</span> to <span class="arithmatex">\(j\)</span>, there is one from <span class="arithmatex">\(j\)</span> to <span class="arithmatex">\(i\)</span>. Symmetric matrices have two beautiful properties:</p>
+<ol>
+<li>All eigenvalues are <em>real</em>.</li>
+<li>Eigenvectors corresponding to distinct eigenvalues are <em>orthogonal</em>.</li>
+</ol>
+<p>These properties make symmetric matrices tractable for spectral analysis.</p>
+<h3 id="052-positive-semi-definite-matrices">0.5.2 Positive Semi-Definite Matrices<a class="headerlink" href="#052-positive-semi-definite-matrices" title="Permanent link">¶</a></h3>
+<p>A symmetric matrix <span class="arithmatex">\(\mathbf{M} \in \mathbb{R}^{n \times n}\)</span> is <strong>positive semi-definite (PSD)</strong> if for every vector <span class="arithmatex">\(\mathbf{x} \in \mathbb{R}^n\)</span>:</p>
+<div class="arithmatex">\[\mathbf{x}^{\top}\mathbf{M}\mathbf{x} \geq 0\]</div>
+<p>Equivalently, all eigenvalues of <span class="arithmatex">\(\mathbf{M}\)</span> are non-negative. The <strong>graph Laplacian</strong> matrix <span class="arithmatex">\(\mathbf{L} = \mathbf{D} - \mathbf{A}\)</span> (where <span class="arithmatex">\(\mathbf{D}\)</span> is the diagonal degree matrix) is PSD — a fact we will use repeatedly in spectral GNN chapters. PSD matrices define valid notions of "distance" and "smoothness" on graphs.</p>
+<hr>
+<h2 id="06-eigenvalue-decomposition">0.6 Eigenvalue Decomposition<a class="headerlink" href="#06-eigenvalue-decomposition" title="Permanent link">¶</a></h2>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Why Eigenvectors See What Eyes Cannot</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking about eigenvalues">
+Eigenvalue decomposition is one of the most surprising ideas in linear algebra: every symmetric matrix is secretly just a stretching operation along a set of special directions. Those directions — the eigenvectors — often correspond to meaningful structure in the data. In graphs, the eigenvectors of the Laplacian encode which nodes form communities, which nodes are central, and how signals diffuse through the network. Understanding this connection is what separates spectral GNN practitioners from those who just apply formulas.</p>
+</div>
+<h3 id="061-intuition">0.6.1 Intuition<a class="headerlink" href="#061-intuition" title="Permanent link">¶</a></h3>
+<p>Multiplying a vector <span class="arithmatex">\(\mathbf{v}\)</span> by a matrix <span class="arithmatex">\(\mathbf{A}\)</span> generally changes both the <em>direction</em> and the <em>length</em> of <span class="arithmatex">\(\mathbf{v}\)</span>. But for certain special vectors — the <strong>eigenvectors</strong> — multiplying by <span class="arithmatex">\(\mathbf{A}\)</span> only changes the length, not the direction:</p>
+<div class="arithmatex">\[\mathbf{A}\mathbf{v} = \lambda\mathbf{v}\]</div>
+<p>The scalar <span class="arithmatex">\(\lambda\)</span> is the corresponding <strong>eigenvalue</strong>. The eigenvector points along a direction that the matrix leaves invariant; the eigenvalue says by how much the matrix stretches or shrinks along that direction.</p>
+<h3 id="062-formal-derivation">0.6.2 Formal Derivation<a class="headerlink" href="#062-formal-derivation" title="Permanent link">¶</a></h3>
+<p>For a symmetric matrix <span class="arithmatex">\(\mathbf{A} \in \mathbb{R}^{n \times n}\)</span>, the eigenvalue equation <span class="arithmatex">\(\mathbf{A}\mathbf{v} = \lambda\mathbf{v}\)</span> has <span class="arithmatex">\(n\)</span> solutions (counting multiplicity). Rearranging:</p>
+<div class="arithmatex">\[(\mathbf{A} - \lambda\mathbf{I})\mathbf{v} = \mathbf{0}\]</div>
+<p>This has a nontrivial solution <span class="arithmatex">\(\mathbf{v} \neq \mathbf{0}\)</span> exactly when <span class="arithmatex">\(\mathbf{A} - \lambda\mathbf{I}\)</span> is singular, i.e., when <span class="arithmatex">\(\det(\mathbf{A} - \lambda\mathbf{I}) = 0\)</span>. This <strong>characteristic polynomial</strong> of degree <span class="arithmatex">\(n\)</span> yields the <span class="arithmatex">\(n\)</span> eigenvalues.</p>
+<p>Stacking all <span class="arithmatex">\(n\)</span> eigenvectors as columns of <span class="arithmatex">\(\mathbf{U}\)</span> and all eigenvalues along the diagonal of <span class="arithmatex">\(\boldsymbol{\Lambda}\)</span>, we get the <strong>eigendecomposition</strong> (also called <strong>spectral decomposition</strong>):</p>
+<div class="arithmatex">\[\mathbf{A} = \mathbf{U}\boldsymbol{\Lambda}\mathbf{U}^{\top}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{U}^{\top}\mathbf{U} = \mathbf{I}\)</span> (the eigenvectors form an orthonormal basis) and <span class="arithmatex">\(\boldsymbol{\Lambda} = \text{diag}(\lambda_1, \lambda_2, \ldots, \lambda_n)\)</span>.</p>
+<h3 id="063-why-this-matters-for-gnns">0.6.3 Why This Matters for GNNs<a class="headerlink" href="#063-why-this-matters-for-gnns" title="Permanent link">¶</a></h3>
+<p>The graph Laplacian <span class="arithmatex">\(\mathbf{L} = \mathbf{U}\boldsymbol{\Lambda}\mathbf{U}^{\top}\)</span> encodes the graph's geometry in its eigenvectors. The eigenvector corresponding to the smallest nonzero eigenvalue (the <strong>Fiedler vector</strong>) partitions the graph into two clusters with minimal cut — this is the basis of spectral clustering and the motivation for the spectral convolution in the original GCN paper.</p>
+<hr>
+<h2 id="07-singular-value-decomposition">0.7 Singular Value Decomposition<a class="headerlink" href="#07-singular-value-decomposition" title="Permanent link">¶</a></h2>
+<p>The <strong>singular value decomposition (SVD)</strong> generalizes eigendecomposition to <em>rectangular</em> matrices. For any matrix <span class="arithmatex">\(\mathbf{A} \in \mathbb{R}^{m \times n}\)</span> (not necessarily square or symmetric):</p>
+<div class="arithmatex">\[\mathbf{A} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^{\top}\]</div>
+<p>where:</p>
+<ul>
+<li><span class="arithmatex">\(\mathbf{U} \in \mathbb{R}^{m \times m}\)</span> has orthonormal columns (left singular vectors)</li>
+<li><span class="arithmatex">\(\boldsymbol{\Sigma} \in \mathbb{R}^{m \times n}\)</span> is diagonal with non-negative <strong>singular values</strong> <span class="arithmatex">\(\sigma_1 \geq \sigma_2 \geq \cdots \geq 0\)</span></li>
+<li><span class="arithmatex">\(\mathbf{V} \in \mathbb{R}^{n \times n}\)</span> has orthonormal columns (right singular vectors)</li>
+</ul>
+<p><strong>Low-rank approximation:</strong> The best rank-<span class="arithmatex">\(k\)</span> approximation to <span class="arithmatex">\(\mathbf{A}\)</span> (in Frobenius norm) is obtained by keeping only the top-<span class="arithmatex">\(k\)</span> singular values and their vectors: <span class="arithmatex">\(\mathbf{A}_k = \mathbf{U}_k\boldsymbol{\Sigma}_k\mathbf{V}_k^{\top}\)</span>. This theorem (Eckart–Young–Mirsky) underlies matrix factorization methods for node embeddings: the embedding of node <span class="arithmatex">\(i\)</span> is row <span class="arithmatex">\(i\)</span> of <span class="arithmatex">\(\mathbf{U}_k\sqrt{\boldsymbol{\Sigma}_k}\)</span>, capturing the dominant structure of the adjacency or transition matrix.</p>
+<hr>
+<h2 id="08-gradient-descent-and-the-chain-rule">0.8 Gradient Descent and the Chain Rule<a class="headerlink" href="#08-gradient-descent-and-the-chain-rule" title="Permanent link">¶</a></h2>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">This Is Where It Gets Challenging — Stay With It</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage being encouraging">
+Backpropagation and gradient descent are the engine of all modern deep learning. If the math feels unfamiliar, that is completely normal — these ideas took decades for the research community to get right. Work through the derivation slowly. Every formula here will reappear in every GNN training loop you write.</p>
+</div>
+<h3 id="081-intuition-moving-downhill">0.8.1 Intuition: Moving Downhill<a class="headerlink" href="#081-intuition-moving-downhill" title="Permanent link">¶</a></h3>
+<p>Imagine a loss landscape — a surface where the height at each point represents how wrong the model's predictions are. We want to find the lowest point (minimum loss). Gradient descent does this by repeatedly taking small steps in the direction of steepest descent.</p>
+<p>The <strong>gradient</strong> <span class="arithmatex">\(\nabla_{\boldsymbol{\theta}} \mathcal{L}\)</span> of a scalar loss <span class="arithmatex">\(\mathcal{L}\)</span> with respect to parameters <span class="arithmatex">\(\boldsymbol{\theta}\)</span> is the vector of partial derivatives:</p>
+<div class="arithmatex">\[\nabla_{\boldsymbol{\theta}} \mathcal{L} = \left(\frac{\partial \mathcal{L}}{\partial \theta_1}, \frac{\partial \mathcal{L}}{\partial \theta_2}, \ldots, \frac{\partial \mathcal{L}}{\partial \theta_p}\right)\]</div>
+<p>It always points in the direction of <em>steepest ascent</em>. To minimize, we move in the opposite direction.</p>
+<h3 id="082-gradient-descent-update-rule">0.8.2 Gradient Descent Update Rule<a class="headerlink" href="#082-gradient-descent-update-rule" title="Permanent link">¶</a></h3>
+<div class="arithmatex">\[\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla_{\boldsymbol{\theta}} \mathcal{L}\]</div>
+<p>where <span class="arithmatex">\(\eta &gt; 0\)</span> is the <strong>learning rate</strong> — how large a step to take. Too large and the update overshoots the minimum; too small and training is prohibitively slow.</p>
+<p><strong>Stochastic Gradient Descent (SGD)</strong> approximates the true gradient using a single example or a mini-batch of examples:</p>
+<div class="arithmatex">\[\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta \nabla_{\boldsymbol{\theta}} \mathcal{L}_{\text{batch}}\]</div>
+<p>This approximation is noisy but much faster per step than computing the exact gradient over the full dataset.</p>
+<h3 id="083-the-chain-rule">0.8.3 The Chain Rule<a class="headerlink" href="#083-the-chain-rule" title="Permanent link">¶</a></h3>
+<p>Neural networks compose multiple functions: <span class="arithmatex">\(\mathcal{L} = f_L(f_{L-1}(\cdots f_1(\mathbf{x})\cdots))\)</span>. Computing <span class="arithmatex">\(\partial \mathcal{L} / \partial \mathbf{x}\)</span> requires the <strong>chain rule of calculus</strong>:</p>
+<div class="arithmatex">\[\frac{d}{dx}[f(g(x))] = f'(g(x)) \cdot g'(x)\]</div>
+<p>In the multivariate setting, if <span class="arithmatex">\(\mathcal{L} = f(\mathbf{z})\)</span> and <span class="arithmatex">\(\mathbf{z} = g(\mathbf{x})\)</span>, then:</p>
+<div class="arithmatex">\[\frac{\partial \mathcal{L}}{\partial x_i} = \sum_j \frac{\partial \mathcal{L}}{\partial z_j} \frac{\partial z_j}{\partial x_i}\]</div>
+<p>This chain of multiplications connects the gradient of the loss at the output to the gradient with respect to any intermediate variable.</p>
+<hr>
+<h2 id="09-backpropagation">0.9 Backpropagation<a class="headerlink" href="#09-backpropagation" title="Permanent link">¶</a></h2>
+<p><strong>Backpropagation</strong> is the chain rule applied <em>efficiently</em> to neural networks. The key insight is that computing gradients for all parameters takes only about as long as a single forward pass, by reusing intermediate computations.</p>
+<h3 id="091-the-computational-graph">0.9.1 The Computational Graph<a class="headerlink" href="#091-the-computational-graph" title="Permanent link">¶</a></h3>
+<p>A neural network defines a <strong>computational graph</strong>: a directed acyclic graph where:</p>
+<ul>
+<li>Nodes represent intermediate values (activations, weights, loss)</li>
+<li>Edges represent operations (matrix multiply, ReLU, etc.)</li>
+</ul>
+<p>A forward pass computes the loss by following the graph from inputs to output. A backward pass propagates gradients from the loss back to the parameters.</p>
+<h3 id="092-derivation-for-a-two-layer-network">0.9.2 Derivation for a Two-Layer Network<a class="headerlink" href="#092-derivation-for-a-two-layer-network" title="Permanent link">¶</a></h3>
+<p>Consider a network <span class="arithmatex">\(\hat{y} = W_2 \sigma(W_1 x)\)</span> where <span class="arithmatex">\(\sigma\)</span> is a nonlinear activation (e.g., ReLU), with mean-squared-error loss <span class="arithmatex">\(\mathcal{L} = \frac{1}{2}(\hat{y} - y)^2\)</span>.</p>
+<p><strong>Forward pass:</strong></p>
+<div class="arithmatex">\[\mathbf{z} = \mathbf{W}_1\mathbf{x}, \quad \mathbf{h} = \sigma(\mathbf{z}), \quad \hat{y} = \mathbf{W}_2\mathbf{h}, \quad \mathcal{L} = \tfrac{1}{2}(\hat{y} - y)^2\]</div>
+<p><strong>Backward pass</strong> (applying chain rule from right to left):</p>
+<div class="arithmatex">\[\frac{\partial \mathcal{L}}{\partial \hat{y}} = (\hat{y} - y)\]</div>
+<div class="arithmatex">\[\frac{\partial \mathcal{L}}{\partial \mathbf{W}_2} = \frac{\partial \mathcal{L}}{\partial \hat{y}} \cdot \mathbf{h}^{\top}\]</div>
+<div class="arithmatex">\[\frac{\partial \mathcal{L}}{\partial \mathbf{h}} = \mathbf{W}_2^{\top} \cdot \frac{\partial \mathcal{L}}{\partial \hat{y}}\]</div>
+<div class="arithmatex">\[\frac{\partial \mathcal{L}}{\partial \mathbf{z}} = \frac{\partial \mathcal{L}}{\partial \mathbf{h}} \odot \sigma'(\mathbf{z})\]</div>
+<div class="arithmatex">\[\frac{\partial \mathcal{L}}{\partial \mathbf{W}_1} = \frac{\partial \mathcal{L}}{\partial \mathbf{z}} \cdot \mathbf{x}^{\top}\]</div>
+<p>Each parameter's gradient is a product of terms computed during the forward pass. This is why storing intermediate activations during the forward pass is necessary for efficient backpropagation.</p>
+<hr>
+<h2 id="010-automatic-differentiation">0.10 Automatic Differentiation<a class="headerlink" href="#010-automatic-differentiation" title="Permanent link">¶</a></h2>
+<p><strong>Automatic differentiation (autograd)</strong> does this chain-rule bookkeeping automatically. When you write <code>y = W @ x + b</code> in PyTorch, the framework records the operations in a dynamic computation graph. Calling <code>.backward()</code> on the loss triggers a traversal of this graph in reverse, accumulating gradients via the chain rule.</p>
+<h3 id="0101-reverse-mode-vs-forward-mode">0.10.1 Reverse Mode vs. Forward Mode<a class="headerlink" href="#0101-reverse-mode-vs-forward-mode" title="Permanent link">¶</a></h3>
+<p>There are two modes of automatic differentiation:</p>
+<table>
+<thead>
+<tr>
+<th>Mode</th>
+<th>Cost</th>
+<th>Best when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Reverse mode</strong></td>
+<td>One backward pass per output</td>
+<td>Many parameters, one loss scalar — the standard ML case</td>
+</tr>
+<tr>
+<td><strong>Forward mode</strong></td>
+<td>One forward pass per input dimension</td>
+<td>Few inputs, many outputs — rare in ML</td>
+</tr>
+</tbody>
+</table>
+<p>PyTorch uses reverse mode (also called reverse-mode autodiff or backprop). The gradient of a scalar loss with respect to millions of parameters is computed in a single backward pass, regardless of the number of parameters. This is the computational miracle that makes training deep networks feasible.</p>
+<hr>
+<h2 id="011-neural-network-building-blocks">0.11 Neural Network Building Blocks<a class="headerlink" href="#011-neural-network-building-blocks" title="Permanent link">¶</a></h2>
+<h3 id="0111-linear-layers">0.11.1 Linear Layers<a class="headerlink" href="#0111-linear-layers" title="Permanent link">¶</a></h3>
+<p>A <strong>linear layer</strong> (also called a fully connected or dense layer) applies an affine transformation:</p>
+<div class="arithmatex">\[\mathbf{h} = \mathbf{W}\mathbf{x} + \mathbf{b}\]</div>
+<p>where <span class="arithmatex">\(\mathbf{W} \in \mathbb{R}^{d_{\text{out}} \times d_{\text{in}}}\)</span> and <span class="arithmatex">\(\mathbf{b} \in \mathbb{R}^{d_{\text{out}}}\)</span> are learnable parameters. Stacking linear layers with nonlinear activations between them creates a universal function approximator.</p>
+<p>In graph neural networks, the linear layer appears inside the message transformation: each node's features are linearly projected before aggregation. You will see <code>nn.Linear</code> in virtually every GNN implementation in this textbook.</p>
+<h3 id="0112-the-softmax-function">0.11.2 The Softmax Function<a class="headerlink" href="#0112-the-softmax-function" title="Permanent link">¶</a></h3>
+<p>The <strong>softmax function</strong> maps a vector of raw scores (logits) <span class="arithmatex">\(\mathbf{z} \in \mathbb{R}^K\)</span> to a valid probability distribution over <span class="arithmatex">\(K\)</span> classes:</p>
+<div class="arithmatex">\[\text{softmax}(\mathbf{z})_k = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}\]</div>
+<p>Each output is in <span class="arithmatex">\((0, 1)\)</span> and all outputs sum to 1. The softmax is differentiable everywhere, making it suitable as the final layer in classification networks.</p>
+<p><strong>Numerical stability:</strong> In practice, we subtract the maximum value before exponentiating to avoid overflow: <span class="arithmatex">\(\text{softmax}(\mathbf{z})_k = e^{z_k - \max(\mathbf{z})} / \sum_j e^{z_j - \max(\mathbf{z})}\)</span>. PyTorch handles this automatically.</p>
+<h3 id="0113-cross-entropy-loss">0.11.3 Cross-Entropy Loss<a class="headerlink" href="#0113-cross-entropy-loss" title="Permanent link">¶</a></h3>
+<p>For multi-class classification, the <strong>cross-entropy loss</strong> measures the discrepancy between predicted probabilities <span class="arithmatex">\(\hat{\mathbf{y}} = \text{softmax}(\mathbf{z})\)</span> and the true one-hot label <span class="arithmatex">\(\mathbf{y}\)</span>:</p>
+<div class="arithmatex">\[\mathcal{L}_{\text{CE}} = -\sum_{k=1}^{K} y_k \log \hat{y}_k = -\log \hat{y}_{y^*}\]</div>
+<p>where <span class="arithmatex">\(y^*\)</span> is the true class. Only the log probability assigned to the correct class matters. Minimizing cross-entropy is equivalent to maximizing the log-likelihood of the labels under the model — this is the standard supervised learning objective for node classification.</p>
+<p>PyTorch combines softmax and cross-entropy into <code>nn.CrossEntropyLoss</code>, which takes raw logits (not softmax outputs) for numerical stability.</p>
+<hr>
+<h2 id="012-the-adam-optimizer">0.12 The Adam Optimizer<a class="headerlink" href="#012-the-adam-optimizer" title="Permanent link">¶</a></h2>
+<p>Plain gradient descent works, but it treats all parameters identically with the same learning rate. <strong>Adam</strong> (Adaptive Moment Estimation) adapts the learning rate for each parameter individually, leading to faster convergence in practice.</p>
+<h3 id="0121-intuition">0.12.1 Intuition<a class="headerlink" href="#0121-intuition" title="Permanent link">¶</a></h3>
+<p>Adam tracks two running statistics for each parameter's gradient:</p>
+<ul>
+<li><span class="arithmatex">\(m_t\)</span>: the exponential moving average of gradients (like momentum — which direction have we been going?)</li>
+<li><span class="arithmatex">\(v_t\)</span>: the exponential moving average of squared gradients (how noisy are the gradients here?)</li>
+</ul>
+<p>Parameters with consistently large gradients get a smaller effective learning rate. Parameters with small or noisy gradients get a larger step. This adaptivity is especially useful in GNNs where different parts of the graph may have very different gradient scales.</p>
+<h3 id="0122-update-rule">0.12.2 Update Rule<a class="headerlink" href="#0122-update-rule" title="Permanent link">¶</a></h3>
+<p>Given hyperparameters <span class="arithmatex">\(\eta\)</span> (learning rate), <span class="arithmatex">\(\beta_1\)</span> (default 0.9), <span class="arithmatex">\(\beta_2\)</span> (default 0.999), <span class="arithmatex">\(\epsilon\)</span> (default <span class="arithmatex">\(10^{-8}\)</span>):</p>
+<p>At step <span class="arithmatex">\(t\)</span>:</p>
+<div class="arithmatex">\[m_t = \beta_1 m_{t-1} + (1 - \beta_1) g_t\]</div>
+<div class="arithmatex">\[v_t = \beta_2 v_{t-1} + (1 - \beta_2) g_t^2\]</div>
+<p>Apply bias correction (since <span class="arithmatex">\(m_0 = v_0 = 0\)</span>, early estimates are biased toward zero):</p>
+<div class="arithmatex">\[\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \quad \hat{v}_t = \frac{v_t}{1 - \beta_2^t}\]</div>
+<p>Parameter update:</p>
+<div class="arithmatex">\[\theta_t = \theta_{t-1} - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}\]</div>
+<p>In PyTorch: <code>optimizer = torch.optim.Adam(model.parameters(), lr=0.01)</code>.</p>
+<hr>
+<h2 id="013-pytorch-tensors-and-autograd">0.13 PyTorch: Tensors and Autograd<a class="headerlink" href="#013-pytorch-tensors-and-autograd" title="Permanent link">¶</a></h2>
+<div class="admonition mascot-tip">
+<p class="admonition-title">PyTorch Is Your Graph ML Toolkit</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving a helpful tip">
+PyTorch's two killer features for deep learning are its <em>dynamic computational graph</em> and <em>NumPy-like tensor operations on GPU</em>. Almost every GNN in this textbook is implemented in PyTorch. Spend time understanding <code>requires_grad</code>, <code>.backward()</code>, and <code>.grad</code> — these three concepts underpin every training loop you will write.</p>
+</div>
+<h3 id="0131-tensors">0.13.1 Tensors<a class="headerlink" href="#0131-tensors" title="Permanent link">¶</a></h3>
+<p>A <strong>tensor</strong> is a generalization of vectors and matrices to arbitrary dimensions. A scalar is a 0-dimensional tensor, a vector is 1-dimensional, a matrix is 2-dimensional, and so on. PyTorch tensors live on CPU or GPU and support the full range of linear algebra operations.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Creating tensors</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>          <span class="c1"># 1-D tensor (vector)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">A</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>                        <span class="c1"># 2-D tensor (matrix), random normal</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">I</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>                             <span class="c1"># 4x4 identity matrix</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># Basic operations</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="n">x</span><span class="p">)</span>                                 <span class="c1"># dot product: tensor(14.)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">A</span> <span class="o">@</span> <span class="n">I</span><span class="p">)</span>                                 <span class="c1"># matrix multiply: equals A</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="nb">print</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>                                   <span class="c1"># transpose</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># Eigendecomposition of a symmetric matrix</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">S</span> <span class="o">=</span> <span class="n">A</span> <span class="o">+</span> <span class="n">A</span><span class="o">.</span><span class="n">T</span>                                  <span class="c1"># make symmetric</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"Eigenvalues:"</span><span class="p">,</span> <span class="n">eigenvalues</span><span class="p">)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"Reconstruction error:"</span><span class="p">,</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>      <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">S</span> <span class="o">-</span> <span class="n">eigenvectors</span> <span class="o">@</span> <span class="n">torch</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">eigenvalues</span><span class="p">)</span> <span class="o">@</span> <span class="n">eigenvectors</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+</span></code></pre></div>
+<h3 id="0132-pytorch-autograd">0.13.2 PyTorch Autograd<a class="headerlink" href="#0132-pytorch-autograd" title="Permanent link">¶</a></h3>
+<p>The <code>requires_grad=True</code> flag tells PyTorch to track operations on a tensor so it can compute gradients later.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># ----- Autograd demonstration -----</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">2.0</span><span class="p">],</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">3</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span>                          <span class="c1"># y = x^3 - 2x</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">y</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>                                 <span class="c1"># computes dy/dx</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>                                <span class="c1"># dy/dx = 3x^2 - 2 = 10 at x=2: tensor([10.])</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># ----- Complete training loop example -----</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># Synthetic dataset: y = 2x + noise</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="n">N</span> <span class="o">=</span> <span class="mi">100</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">X_data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="n">y_data</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">X_data</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="c1"># Model: single linear layer</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="c1"># Training loop</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">200</span><span class="p">):</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>          <span class="c1"># 1. Clear gradients from previous step</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">X_data</span><span class="p">)</span>         <span class="c1"># 2. Forward pass</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>    <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y_data</span><span class="p">)</span> <span class="c1"># 3. Compute loss</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>                <span class="c1"># 4. Backward pass (compute gradients)</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>               <span class="c1"># 5. Update parameters</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>    <span class="k">if</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">50</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2"> | Loss: </span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | "</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>              <span class="sa">f</span><span class="s2">"W: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | b: </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="c1"># Expected: W ≈ 2.0, b ≈ 0.0</span>
+</span></code></pre></div>
+<h3 id="0133-neural-network-layers-in-pytorch">0.13.3 Neural Network Layers in PyTorch<a class="headerlink" href="#0133-neural-network-layers-in-pytorch" title="Permanent link">¶</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Softmax and cross-entropy</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>      <span class="c1"># raw scores for sample 1</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>                        <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]])</span>     <span class="c1"># raw scores for sample 2</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">probs</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"Probabilities:"</span><span class="p">,</span> <span class="n">probs</span><span class="p">)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="c1"># tensor([[0.6590, 0.2424, 0.0986],</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="c1">#         [0.1142, 0.7721, 0.1136]])</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="n">true_labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>            <span class="c1"># correct classes</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">true_labels</span><span class="p">)</span>   <span class="c1"># combines softmax + NLL</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"Cross-entropy loss:"</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>     <span class="c1"># ≈ 0.4170</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="c1"># ------ Two-layer MLP for node classification ------</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="k">class</span><span class="w"> </span><span class="nc">MLP</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">out_dim</span><span class="p">):</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">fc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">fc2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">out_dim</span><span class="p">)</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">relu</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc1</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc2</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>    <span class="c1"># return logits; loss fn applies softmax</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a><span class="c1"># Example: 34 nodes, 16 features, 2 classes (Karate Club)</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="n">model</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">in_dim</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">out_dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">34</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>       <span class="c1"># node feature matrix</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a><span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>                <span class="c1"># shape: (34, 2)</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"Output shape:"</span><span class="p">,</span> <span class="n">out</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="0134-using-svd-in-pytorch">0.13.4 Using SVD in PyTorch<a class="headerlink" href="#0134-using-svd-in-pytorch" title="Permanent link">¶</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Singular value decomposition</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">A</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">U</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">Vh</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">full_matrices</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Reconstruct: A ≈ U @ diag(S) @ Vh</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">reconstructed</span> <span class="o">=</span> <span class="n">U</span> <span class="o">@</span> <span class="n">torch</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="o">@</span> <span class="n">Vh</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"SVD reconstruction error:"</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">reconstructed</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># Low-rank approximation: keep top-2 singular values</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="n">A_approx</span> <span class="o">=</span> <span class="n">U</span><span class="p">[:,</span> <span class="p">:</span><span class="n">k</span><span class="p">]</span> <span class="o">@</span> <span class="n">torch</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">S</span><span class="p">[:</span><span class="n">k</span><span class="p">])</span> <span class="o">@</span> <span class="n">Vh</span><span class="p">[:</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Rank-</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2"> approximation error:"</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">A_approx</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="c1"># This is the Eckart-Young-Mirsky theorem in action</span>
+</span></code></pre></div>
+<hr>
+<h2 id="014-microsim-matrix-graph-explorer">0.14 MicroSim: Matrix × Graph Explorer<a class="headerlink" href="#014-microsim-matrix-graph-explorer" title="Permanent link">¶</a></h2>
+<p>The interactive simulation below lets you visualize how matrix multiplication transforms graph features. Select a small graph, modify its adjacency matrix, and watch how <span class="arithmatex">\(\mathbf{A}\mathbf{X}\)</span> (neighbor aggregation), <span class="arithmatex">\(\mathbf{D}^{-1}\mathbf{A}\mathbf{X}\)</span> (mean aggregation), and <span class="arithmatex">\(\mathbf{D}^{-1/2}\mathbf{A}\mathbf{D}^{-1/2}\mathbf{X}\)</span> (symmetric normalization used in GCN) produce different results. Sliders let you toggle between normalization modes in real time.</p>
+<h4 id="diagram-matrix-graph-explorer">Diagram: Matrix × Graph Explorer<a class="headerlink" href="#diagram-matrix-graph-explorer" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch00-matrix-graph-explorer/main.html" width="100%" height="572px" scrolling="no"></iframe>
+<p><a href="../../sims/ch00-matrix-graph-explorer/main.html">Run Matrix × Graph Explorer Fullscreen</a></p>
+<hr>
+<h2 id="015-benchmarks-pytorch-ecosystem-for-graph-ml-20242025">0.15 Benchmarks: PyTorch Ecosystem for Graph ML (2024–2025)<a class="headerlink" href="#015-benchmarks-pytorch-ecosystem-for-graph-ml-20242025" title="Permanent link">¶</a></h2>
+<p>The table below compares the primary libraries you will use in this textbook for different graph ML tasks, based on benchmark results and adoption statistics from recent literature.</p>
+<table>
+<thead>
+<tr>
+<th>Library</th>
+<th>Primary Use</th>
+<th>Graphs/sec (ogbn-arxiv)</th>
+<th>Key Strength</th>
+<th>Citation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PyTorch Geometric (PyG)</strong></td>
+<td>GNN research &amp; prototyping</td>
+<td>~180</td>
+<td>Widest model coverage, research-first API</td>
+<td>Fey &amp; Lenssen, 2019</td>
+</tr>
+<tr>
+<td><strong>Deep Graph Library (DGL)</strong></td>
+<td>Large-scale training</td>
+<td>~220</td>
+<td>Memory-efficient, heterogeneous graph support</td>
+<td>Wang et al., 2019</td>
+</tr>
+<tr>
+<td><strong>NetworkX</strong></td>
+<td>Graph analysis &amp; visualization</td>
+<td>N/A (CPU-only)</td>
+<td>Ease of use, 70+ algorithms built-in</td>
+<td>Hagberg et al., 2008</td>
+</tr>
+<tr>
+<td><strong>Open Graph Benchmark (OGB)</strong></td>
+<td>Standardized evaluation</td>
+<td>—</td>
+<td>Leaderboards, data loaders, fair comparison</td>
+<td>Hu et al., 2020</td>
+</tr>
+<tr>
+<td><strong>PyTorch (core)</strong></td>
+<td>Custom operations</td>
+<td>Baseline</td>
+<td>Full autograd, CUDA, production-ready</td>
+<td>Paszke et al., 2019</td>
+</tr>
+</tbody>
+</table>
+<p><em>Throughput measured on ogbn-arxiv node classification with a 3-layer GCN, batch size 1024, on an NVIDIA A100 GPU. Numbers from Hu et al. (2020) and updated leaderboard results (2024). DGL and PyG are generally within 20% of each other; the choice often comes down to API preference.</em></p>
+<p><strong>Throughout this textbook</strong> we use PyTorch Geometric as the primary implementation framework. The API is research-friendly, the model zoo is comprehensive, and every major GNN architecture — GCN, GraphSAGE, GAT, GIN, Graph Transformers — is available as a single import.</p>
+<hr>
+<h2 id="016-common-pitfalls">0.16 Common Pitfalls<a class="headerlink" href="#016-common-pitfalls" title="Permanent link">¶</a></h2>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Five Mistakes That Will Cost You Hours</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning about common mistakes">
+These are not hypothetical — every GNN practitioner makes these mistakes at some point. Knowing them in advance saves significant debugging time.</p>
+</div>
+<p><strong>1. Forgetting <code>optimizer.zero_grad()</code></strong></p>
+<p>PyTorch <em>accumulates</em> gradients by default. If you call <code>loss.backward()</code> twice without zeroing, gradients from both calls are added together — your parameter updates will be wrong. Always call <code>optimizer.zero_grad()</code> at the start of each training step.</p>
+<p><strong>2. Using softmax outputs with <code>nn.CrossEntropyLoss</code></strong></p>
+<p><code>nn.CrossEntropyLoss</code> applies softmax internally. If you pass softmax outputs instead of raw logits, you get <code>log(softmax(softmax(x)))</code> — numerically unstable and semantically wrong. Always pass raw logits to cross-entropy loss functions.</p>
+<p><strong>3. Applying eigendecomposition to the wrong matrix</strong></p>
+<p>The adjacency matrix <span class="arithmatex">\(\mathbf{A}\)</span> and the Laplacian <span class="arithmatex">\(\mathbf{L} = \mathbf{D} - \mathbf{A}\)</span> have very different eigenspectra. GCN uses <span class="arithmatex">\(\hat{\mathbf{A}} = \mathbf{D}^{-1/2}(\mathbf{A} + \mathbf{I})\mathbf{D}^{-1/2}\)</span> (self-loops added, then normalized). Each normalization choice changes which frequencies of the graph signal are amplified or damped.</p>
+<p><strong>4. Shape mismatches from incorrect transpose</strong></p>
+<p>A matrix multiply <span class="arithmatex">\(\mathbf{A}\mathbf{B}\)</span> requires the inner dimensions to match: <code>A.shape[-1] == B.shape[-2]</code>. In batched settings (3-D tensors for mini-batched graphs), dimension indexing is easy to get wrong. Use <code>assert</code> statements to verify shapes at every layer during development.</p>
+<p><strong>5. Confusing eigenvalues and singular values</strong></p>
+<p>For non-symmetric matrices, eigenvalues can be complex. SVD always produces real, non-negative singular values and is the numerically stable general-purpose decomposition. Reserve <code>torch.linalg.eig</code> for symmetric matrices; use <code>torch.linalg.svd</code> for everything else.</p>
+<hr>
+<h2 id="017-chapter-summary">0.17 Chapter Summary<a class="headerlink" href="#017-chapter-summary" title="Permanent link">¶</a></h2>
+<p>The table below collects the core formulas introduced in this chapter. You will see every one of them again — often in disguised forms — as we build graph neural networks in subsequent chapters.</p>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>Formula</th>
+<th>Role in GNNs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dot product</td>
+<td><span class="arithmatex">\(\mathbf{u} \cdot \mathbf{v} = \sum_i u_i v_i\)</span></td>
+<td>Attention scores (GAT, Transformers)</td>
+</tr>
+<tr>
+<td>Cosine similarity</td>
+<td><span class="arithmatex">\(\cos\theta = \mathbf{u}^{\top}\mathbf{v} / (\|\mathbf{u}\|\|\mathbf{v}\|)\)</span></td>
+<td>Node similarity metrics, link prediction</td>
+</tr>
+<tr>
+<td>Matrix multiplication</td>
+<td><span class="arithmatex">\(C_{ij} = \sum_l A_{il}B_{lj}\)</span></td>
+<td>Neighborhood aggregation: <span class="arithmatex">\(\mathbf{A}\mathbf{X}\)</span></td>
+</tr>
+<tr>
+<td>Eigendecomposition</td>
+<td><span class="arithmatex">\(\mathbf{A} = \mathbf{U}\boldsymbol{\Lambda}\mathbf{U}^{\top}\)</span></td>
+<td>Spectral convolution, Laplacian PE</td>
+</tr>
+<tr>
+<td>SVD</td>
+<td><span class="arithmatex">\(\mathbf{A} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^{\top}\)</span></td>
+<td>Matrix factorization embeddings</td>
+</tr>
+<tr>
+<td>Gradient descent</td>
+<td><span class="arithmatex">\(\boldsymbol{\theta} \leftarrow \boldsymbol{\theta} - \eta\nabla\mathcal{L}\)</span></td>
+<td>All GNN training</td>
+</tr>
+<tr>
+<td>Chain rule</td>
+<td><span class="arithmatex">\(\partial\mathcal{L}/\partial\theta_i = \sum_j (\partial\mathcal{L}/\partial z_j)(\partial z_j/\partial\theta_i)\)</span></td>
+<td>Backpropagation</td>
+</tr>
+<tr>
+<td>Softmax</td>
+<td><span class="arithmatex">\(\text{softmax}(\mathbf{z})_k = e^{z_k}/\sum_j e^{z_j}\)</span></td>
+<td>Node classification output</td>
+</tr>
+<tr>
+<td>Cross-entropy</td>
+<td><span class="arithmatex">\(\mathcal{L}_{\text{CE}} = -\log \hat{y}_{y^*}\)</span></td>
+<td>Node/graph classification loss</td>
+</tr>
+<tr>
+<td>Adam</td>
+<td><span class="arithmatex">\(\theta_t = \theta_{t-1} - \eta\hat{m}_t/(\sqrt{\hat{v}_t}+\epsilon)\)</span></td>
+<td>Adaptive optimization</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="018-exercises">0.18 Exercises<a class="headerlink" href="#018-exercises" title="Permanent link">¶</a></h2>
+<p><em>12 exercises across all six levels of Bloom's Taxonomy.</em></p>
+<h3 id="remember">Remember<a class="headerlink" href="#remember" title="Permanent link">¶</a></h3>
+<p><strong>0.1.</strong> Write the formula for the eigendecomposition of a symmetric matrix <span class="arithmatex">\(\mathbf{A}\)</span> and state three properties that hold because <span class="arithmatex">\(\mathbf{A}\)</span> is symmetric (not just square).</p>
+<p><strong>0.2.</strong> List the five steps of a PyTorch training loop in order. For each step, name the function or method call that performs it.</p>
+<h3 id="understand">Understand<a class="headerlink" href="#understand" title="Permanent link">¶</a></h3>
+<p><strong>0.3.</strong> The graph Laplacian is <span class="arithmatex">\(\mathbf{L} = \mathbf{D} - \mathbf{A}\)</span>, where <span class="arithmatex">\(\mathbf{D}\)</span> is the diagonal degree matrix. Explain, without using formulas, why the Laplacian is always positive semi-definite. (<em>Hint: think about what <span class="arithmatex">\(\mathbf{x}^{\top}\mathbf{L}\mathbf{x}\)</span> counts over all edges.</em>)</p>
+<p><strong>0.4.</strong> In reverse-mode automatic differentiation, why is computing gradients for a scalar loss with respect to one million parameters faster than computing them in forward mode? Explain using the concept of a single backward pass.</p>
+<h3 id="apply">Apply<a class="headerlink" href="#apply" title="Permanent link">¶</a></h3>
+<p><strong>0.5.</strong> Given a 4-node path graph with adjacency matrix</p>
+<div class="arithmatex">\[\mathbf{A} = \begin{pmatrix} 0 &amp; 1 &amp; 0 &amp; 0 \\ 1 &amp; 0 &amp; 1 &amp; 0 \\ 0 &amp; 1 &amp; 0 &amp; 1 \\ 0 &amp; 0 &amp; 1 &amp; 0 \end{pmatrix}\]</div>
+<p>and feature vector <span class="arithmatex">\(\mathbf{x} = (1, 2, 3, 4)^{\top}\)</span>, compute <span class="arithmatex">\(\mathbf{A}\mathbf{x}\)</span> by hand. Then compute the degree-normalized version <span class="arithmatex">\(\mathbf{D}^{-1}\mathbf{A}\mathbf{x}\)</span> (where <span class="arithmatex">\(\mathbf{D}\)</span> is the degree matrix). What does the normalization change about the result for node 2 (the hub with degree 2)?</p>
+<p><strong>0.6.</strong> Implement a function <code>cosine_similarity_matrix(X)</code> in PyTorch that takes a node feature matrix <span class="arithmatex">\(\mathbf{X} \in \mathbb{R}^{n \times d}\)</span> and returns an <span class="arithmatex">\(n \times n\)</span> matrix of pairwise cosine similarities. Use only <code>torch</code> operations — no loops. Verify your implementation on a small example.</p>
+<h3 id="analyze">Analyze<a class="headerlink" href="#analyze" title="Permanent link">¶</a></h3>
+<p><strong>0.7.</strong> Adam uses two moment estimates (<span class="arithmatex">\(m_t\)</span> for first moment, <span class="arithmatex">\(v_t\)</span> for second moment). Analyze what happens if <span class="arithmatex">\(\beta_2\)</span> is set very close to 1 (e.g., 0.9999). How does this affect the effective learning rate for a parameter that has occasional large gradient spikes versus one with steady small gradients? Which setting would you prefer for training a GNN on a sparse graph and why?</p>
+<p><strong>0.8.</strong> The SVD of a matrix <span class="arithmatex">\(\mathbf{A}\)</span> and the eigendecomposition of <span class="arithmatex">\(\mathbf{A}^{\top}\mathbf{A}\)</span> are closely related. Derive this relationship explicitly: if <span class="arithmatex">\(\mathbf{A} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^{\top}\)</span>, what are the eigenvalues and eigenvectors of <span class="arithmatex">\(\mathbf{A}^{\top}\mathbf{A}\)</span> in terms of <span class="arithmatex">\(\mathbf{U}\)</span>, <span class="arithmatex">\(\boldsymbol{\Sigma}\)</span>, <span class="arithmatex">\(\mathbf{V}\)</span>?</p>
+<h3 id="evaluate">Evaluate<a class="headerlink" href="#evaluate" title="Permanent link">¶</a></h3>
+<p><strong>0.9.</strong> A colleague argues: "Gradient descent with a very small learning rate always converges to the global minimum if you run it long enough." Evaluate this claim. Under what conditions is it true? Under what conditions does it fail, and why? How does this affect the choice of optimizer in practice for GNNs trained on large graphs?</p>
+<p><strong>0.10.</strong> Compare the numerical behavior of computing cross-entropy loss via (a) applying <code>F.softmax</code> first then taking <code>torch.log</code>, versus (b) using <code>F.cross_entropy</code> directly on logits. Write a short experiment in PyTorch that shows a case where approach (a) gives <code>nan</code> or <code>inf</code> while approach (b) does not. Explain why the difference arises.</p>
+<h3 id="create">Create<a class="headerlink" href="#create" title="Permanent link">¶</a></h3>
+<p><strong>0.11.</strong> Design a PyTorch training loop for a node classification task on the Karate Club graph (34 nodes, 2 classes). Your design should include: (a) generating a feature matrix using random normal features, (b) a 2-layer MLP model, (c) cross-entropy loss on a manually specified train mask of 10 nodes, (d) Adam optimizer, and (e) accuracy evaluation on the remaining 24 nodes after 200 epochs. Implement and run this, reporting the train and test accuracy.</p>
+<p><strong>0.12.</strong> Using PyTorch's <code>torch.linalg.eigh</code>, compute the 4 smallest eigenvalues and corresponding eigenvectors of the Laplacian of the Karate Club graph. Plot the second eigenvector (the Fiedler vector) with nodes colored by their sign. Does the Fiedler vector partition the graph into the two Karate Club communities? If not, why might the spectral partition differ from the known social partition?</p>
+<hr>
+<h2 id="019-further-reading">0.19 Further Reading<a class="headerlink" href="#019-further-reading" title="Permanent link">¶</a></h2>
+<p><strong>[1] Paszke et al. (2019) — PyTorch: An Imperative Style, High-Performance Deep Learning Library.</strong> <em>NeurIPS 2019.</em>
+The original PyTorch paper describes the design philosophy behind dynamic computation graphs and reverse-mode autodiff. Understanding why PyTorch chose eager execution over graph compilation clarifies many API decisions you will encounter when implementing GNNs.</p>
+<p><strong>[2] Kingma &amp; Ba (2015) — Adam: A Method for Stochastic Optimization.</strong> <em>ICLR 2015.</em>
+The paper that introduced Adam, now the default optimizer in virtually all GNN training pipelines. The bias correction derivation is particularly worth reading — it explains why early training steps with Adam are more stable than with raw momentum SGD.</p>
+<p><strong>[3] Hamilton (2020) — Graph Representation Learning (book).</strong> <em>Free PDF available online.</em>
+The most accessible textbook companion to this one. Chapter 2 covers the linear algebra of graphs (Laplacians, spectral decomposition) at a level of rigor appropriate for this course. Chapter 3 introduces shallow node embedding methods that directly apply SVD and gradient descent to graphs.</p>
+<p><strong>[4] Bronstein, Bruna, Cohen &amp; Veličković (2021) — Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges.</strong> <em>arXiv:2104.13478.</em>
+Section 3 of this monograph places the linear algebra of this chapter in a unified geometric framework. Understanding symmetry, invariance, and equivariance is not strictly necessary for beginning practitioners, but it provides a compelling "why" behind GNN design choices.</p>
+<p><strong>[5] Petersen &amp; Pedersen — The Matrix Cookbook.</strong> <em>Free PDF, continuously updated.</em>
+A dense reference of matrix identities, derivative formulas, and decomposition results. Invaluable when deriving GNN gradients by hand. Keep it bookmarked — you will reach for it when computing analytical gradients in the GNN theory chapters.</p>
+<p><strong>[6] Hu et al. (2020) — Open Graph Benchmark: Datasets for Machine Learning on Graphs.</strong> <em>NeurIPS 2020.</em>
+This paper introduces the benchmarking framework we use throughout the textbook. Understanding the train/validation/test split design (especially the temporal splits for link prediction) is crucial for fair evaluation. The paper also benchmarks PyTorch Geometric and DGL, providing concrete performance numbers for library comparison.</p>
+<p><strong>[7] Fey &amp; Lenssen (2019) — Fast Graph Representation Learning with PyTorch Geometric.</strong> <em>ICLR Workshop 2019.</em>
+The original PyTorch Geometric paper describes the <code>MessagePassing</code> base class that underlies every GNN implementation in Chapters 6–11. Read this early — it will make the PyG API feel less magical and more principled.</p>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">You've Built Your Foundation!</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating">
+You have just armed yourself with every mathematical tool you will need for the rest of this textbook. Matrix multiplication, eigendecomposition, SVD, backpropagation, and a working PyTorch training loop — these are the building blocks of every graph neural network ever built. In Chapter 1, we turn to the graphs themselves: what they are, how to represent them, and what makes real-world networks so different from random ones. Your neighbors have insights too — let's go meet them!</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../" class="md-footer__link md-footer__link--prev" aria-label="Previous: List of Chapters">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                List of Chapters
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

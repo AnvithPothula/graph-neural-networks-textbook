@@ -1,0 +1,3766 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Synthesizes all 25 prior chapters into a unified GNN design space taxonomy, maps open research problems to each part, offers recommended reading paths, and traces the trajectory of the field toward graph foundation models and beyond.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/26-conclusion/">
+      
+      
+        <link rel="prev" href="../25-agents-and-graphs/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 26: Conclusion — The GNN Design Space and Open Problems - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 26: Conclusion — The GNN Design Space and Open Problems">
+  <meta property="og:description" content="Synthesizes all 25 prior chapters into a unified GNN design space taxonomy, maps open research problems to each part, offers recommended reading paths, and traces the trajectory of the field toward graph foundation models and beyond.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/26-conclusion/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 26: Conclusion — The GNN Design Space and Open Problems">
+  <meta name="twitter:description" content="Synthesizes all 25 prior chapters into a unified GNN design space taxonomy, maps open research problems to each part, offers recommended reading paths, and traces the trajectory of the field toward graph foundation models and beyond.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-26-conclusion-the-gnn-design-space-and-open-problems" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 26: Conclusion — The GNN Design Space and Open Problems
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_28" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_28" id="__nav_4_28_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_28_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_28">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#261-why-a-conclusion-chapter-matters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.1 Why a Conclusion Chapter Matters
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#262-the-gnn-design-space-a-unified-taxonomy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.2 The GNN Design Space: A Unified Taxonomy
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="26.2 The GNN Design Space: A Unified Taxonomy">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2621-the-ten-design-dimensions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.2.1 The Ten Design Dimensions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2622-reading-the-design-space-as-a-researcher" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.2.2 Reading the Design Space as a Researcher
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#263-twenty-five-chapters-one-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.3 Twenty-Five Chapters, One Map
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="26.3 Twenty-Five Chapters, One Map">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2631-part-0-prerequisites-chapters-01" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.3.1 Part 0: Prerequisites (Chapters 0–1)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2632-part-1-classical-methods-chapters-25" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.3.2 Part 1: Classical Methods (Chapters 2–5)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2633-part-2-graph-neural-networks-chapters-610" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.3.3 Part 2: Graph Neural Networks (Chapters 6–10)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2634-part-3-knowledge-graphs-and-heterogeneous-graphs-chapters-1115" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.3.4 Part 3: Knowledge Graphs and Heterogeneous Graphs (Chapters 11–15)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2635-part-4-applications-and-scale-chapters-1620" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.3.5 Part 4: Applications and Scale (Chapters 16–20)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2636-part-5-frontiers-chapters-2125" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.3.6 Part 5: Frontiers (Chapters 21–25)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#264-open-problems-by-part" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.4 Open Problems by Part
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="26.4 Open Problems by Part">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2641-part-01-open-problems-graph-construction-and-representation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.4.1 Part 0–1 Open Problems: Graph Construction and Representation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2642-part-2-open-problems-over-squashing-and-depth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.4.2 Part 2 Open Problems: Over-Squashing and Depth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2643-part-3-open-problems-inductive-and-universal-kg-reasoning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.4.3 Part 3 Open Problems: Inductive and Universal KG Reasoning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2644-part-4-open-problems-dynamic-and-streaming-graphs-at-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.4.4 Part 4 Open Problems: Dynamic and Streaming Graphs at Scale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2645-part-5-open-problems-graph-foundation-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.4.5 Part 5 Open Problems: Graph Foundation Models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2646-cross-cutting-open-problems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.4.6 Cross-Cutting Open Problems
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#265-recommended-reading-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.5 Recommended Reading Paths
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="26.5 Recommended Reading Paths">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2651-path-1-the-theory-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.5.1 Path 1: The Theory Track
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2652-path-2-the-practitioner-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.5.2 Path 2: The Practitioner Track
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2653-path-3-the-knowledge-graph-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.5.3 Path 3: The Knowledge Graph Track
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2654-path-4-the-llmgraph-track" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.5.4 Path 4: The LLM+Graph Track
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#266-where-the-field-is-going" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.6 Where the Field Is Going
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="26.6 Where the Field Is Going">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2661-graph-foundation-models-the-gpt-moment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.6.1 Graph Foundation Models: The GPT Moment
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2662-neurosymbolic-graph-reasoning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.6.2 Neurosymbolic Graph Reasoning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2663-temporal-and-streaming-graphs-at-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.6.3 Temporal and Streaming Graphs at Scale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2664-gnns-for-science" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.6.4 GNNs for Science
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2665-trustworthy-graph-ml-robustness-fairness-and-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.6.5 Trustworthy Graph ML: Robustness, Fairness, and Calibration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#267-common-misconceptions-about-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.7 Common Misconceptions About GNNs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#268-a-unified-code-blueprint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.8 A Unified Code Blueprint
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#269-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.9 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2610-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.10 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2611-microsim-gnn-architecture-family-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        26.11 MicroSim: GNN Architecture Family Tree
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="26.11 MicroSim: GNN Architecture Family Tree">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-gnn-architecture-family-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: GNN Architecture Family Tree
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    26. Conclusion: The GNN Design Space and Open Problems
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/26-conclusion/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-26-conclusion-the-gnn-design-space-and-open-problems">Chapter 26: Conclusion — The GNN Design Space and Open Problems<a class="headerlink" href="#chapter-26-conclusion-the-gnn-design-space-and-open-problems" title="Permanent link">¶</a></h1>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">You Made It — Let's Aggregate Everything We've Learned</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+Twenty-five chapters. Hundreds of concepts. One textbook. Sage is proud you made it here. This final chapter doesn't introduce new techniques — it does something more valuable: it lays every concept from the previous chapters side by side and asks, <em>how do they relate?</em> What is the full design space of graph machine learning, and where are its open frontiers? Let's aggregate some knowledge one last time.</p>
+</div>
+<h2 id="261-why-a-conclusion-chapter-matters">26.1 Why a Conclusion Chapter Matters<a class="headerlink" href="#261-why-a-conclusion-chapter-matters" title="Permanent link">¶</a></h2>
+<p>Most textbooks end with an advanced topic. This one ends with a map.</p>
+<p>After 25 chapters, you have acquired an enormous collection of tools — PageRank and label propagation, GCN and GAT, knowledge graph embeddings and multi-hop reasoning, graph contrastive learning and conformal prediction, LLM-as-encoder and agent memory graphs. The risk at the end of a deep technical journey is that these tools feel like isolated techniques rather than a unified field. They are not isolated. Each technique is a design choice within a shared space.</p>
+<p>This chapter has four goals:</p>
+<ol>
+<li><strong>Build the GNN design space</strong> — a structured taxonomy of every major architectural and training decision encountered across the textbook.</li>
+<li><strong>Synthesize the 25 prior chapters</strong> — one map that locates where each chapter's contribution lives in the design space.</li>
+<li><strong>Map open problems to each part</strong> — so you know where the field's frontier begins.</li>
+<li><strong>Trace where graph ML is going</strong> — from today's GNNs to tomorrow's graph foundation models.</li>
+</ol>
+<p>Reading this chapter should leave you with the mental model of a researcher, not just a practitioner: someone who can look at a new graph ML paper and immediately know <em>which design dimensions it touches</em> and <em>what tradeoffs it is making</em>.</p>
+<hr>
+<h2 id="262-the-gnn-design-space-a-unified-taxonomy">26.2 The GNN Design Space: A Unified Taxonomy<a class="headerlink" href="#262-the-gnn-design-space-a-unified-taxonomy" title="Permanent link">¶</a></h2>
+<p>The idea of a <em>design space</em> for GNNs was formalized by You et al. (2020) in the paper "Design Space for Graph Neural Networks." The insight is simple but powerful: rather than evaluating each GNN architecture in isolation, treat every architectural choice as an independent (or semi-independent) dimension. The full design space is the Cartesian product of all choices along all dimensions.</p>
+<p>Across this textbook, we have explored ten major design dimensions:</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">The Design Space Is a Graph Itself</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking deeply">
+Think of the GNN design space as a graph where each node is one valid architectural configuration. Two configurations are connected by an edge if they differ by exactly one design choice. Navigating this graph — understanding which moves improve performance, which cause over-smoothing, which break scalability — is what graph ML research is. Every paper you read adds edges and annotations to this design-space graph.</p>
+</div>
+<h3 id="2621-the-ten-design-dimensions">26.2.1 The Ten Design Dimensions<a class="headerlink" href="#2621-the-ten-design-dimensions" title="Permanent link">¶</a></h3>
+<p><strong>Dimension 1: Input Representation (Chapters 0, 1, 2, 23)</strong></p>
+<p>How are node features constructed before message passing begins?</p>
+<table>
+<thead>
+<tr>
+<th>Choice</th>
+<th>Chapters</th>
+<th>Key Tradeoff</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hand-crafted features (degree, centrality, graphlet counts)</td>
+<td>2</td>
+<td>Interpretable but limited</td>
+</tr>
+<tr>
+<td>Shallow embeddings (DeepWalk, node2vec, matrix factorization)</td>
+<td>4</td>
+<td>Inductive → transductive tension</td>
+</tr>
+<tr>
+<td>Random/Laplacian positional encodings</td>
+<td>11</td>
+<td>Structure-aware without labels</td>
+</tr>
+<tr>
+<td>Frozen LLM embeddings (Sentence-BERT)</td>
+<td>23</td>
+<td>Rich semantics, no end-to-end gradient</td>
+</tr>
+<tr>
+<td>Fine-tuned LLM features (TAPE, joint training)</td>
+<td>23</td>
+<td>Best quality, most compute</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dimension 2: Message-Passing Operator (Chapters 6, 7, 10, 11)</strong></p>
+<p>How does each node aggregate information from its neighbors?</p>
+<table>
+<thead>
+<tr>
+<th>Operator</th>
+<th>Definition</th>
+<th>Introduced</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GCN</td>
+<td>Symmetric normalized sum</td>
+<td>Chapter 6</td>
+</tr>
+<tr>
+<td>GraphSAGE</td>
+<td>Concat + MLP, various aggregators</td>
+<td>Chapter 6</td>
+</tr>
+<tr>
+<td>GAT</td>
+<td>Attention-weighted sum</td>
+<td>Chapter 7</td>
+</tr>
+<tr>
+<td>GIN</td>
+<td>MLP applied after sum (injective)</td>
+<td>Chapter 10</td>
+</tr>
+<tr>
+<td>PNA</td>
+<td>Aggregator ensemble with degree scalers</td>
+<td>Chapter 10</td>
+</tr>
+<tr>
+<td>Graph Transformer (GPS)</td>
+<td>Full self-attention + local MPNN</td>
+<td>Chapter 11</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dimension 3: Aggregation Function (Chapters 6, 10)</strong></p>
+<p>Within a message-passing step, which function collapses the multiset of neighbor messages?</p>
+<p>Sum aggregation is maximally expressive (as proved by the GIN analysis in Chapter 10) — it can distinguish multisets that mean and max cannot. But sum is sensitive to node degree; mean can be better for certain structural tasks. Max aggregation excels at identifying "does <em>any</em> neighbor have property X?" The choice of aggregation is not cosmetic: it determines what the GNN can and cannot distinguish.</p>
+<p><strong>Dimension 4: Depth (Number of Layers) (Chapters 8, 9)</strong></p>
+<p>How many message-passing rounds should the network execute?</p>
+<p>More layers expand each node's receptive field by one hop. With <span class="arithmatex">\( L \)</span> layers, node <span class="arithmatex">\( v \)</span> aggregates information from its <span class="arithmatex">\( L \)</span>-hop neighborhood. But depth trades off against two failure modes:</p>
+<ul>
+<li><strong>Over-smoothing</strong> (Chapter 8): with too many layers, all node representations converge to the same vector — indistinguishable and useless.</li>
+<li><strong>Over-squashing</strong> (Chapter 9): exponentially many nodes are squeezed into a fixed-size vector through graph bottlenecks, losing distant signal.</li>
+</ul>
+<p>Most competitive architectures use <span class="arithmatex">\( L \in \{2, 3\} \)</span> layers, sometimes combined with skip connections or jumping knowledge networks to mitigate both problems.</p>
+<p><strong>Dimension 5: Readout / Pooling (Chapters 6, 10, 11)</strong></p>
+<p>For graph-level tasks, how are node representations combined into a single graph embedding?</p>
+<table>
+<thead>
+<tr>
+<th>Readout</th>
+<th>Properties</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Global add pooling</td>
+<td>Simple, sum-expressive</td>
+</tr>
+<tr>
+<td>Global mean pooling</td>
+<td>Degree-invariant</td>
+</tr>
+<tr>
+<td>Global max pooling</td>
+<td>Extracts dominant signal</td>
+</tr>
+<tr>
+<td>Hierarchical pooling (DiffPool)</td>
+<td>Learnable, structure-aware</td>
+</tr>
+<tr>
+<td>Set2Set</td>
+<td>Order-invariant, attention-based</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dimension 6: Training Objective (Chapters 8, 24)</strong></p>
+<p>What signal drives parameter learning?</p>
+<table>
+<thead>
+<tr>
+<th>Regime</th>
+<th>Objective</th>
+<th>Key Technique</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Supervised</td>
+<td>Cross-entropy / MSE</td>
+<td>Standard node/graph classification</td>
+</tr>
+<tr>
+<td>Self-supervised (generative)</td>
+<td>Reconstruction</td>
+<td>GraphVAE, GraphRNN</td>
+</tr>
+<tr>
+<td>Self-supervised (contrastive)</td>
+<td>NT-Xent / InfoNCE</td>
+<td>GraphCL, GRACE</td>
+</tr>
+<tr>
+<td>Self-supervised (mutual info)</td>
+<td>JSD maximization</td>
+<td>DGI</td>
+</tr>
+<tr>
+<td>In-context learning</td>
+<td>Cosine similarity to task nodes</td>
+<td>PRODIGY</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dimension 7: Expressiveness (Chapters 9, 10)</strong></p>
+<p>What structural properties can the GNN distinguish?</p>
+<p>The 1-WL test (Chapter 9) establishes the ceiling for standard message-passing GNNs: two nodes receive identical representations if and only if 1-WL assigns them the same color. GIN achieves this ceiling. To go beyond 1-WL, higher-order GNNs (k-GNNs) operate on k-tuples of nodes, but at cost <span class="arithmatex">\( O(n^k) \)</span> — impractical for large graphs. Chapter 10 covers practical approximations: random features, structural encodings, and subgraph GNNs.</p>
+<p><strong>Dimension 8: Scale Strategy (Chapter 20)</strong></p>
+<p>How does the GNN handle graphs too large to fit in GPU memory?</p>
+<table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th>Approach</th>
+<th>Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Full-batch</td>
+<td>Entire graph on GPU</td>
+<td>Only for small graphs</td>
+</tr>
+<tr>
+<td>Neighbor sampling</td>
+<td>Fixed fan-out per layer</td>
+<td>GraphSAGE, SAGE</td>
+</tr>
+<tr>
+<td>Layer sampling</td>
+<td>Sample edges per layer</td>
+<td>FastGCN, LADIES</td>
+</tr>
+<tr>
+<td>Subgraph sampling</td>
+<td>Mini-batches of subgraphs</td>
+<td>Cluster-GCN, GraphSAINT</td>
+</tr>
+<tr>
+<td>Simplified propagation</td>
+<td>Pre-compute features offline</td>
+<td>SGC, SIGN</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dimension 9: Graph Type (Chapters 15, 17, 22)</strong></p>
+<p>What kind of graph is the input?</p>
+<table>
+<thead>
+<tr>
+<th>Graph Type</th>
+<th>Key Challenge</th>
+<th>Covered</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Homogeneous</td>
+<td>Standard</td>
+<td>Chapters 6–10</td>
+</tr>
+<tr>
+<td>Heterogeneous (typed nodes/edges)</td>
+<td>Type-specific transforms, meta-paths</td>
+<td>Chapter 15</td>
+</tr>
+<tr>
+<td>Relational (multi-table)</td>
+<td>Entity unification, schema</td>
+<td>Chapter 17</td>
+</tr>
+<tr>
+<td>Temporal / dynamic</td>
+<td>Time encoding, event memory</td>
+<td>Chapter 22</td>
+</tr>
+<tr>
+<td>Knowledge graphs</td>
+<td>Relation-type embedding</td>
+<td>Chapters 12–14</td>
+</tr>
+<tr>
+<td>Scene graphs</td>
+<td>Spatial/semantic relations</td>
+<td>Chapter 25</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Dimension 10: Task Level</strong></p>
+<p>What is the prediction target?</p>
+<table>
+<thead>
+<tr>
+<th>Level</th>
+<th>Task</th>
+<th>Chapters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Node</td>
+<td>Classification, regression</td>
+<td>3, 4, 5, 6, 7, 8</td>
+</tr>
+<tr>
+<td>Edge</td>
+<td>Link prediction, relation classification</td>
+<td>3, 12, 13</td>
+</tr>
+<tr>
+<td>Subgraph</td>
+<td>Subgraph classification, motif counting</td>
+<td>19</td>
+</tr>
+<tr>
+<td>Graph</td>
+<td>Molecule property, graph isomorphism</td>
+<td>10, 21</td>
+</tr>
+<tr>
+<td>Multi-task</td>
+<td>Heterogeneous</td>
+<td>15, 17</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2622-reading-the-design-space-as-a-researcher">26.2.2 Reading the Design Space as a Researcher<a class="headerlink" href="#2622-reading-the-design-space-as-a-researcher" title="Permanent link">¶</a></h3>
+<p>Every GNN paper makes explicit choices along these ten dimensions — even if it does not say so. When you read a new paper, the first five questions to ask are:</p>
+<ol>
+<li>What input representation does it use, and why?</li>
+<li>What message-passing operator does it introduce, and how does it compare to prior choices?</li>
+<li>How deep is the proposed architecture, and how does it handle over-smoothing?</li>
+<li>What is the training objective — supervised, self-supervised, or in-context?</li>
+<li>Which graph types and scales does it target?</li>
+</ol>
+<p>Answering these five questions for any paper tells you its position in the design space and, by extension, which papers it is really competing with.</p>
+<hr>
+<h2 id="263-twenty-five-chapters-one-map">26.3 Twenty-Five Chapters, One Map<a class="headerlink" href="#263-twenty-five-chapters-one-map" title="Permanent link">¶</a></h2>
+<p>Each of the six textbook parts occupies a distinct region of the design space.</p>
+<h3 id="2631-part-0-prerequisites-chapters-01">26.3.1 Part 0: Prerequisites (Chapters 0–1)<a class="headerlink" href="#2631-part-0-prerequisites-chapters-01" title="Permanent link">¶</a></h3>
+<p><strong>Chapter 0</strong> (Math and Programming Prerequisites) built the substrate: linear algebra, probability, PyTorch, and PyTorch Geometric. These tools are not graph ML per se — they are the computational infrastructure that every subsequent chapter relies on.</p>
+<p><strong>Chapter 1</strong> (Introduction to Graphs and Networks) established the vocabulary: nodes, edges, adjacency matrices, degree distributions, clustering coefficients, path lengths, connected components, the small-world property, and power-law degree distributions. It introduced the four primary graph ML task levels and the Karate Club graph as the running example for early chapters.</p>
+<p><em>Design space contribution:</em> These chapters are prerequisites, not architectural choices. They define the objects the design space operates on.</p>
+<h3 id="2632-part-1-classical-methods-chapters-25">26.3.2 Part 1: Classical Methods (Chapters 2–5)<a class="headerlink" href="#2632-part-1-classical-methods-chapters-25" title="Permanent link">¶</a></h3>
+<p><strong>Chapter 2</strong> (Graph Properties and Features) introduced hand-crafted features — degree statistics, centrality measures, graphlet counts, and the WL color refinement algorithm as a feature. This occupies the leftmost column of Dimension 1 (input representation) in the design space.</p>
+<p><strong>Chapter 3</strong> (Link Analysis and PageRank) introduced score propagation as an algorithmic paradigm: a node's importance score depends on the importance of nodes pointing to it. This is not a GNN, but it is the conceptual ancestor of message passing — the key insight is that node properties propagate across edges.</p>
+<p><strong>Chapter 4</strong> (Node Embeddings) moved from score propagation to representation learning: random walks generate node co-occurrence statistics, and matrix factorization converts those statistics into dense vectors. DeepWalk, node2vec, and LINE are all variations on this theme. Their fundamental limitation — transductivity — motivates the shift to GNNs in Part 2.</p>
+<p><strong>Chapter 5</strong> (Label Propagation) introduced semi-supervised learning on graphs: a small number of labeled nodes diffuse their labels across the graph via edge connectivity. This is not a learned model but a structured inference algorithm, and it remains competitive on highly connected graphs with high label rates.</p>
+<p><em>Design space contribution:</em> Part 1 fills Dimension 1 (hand-crafted and shallow-learned features) and establishes Dimension 10 (node-level tasks) as the primary lens.</p>
+<h3 id="2633-part-2-graph-neural-networks-chapters-610">26.3.3 Part 2: Graph Neural Networks (Chapters 6–10)<a class="headerlink" href="#2633-part-2-graph-neural-networks-chapters-610" title="Permanent link">¶</a></h3>
+<p>This is the core of the design space.</p>
+<p><strong>Chapter 6</strong> (GNN Foundations) introduced the message-passing neural network (MPNN) framework — the universal abstraction that subsumes GCN, GraphSAGE, and GAT. The fundamental operations are: (1) compute messages from each neighbor, (2) aggregate messages at the target node, (3) update the node's representation with an MLP. This chapter covers Dimensions 2 and 3 simultaneously.</p>
+<p><strong>Chapter 7</strong> (GNN Design Space) explored Dimension 2 in depth: how many layers, which aggregation, which activations, with or without batch normalization? The key finding from ablation studies is that no single operator dominates across all tasks — choices interact.</p>
+<p><strong>Chapter 8</strong> (GNN Training) addressed Dimension 6 (training) and the critical failure mode of over-smoothing (Dimension 4). It covered dropout, skip connections, jumping knowledge, gradient clipping, and the trade-off between depth and performance on ogbn-arxiv.</p>
+<p><strong>Chapter 9</strong> (GNN Theory) pinned Dimension 7 (expressiveness) to a formal foundation: the Weisfeiler-Lehman color refinement test. Standard MPNNs are exactly as expressive as 1-WL. This places a ceiling on what any MPNN can learn — they cannot distinguish regular graphs that WL cannot distinguish.</p>
+<p><strong>Chapter 10</strong> (Powerful GNNs) introduced techniques that exceed the WL ceiling: GIN achieves the 1-WL ceiling, while ring GNNs, subgraph GNNs, and structural encodings approximate or reach higher-order expressiveness at manageable cost.</p>
+<p><em>Design space contribution:</em> Part 2 defines the core of Dimensions 2–7. Everything upstream feeds into it; everything downstream extends it.</p>
+<h3 id="2634-part-3-knowledge-graphs-and-heterogeneous-graphs-chapters-1115">26.3.4 Part 3: Knowledge Graphs and Heterogeneous Graphs (Chapters 11–15)<a class="headerlink" href="#2634-part-3-knowledge-graphs-and-heterogeneous-graphs-chapters-1115" title="Permanent link">¶</a></h3>
+<p><strong>Chapter 11</strong> (Graph Transformers) reexamined Dimension 2 through the lens of full self-attention: instead of limiting aggregation to local neighborhoods, Graphormer, SAN, and GPS allow every node to attend to every other node. The cost is quadratic in the number of nodes, so Chapter 11 also covers position encodings that inject graph structure into the attention computation.</p>
+<p><strong>Chapter 12</strong> (Knowledge Graph Embeddings) introduced a new task (edge-level: link prediction over typed relations) and a new operator family: geometric scoring functions. TransE, RotatE, DistMult, and ComplEx all define the score of a triple <span class="arithmatex">\( (h, r, t) \)</span> via a geometric operation on the embeddings of head, relation, and tail. There is no message passing — these are shallow models trained by contrasting true and corrupted triples.</p>
+<p><strong>Chapter 13</strong> (KG Reasoning) layered learned relational paths over KG embeddings: RotatE captures compositional patterns implicitly, while NBFNet propagates belief along paths explicitly. Multi-hop reasoning is Dimension 4 (depth) applied to knowledge graphs.</p>
+<p><strong>Chapter 14</strong> (KG Foundation Models) addressed Dimension 7 (expressiveness) for the KG setting: ULTRA achieves zero-shot reasoning across unseen entity/relation vocabularies via relation-relative graph representations. This is in-context learning for knowledge graphs (Dimension 6, in-context regime).</p>
+<p><strong>Chapter 15</strong> (Heterogeneous Graphs) extended Dimension 9 (graph type) from homogeneous to multi-typed: HAN uses meta-path-based aggregation, while HGT learns type-specific projection matrices and attention across all edge types. RGCN handles relation-type-specific weight matrices for KG-like settings.</p>
+<p><em>Design space contribution:</em> Part 3 explores Dimension 9 (graph type: knowledge graphs, heterogeneous), Dimension 7 (beyond-WL expressiveness for typed relations), and extends Dimension 6 to in-context learning for graphs.</p>
+<h3 id="2635-part-4-applications-and-scale-chapters-1620">26.3.5 Part 4: Applications and Scale (Chapters 16–20)<a class="headerlink" href="#2635-part-4-applications-and-scale-chapters-1620" title="Permanent link">¶</a></h3>
+<p><strong>Chapter 16</strong> (Recommender Systems) specialized the GNN framework to bipartite user-item graphs. PinSage and LightGCN both showed that neighborhood propagation on interaction graphs dramatically improves collaborative filtering. The main new challenge is Dimension 8 (scale): recommender systems have billions of users and items, requiring mini-batch training with neighbor sampling.</p>
+<p><strong>Chapter 17</strong> (Relational Deep Learning) extended Dimension 9 to relational databases: RELBENCH converts multi-table relational data into a heterogeneous temporal graph, enabling GNNs to learn from the full join structure of a database without manual feature engineering.</p>
+<p><strong>Chapter 18</strong> (Community Structure) and <strong>Chapter 19</strong> (Subgraph Mining) covered the traditional graph analysis tools — Louvain modularity optimization, BigCLAM overlapping communities, graphlet frequency distributions, and subgraph pattern matching via SPMiner. These chapters primarily extend Dimension 10 (task level: subgraph-level prediction and unsupervised community assignment).</p>
+<p><strong>Chapter 20</strong> (Scaling GNNs) addressed Dimension 8 in full depth: the exponential neighborhood explosion that makes naive full-batch training infeasible on large graphs. Neighbor sampling (GraphSAGE), layer-wise sampling (FastGCN), subgraph sampling (Cluster-GCN, GraphSAINT), and simplified propagation (SGC) each trade variance for compute.</p>
+<p><em>Design space contribution:</em> Part 4 pushes Dimensions 8 (scale) and 10 (task level) to their practical limits. It connects graph ML to real-world systems.</p>
+<h3 id="2636-part-5-frontiers-chapters-2125">26.3.6 Part 5: Frontiers (Chapters 21–25)<a class="headerlink" href="#2636-part-5-frontiers-chapters-2125" title="Permanent link">¶</a></h3>
+<p><strong>Chapter 21</strong> (Generative Models for Graphs) entered a new territory: Dimension 6 as a generative objective. GraphVAE encodes graphs into a continuous latent space and decodes them back. GraphRNN generates graphs node by node with an autoregressive model. GDSS and GDiff use score-based diffusion directly on graph structures. These models operate in Dimension 5 (graph-level readout) and Dimension 6 (generative training).</p>
+<p><strong>Chapter 22</strong> (Temporal Graphs) extended Dimension 9 to the time axis: TGN introduced node memory modules that accumulate event history, time encoding that decays older events, and temporal neighborhood samplers that respect causality. TGAT added transformer-style attention over temporal neighborhoods.</p>
+<p><strong>Chapter 23</strong> (LLMs and GNNs) brought natural language into Dimension 1 (input representation): text-attributed graphs, LLM-as-encoder (frozen Sentence-BERT features), TAPE (pseudo-labels and explanations from LLMs), and joint fine-tuning. Chapter 23 also introduced graph instruction tuning and graph foundation models (PRODIGY, OFA) — which connect to Dimension 6 (in-context learning).</p>
+<p><strong>Chapter 24</strong> (Advanced GNN Topics) deepened Dimension 6 with self-supervised learning: Deep Graph Infomax (DGI) via mutual information maximization, GraphCL via contrastive augmentations, and PRODIGY for zero-shot in-context node classification. It also covered DAPS — conformal prediction for GNNs — which provides formal uncertainty guarantees at test time.</p>
+<p><strong>Chapter 25</strong> (Agents and Graphs) extended the design space to agents: graphs as scene representations (scene graph generation), graphs as persistent agent memory (MemGPT memory graphs, entity resolution), and graphs as tool dependency structures (ReAct with topological planning). Multi-hop KG traversal by an LLM-based agent bridges Chapter 13's KG reasoning with Chapter 25's agentic reasoning loop.</p>
+<p><em>Design space contribution:</em> Part 5 opens new dimensions that do not fit cleanly in the original taxonomy — temporal structure, generative objectives, LLM-as-feature, and agentic reasoning — and hints at where the next taxonomy will need to be drawn.</p>
+<hr>
+<h2 id="264-open-problems-by-part">26.4 Open Problems by Part<a class="headerlink" href="#264-open-problems-by-part" title="Permanent link">¶</a></h2>
+<p>Graph machine learning is a rapidly evolving field. Each part of this textbook reaches a frontier — a place where the research community's answers are tentative, contested, or simply missing. Here are the most important open problems as of 2025.</p>
+<h3 id="2641-part-01-open-problems-graph-construction-and-representation">26.4.1 Part 0–1 Open Problems: Graph Construction and Representation<a class="headerlink" href="#2641-part-01-open-problems-graph-construction-and-representation" title="Permanent link">¶</a></h3>
+<p>The textbook assumes graphs are given. In practice, the hardest question is often: <em>what graph should we build?</em> For text datasets, should nodes be sentences or documents? For images, should edges connect pixels, patches, or objects? For tabular data, should we build a kNN graph on features or a correlation graph on variables?</p>
+<p><strong>Open problem:</strong> Learned graph construction — simultaneously learning <em>which graph to build</em> and <em>how to apply a GNN over it</em> — remains unsolved for general domains. Differentiable graph learning methods (LDS, IDGL, GRCN) exist but are fragile and computationally expensive.</p>
+<h3 id="2642-part-2-open-problems-over-squashing-and-depth">26.4.2 Part 2 Open Problems: Over-Squashing and Depth<a class="headerlink" href="#2642-part-2-open-problems-over-squashing-and-depth" title="Permanent link">¶</a></h3>
+<p>Despite years of work, over-squashing remains poorly understood in practice. We know it occurs at graph bottlenecks (Chapter 9), and that graph rewiring (adding virtual edges) can help. But we lack:</p>
+<ol>
+<li>A computationally efficient rewiring strategy that provably eliminates over-squashing without sacrificing scalability.</li>
+<li>A theoretical understanding of when depth helps versus hurts across graph types — the depth-expressiveness trade-off has only been formalized for very specific graph families.</li>
+</ol>
+<p><strong>Open problem:</strong> When does increasing depth help a GNN, and when does it hurt? The answer depends on the task, the graph topology, and the aggregation function — but no unified theory integrates all three.</p>
+<h3 id="2643-part-3-open-problems-inductive-and-universal-kg-reasoning">26.4.3 Part 3 Open Problems: Inductive and Universal KG Reasoning<a class="headerlink" href="#2643-part-3-open-problems-inductive-and-universal-kg-reasoning" title="Permanent link">¶</a></h3>
+<p>Knowledge graphs are inherently incomplete, and new entities appear constantly. The goal of <em>inductive</em> KG reasoning — predicting relations for entities never seen during training — was partially addressed by ULTRA (Chapter 14). But ULTRA's transfer relies on relational symmetry patterns that do not always hold.</p>
+<p><strong>Open problem:</strong> Can a single KG reasoning model generalize zero-shot to a new knowledge graph with an entirely different schema — not just new entities, but new relation types? Current methods all require at least some overlap between training and test relation vocabularies.</p>
+<h3 id="2644-part-4-open-problems-dynamic-and-streaming-graphs-at-scale">26.4.4 Part 4 Open Problems: Dynamic and Streaming Graphs at Scale<a class="headerlink" href="#2644-part-4-open-problems-dynamic-and-streaming-graphs-at-scale" title="Permanent link">¶</a></h3>
+<p>Chapter 22 covered temporal graph learning; Chapter 20 covered scalable GNNs. The intersection — scaling temporal GNNs to billions of events — is largely unsolved. TGN requires maintaining per-node memory vectors that must be updated in the correct temporal order, which is fundamentally incompatible with the parallel mini-batch training that makes GNN scale feasible.</p>
+<p><strong>Open problem:</strong> How do we train temporal GNNs at the scale of industrial recommendation systems (millions of users, billions of interactions per day) without sacrificing temporal fidelity?</p>
+<h3 id="2645-part-5-open-problems-graph-foundation-models">26.4.5 Part 5 Open Problems: Graph Foundation Models<a class="headerlink" href="#2645-part-5-open-problems-graph-foundation-models" title="Permanent link">¶</a></h3>
+<p>Chapter 23 introduced early graph foundation models (PRODIGY, OFA). These are promising but far from the robustness and generality of large language models. Key gaps:</p>
+<ol>
+<li><strong>Pre-training objectives:</strong> What is the right self-supervised objective for graphs that generalizes across domains? Contrastive learning works within a domain but may not transfer across molecular, social, and citation graphs.</li>
+<li><strong>Architecture:</strong> Should graph foundation models be purely GNN-based, purely transformer-based (treating graphs as sequences of tokens), or hybrid? GPS (Chapter 11) and OFA (Chapter 23) suggest hybrid, but the optimal design is unknown.</li>
+<li><strong>Evaluation:</strong> There is no agreed-upon benchmark suite for graph foundation model generalization, analogous to GLUE/SuperGLUE for language models.</li>
+</ol>
+<p><strong>Open problem:</strong> What is the "ImageNet moment" for graph foundation models — the task, dataset, and training recipe that precipitates a step-change in zero-shot graph ML performance?</p>
+<h3 id="2646-cross-cutting-open-problems">26.4.6 Cross-Cutting Open Problems<a class="headerlink" href="#2646-cross-cutting-open-problems" title="Permanent link">¶</a></h3>
+<ul>
+<li><strong>Robustness:</strong> GNNs are brittle to adversarial perturbations of the graph structure (Chapter 9). Certified robustness certificates exist only for small graphs under restrictive perturbation models.</li>
+<li><strong>Fairness:</strong> GNNs propagate and amplify structural biases — a node that is disadvantaged by its neighborhood will receive worse-quality representations, and the GNN has no mechanism to correct this without explicit intervention.</li>
+<li><strong>Interpretability:</strong> Attention weights in GAT (Chapter 7) are often used as explanations, but they correlate poorly with causal feature importance. GNNExplainer and related post-hoc methods exist but lack theoretical guarantees.</li>
+</ul>
+<hr>
+<h2 id="265-recommended-reading-paths">26.5 Recommended Reading Paths<a class="headerlink" href="#265-recommended-reading-paths" title="Permanent link">¶</a></h2>
+<p>This textbook was designed to be read linearly — each chapter assumes the ones before it. But not everyone enters graph ML with the same background or goals. Here are four recommended reading paths for different starting points.</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Choose Your Entry Point Based on Your Goals</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving a helpful tip">
+The textbook is self-contained when read front to back, but that is not the only valid path. If you are a practitioner who needs to deploy a GNN next month, skip ahead. If you are a theorist who wants to understand expressiveness, skip to Part 2. Sage's advice: always read Chapter 0 and Chapter 6 regardless of your path — they are the floor and the foundation.</p>
+</div>
+<h3 id="2651-path-1-the-theory-track">26.5.1 Path 1: The Theory Track<a class="headerlink" href="#2651-path-1-the-theory-track" title="Permanent link">¶</a></h3>
+<p><em>For readers interested in the mathematical foundations of GNN expressiveness, learning theory, and the connections to combinatorial optimization.</em></p>
+<p><strong>Recommended sequence:</strong> Chapters 0 → 1 → 6 → 9 → 10 → 11 → 18 → 19 → 24 (§24.3–§24.6)</p>
+<p><strong>What you will gain:</strong> A deep understanding of why GNNs work, what they provably cannot do, and how the WL hierarchy connects to classical graph theory. After this path, you will be ready to read papers on higher-order GNNs, spectral methods, and topological graph learning.</p>
+<p><strong>Key papers to read next:</strong> Xu et al. (2019) on GIN, Morris et al. (2019) on Weisfeiler-Leman GNNs, Kreuzer et al. (2021) on SAN, You et al. (2020) on GNN design space.</p>
+<h3 id="2652-path-2-the-practitioner-track">26.5.2 Path 2: The Practitioner Track<a class="headerlink" href="#2652-path-2-the-practitioner-track" title="Permanent link">¶</a></h3>
+<p><em>For readers who need to build and deploy GNN models on real datasets — recommendation systems, fraud detection, drug discovery.</em></p>
+<p><strong>Recommended sequence:</strong> Chapters 0 → 1 → 6 → 7 → 8 → 16 → 17 → 20</p>
+<p><strong>What you will gain:</strong> A complete, deployable GNN toolkit — from basic MPNN implementation through GAT, mini-batch training with neighbor sampling, recommender system deployment, and relational deep learning on database-structured data.</p>
+<p><strong>Key tools to practice with:</strong> PyTorch Geometric, the OGB benchmark suite, the RELBENCH benchmark, and DGL (Deep Graph Library) for large-scale training.</p>
+<h3 id="2653-path-3-the-knowledge-graph-track">26.5.3 Path 3: The Knowledge Graph Track<a class="headerlink" href="#2653-path-3-the-knowledge-graph-track" title="Permanent link">¶</a></h3>
+<p><em>For readers building question-answering systems, entity resolution pipelines, or reasoning engines over structured knowledge.</em></p>
+<p><strong>Recommended sequence:</strong> Chapters 0 → 1 → 12 → 13 → 14 → 15 → 23 → 25</p>
+<p><strong>What you will gain:</strong> Full coverage of KG embeddings (TransE, RotatE, DistMult), multi-hop reasoning (BFS/DFS path models, NBFNet), inductive reasoning (ULTRA), heterogeneous graphs (HGT, HAN), LLM-enriched KGs (text-attributed graphs, TAPE), and agent-based reasoning over KGs (Chapter 25).</p>
+<p><strong>Key benchmark:</strong> FB15k-237 and WN18RR for KG completion; ogbl-wikikg2 for large-scale link prediction; RELBENCH for relational tasks.</p>
+<h3 id="2654-path-4-the-llmgraph-track">26.5.4 Path 4: The LLM+Graph Track<a class="headerlink" href="#2654-path-4-the-llmgraph-track" title="Permanent link">¶</a></h3>
+<p><em>For readers coming from NLP or LLM engineering who want to integrate graph structure into language model pipelines.</em></p>
+<p><strong>Recommended sequence:</strong> Chapters 0 → 1 → 6 → 23 → 24 (§24.4–§24.5) → 25</p>
+<p><strong>What you will gain:</strong> The three LLM+GNN integration strategies (LLM-as-encoder, TAPE, LLM-as-reasoner), graph instruction tuning (InstructGLM, GraphGPT), graph foundation models (PRODIGY, OFA), and agentic graph reasoning (Chapter 25).</p>
+<p><strong>Key papers to read next:</strong> Zhao et al. (2023) on TAPE, He et al. (2024) on OFA, Hamilton et al. (2017) on GraphSAGE, Sun et al. (2023) on PRODIGY.</p>
+<hr>
+<h2 id="266-where-the-field-is-going">26.6 Where the Field Is Going<a class="headerlink" href="#266-where-the-field-is-going" title="Permanent link">¶</a></h2>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">The Best Papers in This Field Haven't Been Written Yet</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encouraging students">
+Graph machine learning is a field in rapid, sometimes chaotic, motion. Some of the most important architectures in this textbook — GPS, ULTRA, TGN, OFA — are fewer than five years old. The concepts that will define the next five years are being worked out right now, in papers being submitted to NeurIPS and ICLR this year. Sage's message: you have arrived at the frontier, not the finish line.</p>
+</div>
+<p>Five trajectories are likely to define graph ML over the next five years.</p>
+<h3 id="2661-graph-foundation-models-the-gpt-moment">26.6.1 Graph Foundation Models: The GPT Moment<a class="headerlink" href="#2661-graph-foundation-models-the-gpt-moment" title="Permanent link">¶</a></h3>
+<p>The most consequential open direction is the development of <em>general-purpose graph foundation models</em> — pre-trained models that transfer across graph domains with minimal fine-tuning. Chapter 23 introduced PRODIGY and OFA as early examples.</p>
+<p>The analogy to language is compelling but imperfect. Language models benefit from a universal token vocabulary (characters or subwords) and a universal task format (predict the next token). Graphs have neither: node features vary by domain (molecular fingerprints vs. user embeddings vs. paper abstracts), and task formats vary (node classification vs. link prediction vs. graph regression). OFA's approach — converting everything to natural language and using an LLM as the unifying encoder — is one way to impose universality. Whether it is the right way remains to be seen.</p>
+<p>The key challenge is defining a <em>graph-native</em> pre-training objective that does not simply defer to language. Candidates include masked node prediction (analogous to BERT's masked language modeling), edge prediction (as in GPT-style next-edge generation), and structural prediction tasks (predict the degree of masked nodes, or predict the distance between two nodes). None of these has produced a breakthrough comparable to what masked language modeling did for NLP.</p>
+<h3 id="2662-neurosymbolic-graph-reasoning">26.6.2 Neurosymbolic Graph Reasoning<a class="headerlink" href="#2662-neurosymbolic-graph-reasoning" title="Permanent link">¶</a></h3>
+<p>A second trajectory is the integration of GNNs with symbolic reasoning systems — logic programs, theorem provers, and formal knowledge representations. GNNs excel at pattern recognition over noisy, incomplete graphs. Symbolic systems excel at exact, composable inference. Neither alone handles the full spectrum of real-world reasoning tasks.</p>
+<p>Current approaches include:
+- <strong>Differentiable rule learning:</strong> systems like Neural LP and DRUM learn logical rules (e.g., "brother-of(A,B) ∧ parent-of(B,C) → uncle-of(A,C)") as weighted paths in a KG, trained end-to-end with gradient descent.
+- <strong>GNN-guided symbolic search:</strong> the GNN scores which logical rules to try, and a symbolic engine executes them — combining GNN pattern matching with guaranteed logical correctness.
+- <strong>Conformalized reasoning:</strong> Chapter 24's DAPS showed how to wrap a GNN's predictions with provable coverage guarantees. Extending this to multi-hop reasoning — where errors compound across hops — is an active research area.</p>
+<h3 id="2663-temporal-and-streaming-graphs-at-scale">26.6.3 Temporal and Streaming Graphs at Scale<a class="headerlink" href="#2663-temporal-and-streaming-graphs-at-scale" title="Permanent link">¶</a></h3>
+<p>Chapter 22 established the formal foundations of temporal graph learning. The practical challenge — handling billions of events per day in near-real-time — remains unsolved at scale. Industrial recommendation systems at companies like Pinterest, LinkedIn, and Meta generate tens of millions of graph update events per second. Training a TGN over such a stream requires solving a distributed systems problem that is only partially a machine learning problem.</p>
+<p>Emerging approaches include asynchronous message passing, approximate temporal aggregation, and hierarchical memory compression that coarsens old event history. Expect significant advances in this area over the next three years, driven by industrial demand.</p>
+<h3 id="2664-gnns-for-science">26.6.4 GNNs for Science<a class="headerlink" href="#2664-gnns-for-science" title="Permanent link">¶</a></h3>
+<p>Molecular graphs (drug discovery, materials design) and biological networks (protein-protein interaction, gene regulatory networks) are two of the most important application domains for graph ML. AlphaFold2 — which used a variant of message passing over a residue-level graph — demonstrated that graph-structured reasoning at atomic resolution is achievable. The success of AlphaFold2 has catalyzed an enormous wave of GNN applications in structural biology, chemical synthesis planning, and materials discovery.</p>
+<p>Key open problems in scientific GNNs:
+- <strong>3D equivariance:</strong> molecular graphs have geometric structure (bond angles, dihedral angles) that must be modeled equivariantly with respect to rotation and reflection. Models like SchNet, DimeNet, and SE(3)-Transformers address this at increasing cost.
+- <strong>Out-of-distribution generalization:</strong> models trained on existing molecules must predict properties of molecules far from the training distribution — the exact setting where GNNs are known to be unreliable.</p>
+<h3 id="2665-trustworthy-graph-ml-robustness-fairness-and-calibration">26.6.5 Trustworthy Graph ML: Robustness, Fairness, and Calibration<a class="headerlink" href="#2665-trustworthy-graph-ml-robustness-fairness-and-calibration" title="Permanent link">¶</a></h3>
+<p>As GNNs are deployed in consequential settings — credit scoring, healthcare triage, judicial risk assessment — the field is under increasing pressure to provide not just accurate predictions but <em>auditable and fair</em> ones.</p>
+<p>Chapter 24's DAPS showed that GNN predictions can carry formal coverage certificates via conformal prediction. Extending this to temporal, heterogeneous, and knowledge graph settings is active work. Adversarial robustness — certifying that a GNN's prediction does not change under small graph perturbations — has seen progress via randomized smoothing and interval bound propagation, but certified methods are still too slow for deployment on large graphs.</p>
+<p>Fairness in GNNs is particularly thorny because the graph structure itself encodes historical inequities. If marginalized communities are sparser in a social graph (fewer connections, lower PageRank, smaller k-hop neighborhoods), then GNNs will systematically produce worse representations for those communities — a structural amplification effect that standard fairness constraints (demographic parity, equalized odds) are not designed to handle.</p>
+<hr>
+<h2 id="267-common-misconceptions-about-gnns">26.7 Common Misconceptions About GNNs<a class="headerlink" href="#267-common-misconceptions-about-gnns" title="Permanent link">¶</a></h2>
+<p>Several misconceptions about GNNs are persistent enough in the community to deserve explicit correction.</p>
+<p><strong>Misconception 1: "More layers = more expressive."</strong>
+False. More layers expand the receptive field, which can help tasks that require global context — but over-smoothing (Chapter 8) means that beyond a critical depth, performance degrades. Depth and expressiveness (Dimension 7) are largely orthogonal in standard MPNNs.</p>
+<p><strong>Misconception 2: "Attention weights explain the model's predictions."</strong>
+Not reliably. GAT attention weights (Chapter 7) tell you which neighbors the model <em>weights most</em>, but they are computed before the aggregation and update steps, so they do not directly reflect which neighbors <em>caused</em> the final prediction. Post-hoc attribution methods (GNNExplainer, PGExplainer) attempt to address this but make distributional assumptions that may not hold.</p>
+<p><strong>Misconception 3: "GNNs are always better than non-graph baselines."</strong>
+No. On many tabular datasets, XGBoost with hand-crafted relational features outperforms GNNs — particularly when the graph structure is sparse, noisy, or not predictive of the target. GNNs are the right tool when relational structure is genuinely informative and that structure is dense enough to propagate signal.</p>
+<p><strong>Misconception 4: "Self-supervised pre-training always improves fine-tuning."</strong>
+Not always. DGI and GraphCL (Chapter 24) improve performance when labeled data is scarce. When labeled data is abundant, the pre-trained representations may be suboptimal for the specific downstream task — a phenomenon sometimes called <em>negative transfer</em>. Pre-training objectives that are not aligned with the downstream task can hurt.</p>
+<p><strong>Misconception 5: "LLMs make GNNs obsolete."</strong>
+Premature. LLMs cannot natively process graph topology — they can only process descriptions of graphs as text, which loses structural information for graphs larger than a few hundred nodes. The LLM+GNN hybrid strategies in Chapter 23 exist precisely because neither LLMs alone nor GNNs alone are sufficient for text-attributed graph tasks. The two modalities are complementary.</p>
+<hr>
+<h2 id="268-a-unified-code-blueprint">26.8 A Unified Code Blueprint<a class="headerlink" href="#268-a-unified-code-blueprint" title="Permanent link">¶</a></h2>
+<p>The following code demonstrates the GNN design space in action: a single training framework that instantiates any of the four major architectures (GCN, GraphSAGE, GAT, GIN) and benchmarks them on the ogbn-arxiv node classification task. The framework is a living illustration of how Dimensions 2, 3, 6, and 8 translate to code.</p>
+<p>Before reading the code, note the four key parameters it exposes:</p>
+<ul>
+<li><code>model_type</code>: selects the message-passing operator (Dimension 2)</li>
+<li><code>hidden_channels</code>: sets the embedding dimension (Dimension 5 / readout capacity)</li>
+<li><code>num_layers</code>: controls depth (Dimension 4)</li>
+<li><code>use_neighbor_sampling</code>: enables mini-batch training with neighbor sampling (Dimension 8)</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">PygNodePropPredDataset</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">NeighborLoader</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">GCNConv</span><span class="p">,</span> <span class="n">SAGEConv</span><span class="p">,</span> <span class="n">GATConv</span><span class="p">,</span> <span class="n">GINConv</span><span class="p">,</span> <span class="n">global_add_pool</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">Linear</span><span class="p">,</span> <span class="n">BatchNorm1d</span><span class="p">,</span> <span class="n">Sequential</span><span class="p">,</span> <span class="n">ReLU</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">UnifiedGNN</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="w">    </span><span class="sd">"""Single class implementing four major GNN architectures.</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="sd">    Design space choices:</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="sd">      model_type: selects Dimension 2 (message-passing operator)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="sd">      num_layers: selects Dimension 4 (depth)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="sd">      hidden_channels: influences Dimension 5 (embedding capacity)</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="sd">    """</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                 <span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">model_type</span><span class="o">=</span><span class="s1">'GCN'</span><span class="p">):</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">model_type</span> <span class="o">=</span> <span class="n">model_type</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">bns</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">):</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>            <span class="n">in_ch</span> <span class="o">=</span> <span class="n">in_channels</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">hidden_channels</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>            <span class="k">if</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">'GCN'</span><span class="p">:</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>                <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GCNConv</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">))</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>            <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">'SAGE'</span><span class="p">:</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>                <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SAGEConv</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">))</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>            <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">'GAT'</span><span class="p">:</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>                <span class="n">heads</span> <span class="o">=</span> <span class="mi">4</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>                <span class="n">out_ch</span> <span class="o">=</span> <span class="n">hidden_channels</span> <span class="o">//</span> <span class="n">heads</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>                <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GATConv</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">))</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>            <span class="k">elif</span> <span class="n">model_type</span> <span class="o">==</span> <span class="s1">'GIN'</span><span class="p">:</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>                <span class="n">mlp</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">(</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">),</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>                                  <span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">),</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>                                  <span class="n">ReLU</span><span class="p">(),</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>                                  <span class="n">Linear</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">))</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>                <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GINConv</span><span class="p">(</span><span class="n">mlp</span><span class="p">))</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">bns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">))</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">lin</span> <span class="o">=</span> <span class="n">Linear</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">):</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>        <span class="k">for</span> <span class="n">conv</span><span class="p">,</span> <span class="n">bn</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bns</span><span class="p">):</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">bn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="k">def</span><span class="w"> </span><span class="nf">benchmark_design_space</span><span class="p">(</span><span class="n">model_types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">):</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="w">    </span><span class="sd">"""Run the GNN design space benchmark on ogbn-arxiv."""</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>    <span class="k">if</span> <span class="n">model_types</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>        <span class="n">model_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'GCN'</span><span class="p">,</span> <span class="s1">'SAGE'</span><span class="p">,</span> <span class="s1">'GAT'</span><span class="p">,</span> <span class="s1">'GIN'</span><span class="p">]</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>    <span class="n">dataset</span> <span class="o">=</span> <span class="n">PygNodePropPredDataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">'ogbn-arxiv'</span><span class="p">)</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>    <span class="n">split_idx</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">get_idx_split</span><span class="p">()</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>    <span class="k">for</span> <span class="n">model_type</span> <span class="ow">in</span> <span class="n">model_types</span><span class="p">:</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>        <span class="n">model</span> <span class="o">=</span> <span class="n">UnifiedGNN</span><span class="p">(</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>            <span class="n">in_channels</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">num_node_features</span><span class="p">,</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>            <span class="n">hidden_channels</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>            <span class="n">out_channels</span><span class="o">=</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>            <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>            <span class="n">model_type</span><span class="o">=</span><span class="n">model_type</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>        <span class="p">)</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>        <span class="c1"># Dimension 8 (scale): neighbor sampling for mini-batch training</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>        <span class="n">train_loader</span> <span class="o">=</span> <span class="n">NeighborLoader</span><span class="p">(</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>            <span class="n">data</span><span class="p">,</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>            <span class="n">num_neighbors</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>   <span class="c1"># fan-out per layer</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>            <span class="n">batch_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>            <span class="n">input_nodes</span><span class="o">=</span><span class="n">split_idx</span><span class="p">[</span><span class="s1">'train'</span><span class="p">]</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>        <span class="p">)</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>            <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>            <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">train_loader</span><span class="p">:</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>                <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>                <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>                <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">out</span><span class="p">[:</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">],</span>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>                                       <span class="n">batch</span><span class="o">.</span><span class="n">y</span><span class="p">[:</span><span class="n">batch</span><span class="o">.</span><span class="n">batch_size</span><span class="p">]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>                <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>                <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>        <span class="c1"># Evaluate on validation set</span>
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>        <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>            <span class="n">val_out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>            <span class="n">val_pred</span> <span class="o">=</span> <span class="n">val_out</span><span class="p">[</span><span class="n">split_idx</span><span class="p">[</span><span class="s1">'valid'</span><span class="p">]]</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>            <span class="n">val_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">val_pred</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">split_idx</span><span class="p">[</span><span class="s1">'valid'</span><span class="p">]]</span><span class="o">.</span><span class="n">squeeze</span><span class="p">())</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>        <span class="n">results</span><span class="p">[</span><span class="n">model_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">val_acc</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">model_type</span><span class="si">}</span><span class="s2">: val_acc = </span><span class="si">{</span><span class="n">val_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>
+</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>    <span class="k">return</span> <span class="n">results</span>
+</span></code></pre></div>
+<p>This framework is not a production system — it omits learning rate schedules, early stopping, and hyperparameter search. But it demonstrates how the ten design dimensions translate to concrete code choices: each <code>if model_type ==</code> branch is a choice along Dimension 2; <code>num_layers</code> is Dimension 4; <code>NeighborLoader</code> is Dimension 8.</p>
+<hr>
+<h2 id="269-further-reading">26.9 Further Reading<a class="headerlink" href="#269-further-reading" title="Permanent link">¶</a></h2>
+<p>The following papers and resources provide the deepest points of entry into graph ML research. Each is annotated with the textbook sections it extends.</p>
+<ol>
+<li>
+<p><strong>You, Ying, Ren, Hamilton, Leskovec (2020). "Design Space for Graph Neural Networks."</strong> <em>NeurIPS.</em> The formal treatment of the GNN design space, demonstrating that no single architecture dominates across tasks and that design choices interact. Extends: §26.2 (this chapter).</p>
+</li>
+<li>
+<p><strong>Hu et al. (2020). "Open Graph Benchmark: Datasets for Machine Learning on Graphs."</strong> <em>NeurIPS.</em> The OGB benchmark suite — the standard evaluation framework for GNNs at scale, covering node, edge, and graph prediction tasks across diverse domains. Extends: Chapters 8, 12, 16, 20.</p>
+</li>
+<li>
+<p><strong>Bronstein, Bruna, LeCun, Szlam, Vandergheynst (2017). "Geometric Deep Learning: Going Beyond Euclidean Data."</strong> <em>IEEE Signal Processing Magazine.</em> The paper that unified graph, manifold, and group-equivariant neural networks under the geometric deep learning umbrella — the intellectual predecessor of Graph Transformers and equivariant GNNs. Extends: Chapters 11, 21.</p>
+</li>
+<li>
+<p><strong>Morris et al. (2019). "Weisfeiler and Leman Go Neural: Higher-Order Graph Neural Networks."</strong> <em>AAAI.</em> Establishes the connection between the WL hierarchy and the expressiveness of k-GNNs. Extends: Chapters 9, 10.</p>
+</li>
+<li>
+<p><strong>Lim et al. (2023). "Beyond Real-Valued Graphs: Directed, Attributed, and Heterogeneous Graphs."</strong> <em>ICLR.</em> A comprehensive treatment of GNN generalization to non-standard graph types — directed edges, signed edges, hyperedges — with implications for heterogeneous and temporal graph learning. Extends: Chapters 15, 22.</p>
+</li>
+<li>
+<p><strong>He et al. (2024). "One for All: Towards Training One Graph Model for All Classification Tasks."</strong> <em>ICLR.</em> The OFA/One-for-All paper — the most complete treatment of graph foundation models as of 2024, covering in-context learning via natural language for graphs. Extends: Chapters 23, 24.</p>
+</li>
+<li>
+<p><strong>Angelopoulos, Bates, Tibshirani, Jordan (2023). "Conformal Risk Control."</strong> <em>ICLR.</em> Extends conformal prediction beyond coverage guarantees to general risk functionals — the theoretical foundation underlying DAPS and future calibrated GNN methods. Extends: Chapter 24 (§24.6).</p>
+</li>
+<li>
+<p><strong>Leskovec and Sosič (2016). "SNAP: A General-Purpose Network Analysis and Graph-Mining Library."</strong> <em>ACM TIST.</em> The library underlying the Stanford Network Analysis Platform — the source of many of this textbook's benchmark graphs (ogbn-arxiv, ogbl-citation2, FB15k-237). Extends: All chapters that use OGB datasets.</p>
+</li>
+</ol>
+<hr>
+<h2 id="2610-exercises">26.10 Exercises<a class="headerlink" href="#2610-exercises" title="Permanent link">¶</a></h2>
+<p>The following twelve exercises span all six Bloom's taxonomy levels.</p>
+<p><strong>Remember</strong></p>
+<ol>
+<li>
+<p>List the ten design dimensions of the GNN design space as described in §26.2. For each dimension, name at least one concrete choice and the chapter where it was introduced.</p>
+</li>
+<li>
+<p>Name the four recommended reading paths in §26.5. For each, identify the first chapter it recommends skipping and the reason (based on the stated goal of that path).</p>
+</li>
+</ol>
+<p><strong>Understand</strong></p>
+<ol>
+<li>
+<p>Explain in your own words why the GNN design space is a Cartesian product rather than a tree. Give a concrete example of two design dimensions that can vary independently.</p>
+</li>
+<li>
+<p>The "WL ceiling" was introduced in Chapter 9 and appears in §26.2.1 under Dimension 7. Explain what the ceiling means intuitively, and name one technique from Chapters 10–11 that exceeds it and one that does not.</p>
+</li>
+</ol>
+<p><strong>Apply</strong></p>
+<ol>
+<li>
+<p>Using the code in §26.8, modify the <code>benchmark_design_space</code> function to also track training loss per epoch and produce a convergence plot comparing GCN, SAGE, GAT, and GIN. Which model converges fastest? Does convergence speed correlate with final validation accuracy?</p>
+</li>
+<li>
+<p>A colleague proposes building a GNN for predicting side effects of drug combinations using a bipartite drug-drug interaction graph. Map this problem to the ten design dimensions: what would you choose for Dimension 1 (input representation), Dimension 2 (message-passing operator), Dimension 9 (graph type), and Dimension 10 (task level)? Justify each choice.</p>
+</li>
+</ol>
+<p><strong>Analyze</strong></p>
+<ol>
+<li>
+<p>Section §26.4 lists several open problems. Choose one open problem from Part 2 (over-squashing and depth) and one from Part 5 (graph foundation models). For each, explain: (a) why it is hard — what specifically blocks a solution — and (b) what a 10% improvement would look like concretely.</p>
+</li>
+<li>
+<p>Compare the "Practitioner Track" and "Theory Track" reading paths in §26.5. For a reader who has completed both paths, which chapters appear in one path but not the other? What does this reveal about the relationship between practical GNN deployment and theoretical expressiveness analysis?</p>
+</li>
+</ol>
+<p><strong>Evaluate</strong></p>
+<ol>
+<li>
+<p>Section §26.7 lists five common misconceptions about GNNs. Select two of them, and for each, construct a concrete experimental scenario where a practitioner who believed the misconception would make a consequential mistake. What would go wrong, and how would you detect the mistake?</p>
+</li>
+<li>
+<p>The chapter argues (§26.6.1) that the "right" graph foundation model pre-training objective has not yet been found. Evaluate the three candidate objectives mentioned (masked node prediction, edge prediction, structural prediction tasks) against the following criteria: (a) domain generality, (b) alignment with typical downstream tasks, (c) computational feasibility at scale. Which would you prioritize, and why?</p>
+</li>
+</ol>
+<p><strong>Create</strong></p>
+<ol>
+<li>
+<p>Design a new reading path for a biomedical researcher who wants to apply GNNs to protein-protein interaction (PPI) networks for disease gene discovery. The researcher has a strong biology background but limited ML experience. Specify: (a) which chapters to include, (b) which to skip, (c) in what order, and (d) one external resource (paper, library, or dataset) to supplement each chapter in your path.</p>
+</li>
+<li>
+<p>Sketch an architecture for a "universal graph benchmarking system" — a tool that, given any GNN design, automatically evaluates it across all ten dimensions from §26.2 and produces a standardized report. What input does the system need? What does its output look like? Which of the ten dimensions are easy to measure automatically, and which require human judgment? Write a one-page specification (about 250 words) that could be handed to a software engineer.</p>
+</li>
+</ol>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">You Are Now a Graph ML Practitioner and Thinker</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating joyfully">
+Twenty-five chapters. Ten design dimensions. Six parts. Hundreds of concepts. And you made it to the end. Sage's job was to be the node that connected you to your neighbors — to the ideas, code, and mathematical structures that make graph machine learning one of the most exciting fields in modern AI. The field is young. The open problems are real. The best papers haven't been written yet. Now go write them. Let's aggregate some knowledge!</p>
+</div>
+<hr>
+<p><em>This textbook is a living document. For updates, errata, new MicroSims, and additional chapters, visit the course home page. Contributions via pull request are welcome.</em></p>
+<h2 id="2611-microsim-gnn-architecture-family-tree">26.11 MicroSim: GNN Architecture Family Tree<a class="headerlink" href="#2611-microsim-gnn-architecture-family-tree" title="Permanent link">¶</a></h2>
+<h4 id="diagram-gnn-architecture-family-tree">Diagram: GNN Architecture Family Tree<a class="headerlink" href="#diagram-gnn-architecture-family-tree" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch26-gnn-family-tree/main.html" width="100%" height="602px" scrolling="no"></iframe>
+<p><a href="../../sims/ch26-gnn-family-tree/main.html">Run GNN Architecture Family Tree Fullscreen</a></p>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../25-agents-and-graphs/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

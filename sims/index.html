@@ -1,0 +1,3051 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Interactive p5.js simulations for Graph Neural Networks — one or more per chapter, runnable in your browser.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/sims/">
+      
+      
+        <link rel="prev" href="../learning-graph/diagram-details/">
+      
+      
+        <link rel="next" href="ch25-tool-use-graph/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>MicroSims - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../css/extra.css">
+    
+      <link rel="stylesheet" href="../css/mascot.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="MicroSims">
+  <meta property="og:description" content="Interactive p5.js simulations for Graph Neural Networks — one or more per chapter, runnable in your browser.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/sims/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="MicroSims">
+  <meta name="twitter:description" content="Interactive p5.js simulations for Graph Neural Networks — one or more per chapter, runnable in your browser.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#microsims" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              MicroSims
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../chapters/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    MicroSims
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch25-tool-use-graph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Agent Tool-Use Graph — Interactive Planner
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch24-contrastive-loss-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contrastive Loss Surface Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch14-kg-embedding-space/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cross-KG Structure Transfer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch24-ssl-concept-map/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DGI vs. Contrastive Learning — Concept Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch21-drug-discovery-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Drug Discovery GNN Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch07-gat-attention-weights/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GAT Attention Weight Visualizer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch06-gcn-message-passing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GCN Message Passing Visualizer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch10-gin-gcn-expressiveness/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GIN vs. GCN Expressiveness MicroSim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch18-girvan-newman/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Girvan-Newman Step-by-Step on the Karate Club Graph
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch26-gnn-family-tree/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GNN Architecture Family Tree
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch07-gnn-design-comparison/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GNN Design Space Interactive Comparison
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch08-gnn-training-dynamics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GNN Training Dynamics MicroSim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch24-graph-contrastive-learning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph Contrastive Learning — Two-View Pipeline
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch01-graph-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph Property Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch11-graph-transformer-attention/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Graph Transformer Attention Heatmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch05-label-propagation-stepper/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Label Propagation Step-by-Step Simulator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="graph-viewer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph Viewer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch23-llm-gnn-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LLM+GNN Pipeline Explorer (Full Version)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch23-llm-gnn-pipeline/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LLM+GNN Pipeline — Text-to-Prediction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch18-louvain-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Louvain Two-Phase Iteration Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch00-matrix-graph-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Matrix × Graph Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch19-motif-zscore/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Motif Z-Score Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch25-multi-hop-reasoning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Hop KG Reasoning Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch04-node2vec-walk/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    node2vec Biased Random Walk Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch03-pagerank-power-iteration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    PageRank Power Iteration Simulator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch13-kg-query-traversal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Query2Box Multi-Hop Traversal
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch17-table-to-graph/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Relational Schema to Heterogeneous Graph
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch20-sign-vs-sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SIGN Architecture vs. Neighbor Sampling Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch05-sir-epidemic-network/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SIR Epidemic Dynamics on Network Structures
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch06-spectral-spatial-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spectral vs. Spatial GNN Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch19-spminer-embedding/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    SPMiner Order Embedding Space
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch22-traffic-temporal/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Traffic Forecasting Architecture — MicroSim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch12-kg-embedding-geometry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    TransE Embedding Geometry
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch15-hetero-graph-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Typed Node and Edge Explorer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch16-lightgcn-explorer/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    User-Item Graph with Multi-Hop Propagation Visualization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch02-wl-refinement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WL Color Refinement Simulator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="ch09-wl-refinement/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    WL Refinement MicroSim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#chapter-0-math-and-programming-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 0: Math and Programming Prerequisites
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 0: Math and Programming Prerequisites">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#matrix-graph-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Matrix × Graph Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-1-introduction-to-graphs-and-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 1: Introduction to Graphs and Networks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 1: Introduction to Graphs and Networks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graph-property-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Property Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-2-graph-properties-and-traditional-ml-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 2: Graph Properties and Traditional ML Features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 2: Graph Properties and Traditional ML Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wl-color-refinement-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WL Color Refinement Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-3-link-analysis-and-pagerank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 3: Link Analysis and PageRank
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 3: Link Analysis and PageRank">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pagerank-power-iteration-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PageRank Power Iteration Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-4-node-embeddings-deepwalk-and-node2vec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 4: Node Embeddings: DeepWalk and node2vec
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 4: Node Embeddings: DeepWalk and node2vec">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#node2vec-biased-random-walk-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        node2vec Biased Random Walk Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-5-label-propagation-and-semi-supervised-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 5: Label Propagation and Semi-Supervised Learning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 5: Label Propagation and Semi-Supervised Learning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#label-propagation-step-by-step-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Label Propagation Step-by-Step Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sir-epidemic-dynamics-on-network-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SIR Epidemic Dynamics on Network Structures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-6-gnn-foundations-message-passing-and-gcn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 6: GNN Foundations: Message Passing and GCN
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 6: GNN Foundations: Message Passing and GCN">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gcn-message-passing-visualizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GCN Message Passing Visualizer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spectral-vs-spatial-gnn-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spectral vs. Spatial GNN Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-7-gnn-design-space-graphsage-and-gat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 7: GNN Design Space: GraphSAGE and GAT
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 7: GNN Design Space: GraphSAGE and GAT">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gat-attention-weight-visualizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GAT Attention Weight Visualizer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gnn-design-space-interactive-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNN Design Space Interactive Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-8-gnn-training-augmentation-and-practical-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 8: GNN Training, Augmentation, and Practical Tips
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 8: GNN Training, Augmentation, and Practical Tips">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gnn-training-dynamics-microsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNN Training Dynamics MicroSim
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-9-theory-of-gnns-expressiveness-and-the-wl-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 9: Theory of GNNs: Expressiveness and the WL Test
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 9: Theory of GNNs: Expressiveness and the WL Test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#wl-refinement-microsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WL Refinement MicroSim
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-10-designing-powerful-encoders-gin-and-beyond" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 10: Designing Powerful Encoders: GIN and Beyond
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 10: Designing Powerful Encoders: GIN and Beyond">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gin-vs-gcn-expressiveness-microsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GIN vs. GCN Expressiveness MicroSim
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-11-graph-transformers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 11: Graph Transformers
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 11: Graph Transformers">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#graph-transformer-attention-heatmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Transformer Attention Heatmap
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-12-knowledge-graph-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 12: Knowledge Graph Embeddings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 12: Knowledge Graph Embeddings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#transe-embedding-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TransE Embedding Geometry
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-13-reasoning-over-knowledge-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 13: Reasoning over Knowledge Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 13: Reasoning over Knowledge Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#query2box-multi-hop-traversal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query2Box Multi-Hop Traversal
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-14-knowledge-graph-foundation-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 14: Knowledge Graph Foundation Models
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 14: Knowledge Graph Foundation Models">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cross-kg-structure-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cross-KG Structure Transfer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-15-heterogeneous-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 15: Heterogeneous Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 15: Heterogeneous Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#typed-node-and-edge-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typed Node and Edge Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-16-gnns-for-recommender-systems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 16: GNNs for Recommender Systems
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 16: GNNs for Recommender Systems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#user-item-graph-with-multi-hop-propagation-visualization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User-Item Graph with Multi-Hop Propagation Visualization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-17-relational-deep-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 17: Relational Deep Learning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 17: Relational Deep Learning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#relational-schema-to-heterogeneous-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relational Schema to Heterogeneous Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-18-community-structure-in-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 18: Community Structure in Networks
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 18: Community Structure in Networks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#girvan-newman-step-by-step-on-the-karate-club-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Girvan-Newman Step-by-Step on the Karate Club Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#louvain-two-phase-iteration-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Louvain Two-Phase Iteration Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-19-frequent-subgraph-mining" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 19: Frequent Subgraph Mining
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 19: Frequent Subgraph Mining">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#motif-z-score-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motif Z-Score Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spminer-order-embedding-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SPMiner Order Embedding Space
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-20-scaling-gnns-to-billion-node-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 20: Scaling GNNs to Billion-Node Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 20: Scaling GNNs to Billion-Node Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sign-architecture-vs-neighbor-sampling-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SIGN Architecture vs. Neighbor Sampling Architecture
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-21-deep-generative-models-for-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 21: Deep Generative Models for Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 21: Deep Generative Models for Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#drug-discovery-gnn-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Drug Discovery GNN Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-22-temporal-and-dynamic-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 22: Temporal and Dynamic Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 22: Temporal and Dynamic Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#traffic-forecasting-architecture-microsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Traffic Forecasting Architecture — MicroSim
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-23-llms-and-gnns-text-attributed-graphs-and-joint-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 23: LLMs and GNNs: Text-Attributed Graphs and Joint Training
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 23: LLMs and GNNs: Text-Attributed Graphs and Joint Training">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llmgnn-pipeline-explorer-full-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM+GNN Pipeline Explorer (Full Version)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#llmgnn-pipeline-text-to-prediction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM+GNN Pipeline — Text-to-Prediction
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-24-advanced-gnn-topics-in-context-learning-and-uncertainty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#contrastive-loss-surface-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Contrastive Loss Surface Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#graph-contrastive-learning-two-view-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Graph Contrastive Learning — Two-View Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dgi-vs-contrastive-learning-concept-map" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DGI vs. Contrastive Learning — Concept Map
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-25-agents-and-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 25: Agents and Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 25: Agents and Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multi-hop-kg-reasoning-agent" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Hop KG Reasoning Agent
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#agent-tool-use-graph-interactive-planner" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Agent Tool-Use Graph — Interactive Planner
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#chapter-26-conclusion-the-gnn-design-space-and-open-problems" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chapter 26: Conclusion — The GNN Design Space and Open Problems
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Chapter 26: Conclusion — The GNN Design Space and Open Problems">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gnn-architecture-family-tree" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GNN Architecture Family Tree
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href=".." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    MicroSims
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/sims/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="microsims">MicroSims<a class="headerlink" href="#microsims" title="Permanent link">¶</a></h1>
+<p>Every chapter ships with at least one <strong>MicroSim</strong>: a small, self-contained interactive simulation that runs right in your browser. Drag sliders, click nodes, and step through algorithms to watch the math come alive. Nothing to install.</p>
+<div class="admonition tip">
+<p class="admonition-title">How to use a MicroSim</p>
+<p>Each MicroSim is embedded directly in its chapter, next to the concept it illustrates. Use the on-screen sliders, buttons, and drop-downs to explore — you cannot break anything, so experiment freely. Click <strong>Open full screen</strong> under any sim below to run it on its own page.</p>
+</div>
+<p>There are <strong>36 MicroSims</strong> across the book, listed by chapter below.</p>
+<h2 id="chapter-0-math-and-programming-prerequisites">Chapter 0: Math and Programming Prerequisites<a class="headerlink" href="#chapter-0-math-and-programming-prerequisites" title="Permanent link">¶</a></h2>
+<h3 id="matrix-graph-explorer"><a href="ch00-matrix-graph-explorer/">Matrix × Graph Explorer</a><a class="headerlink" href="#matrix-graph-explorer" title="Permanent link">¶</a></h3>
+<p><a href="ch00-matrix-graph-explorer/index.md"><img src="ch00-matrix-graph-explorer/ch00-matrix-graph-explorer.png" alt="Matrix × Graph Explorer screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Compare raw (A·x), mean (D⁻¹A·x), and symmetric (D⁻½AD⁻½x) aggregation on a small graph and see why GCN uses symmetric normalization.</p>
+<p><a href="ch00-matrix-graph-explorer/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-1-introduction-to-graphs-and-networks">Chapter 1: Introduction to Graphs and Networks<a class="headerlink" href="#chapter-1-introduction-to-graphs-and-networks" title="Permanent link">¶</a></h2>
+<h3 id="graph-property-explorer"><a href="ch01-graph-explorer/">Graph Property Explorer</a><a class="headerlink" href="#graph-property-explorer" title="Permanent link">¶</a></h3>
+<p><a href="ch01-graph-explorer/index.md"><img src="ch01-graph-explorer/ch01-graph-explorer.png" alt="Graph Property Explorer screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Add and remove nodes and edges and watch degree, neighbors, and graph structure update live.</p>
+<p><a href="ch01-graph-explorer/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-2-graph-properties-and-traditional-ml-features">Chapter 2: Graph Properties and Traditional ML Features<a class="headerlink" href="#chapter-2-graph-properties-and-traditional-ml-features" title="Permanent link">¶</a></h2>
+<h3 id="wl-color-refinement-simulator"><a href="ch02-wl-refinement/">WL Color Refinement Simulator</a><a class="headerlink" href="#wl-color-refinement-simulator" title="Permanent link">¶</a></h3>
+<p><a href="ch02-wl-refinement/index.md"><img src="ch02-wl-refinement/ch02-wl-refinement.png" alt="WL Color Refinement Simulator screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Step through Weisfeiler-Lehman color refinement on two graphs side by side and see when they become distinguishable.</p>
+<p><a href="ch02-wl-refinement/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-3-link-analysis-and-pagerank">Chapter 3: Link Analysis and PageRank<a class="headerlink" href="#chapter-3-link-analysis-and-pagerank" title="Permanent link">¶</a></h2>
+<h3 id="pagerank-power-iteration-simulator"><a href="ch03-pagerank-power-iteration/">PageRank Power Iteration Simulator</a><a class="headerlink" href="#pagerank-power-iteration-simulator" title="Permanent link">¶</a></h3>
+<p><a href="ch03-pagerank-power-iteration/index.md"><img src="ch03-pagerank-power-iteration/ch03-pagerank-power-iteration.png" alt="PageRank Power Iteration Simulator screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Watch PageRank scores converge through power iteration; node size encodes rank and a slider controls the damping factor.</p>
+<p><a href="ch03-pagerank-power-iteration/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-4-node-embeddings-deepwalk-and-node2vec">Chapter 4: Node Embeddings: DeepWalk and node2vec<a class="headerlink" href="#chapter-4-node-embeddings-deepwalk-and-node2vec" title="Permanent link">¶</a></h2>
+<h3 id="node2vec-biased-random-walk-explorer"><a href="ch04-node2vec-walk/">node2vec Biased Random Walk Explorer</a><a class="headerlink" href="#node2vec-biased-random-walk-explorer" title="Permanent link">¶</a></h3>
+<p><a href="ch04-node2vec-walk/index.md"><img src="ch04-node2vec-walk/ch04-node2vec-walk.png" alt="node2vec Biased Random Walk Explorer screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Trace a biased random walk; the p (return) and q (in-out) sliders shift the walk between BFS-like and DFS-like exploration.</p>
+<p><a href="ch04-node2vec-walk/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-5-label-propagation-and-semi-supervised-learning">Chapter 5: Label Propagation and Semi-Supervised Learning<a class="headerlink" href="#chapter-5-label-propagation-and-semi-supervised-learning" title="Permanent link">¶</a></h2>
+<h3 id="label-propagation-step-by-step-simulator"><a href="ch05-label-propagation-stepper/">Label Propagation Step-by-Step Simulator</a><a class="headerlink" href="#label-propagation-step-by-step-simulator" title="Permanent link">¶</a></h3>
+<p><a href="ch05-label-propagation-stepper/index.md"><img src="ch05-label-propagation-stepper/ch05-label-propagation-stepper.png" alt="Label Propagation Step-by-Step Simulator screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Seed a few labels, then step through propagation rounds and watch labels diffuse across the graph.</p>
+<p><a href="ch05-label-propagation-stepper/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h3 id="sir-epidemic-dynamics-on-network-structures"><a href="ch05-sir-epidemic-network/">SIR Epidemic Dynamics on Network Structures</a><a class="headerlink" href="#sir-epidemic-dynamics-on-network-structures" title="Permanent link">¶</a></h3>
+<p><a href="ch05-sir-epidemic-network/index.md"><img src="ch05-sir-epidemic-network/ch05-sir-epidemic-network.png" alt="SIR Epidemic Dynamics on Network Structures screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Run an SIR epidemic over different network structures and see how topology drives how fast an infection spreads.</p>
+<p><a href="ch05-sir-epidemic-network/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-6-gnn-foundations-message-passing-and-gcn">Chapter 6: GNN Foundations: Message Passing and GCN<a class="headerlink" href="#chapter-6-gnn-foundations-message-passing-and-gcn" title="Permanent link">¶</a></h2>
+<h3 id="gcn-message-passing-visualizer"><a href="ch06-gcn-message-passing/">GCN Message Passing Visualizer</a><a class="headerlink" href="#gcn-message-passing-visualizer" title="Permanent link">¶</a></h3>
+<p><a href="ch06-gcn-message-passing/index.md"><img src="ch06-gcn-message-passing/ch06-gcn-message-passing.png" alt="GCN Message Passing Visualizer screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Click a node and watch messages aggregate from its neighbors across 1, 2, and 3 GCN layers.</p>
+<p><a href="ch06-gcn-message-passing/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h3 id="spectral-vs-spatial-gnn-explorer"><a href="ch06-spectral-spatial-explorer/">Spectral vs. Spatial GNN Explorer</a><a class="headerlink" href="#spectral-vs-spatial-gnn-explorer" title="Permanent link">¶</a></h3>
+<p><a href="ch06-spectral-spatial-explorer/index.md"><img src="ch06-spectral-spatial-explorer/ch06-spectral-spatial-explorer.png" alt="Spectral vs. Spatial GNN Explorer screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Connect the spectral (eigenvalue) and spatial (message-passing) views of graph convolution.</p>
+<p><a href="ch06-spectral-spatial-explorer/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-7-gnn-design-space-graphsage-and-gat">Chapter 7: GNN Design Space: GraphSAGE and GAT<a class="headerlink" href="#chapter-7-gnn-design-space-graphsage-and-gat" title="Permanent link">¶</a></h2>
+<h3 id="gat-attention-weight-visualizer"><a href="ch07-gat-attention-weights/">GAT Attention Weight Visualizer</a><a class="headerlink" href="#gat-attention-weight-visualizer" title="Permanent link">¶</a></h3>
+<p><a href="ch07-gat-attention-weights/index.md"><img src="ch07-gat-attention-weights/ch07-gat-attention-weights.png" alt="GAT Attention Weight Visualizer screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Hover a node to see its softmax attention weights; edge thickness encodes how much each neighbor contributes.</p>
+<p><a href="ch07-gat-attention-weights/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h3 id="gnn-design-space-interactive-comparison"><a href="ch07-gnn-design-comparison/">GNN Design Space Interactive Comparison</a><a class="headerlink" href="#gnn-design-space-interactive-comparison" title="Permanent link">¶</a></h3>
+<p><a href="ch07-gnn-design-comparison/index.md"><img src="ch07-gnn-design-comparison/ch07-gnn-design-comparison.png" alt="GNN Design Space Interactive Comparison screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Compare GNN design-space choices (aggregation, layers, skip connections) and their effect on accuracy.</p>
+<p><a href="ch07-gnn-design-comparison/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-8-gnn-training-augmentation-and-practical-tips">Chapter 8: GNN Training, Augmentation, and Practical Tips<a class="headerlink" href="#chapter-8-gnn-training-augmentation-and-practical-tips" title="Permanent link">¶</a></h2>
+<h3 id="gnn-training-dynamics-microsim"><a href="ch08-gnn-training-dynamics/">GNN Training Dynamics MicroSim</a><a class="headerlink" href="#gnn-training-dynamics-microsim" title="Permanent link">¶</a></h3>
+<p><a href="ch08-gnn-training-dynamics/index.md"><img src="ch08-gnn-training-dynamics/ch08-gnn-training-dynamics.png" alt="GNN Training Dynamics MicroSim screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Watch loss and accuracy curves evolve over epochs and toggle train/validation/test splits.</p>
+<p><a href="ch08-gnn-training-dynamics/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-9-theory-of-gnns-expressiveness-and-the-wl-test">Chapter 9: Theory of GNNs: Expressiveness and the WL Test<a class="headerlink" href="#chapter-9-theory-of-gnns-expressiveness-and-the-wl-test" title="Permanent link">¶</a></h2>
+<h3 id="wl-refinement-microsim"><a href="ch09-wl-refinement/">WL Refinement MicroSim</a><a class="headerlink" href="#wl-refinement-microsim" title="Permanent link">¶</a></h3>
+<p><a href="ch09-wl-refinement/index.md"><img src="ch09-wl-refinement/ch09-wl-refinement.png" alt="WL Refinement MicroSim screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Run the WL isomorphism test and see the canonical cases where two non-isomorphic graphs fool 1-WL.</p>
+<p><a href="ch09-wl-refinement/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-10-designing-powerful-encoders-gin-and-beyond">Chapter 10: Designing Powerful Encoders: GIN and Beyond<a class="headerlink" href="#chapter-10-designing-powerful-encoders-gin-and-beyond" title="Permanent link">¶</a></h2>
+<h3 id="gin-vs-gcn-expressiveness-microsim"><a href="ch10-gin-gcn-expressiveness/">GIN vs. GCN Expressiveness MicroSim</a><a class="headerlink" href="#gin-vs-gcn-expressiveness-microsim" title="Permanent link">¶</a></h3>
+<p><a href="ch10-gin-gcn-expressiveness/index.md"><img src="ch10-gin-gcn-expressiveness/ch10-gin-gcn-expressiveness.png" alt="GIN vs. GCN Expressiveness MicroSim screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>On a 3-regular graph pair, GCN assigns identical embeddings while GIN tells the graphs apart.</p>
+<p><a href="ch10-gin-gcn-expressiveness/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-11-graph-transformers">Chapter 11: Graph Transformers<a class="headerlink" href="#chapter-11-graph-transformers" title="Permanent link">¶</a></h2>
+<h3 id="graph-transformer-attention-heatmap"><a href="ch11-graph-transformer-attention/">Graph Transformer Attention Heatmap</a><a class="headerlink" href="#graph-transformer-attention-heatmap" title="Permanent link">¶</a></h3>
+<p><a href="ch11-graph-transformer-attention/index.md"><img src="ch11-graph-transformer-attention/ch11-graph-transformer-attention.png" alt="Graph Transformer Attention Heatmap screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Explore full graph-transformer attention as a heatmap and per-node query/key/value vectors.</p>
+<p><a href="ch11-graph-transformer-attention/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-12-knowledge-graph-embeddings">Chapter 12: Knowledge Graph Embeddings<a class="headerlink" href="#chapter-12-knowledge-graph-embeddings" title="Permanent link">¶</a></h2>
+<h3 id="transe-embedding-geometry"><a href="ch12-kg-embedding-geometry/">TransE Embedding Geometry</a><a class="headerlink" href="#transe-embedding-geometry" title="Permanent link">¶</a></h3>
+<p><a href="ch12-kg-embedding-geometry/index.md"><img src="ch12-kg-embedding-geometry/ch12-kg-embedding-geometry.png" alt="TransE Embedding Geometry screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Drag head, relation, and tail vectors in 2D; a triple is valid when h + r ≈ t (TransE).</p>
+<p><a href="ch12-kg-embedding-geometry/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-13-reasoning-over-knowledge-graphs">Chapter 13: Reasoning over Knowledge Graphs<a class="headerlink" href="#chapter-13-reasoning-over-knowledge-graphs" title="Permanent link">¶</a></h2>
+<h3 id="query2box-multi-hop-traversal"><a href="ch13-kg-query-traversal/">Query2Box Multi-Hop Traversal</a><a class="headerlink" href="#query2box-multi-hop-traversal" title="Permanent link">¶</a></h3>
+<p><a href="ch13-kg-query-traversal/index.md"><img src="ch13-kg-query-traversal/ch13-kg-query-traversal.png" alt="Query2Box Multi-Hop Traversal screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Walk a Query2Box multi-hop query through projection and intersection over a knowledge graph.</p>
+<p><a href="ch13-kg-query-traversal/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-14-knowledge-graph-foundation-models">Chapter 14: Knowledge Graph Foundation Models<a class="headerlink" href="#chapter-14-knowledge-graph-foundation-models" title="Permanent link">¶</a></h2>
+<h3 id="cross-kg-structure-transfer"><a href="ch14-kg-embedding-space/">Cross-KG Structure Transfer</a><a class="headerlink" href="#cross-kg-structure-transfer" title="Permanent link">¶</a></h3>
+<p><a href="ch14-kg-embedding-space/index.md"><img src="ch14-kg-embedding-space/ch14-kg-embedding-space.png" alt="Cross-KG Structure Transfer screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Project entity and relation vectors to 2D and explore zero-shot transfer across knowledge graphs.</p>
+<p><a href="ch14-kg-embedding-space/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-15-heterogeneous-graphs">Chapter 15: Heterogeneous Graphs<a class="headerlink" href="#chapter-15-heterogeneous-graphs" title="Permanent link">¶</a></h2>
+<h3 id="typed-node-and-edge-explorer"><a href="ch15-hetero-graph-explorer/">Typed Node and Edge Explorer</a><a class="headerlink" href="#typed-node-and-edge-explorer" title="Permanent link">¶</a></h3>
+<p><a href="ch15-hetero-graph-explorer/index.md"><img src="ch15-hetero-graph-explorer/ch15-hetero-graph-explorer.png" alt="Typed Node and Edge Explorer screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Toggle node and edge types on and off and trace metapaths through a heterogeneous graph.</p>
+<p><a href="ch15-hetero-graph-explorer/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-16-gnns-for-recommender-systems">Chapter 16: GNNs for Recommender Systems<a class="headerlink" href="#chapter-16-gnns-for-recommender-systems" title="Permanent link">¶</a></h2>
+<h3 id="user-item-graph-with-multi-hop-propagation-visualization"><a href="ch16-lightgcn-explorer/">User-Item Graph with Multi-Hop Propagation Visualization</a><a class="headerlink" href="#user-item-graph-with-multi-hop-propagation-visualization" title="Permanent link">¶</a></h3>
+<p><a href="ch16-lightgcn-explorer/index.md"><img src="ch16-lightgcn-explorer/ch16-lightgcn-explorer.png" alt="User-Item Graph with Multi-Hop Propagation Visualization screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Propagate over a user-item bipartite graph and see how multi-hop signal powers recommendations.</p>
+<p><a href="ch16-lightgcn-explorer/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-17-relational-deep-learning">Chapter 17: Relational Deep Learning<a class="headerlink" href="#chapter-17-relational-deep-learning" title="Permanent link">¶</a></h2>
+<h3 id="relational-schema-to-heterogeneous-graph"><a href="ch17-table-to-graph/">Relational Schema to Heterogeneous Graph</a><a class="headerlink" href="#relational-schema-to-heterogeneous-graph" title="Permanent link">¶</a></h3>
+<p><a href="ch17-table-to-graph/index.md"><img src="ch17-table-to-graph/ch17-table-to-graph.png" alt="Relational Schema to Heterogeneous Graph screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Turn three relational tables (Users, Products, Purchases) into a typed heterogeneous graph.</p>
+<p><a href="ch17-table-to-graph/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-18-community-structure-in-networks">Chapter 18: Community Structure in Networks<a class="headerlink" href="#chapter-18-community-structure-in-networks" title="Permanent link">¶</a></h2>
+<h3 id="girvan-newman-step-by-step-on-the-karate-club-graph"><a href="ch18-girvan-newman/">Girvan-Newman Step-by-Step on the Karate Club Graph</a><a class="headerlink" href="#girvan-newman-step-by-step-on-the-karate-club-graph" title="Permanent link">¶</a></h3>
+<p><a href="ch18-girvan-newman/index.md"><img src="ch18-girvan-newman/ch18-girvan-newman.png" alt="Girvan-Newman Step-by-Step on the Karate Club Graph screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Run Girvan-Newman edge-betweenness splitting on the Karate Club graph and watch communities emerge.</p>
+<p><a href="ch18-girvan-newman/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h3 id="louvain-two-phase-iteration-explorer"><a href="ch18-louvain-explorer/">Louvain Two-Phase Iteration Explorer</a><a class="headerlink" href="#louvain-two-phase-iteration-explorer" title="Permanent link">¶</a></h3>
+<p><a href="ch18-louvain-explorer/index.md"><img src="ch18-louvain-explorer/ch18-louvain-explorer.png" alt="Louvain Two-Phase Iteration Explorer screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Step through the two phases of Louvain modularity optimization and watch the score climb.</p>
+<p><a href="ch18-louvain-explorer/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-19-frequent-subgraph-mining">Chapter 19: Frequent Subgraph Mining<a class="headerlink" href="#chapter-19-frequent-subgraph-mining" title="Permanent link">¶</a></h2>
+<h3 id="motif-z-score-explorer"><a href="ch19-motif-zscore/">Motif Z-Score Explorer</a><a class="headerlink" href="#motif-z-score-explorer" title="Permanent link">¶</a></h3>
+<p><a href="ch19-motif-zscore/index.md"><img src="ch19-motif-zscore/ch19-motif-zscore.png" alt="Motif Z-Score Explorer screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Census 3- and 4-node subgraphs and compare counts against a random null model to get motif Z-scores.</p>
+<p><a href="ch19-motif-zscore/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h3 id="spminer-order-embedding-space"><a href="ch19-spminer-embedding/">SPMiner Order Embedding Space</a><a class="headerlink" href="#spminer-order-embedding-space" title="Permanent link">¶</a></h3>
+<p><a href="ch19-spminer-embedding/index.md"><img src="ch19-spminer-embedding/ch19-spminer-embedding.png" alt="SPMiner Order Embedding Space screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Explore an order-embedding space where subgraph containment becomes a geometric relationship.</p>
+<p><a href="ch19-spminer-embedding/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-20-scaling-gnns-to-billion-node-graphs">Chapter 20: Scaling GNNs to Billion-Node Graphs<a class="headerlink" href="#chapter-20-scaling-gnns-to-billion-node-graphs" title="Permanent link">¶</a></h2>
+<h3 id="sign-architecture-vs-neighbor-sampling-architecture"><a href="ch20-sign-vs-sampling/">SIGN Architecture vs. Neighbor Sampling Architecture</a><a class="headerlink" href="#sign-architecture-vs-neighbor-sampling-architecture" title="Permanent link">¶</a></h3>
+<p><a href="ch20-sign-vs-sampling/index.md"><img src="ch20-sign-vs-sampling/ch20-sign-vs-sampling.png" alt="SIGN Architecture vs. Neighbor Sampling Architecture screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Contrast precompute-then-train (SIGN) against neighbor sampling for scaling GNNs to large graphs.</p>
+<p><a href="ch20-sign-vs-sampling/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-21-deep-generative-models-for-graphs">Chapter 21: Deep Generative Models for Graphs<a class="headerlink" href="#chapter-21-deep-generative-models-for-graphs" title="Permanent link">¶</a></h2>
+<h3 id="drug-discovery-gnn-pipeline"><a href="ch21-drug-discovery-pipeline/">Drug Discovery GNN Pipeline</a><a class="headerlink" href="#drug-discovery-gnn-pipeline" title="Permanent link">¶</a></h3>
+<p><a href="ch21-drug-discovery-pipeline/index.md"><img src="ch21-drug-discovery-pipeline/ch21-drug-discovery-pipeline.png" alt="Drug Discovery GNN Pipeline screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Step through a molecular-graph GNN pipeline from molecule to property prediction.</p>
+<p><a href="ch21-drug-discovery-pipeline/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-22-temporal-and-dynamic-graphs">Chapter 22: Temporal and Dynamic Graphs<a class="headerlink" href="#chapter-22-temporal-and-dynamic-graphs" title="Permanent link">¶</a></h2>
+<h3 id="traffic-forecasting-architecture-microsim"><a href="ch22-traffic-temporal/">Traffic Forecasting Architecture — MicroSim</a><a class="headerlink" href="#traffic-forecasting-architecture-microsim" title="Permanent link">¶</a></h3>
+<p><a href="ch22-traffic-temporal/index.md"><img src="ch22-traffic-temporal/ch22-traffic-temporal.png" alt="Traffic Forecasting Architecture — MicroSim screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>See how a spatio-temporal GNN forecasts traffic by combining road structure with time.</p>
+<p><a href="ch22-traffic-temporal/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-23-llms-and-gnns-text-attributed-graphs-and-joint-training">Chapter 23: LLMs and GNNs: Text-Attributed Graphs and Joint Training<a class="headerlink" href="#chapter-23-llms-and-gnns-text-attributed-graphs-and-joint-training" title="Permanent link">¶</a></h2>
+<h3 id="llmgnn-pipeline-explorer-full-version"><a href="ch23-llm-gnn-explorer/">LLM+GNN Pipeline Explorer (Full Version)</a><a class="headerlink" href="#llmgnn-pipeline-explorer-full-version" title="Permanent link">¶</a></h3>
+<p><a href="ch23-llm-gnn-explorer/index.md"><img src="ch23-llm-gnn-explorer/ch23-llm-gnn-explorer.png" alt="LLM+GNN Pipeline Explorer (Full Version) screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Explore how text-attributed graphs combine LLM text encoders with GNN message passing.</p>
+<p><a href="ch23-llm-gnn-explorer/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h3 id="llmgnn-pipeline-text-to-prediction"><a href="ch23-llm-gnn-pipeline/">LLM+GNN Pipeline — Text-to-Prediction</a><a class="headerlink" href="#llmgnn-pipeline-text-to-prediction" title="Permanent link">¶</a></h3>
+<p><a href="ch23-llm-gnn-pipeline/index.md"><img src="ch23-llm-gnn-pipeline/ch23-llm-gnn-pipeline.png" alt="LLM+GNN Pipeline — Text-to-Prediction screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Follow one node from raw text → LLM embedding → GNN aggregation → final prediction, with dimension bars at each stage.</p>
+<p><a href="ch23-llm-gnn-pipeline/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-24-advanced-gnn-topics-in-context-learning-and-uncertainty">Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty<a class="headerlink" href="#chapter-24-advanced-gnn-topics-in-context-learning-and-uncertainty" title="Permanent link">¶</a></h2>
+<h3 id="contrastive-loss-surface-explorer"><a href="ch24-contrastive-loss-explorer/">Contrastive Loss Surface Explorer</a><a class="headerlink" href="#contrastive-loss-surface-explorer" title="Permanent link">¶</a></h3>
+<p><a href="ch24-contrastive-loss-explorer/index.md"><img src="ch24-contrastive-loss-explorer/ch24-contrastive-loss-explorer.png" alt="Contrastive Loss Surface Explorer screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Move augmentation strength and temperature across the NT-Xent loss landscape and read the operating point.</p>
+<p><a href="ch24-contrastive-loss-explorer/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h3 id="graph-contrastive-learning-two-view-pipeline"><a href="ch24-graph-contrastive-learning/">Graph Contrastive Learning — Two-View Pipeline</a><a class="headerlink" href="#graph-contrastive-learning-two-view-pipeline" title="Permanent link">¶</a></h3>
+<p><a href="ch24-graph-contrastive-learning/index.md"><img src="ch24-graph-contrastive-learning/ch24-graph-contrastive-learning.png" alt="Graph Contrastive Learning — Two-View Pipeline screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Build two augmented views of a graph and pull matching node embeddings together while pushing others apart.</p>
+<p><a href="ch24-graph-contrastive-learning/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h3 id="dgi-vs-contrastive-learning-concept-map"><a href="ch24-ssl-concept-map/">DGI vs. Contrastive Learning — Concept Map</a><a class="headerlink" href="#dgi-vs-contrastive-learning-concept-map" title="Permanent link">¶</a></h3>
+<p><a href="ch24-ssl-concept-map/index.md"><img src="ch24-ssl-concept-map/ch24-ssl-concept-map.png" alt="DGI vs. Contrastive Learning — Concept Map screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Compare DGI and graph contrastive learning against the three core self-supervised-learning properties.</p>
+<p><a href="ch24-ssl-concept-map/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-25-agents-and-graphs">Chapter 25: Agents and Graphs<a class="headerlink" href="#chapter-25-agents-and-graphs" title="Permanent link">¶</a></h2>
+<h3 id="multi-hop-kg-reasoning-agent"><a href="ch25-multi-hop-reasoning/">Multi-Hop KG Reasoning Agent</a><a class="headerlink" href="#multi-hop-kg-reasoning-agent" title="Permanent link">¶</a></h3>
+<p><a href="ch25-multi-hop-reasoning/index.md"><img src="ch25-multi-hop-reasoning/ch25-multi-hop-reasoning.png" alt="Multi-Hop KG Reasoning Agent screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Watch an agent answer a multi-hop question over a knowledge graph, tracing retrieved nodes and confidence per hop.</p>
+<p><a href="ch25-multi-hop-reasoning/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h3 id="agent-tool-use-graph-interactive-planner"><a href="ch25-tool-use-graph/">Agent Tool-Use Graph — Interactive Planner</a><a class="headerlink" href="#agent-tool-use-graph-interactive-planner" title="Permanent link">¶</a></h3>
+<p><a href="ch25-tool-use-graph/index.md"><img src="ch25-tool-use-graph/ch25-tool-use-graph.png" alt="Agent Tool-Use Graph — Interactive Planner screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Run an agent's tool-use plan as a dependency graph; independent tools fire in parallel waves.</p>
+<p><a href="ch25-tool-use-graph/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+<h2 id="chapter-26-conclusion-the-gnn-design-space-and-open-problems">Chapter 26: Conclusion — The GNN Design Space and Open Problems<a class="headerlink" href="#chapter-26-conclusion-the-gnn-design-space-and-open-problems" title="Permanent link">¶</a></h2>
+<h3 id="gnn-architecture-family-tree"><a href="ch26-gnn-family-tree/">GNN Architecture Family Tree</a><a class="headerlink" href="#gnn-architecture-family-tree" title="Permanent link">¶</a></h3>
+<p><a href="ch26-gnn-family-tree/index.md"><img src="ch26-gnn-family-tree/ch26-gnn-family-tree.png" alt="GNN Architecture Family Tree screenshot" style="max-width:480px;width:100%;border:1px solid #ddd;border-radius:6px;"></a></p>
+<p>Browse an interactive taxonomy of GNN architectures with 'extends / inspired by' lineage edges.</p>
+<p><a href="ch26-gnn-family-tree/main.html" target="_blank">Open full screen <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3m-2 16H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2z"></path></svg></span></a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../learning-graph/diagram-details/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Diagrams Details">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                Diagrams Details
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="ch25-tool-use-graph/" class="md-footer__link md-footer__link--next" aria-label="Next: Agent Tool-Use Graph — Interactive Planner">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Agent Tool-Use Graph — Interactive Planner
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

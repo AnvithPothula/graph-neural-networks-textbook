@@ -1,0 +1,3538 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Introduces Relational Deep Learning as a unified framework for applying GNNs directly to relational databases, with RelBench as the standard benchmark and RelGNN as the reference architecture.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/17-relational-deep-learning/">
+      
+      
+        <link rel="prev" href="../16-recommender-systems/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 17: Relational Deep Learning - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 17: Relational Deep Learning">
+  <meta property="og:description" content="Introduces Relational Deep Learning as a unified framework for applying GNNs directly to relational databases, with RelBench as the standard benchmark and RelGNN as the reference architecture.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/17-relational-deep-learning/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 17: Relational Deep Learning">
+  <meta name="twitter:description" content="Introduces Relational Deep Learning as a unified framework for applying GNNs directly to relational databases, with RelBench as the standard benchmark and RelGNN as the reference architecture.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-17-relational-deep-learning" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 17: Relational Deep Learning
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_19" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_19" id="__nav_4_19_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_19_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_19">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    17. Relational Deep Learning
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#171-motivating-example-customer-churn-prediction-in-an-e-commerce-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.1 Motivating Example: Customer Churn Prediction in an E-Commerce Database
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#172-formal-construction-from-relational-schema-to-heterogeneous-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.2 Formal Construction: From Relational Schema to Heterogeneous Graph
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#173-the-feature-engineering-baseline-and-its-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.3 The Feature Engineering Baseline and Its Limits
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#174-relational-deep-learning-the-unified-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.4 Relational Deep Learning: The Unified Framework
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#175-temporal-structure-in-relational-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.5 Temporal Structure in Relational Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#176-relbench-standardizing-relational-learning-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.6 RelBench: Standardizing Relational Learning Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#177-relgnn-composite-message-passing-for-relational-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.7 RelGNN: Composite Message Passing for Relational Data
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.7 RelGNN: Composite Message Passing for Relational Data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1771-architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.7.1 Architecture Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1772-junction-table-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.7.2 Junction Table Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1773-relation-to-chapter-15-architectures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.7.3 Relation to Chapter 15 Architectures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#178-complete-code-relational-database-to-graph-and-prediction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.8 Complete Code: Relational Database to Graph and Prediction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#179-benchmark-results-on-relbench" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.9 Benchmark Results on RelBench
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1710-microsim-table-to-graph-converter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.10 MicroSim: Table-to-Graph Converter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="17.10 MicroSim: Table-to-Graph Converter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-relational-schema-to-heterogeneous-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Relational Schema to Heterogeneous Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1711-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.11 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1712-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.12 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1713-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        17.13 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    17. Relational Deep Learning
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/17-relational-deep-learning/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-17-relational-deep-learning">Chapter 17: Relational Deep Learning<a class="headerlink" href="#chapter-17-relational-deep-learning" title="Permanent link">¶</a></h1>
+<p><strong>Part 4: Graphs in the Wild</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Introduces Relational Deep Learning as a unified framework for learning on relational databases represented as heterogeneous graphs, with RelBench as the standard benchmark.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 5 concepts from the learning graph:</p>
+<ol>
+<li>Relational Database as Graph</li>
+<li>Relational Deep Learning</li>
+<li>RelBench</li>
+<li>RelGNN</li>
+<li>RelBench (Benchmark)</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../06-gnn-foundations/">Chapter 6: GNN Foundations: Message Passing and GCN</a></li>
+<li><a href="../07-gnn-design-space/">Chapter 7: GNN Design Space: GraphSAGE and GAT</a></li>
+<li><a href="../15-heterogeneous-graphs/">Chapter 15: Heterogeneous Graphs</a></li>
+<li><a href="../16-recommender-systems/">Chapter 16: GNNs for Recommender Systems</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Every Database Is Already a Graph</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+The most abundant source of structured data in the world is not the benchmark datasets that populate machine learning papers — it is the relational databases that underpin every enterprise application, e-commerce platform, healthcare system, and financial institution on the planet. These databases contain trillions of rows organized into tables linked by foreign key relationships, and they encode extraordinarily rich information about entities and their interactions. The frustrating irony is that most machine learning pipelines discard this structure: they flatten the tables into a single wide feature matrix through manual SQL joins and aggregations, losing the higher-order relational patterns in the process. Relational Deep Learning (RDL) is a framework that refuses this flattening by observing a fundamental fact: a relational database with foreign keys is already a heterogeneous graph, and the entire arsenal of GNN methods developed in the preceding chapters applies directly — without a single additional architectural idea — once the database is correctly converted to graph form.</p>
+</div>
+<hr>
+<h2 id="171-motivating-example-customer-churn-prediction-in-an-e-commerce-database">17.1 Motivating Example: Customer Churn Prediction in an E-Commerce Database<a class="headerlink" href="#171-motivating-example-customer-churn-prediction-in-an-e-commerce-database" title="Permanent link">¶</a></h2>
+<p>Consider a moderately sized e-commerce company running its business on a standard relational database with five tables:</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Description</th>
+<th>Columns</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Customers</strong></td>
+<td>One row per registered user</td>
+<td>customer_id, age, signup_date, country</td>
+</tr>
+<tr>
+<td><strong>Orders</strong></td>
+<td>One row per purchase</td>
+<td>order_id, customer_id <em>(FK)</em>, order_date, total_amount, status</td>
+</tr>
+<tr>
+<td><strong>OrderItems</strong></td>
+<td>One row per line item in an order</td>
+<td>item_id, order_id <em>(FK)</em>, product_id <em>(FK)</em>, quantity, unit_price</td>
+</tr>
+<tr>
+<td><strong>Products</strong></td>
+<td>One row per product</td>
+<td>product_id, category, brand, price, rating</td>
+</tr>
+<tr>
+<td><strong>Reviews</strong></td>
+<td>One row per customer review</td>
+<td>review_id, customer_id <em>(FK)</em>, product_id <em>(FK)</em>, rating, review_date</td>
+</tr>
+</tbody>
+</table>
+<p>The business task is <strong>customer churn prediction</strong>: given a cutoff date <span class="arithmatex">\( T \)</span>, predict for each customer whether they will place at least one order in the 30 days following <span class="arithmatex">\( T \)</span>, using only data observable before <span class="arithmatex">\( T \)</span>. This is a binary classification task on customer entities with a temporal structure — the label is a future event, the features must be strictly historical.</p>
+<p>The traditional machine learning pipeline for this task involves an analyst writing SQL queries to compute customer-level aggregates: total number of orders in the past 90 days, average order value, number of distinct product categories purchased, average review rating given, days since last order. Each of these aggregates requires a join across tables, and the selection of which aggregates to compute requires domain knowledge. The resulting feature vector contains at most a few dozen hand-crafted signals, and the analyst must explicitly decide to discard the relational structure — the sequence of orders, the specific products reviewed, the overlap between a customer's product preferences and their purchase history.</p>
+<p>Relational Deep Learning takes a different path: convert the entire database schema into a heterogeneous graph, assign row-level feature encodings to each node, and run a GNN whose message passing propagates information across foreign-key links automatically. The GNN discovers which higher-order patterns are predictive during training, without requiring the analyst to articulate them in SQL.</p>
+<hr>
+<h2 id="172-formal-construction-from-relational-schema-to-heterogeneous-graph">17.2 Formal Construction: From Relational Schema to Heterogeneous Graph<a class="headerlink" href="#172-formal-construction-from-relational-schema-to-heterogeneous-graph" title="Permanent link">¶</a></h2>
+<p>A relational database schema <span class="arithmatex">\( \mathcal{S} = (\mathcal{T}, \mathcal{F}) \)</span> consists of a set of tables <span class="arithmatex">\( \mathcal{T} = \{T_1, T_2, \ldots, T_m\} \)</span> and a set of foreign key relationships <span class="arithmatex">\( \mathcal{F} \)</span>. Each foreign key relationship <span class="arithmatex">\( f \in \mathcal{F} \)</span> is a triple <span class="arithmatex">\( (T_i, c_i, T_j) \)</span>, meaning that column <span class="arithmatex">\( c_i \)</span> in table <span class="arithmatex">\( T_i \)</span> references the primary key of table <span class="arithmatex">\( T_j \)</span>. For example, in the e-commerce database, the Orders table has a foreign key Orders.customer_id → Customers.customer_id, meaning each order row references exactly one customer row.</p>
+<p>The <strong>relational-to-graph construction</strong> maps this schema to a heterogeneous graph <span class="arithmatex">\( G = (\mathcal{V}, \mathcal{E}, \tau, \phi) \)</span> as follows:</p>
+<p><strong>Nodes.</strong> For each table <span class="arithmatex">\( T_k \in \mathcal{T} \)</span> and each row <span class="arithmatex">\( r \in T_k \)</span>, create a node <span class="arithmatex">\( v_r \)</span>. Assign node type <span class="arithmatex">\( \tau(v_r) = T_k \)</span>. The node set is:</p>
+<div class="arithmatex">\[
+\mathcal{V} = \bigcup_{T_k \in \mathcal{T}} \{v_r : r \in T_k\}
+\]</div>
+<p><strong>Edges.</strong> For each foreign key relationship <span class="arithmatex">\( (T_i, c_i, T_j) \in \mathcal{F} \)</span> and each row <span class="arithmatex">\( r_i \in T_i \)</span> with value <span class="arithmatex">\( r_i[c_i] = k \)</span>, create an edge <span class="arithmatex">\( (v_{r_i}, v_{r_j}) \)</span> where <span class="arithmatex">\( r_j \)</span> is the unique row in <span class="arithmatex">\( T_j \)</span> with primary key value <span class="arithmatex">\( k \)</span>. The edge receives relation type <span class="arithmatex">\( \phi(e) = (T_i, \text{fk}_{c_i}, T_j) \)</span>. Additionally, the reverse edge <span class="arithmatex">\( (v_{r_j}, v_{r_i}) \)</span> is added with a distinct reverse relation type — this allows information to flow in both directions across the FK relationship, so a customer node can aggregate from its orders and an order node can also aggregate from its customer.</p>
+<p><strong>Node features.</strong> Each row's non-primary-key, non-foreign-key column values become initial node features. Numeric columns are standardized. Categorical columns with low cardinality are one-hot encoded; high-cardinality categoricals (e.g., product descriptions) may be encoded with a text encoder. Timestamp columns require special treatment — the raw timestamp is not directly informative, but features derived from it (time elapsed since signup, day of week, month) are useful and are extracted before encoding.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">The Foreign Key Is an Edge</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking carefully">
+The conceptual leap of Relational Deep Learning is disarmingly simple: a foreign key column, in database theory, is nothing more than a reference from one row to another — a pointer that connects two entities. In graph theory, a reference from one node to another is an edge. These are the same object described in two different vocabularies. The reason this equivalence is powerful is that decades of database normalization practice have already done the work of identifying which entities should be connected: the ER (Entity-Relationship) diagram that every database designer draws before writing the first CREATE TABLE statement is literally a graph schema, specifying node types and edge types. RDL is, in a precise sense, the reverse of the normalization process: normalization decomposes a flat feature matrix into tables to reduce redundancy and preserve referential integrity; RDL reconstructs a graph from those tables to enable structure-aware learning. The remarkable implication is that every normalized relational database, without any additional schema design, yields a well-structured heterogeneous graph that is ready for GNN processing.</p>
+</div>
+<p>For the e-commerce database, the resulting heterogeneous graph has five node types (Customers, Orders, OrderItems, Products, Reviews) and the following meta-relations (plus their reverses):</p>
+<table>
+<thead>
+<tr>
+<th>Source table</th>
+<th>Relation</th>
+<th>Target table</th>
+<th>Semantic meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Orders</td>
+<td>fk_customer</td>
+<td>Customers</td>
+<td>This order was placed by this customer</td>
+</tr>
+<tr>
+<td>OrderItems</td>
+<td>fk_order</td>
+<td>Orders</td>
+<td>This line item belongs to this order</td>
+</tr>
+<tr>
+<td>OrderItems</td>
+<td>fk_product</td>
+<td>Products</td>
+<td>This line item is for this product</td>
+</tr>
+<tr>
+<td>Reviews</td>
+<td>fk_customer</td>
+<td>Customers</td>
+<td>This review was written by this customer</td>
+</tr>
+<tr>
+<td>Reviews</td>
+<td>fk_product</td>
+<td>Products</td>
+<td>This review is about this product</td>
+</tr>
+</tbody>
+</table>
+<p>The customer churn prediction task is a node-level classification task on Customers nodes, with labels computed from the Orders table after cutoff time <span class="arithmatex">\( T \)</span>. The GNN receives the full graph (up to cutoff time) as input and produces a prediction logit for each customer node.</p>
+<hr>
+<h2 id="173-the-feature-engineering-baseline-and-its-limits">17.3 The Feature Engineering Baseline and Its Limits<a class="headerlink" href="#173-the-feature-engineering-baseline-and-its-limits" title="Permanent link">¶</a></h2>
+<p>Before examining what RDL enables, it is worth understanding precisely what traditional feature engineering captures and what it discards. A principled feature engineering approach for the customer churn task would compute, for each customer <span class="arithmatex">\( u \)</span>, a set of SQL-derived aggregates over a historical time window <span class="arithmatex">\( [T - \Delta, T] \)</span>:</p>
+<div class="arithmatex">\[
+\mathbf{x}_u = \left[\text{num-orders},\; \text{avg-order-value},\; \text{num-categories},\; \text{avg-review-rating},\; \text{days-since-last-order},\; \ldots\right]
+\]</div>
+<p>Systems like Featuretools (automated feature engineering) can generate dozens or hundreds of such aggregates by systematically enumerating join paths in the schema — effectively implementing a fixed-depth version of the RDL construction without learning which paths are predictive. The resulting feature matrix can then be fed to a gradient-boosted tree (LightGBM, XGBoost) or a shallow MLP.</p>
+<p>The information that this pipeline discards falls into three categories. First, <strong>higher-order relational patterns</strong>: features computed via a single join (e.g., "number of orders") miss patterns that require two joins (e.g., "how many distinct brands has this customer purchased across their top-reviewed product categories"). In principle, Featuretools can compute multi-hop aggregates, but the combinatorial explosion of join paths makes comprehensive coverage intractable beyond depth 2–3. Second, <strong>structural context</strong>: the structure of the subgraph around a customer — which other customers share their product preferences, how central they are in the co-purchase network — is not captured by per-customer aggregates. Third, <strong>sequential and temporal ordering</strong>: aggregates collapse ordered sequences to statistics, losing the information encoded in the sequence of events (e.g., a customer who has gradually decreased order frequency over six months versus one who has been consistently infrequent).</p>
+<p>GNN-based RDL addresses the first two limitations directly: multi-hop message passing propagates information across the join graph to arbitrary depth (bounded by the number of layers), and the graph structure is an explicit input to the model. The third limitation — temporal ordering — requires special handling described in §17.5, and its full treatment is deferred to Chapter 22 on temporal graph networks.</p>
+<hr>
+<h2 id="174-relational-deep-learning-the-unified-framework">17.4 Relational Deep Learning: The Unified Framework<a class="headerlink" href="#174-relational-deep-learning-the-unified-framework" title="Permanent link">¶</a></h2>
+<p><strong>Relational Deep Learning</strong> (Fey et al. 2024) is a framework that formalizes the relational-to-graph construction and defines a standardized pipeline for applying GNNs to predictive tasks on relational data. The framework has three components:</p>
+<p><strong>Graph construction layer.</strong> Given a database schema and a task specification (target table, target column, prediction time <span class="arithmatex">\( T \)</span>), the construction layer automatically instantiates the heterogeneous graph <span class="arithmatex">\( G \)</span> by executing the relational-to-graph mapping described in §17.2, filtering all rows to include only those observable before time <span class="arithmatex">\( T \)</span>, and computing initial node features from column values.</p>
+<p><strong>GNN encoder layer.</strong> A heterogeneous GNN (R-GCN, HGT, or a task-specific variant) is applied to the constructed graph, propagating information through the FK-defined edge structure. The output is a dense embedding <span class="arithmatex">\( \mathbf{h}_v \in \mathbb{R}^d \)</span> for each node <span class="arithmatex">\( v \)</span>, encoding the node's features and its relational neighborhood.</p>
+<p><strong>Prediction head.</strong> A task-specific MLP or link predictor maps the entity embedding(s) to the prediction target: a classification logit for node-level classification, a regression output for node-level regression, or a pair score for link prediction.</p>
+<p>The end-to-end pipeline — database → graph → GNN → prediction — is trained jointly with gradient descent, so the GNN learns to propagate exactly those relational signals that are predictive for the target task, without requiring explicit feature specification.</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">The Temporal Cutoff Is Not Optional</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage offering practical advice">
+The most consequential implementation detail in RDL is the temporal cutoff: every row included in the training graph must have a timestamp strictly less than the prediction time <span class="arithmatex">\( T \)</span>. This sounds obvious, but it is violated in subtle ways by naive implementations. Consider the e-commerce database: when computing node features for a customer at cutoff time <span class="arithmatex">\( T_\text{train} \)</span>, a developer might accidentally include the Orders table without filtering by order date, incorporating orders that occur after <span class="arithmatex">\( T_\text{train} \)</span>. The model trained on this data will appear to perform well (it is effectively peeking at the future), but it will fail catastrophically in production. The same leakage can occur through multi-hop paths: a review written after the cutoff but referencing a product that a customer purchased before the cutoff can expose information about the post-cutoff interaction. The RelBench benchmark makes temporal cutoff enforcement a first-class design requirement, providing a validated cutoff mechanism that filters all tables before graph construction — a design decision that the original literature identifies as responsible for a substantial fraction of the performance gap between offline evaluation and production deployment in historical enterprise ML systems.</p>
+</div>
+<hr>
+<h2 id="175-temporal-structure-in-relational-data">17.5 Temporal Structure in Relational Data<a class="headerlink" href="#175-temporal-structure-in-relational-data" title="Permanent link">¶</a></h2>
+<p>Relational databases maintain timestamps for most business-critical events: order dates, review submission times, login timestamps, transaction datetimes. This temporal metadata enables a temporally-aware graph construction that is strictly more informative than a static snapshot, but it also introduces data leakage risks that require careful handling.</p>
+<p>For a prediction task with prediction time <span class="arithmatex">\( T \)</span>, the <strong>temporally-filtered graph</strong> <span class="arithmatex">\( G_T \)</span> includes only rows <span class="arithmatex">\( r \)</span> satisfying <span class="arithmatex">\( r[\text{timestamp}] \leq T \)</span> (for tables that have timestamps) and all rows in tables without timestamps (static reference tables like Products that do not change over time). Training, validation, and test instances correspond to different prediction times <span class="arithmatex">\( T_\text{train} &lt; T_\text{val} &lt; T_\text{test} \)</span>, and the graph used for each instance uses the corresponding filtered view of the database.</p>
+<p>This temporal structure has an important consequence for evaluation: unlike standard node classification benchmarks where all training and test nodes coexist in the same static graph, RDL tasks use a <strong>walk-forward evaluation</strong> protocol. Models are trained on instances at time <span class="arithmatex">\( T_\text{train} \)</span>, tuned on instances at <span class="arithmatex">\( T_\text{val} \)</span>, and evaluated on instances at <span class="arithmatex">\( T_\text{test} \)</span>, where the three graphs <span class="arithmatex">\( G_{T_\text{train}}, G_{T_\text{val}}, G_{T_\text{test}} \)</span> are strictly nested. This mirrors the realistic deployment scenario: a model trained on data through month 6 and evaluated on month 9 sees genuinely new entities and new relationships at test time.</p>
+<p>Temporal attributes also enable encoding the <strong>age</strong> of each entity and each relationship relative to the cutoff time. An order placed 3 days before cutoff carries different predictive signal than an order placed 300 days before cutoff, even if their other attributes are identical. RelGNN (§17.7) encodes this temporal recency as part of its edge feature representation. The full treatment of models that continuously update entity representations as new events arrive — rather than using a static cutoff snapshot — is the subject of Chapter 22 (Temporal Graphs), where TGN and TGAT provide architectures specifically designed for event-based temporal graphs.</p>
+<hr>
+<h2 id="176-relbench-standardizing-relational-learning-evaluation">17.6 RelBench: Standardizing Relational Learning Evaluation<a class="headerlink" href="#176-relbench-standardizing-relational-learning-evaluation" title="Permanent link">¶</a></h2>
+<p><strong>RelBench</strong> (Robinson et al. 2024) is a benchmark suite designed to standardize evaluation for deep learning on relational databases, addressing the reproducibility challenges that plagued earlier work in this space — where different papers used different database schemas, different train/val/test splits, different feature engineering baselines, and different evaluation metrics, making it effectively impossible to compare results across papers.</p>
+<p>RelBench provides seven real-world relational datasets spanning multiple domains:</p>
+<table>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>Domain</th>
+<th>Tables</th>
+<th>Rows (total)</th>
+<th>Task type</th>
+<th>Metric</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>rel-amazon</td>
+<td>E-commerce</td>
+<td>5</td>
+<td>12M</td>
+<td>Entity classification</td>
+<td>Average Precision</td>
+</tr>
+<tr>
+<td>rel-f1</td>
+<td>Formula 1 racing</td>
+<td>5</td>
+<td>0.5M</td>
+<td>Entity regression</td>
+<td>MAE</td>
+</tr>
+<tr>
+<td>rel-hm</td>
+<td>Fashion retail</td>
+<td>4</td>
+<td>5M</td>
+<td>Link prediction</td>
+<td>NDCG@10</td>
+</tr>
+<tr>
+<td>rel-stack</td>
+<td>Q&amp;A community</td>
+<td>5</td>
+<td>15M</td>
+<td>Entity classification</td>
+<td>Average Precision</td>
+</tr>
+<tr>
+<td>rel-trial</td>
+<td>Clinical trials</td>
+<td>4</td>
+<td>3M</td>
+<td>Entity classification</td>
+<td>Average Precision</td>
+</tr>
+<tr>
+<td>rel-avito</td>
+<td>Classified ads</td>
+<td>6</td>
+<td>8M</td>
+<td>Link prediction</td>
+<td>NDCG@10</td>
+</tr>
+<tr>
+<td>rel-event</td>
+<td>Event platform</td>
+<td>4</td>
+<td>2M</td>
+<td>Entity regression</td>
+<td>RMSE</td>
+</tr>
+</tbody>
+</table>
+<p>Each dataset ships with a standardized graph construction (verified to be leakage-free), temporal train/val/test splits aligned to realistic deployment scenarios, and a Python API (<code>relbench</code> package) that returns PyTorch Geometric <code>HeteroData</code> objects directly from a SQL database. This eliminates a major source of irreproducibility: researchers implementing their own database-to-graph conversions frequently introduce subtle schema differences that confound method comparisons.</p>
+<p>RelBench also provides <strong>baseline implementations</strong> for LightGBM with automated feature engineering (Featuretools DFS), SAGE on the relational graph, HGT, and a temporal GNN baseline, enabling head-to-head comparison of the full methodology stack — not just the GNN architecture in isolation. The benchmark's design principle is that the feature engineering baseline should be as competitive as possible (using the best available AutoML tools), so that performance gaps reflect genuine architectural advantages rather than weak baselines.</p>
+<hr>
+<h2 id="177-relgnn-composite-message-passing-for-relational-data">17.7 RelGNN: Composite Message Passing for Relational Data<a class="headerlink" href="#177-relgnn-composite-message-passing-for-relational-data" title="Permanent link">¶</a></h2>
+<p><strong>RelGNN</strong> (2025) is the reference GNN architecture for relational deep learning, designed to address two structural properties of relational graphs that distinguish them from the standard heterogeneous graphs of Chapter 15: <strong>temporal edge attributes</strong> (each FK-defined edge carries the timestamp of the relationship) and <strong>many-to-many relationships</strong> realized through junction tables (the OrderItems table in the e-commerce example is a junction table connecting Orders to Products with line-item-level attributes).</p>
+<h3 id="1771-architecture-overview">17.7.1 Architecture Overview<a class="headerlink" href="#1771-architecture-overview" title="Permanent link">¶</a></h3>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">Relational Graphs Have More Structure Than Generic Heterogeneous Graphs</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encouraging the reader">
+RelGNN inherits everything from Chapter 15's heterogeneous GNN toolkit — type-specific projections, relation-specific weight matrices, attention over typed neighborhoods — and adds two components specific to the relational setting. The first is <strong>temporal recency encoding</strong>: each edge carries a time-to-cutoff feature <span class="arithmatex">\( \Delta t = T - t_e \)</span> (where <span class="arithmatex">\( t_e \)</span> is the edge's timestamp and <span class="arithmatex">\( T \)</span> is the prediction time), which is encoded using a time2vec or sinusoidal position encoding and concatenated to the edge's feature representation. The second is <strong>junction table handling</strong>: many-to-many relationships realized through junction tables create three-node paths (e.g., Customer → Order → OrderItem → Product), and RelGNN's composite message passing explicitly models these three-node patterns rather than treating them as two independent two-node FK links. If the complexity of this sounds daunting, remember that you already understand R-GCN's relation-specific weight matrices and HGT's meta-relation attention — RelGNN adds temporal recency and junction path handling on top of those same primitives, not a wholly new mechanism. Take it one component at a time.</p>
+</div>
+<p>The RelGNN message-passing update for a target node <span class="arithmatex">\( v \)</span> of type <span class="arithmatex">\( \tau(v) \)</span> at layer <span class="arithmatex">\( l \)</span> is:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(l+1)} = \sigma\!\left(\mathbf{W}_{\tau(v)}^{(l)} \mathbf{h}_v^{(l)} + \sum_{r \in \mathcal{R}} \text{AGG}_r^{(l)}\!\left(\left\{\mathbf{m}_{uv}^{r,(l)} : u \in \mathcal{N}_r(v)\right\}\right)\right)
+\]</div>
+<p>where <span class="arithmatex">\( \mathcal{R} \)</span> is the set of meta-relations and the <strong>composite message</strong> from source node <span class="arithmatex">\( u \)</span> to target node <span class="arithmatex">\( v \)</span> via relation <span class="arithmatex">\( r \)</span> is:</p>
+<div class="arithmatex">\[
+\mathbf{m}_{uv}^{r,(l)} = \mathbf{W}_r^{(l)} \mathbf{h}_u^{(l)} + \mathbf{W}_r^{\text{time},(l)}\, \psi(\Delta t_{uv})
+\]</div>
+<p>where:</p>
+<ul>
+<li><span class="arithmatex">\( \mathbf{W}_r^{(l)} \in \mathbb{R}^{d \times d} \)</span> is the relation-specific weight matrix, identical to R-GCN's formulation</li>
+<li><span class="arithmatex">\( \Delta t_{uv} = T - t_e \)</span> is the time elapsed between edge timestamp <span class="arithmatex">\( t_e \)</span> and the prediction cutoff <span class="arithmatex">\( T \)</span></li>
+<li><span class="arithmatex">\( \psi(\Delta t) \in \mathbb{R}^{d_t} \)</span> is a sinusoidal time encoding: <span class="arithmatex">\( [\sin(f_1 \Delta t), \cos(f_1 \Delta t), \ldots, \sin(f_{d_t/2} \Delta t), \cos(f_{d_t/2} \Delta t)] \)</span> with learned frequency parameters <span class="arithmatex">\( \{f_k\} \)</span></li>
+<li><span class="arithmatex">\( \mathbf{W}_r^{\text{time},(l)} \in \mathbb{R}^{d \times d_t} \)</span> maps the time encoding to the embedding dimension</li>
+</ul>
+<p>The aggregation function <span class="arithmatex">\( \text{AGG}_r^{(l)} \)</span> is typically mean pooling or attention pooling over all messages of relation type <span class="arithmatex">\( r \)</span>. Basis decomposition (§15.5) can be applied to <span class="arithmatex">\( \mathbf{W}_r^{(l)} \)</span> when the number of meta-relations is large.</p>
+<h3 id="1772-junction-table-handling">17.7.2 Junction Table Handling<a class="headerlink" href="#1772-junction-table-handling" title="Permanent link">¶</a></h3>
+<p>A <strong>junction table</strong> (also called an association table or linking table) represents a many-to-many relationship by introducing an intermediate table whose rows each reference two other tables via foreign keys. In the e-commerce schema, OrderItems is a junction table: each OrderItems row references one Orders row and one Products row, and a given order can contain many products while a given product can appear in many orders.</p>
+<p>Naive graph construction creates a path Customer → Order → OrderItem → Product — a three-hop path before any information from a product reaches a customer node. RelGNN introduces <strong>path-compressed edges</strong> for junction table patterns: for a three-table pattern <span class="arithmatex">\( A \xrightarrow{\text{fk}_1} J \xrightarrow{\text{fk}_2} B \)</span> where <span class="arithmatex">\( J \)</span> is a junction table, RelGNN adds a direct <span class="arithmatex">\( (A, B) \)</span> edge with features aggregated from the intermediate junction node, effectively collapsing the two-hop path into a single typed edge. This halves the effective depth required for products to influence customer representations and reduces the number of GNN layers needed for the same receptive field.</p>
+<h3 id="1773-relation-to-chapter-15-architectures">17.7.3 Relation to Chapter 15 Architectures<a class="headerlink" href="#1773-relation-to-chapter-15-architectures" title="Permanent link">¶</a></h3>
+<p>RelGNN can be understood as R-GCN extended with two orthogonal additions. If the temporal recency encoding is removed (setting all <span class="arithmatex">\( \Delta t = 0 \)</span>) and junction table compression is disabled, RelGNN's update equation reduces exactly to R-GCN with per-relation weight matrices. The temporal component is a form of edge feature incorporation — treating the time delta as an edge attribute that modulates the message from source to target. The junction table compression is a preprocessing step, not an architectural change to the GNN itself. This decomposition is useful for debugging: when building an RDL pipeline, it is advisable to first run standard R-GCN (Chapter 15) to establish a baseline, then add temporal encoding, then add junction compression, verifying at each step that performance improves.</p>
+<hr>
+<h2 id="178-complete-code-relational-database-to-graph-and-prediction">17.8 Complete Code: Relational Database to Graph and Prediction<a class="headerlink" href="#178-complete-code-relational-database-to-graph-and-prediction" title="Permanent link">¶</a></h2>
+<p>The following code demonstrates the complete RDL pipeline: constructing a toy three-table relational database (Customers, Orders, Products), converting it to a PyTorch Geometric <code>HeteroData</code> object, applying a heterogeneous GNN for customer classification, and evaluating on a held-out validation set. The implementation uses standard PyG components (HeteroConv, SAGEConv) rather than a proprietary RelGNN implementation, since the latter requires the <code>relbench</code> package — the goal here is to demonstrate the graph construction step, which is the conceptually critical piece.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeteroData</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">HeteroConv</span><span class="p">,</span> <span class="n">SAGEConv</span><span class="p">,</span> <span class="n">Linear</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># ── 1. Construct toy relational database ──────────────────────────────────────</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">def</span><span class="w"> </span><span class="nf">make_relational_db</span><span class="p">(</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">num_customers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">num_products</span><span class="p">:</span>  <span class="nb">int</span> <span class="o">=</span> <span class="mi">50</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">num_orders</span><span class="p">:</span>    <span class="nb">int</span> <span class="o">=</span> <span class="mi">800</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">num_items_per_order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>   <span class="c1"># average line items per order</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="sd">    Creates a toy e-commerce relational database as Python dicts.</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="sd">    Tables:</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="sd">      customers  : customer_id, age_norm, country_emb (2d)</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="sd">      products   : product_id, price_norm, category_onehot (5d)</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="sd">      orders     : order_id, customer_id (FK), days_to_cutoff</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="sd">      order_items: item_id, order_id (FK), product_id (FK), quantity</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="sd">    Labels: binary churn label per customer (simulated).</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="sd">    """</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="c1"># Customers table</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n">customer_age</span>   <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_customers</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n">customer_country</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">num_customers</span><span class="p">)</span>  <span class="c1"># 3 countries</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    <span class="c1"># Products table</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    <span class="n">product_price</span>  <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_products</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>    <span class="n">product_cat</span>    <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">num_products</span><span class="p">)</span>   <span class="c1"># 5 categories</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>    <span class="c1"># Orders table: each order references one customer</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>    <span class="n">order_customer</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_customers</span><span class="p">,</span> <span class="n">num_orders</span><span class="p">)</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="n">order_days</span>     <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">365</span><span class="p">,</span> <span class="n">num_orders</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>  <span class="c1"># days before cutoff</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>    <span class="c1"># OrderItems: each item references one order and one product</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>    <span class="n">total_items</span> <span class="o">=</span> <span class="n">num_orders</span> <span class="o">*</span> <span class="n">num_items_per_order</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>    <span class="n">item_order</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">num_orders</span><span class="p">),</span> <span class="n">num_items_per_order</span><span class="p">)</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>    <span class="n">item_product</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_products</span><span class="p">,</span> <span class="n">total_items</span><span class="p">)</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>    <span class="n">item_qty</span>     <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">total_items</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>    <span class="c1"># Churn labels: customers with few recent orders → label=1 (churned)</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>    <span class="n">orders_per_customer</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">order_customer</span><span class="p">,</span> <span class="n">minlength</span><span class="o">=</span><span class="n">num_customers</span><span class="p">)</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>    <span class="n">churn</span> <span class="o">=</span> <span class="p">(</span><span class="n">orders_per_customer</span> <span class="o">&lt;</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">orders_per_customer</span><span class="p">,</span> <span class="mi">40</span><span class="p">))</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>    <span class="k">return</span> <span class="p">{</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>        <span class="s1">'customer_age'</span><span class="p">:</span>     <span class="n">customer_age</span><span class="p">,</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>        <span class="s1">'customer_country'</span><span class="p">:</span> <span class="n">customer_country</span><span class="p">,</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>        <span class="s1">'product_price'</span><span class="p">:</span>    <span class="n">product_price</span><span class="p">,</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>        <span class="s1">'product_cat'</span><span class="p">:</span>      <span class="n">product_cat</span><span class="p">,</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>        <span class="s1">'order_customer'</span><span class="p">:</span>   <span class="n">order_customer</span><span class="p">,</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>        <span class="s1">'order_days'</span><span class="p">:</span>       <span class="n">order_days</span><span class="p">,</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>        <span class="s1">'item_order'</span><span class="p">:</span>       <span class="n">item_order</span><span class="p">,</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>        <span class="s1">'item_product'</span><span class="p">:</span>     <span class="n">item_product</span><span class="p">,</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>        <span class="s1">'item_qty'</span><span class="p">:</span>         <span class="n">item_qty</span><span class="p">,</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>        <span class="s1">'churn'</span><span class="p">:</span>            <span class="n">churn</span><span class="p">,</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>        <span class="s1">'num_customers'</span><span class="p">:</span>    <span class="n">num_customers</span><span class="p">,</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>        <span class="s1">'num_products'</span><span class="p">:</span>     <span class="n">num_products</span><span class="p">,</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>        <span class="s1">'num_orders'</span><span class="p">:</span>       <span class="n">num_orders</span><span class="p">,</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>        <span class="s1">'total_items'</span><span class="p">:</span>      <span class="n">total_items</span><span class="p">,</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>    <span class="p">}</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="c1"># ── 2. Convert relational DB to HeteroData ────────────────────────────────────</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="k">def</span><span class="w"> </span><span class="nf">db_to_hetero</span><span class="p">(</span><span class="n">db</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HeteroData</span><span class="p">:</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="sd">    Implements the relational-to-graph construction:</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="sd">      - One node type per table (customer, product, order, order_item)</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a><span class="sd">      - One edge type per foreign key (plus reverses)</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a><span class="sd">      - Column values → initial node features</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a><span class="sd">    """</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">HeteroData</span><span class="p">()</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>    <span class="c1"># ── Node features (column values → tensors) ──────────────────────────────</span>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>    <span class="c1"># Customer nodes: [age, country_onehot(3)]</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>    <span class="n">country_oh</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'customer_country'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">),</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">3</span>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>    <span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'customer'</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'customer_age'</span><span class="p">])</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>        <span class="n">country_oh</span><span class="p">,</span>
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>    <span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># (num_customers, 4)</span>
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>    <span class="c1"># Product nodes: [price, category_onehot(5)]</span>
+</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>    <span class="n">cat_oh</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span>
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'product_cat'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">),</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">5</span>
+</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>    <span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'product'</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'product_price'</span><span class="p">])</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>        <span class="n">cat_oh</span><span class="p">,</span>
+</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>    <span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># (num_products, 6)</span>
+</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>
+</span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>    <span class="c1"># Order nodes: [days_to_cutoff]  — the temporal recency feature</span>
+</span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'order'</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'order_days'</span><span class="p">])</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (num_orders, 1)</span>
+</span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a>
+</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a>    <span class="c1"># OrderItem nodes: [quantity]</span>
+</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'order_item'</span><span class="p">]</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'item_qty'</span><span class="p">])</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (total_items, 1)</span>
+</span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>
+</span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a>    <span class="c1"># ── Labels ───────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-108"><a id="__codelineno-0-108" name="__codelineno-0-108" href="#__codelineno-0-108"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'customer'</span><span class="p">]</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'churn'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+</span><span id="__span-0-109"><a id="__codelineno-0-109" name="__codelineno-0-109" href="#__codelineno-0-109"></a>    <span class="n">nc</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="s1">'num_customers'</span><span class="p">]</span>
+</span><span id="__span-0-110"><a id="__codelineno-0-110" name="__codelineno-0-110" href="#__codelineno-0-110"></a>    <span class="n">perm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="n">nc</span><span class="p">)</span>
+</span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111" href="#__codelineno-0-111"></a>    <span class="n">train_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+</span><span id="__span-0-112"><a id="__codelineno-0-112" name="__codelineno-0-112" href="#__codelineno-0-112"></a>    <span class="n">val_mask</span>   <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nc</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+</span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113" href="#__codelineno-0-113"></a>    <span class="n">train_mask</span><span class="p">[</span><span class="n">perm</span><span class="p">[:</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.7</span><span class="o">*</span><span class="n">nc</span><span class="p">)]]</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="__span-0-114"><a id="__codelineno-0-114" name="__codelineno-0-114" href="#__codelineno-0-114"></a>    <span class="n">val_mask</span><span class="p">[</span><span class="n">perm</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.7</span><span class="o">*</span><span class="n">nc</span><span class="p">):</span><span class="nb">int</span><span class="p">(</span><span class="mf">0.85</span><span class="o">*</span><span class="n">nc</span><span class="p">)]]</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span id="__span-0-115"><a id="__codelineno-0-115" name="__codelineno-0-115" href="#__codelineno-0-115"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'customer'</span><span class="p">]</span><span class="o">.</span><span class="n">train_mask</span> <span class="o">=</span> <span class="n">train_mask</span>
+</span><span id="__span-0-116"><a id="__codelineno-0-116" name="__codelineno-0-116" href="#__codelineno-0-116"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'customer'</span><span class="p">]</span><span class="o">.</span><span class="n">val_mask</span>   <span class="o">=</span> <span class="n">val_mask</span>
+</span><span id="__span-0-117"><a id="__codelineno-0-117" name="__codelineno-0-117" href="#__codelineno-0-117"></a>
+</span><span id="__span-0-118"><a id="__codelineno-0-118" name="__codelineno-0-118" href="#__codelineno-0-118"></a>    <span class="c1"># ── Edges: FK relationships (both directions) ─────────────────────────────</span>
+</span><span id="__span-0-119"><a id="__codelineno-0-119" name="__codelineno-0-119" href="#__codelineno-0-119"></a>    <span class="c1"># orders.customer_id → customers.customer_id</span>
+</span><span id="__span-0-120"><a id="__codelineno-0-120" name="__codelineno-0-120" href="#__codelineno-0-120"></a>    <span class="n">oc_src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'order_customer'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+</span><span id="__span-0-121"><a id="__codelineno-0-121" name="__codelineno-0-121" href="#__codelineno-0-121"></a>    <span class="n">oc_dst</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'order_customer'</span><span class="p">]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+</span><span id="__span-0-122"><a id="__codelineno-0-122" name="__codelineno-0-122" href="#__codelineno-0-122"></a>    <span class="c1"># Edge: order → customer (FK direction)</span>
+</span><span id="__span-0-123"><a id="__codelineno-0-123" name="__codelineno-0-123" href="#__codelineno-0-123"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'order'</span><span class="p">,</span> <span class="s1">'placed_by'</span><span class="p">,</span> <span class="s1">'customer'</span><span class="p">]</span><span class="o">.</span><span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span>
+</span><span id="__span-0-124"><a id="__codelineno-0-124" name="__codelineno-0-124" href="#__codelineno-0-124"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'num_orders'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">),</span>
+</span><span id="__span-0-125"><a id="__codelineno-0-125" name="__codelineno-0-125" href="#__codelineno-0-125"></a>        <span class="n">oc_src</span><span class="p">,</span>
+</span><span id="__span-0-126"><a id="__codelineno-0-126" name="__codelineno-0-126" href="#__codelineno-0-126"></a>    <span class="p">])</span>
+</span><span id="__span-0-127"><a id="__codelineno-0-127" name="__codelineno-0-127" href="#__codelineno-0-127"></a>    <span class="c1"># Reverse: customer → order</span>
+</span><span id="__span-0-128"><a id="__codelineno-0-128" name="__codelineno-0-128" href="#__codelineno-0-128"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'customer'</span><span class="p">,</span> <span class="s1">'has_order'</span><span class="p">,</span> <span class="s1">'order'</span><span class="p">]</span><span class="o">.</span><span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span>
+</span><span id="__span-0-129"><a id="__codelineno-0-129" name="__codelineno-0-129" href="#__codelineno-0-129"></a>        <span class="n">oc_src</span><span class="p">,</span>
+</span><span id="__span-0-130"><a id="__codelineno-0-130" name="__codelineno-0-130" href="#__codelineno-0-130"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'num_orders'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">),</span>
+</span><span id="__span-0-131"><a id="__codelineno-0-131" name="__codelineno-0-131" href="#__codelineno-0-131"></a>    <span class="p">])</span>
+</span><span id="__span-0-132"><a id="__codelineno-0-132" name="__codelineno-0-132" href="#__codelineno-0-132"></a>
+</span><span id="__span-0-133"><a id="__codelineno-0-133" name="__codelineno-0-133" href="#__codelineno-0-133"></a>    <span class="c1"># order_items.order_id → orders.order_id</span>
+</span><span id="__span-0-134"><a id="__codelineno-0-134" name="__codelineno-0-134" href="#__codelineno-0-134"></a>    <span class="n">io_src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'item_order'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+</span><span id="__span-0-135"><a id="__codelineno-0-135" name="__codelineno-0-135" href="#__codelineno-0-135"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'order_item'</span><span class="p">,</span> <span class="s1">'in_order'</span><span class="p">,</span> <span class="s1">'order'</span><span class="p">]</span><span class="o">.</span><span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span>
+</span><span id="__span-0-136"><a id="__codelineno-0-136" name="__codelineno-0-136" href="#__codelineno-0-136"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'total_items'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">),</span>
+</span><span id="__span-0-137"><a id="__codelineno-0-137" name="__codelineno-0-137" href="#__codelineno-0-137"></a>        <span class="n">io_src</span><span class="p">,</span>
+</span><span id="__span-0-138"><a id="__codelineno-0-138" name="__codelineno-0-138" href="#__codelineno-0-138"></a>    <span class="p">])</span>
+</span><span id="__span-0-139"><a id="__codelineno-0-139" name="__codelineno-0-139" href="#__codelineno-0-139"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'order'</span><span class="p">,</span> <span class="s1">'has_item'</span><span class="p">,</span> <span class="s1">'order_item'</span><span class="p">]</span><span class="o">.</span><span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span>
+</span><span id="__span-0-140"><a id="__codelineno-0-140" name="__codelineno-0-140" href="#__codelineno-0-140"></a>        <span class="n">io_src</span><span class="p">,</span>
+</span><span id="__span-0-141"><a id="__codelineno-0-141" name="__codelineno-0-141" href="#__codelineno-0-141"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'total_items'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">),</span>
+</span><span id="__span-0-142"><a id="__codelineno-0-142" name="__codelineno-0-142" href="#__codelineno-0-142"></a>    <span class="p">])</span>
+</span><span id="__span-0-143"><a id="__codelineno-0-143" name="__codelineno-0-143" href="#__codelineno-0-143"></a>
+</span><span id="__span-0-144"><a id="__codelineno-0-144" name="__codelineno-0-144" href="#__codelineno-0-144"></a>    <span class="c1"># order_items.product_id → products.product_id</span>
+</span><span id="__span-0-145"><a id="__codelineno-0-145" name="__codelineno-0-145" href="#__codelineno-0-145"></a>    <span class="n">ip_src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'item_product'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+</span><span id="__span-0-146"><a id="__codelineno-0-146" name="__codelineno-0-146" href="#__codelineno-0-146"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'order_item'</span><span class="p">,</span> <span class="s1">'references'</span><span class="p">,</span> <span class="s1">'product'</span><span class="p">]</span><span class="o">.</span><span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span>
+</span><span id="__span-0-147"><a id="__codelineno-0-147" name="__codelineno-0-147" href="#__codelineno-0-147"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'total_items'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">),</span>
+</span><span id="__span-0-148"><a id="__codelineno-0-148" name="__codelineno-0-148" href="#__codelineno-0-148"></a>        <span class="n">ip_src</span><span class="p">,</span>
+</span><span id="__span-0-149"><a id="__codelineno-0-149" name="__codelineno-0-149" href="#__codelineno-0-149"></a>    <span class="p">])</span>
+</span><span id="__span-0-150"><a id="__codelineno-0-150" name="__codelineno-0-150" href="#__codelineno-0-150"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'product'</span><span class="p">,</span> <span class="s1">'referenced_by'</span><span class="p">,</span> <span class="s1">'order_item'</span><span class="p">]</span><span class="o">.</span><span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span>
+</span><span id="__span-0-151"><a id="__codelineno-0-151" name="__codelineno-0-151" href="#__codelineno-0-151"></a>        <span class="n">ip_src</span><span class="p">,</span>
+</span><span id="__span-0-152"><a id="__codelineno-0-152" name="__codelineno-0-152" href="#__codelineno-0-152"></a>        <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="s1">'total_items'</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">),</span>
+</span><span id="__span-0-153"><a id="__codelineno-0-153" name="__codelineno-0-153" href="#__codelineno-0-153"></a>    <span class="p">])</span>
+</span><span id="__span-0-154"><a id="__codelineno-0-154" name="__codelineno-0-154" href="#__codelineno-0-154"></a>
+</span><span id="__span-0-155"><a id="__codelineno-0-155" name="__codelineno-0-155" href="#__codelineno-0-155"></a>    <span class="k">return</span> <span class="n">data</span>
+</span><span id="__span-0-156"><a id="__codelineno-0-156" name="__codelineno-0-156" href="#__codelineno-0-156"></a>
+</span><span id="__span-0-157"><a id="__codelineno-0-157" name="__codelineno-0-157" href="#__codelineno-0-157"></a>
+</span><span id="__span-0-158"><a id="__codelineno-0-158" name="__codelineno-0-158" href="#__codelineno-0-158"></a><span class="c1"># ── 3. GNN model (R-GCN style with HeteroConv) ───────────────────────────────</span>
+</span><span id="__span-0-159"><a id="__codelineno-0-159" name="__codelineno-0-159" href="#__codelineno-0-159"></a>
+</span><span id="__span-0-160"><a id="__codelineno-0-160" name="__codelineno-0-160" href="#__codelineno-0-160"></a><span class="k">class</span><span class="w"> </span><span class="nc">RelationalGNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161" href="#__codelineno-0-161"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-162"><a id="__codelineno-0-162" name="__codelineno-0-162" href="#__codelineno-0-162"></a><span class="sd">    Two-layer heterogeneous GNN applied to the relational graph.</span>
+</span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163" href="#__codelineno-0-163"></a><span class="sd">    Uses SAGEConv per meta-relation (equivalent to R-GCN with mean aggregation).</span>
+</span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164" href="#__codelineno-0-164"></a><span class="sd">    Prediction head: binary classification on customer nodes.</span>
+</span><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165" href="#__codelineno-0-165"></a>
+</span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166" href="#__codelineno-0-166"></a><span class="sd">    Parameters</span>
+</span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167" href="#__codelineno-0-167"></a><span class="sd">    ----------</span>
+</span><span id="__span-0-168"><a id="__codelineno-0-168" name="__codelineno-0-168" href="#__codelineno-0-168"></a><span class="sd">    metadata   : (node_types, edge_types) from HeteroData.metadata()</span>
+</span><span id="__span-0-169"><a id="__codelineno-0-169" name="__codelineno-0-169" href="#__codelineno-0-169"></a><span class="sd">    hidden_dim : embedding dimension</span>
+</span><span id="__span-0-170"><a id="__codelineno-0-170" name="__codelineno-0-170" href="#__codelineno-0-170"></a><span class="sd">    num_classes: output classes (2 for binary churn)</span>
+</span><span id="__span-0-171"><a id="__codelineno-0-171" name="__codelineno-0-171" href="#__codelineno-0-171"></a><span class="sd">    """</span>
+</span><span id="__span-0-172"><a id="__codelineno-0-172" name="__codelineno-0-172" href="#__codelineno-0-172"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+</span><span id="__span-0-173"><a id="__codelineno-0-173" name="__codelineno-0-173" href="#__codelineno-0-173"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-174"><a id="__codelineno-0-174" name="__codelineno-0-174" href="#__codelineno-0-174"></a>        <span class="n">node_types</span><span class="p">,</span> <span class="n">edge_types</span> <span class="o">=</span> <span class="n">metadata</span>
+</span><span id="__span-0-175"><a id="__codelineno-0-175" name="__codelineno-0-175" href="#__codelineno-0-175"></a>
+</span><span id="__span-0-176"><a id="__codelineno-0-176" name="__codelineno-0-176" href="#__codelineno-0-176"></a>        <span class="c1"># Type-specific input projections (§15.6): map raw features to hidden_dim</span>
+</span><span id="__span-0-177"><a id="__codelineno-0-177" name="__codelineno-0-177" href="#__codelineno-0-177"></a>        <span class="c1"># Linear(-1, hidden_dim) uses lazy initialization for different input dims</span>
+</span><span id="__span-0-178"><a id="__codelineno-0-178" name="__codelineno-0-178" href="#__codelineno-0-178"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleDict</span><span class="p">({</span>
+</span><span id="__span-0-179"><a id="__codelineno-0-179" name="__codelineno-0-179" href="#__codelineno-0-179"></a>            <span class="n">ntype</span><span class="p">:</span> <span class="n">Linear</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span> <span class="k">for</span> <span class="n">ntype</span> <span class="ow">in</span> <span class="n">node_types</span>
+</span><span id="__span-0-180"><a id="__codelineno-0-180" name="__codelineno-0-180" href="#__codelineno-0-180"></a>        <span class="p">})</span>
+</span><span id="__span-0-181"><a id="__codelineno-0-181" name="__codelineno-0-181" href="#__codelineno-0-181"></a>
+</span><span id="__span-0-182"><a id="__codelineno-0-182" name="__codelineno-0-182" href="#__codelineno-0-182"></a>        <span class="c1"># Layer 1: one SAGEConv per meta-relation</span>
+</span><span id="__span-0-183"><a id="__codelineno-0-183" name="__codelineno-0-183" href="#__codelineno-0-183"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">HeteroConv</span><span class="p">(</span>
+</span><span id="__span-0-184"><a id="__codelineno-0-184" name="__codelineno-0-184" href="#__codelineno-0-184"></a>            <span class="p">{</span><span class="n">etype</span><span class="p">:</span> <span class="n">SAGEConv</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">hidden_dim</span><span class="p">)</span> <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="n">edge_types</span><span class="p">},</span>
+</span><span id="__span-0-185"><a id="__codelineno-0-185" name="__codelineno-0-185" href="#__codelineno-0-185"></a>            <span class="n">aggr</span><span class="o">=</span><span class="s1">'mean'</span>
+</span><span id="__span-0-186"><a id="__codelineno-0-186" name="__codelineno-0-186" href="#__codelineno-0-186"></a>        <span class="p">)</span>
+</span><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187" href="#__codelineno-0-187"></a>        <span class="c1"># Layer 2</span>
+</span><span id="__span-0-188"><a id="__codelineno-0-188" name="__codelineno-0-188" href="#__codelineno-0-188"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">HeteroConv</span><span class="p">(</span>
+</span><span id="__span-0-189"><a id="__codelineno-0-189" name="__codelineno-0-189" href="#__codelineno-0-189"></a>            <span class="p">{</span><span class="n">etype</span><span class="p">:</span> <span class="n">SAGEConv</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">hidden_dim</span><span class="p">)</span> <span class="k">for</span> <span class="n">etype</span> <span class="ow">in</span> <span class="n">edge_types</span><span class="p">},</span>
+</span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190" href="#__codelineno-0-190"></a>            <span class="n">aggr</span><span class="o">=</span><span class="s1">'mean'</span>
+</span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191" href="#__codelineno-0-191"></a>        <span class="p">)</span>
+</span><span id="__span-0-192"><a id="__codelineno-0-192" name="__codelineno-0-192" href="#__codelineno-0-192"></a>        <span class="c1"># Binary classification head on customer embeddings</span>
+</span><span id="__span-0-193"><a id="__codelineno-0-193" name="__codelineno-0-193" href="#__codelineno-0-193"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+</span><span id="__span-0-194"><a id="__codelineno-0-194" name="__codelineno-0-194" href="#__codelineno-0-194"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span>
+</span><span id="__span-0-195"><a id="__codelineno-0-195" name="__codelineno-0-195" href="#__codelineno-0-195"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+</span><span id="__span-0-196"><a id="__codelineno-0-196" name="__codelineno-0-196" href="#__codelineno-0-196"></a>            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">),</span>
+</span><span id="__span-0-197"><a id="__codelineno-0-197" name="__codelineno-0-197" href="#__codelineno-0-197"></a>        <span class="p">)</span>
+</span><span id="__span-0-198"><a id="__codelineno-0-198" name="__codelineno-0-198" href="#__codelineno-0-198"></a>
+</span><span id="__span-0-199"><a id="__codelineno-0-199" name="__codelineno-0-199" href="#__codelineno-0-199"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_dict</span><span class="p">,</span> <span class="n">edge_index_dict</span><span class="p">):</span>
+</span><span id="__span-0-200"><a id="__codelineno-0-200" name="__codelineno-0-200" href="#__codelineno-0-200"></a>        <span class="c1"># Step 1: type-specific projection to shared embedding space</span>
+</span><span id="__span-0-201"><a id="__codelineno-0-201" name="__codelineno-0-201" href="#__codelineno-0-201"></a>        <span class="n">h</span> <span class="o">=</span> <span class="p">{</span><span class="n">ntype</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">[</span><span class="n">ntype</span><span class="p">](</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">ntype</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">x_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</span><span id="__span-0-202"><a id="__codelineno-0-202" name="__codelineno-0-202" href="#__codelineno-0-202"></a>
+</span><span id="__span-0-203"><a id="__codelineno-0-203" name="__codelineno-0-203" href="#__codelineno-0-203"></a>        <span class="c1"># Step 2: two rounds of heterogeneous message passing</span>
+</span><span id="__span-0-204"><a id="__codelineno-0-204" name="__codelineno-0-204" href="#__codelineno-0-204"></a>        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">edge_index_dict</span><span class="p">)</span>
+</span><span id="__span-0-205"><a id="__codelineno-0-205" name="__codelineno-0-205" href="#__codelineno-0-205"></a>        <span class="n">h</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">h</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</span><span id="__span-0-206"><a id="__codelineno-0-206" name="__codelineno-0-206" href="#__codelineno-0-206"></a>        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">edge_index_dict</span><span class="p">)</span>
+</span><span id="__span-0-207"><a id="__codelineno-0-207" name="__codelineno-0-207" href="#__codelineno-0-207"></a>
+</span><span id="__span-0-208"><a id="__codelineno-0-208" name="__codelineno-0-208" href="#__codelineno-0-208"></a>        <span class="c1"># Step 3: classify customer nodes</span>
+</span><span id="__span-0-209"><a id="__codelineno-0-209" name="__codelineno-0-209" href="#__codelineno-0-209"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="s1">'customer'</span><span class="p">])</span>   <span class="c1"># (num_customers, num_classes)</span>
+</span><span id="__span-0-210"><a id="__codelineno-0-210" name="__codelineno-0-210" href="#__codelineno-0-210"></a>
+</span><span id="__span-0-211"><a id="__codelineno-0-211" name="__codelineno-0-211" href="#__codelineno-0-211"></a>
+</span><span id="__span-0-212"><a id="__codelineno-0-212" name="__codelineno-0-212" href="#__codelineno-0-212"></a><span class="c1"># ── 4. Training loop ──────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-213"><a id="__codelineno-0-213" name="__codelineno-0-213" href="#__codelineno-0-213"></a>
+</span><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214" href="#__codelineno-0-214"></a><span class="k">def</span><span class="w"> </span><span class="nf">train_relational_gnn</span><span class="p">(</span><span class="n">epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">):</span>
+</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215" href="#__codelineno-0-215"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216" href="#__codelineno-0-216"></a><span class="sd">    End-to-end RDL pipeline:</span>
+</span><span id="__span-0-217"><a id="__codelineno-0-217" name="__codelineno-0-217" href="#__codelineno-0-217"></a><span class="sd">      1. Construct synthetic relational database</span>
+</span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218" href="#__codelineno-0-218"></a><span class="sd">      2. Convert to HeteroData</span>
+</span><span id="__span-0-219"><a id="__codelineno-0-219" name="__codelineno-0-219" href="#__codelineno-0-219"></a><span class="sd">      3. Train RelationalGNN for customer churn prediction</span>
+</span><span id="__span-0-220"><a id="__codelineno-0-220" name="__codelineno-0-220" href="#__codelineno-0-220"></a><span class="sd">      4. Report validation accuracy</span>
+</span><span id="__span-0-221"><a id="__codelineno-0-221" name="__codelineno-0-221" href="#__codelineno-0-221"></a><span class="sd">    """</span>
+</span><span id="__span-0-222"><a id="__codelineno-0-222" name="__codelineno-0-222" href="#__codelineno-0-222"></a>    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+</span><span id="__span-0-223"><a id="__codelineno-0-223" name="__codelineno-0-223" href="#__codelineno-0-223"></a>    <span class="n">db</span>   <span class="o">=</span> <span class="n">make_relational_db</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+</span><span id="__span-0-224"><a id="__codelineno-0-224" name="__codelineno-0-224" href="#__codelineno-0-224"></a>    <span class="n">data</span> <span class="o">=</span> <span class="n">db_to_hetero</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+</span><span id="__span-0-225"><a id="__codelineno-0-225" name="__codelineno-0-225" href="#__codelineno-0-225"></a>
+</span><span id="__span-0-226"><a id="__codelineno-0-226" name="__codelineno-0-226" href="#__codelineno-0-226"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Relational graph summary:"</span><span class="p">)</span>
+</span><span id="__span-0-227"><a id="__codelineno-0-227" name="__codelineno-0-227" href="#__codelineno-0-227"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Node types: </span><span class="si">{</span><span class="n">data</span><span class="o">.</span><span class="n">node_types</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-228"><a id="__codelineno-0-228" name="__codelineno-0-228" href="#__codelineno-0-228"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Edge types: </span><span class="si">{</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">e</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">data</span><span class="o">.</span><span class="n">edge_types</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-229"><a id="__codelineno-0-229" name="__codelineno-0-229" href="#__codelineno-0-229"></a>    <span class="k">for</span> <span class="n">ntype</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">node_types</span><span class="p">:</span>
+</span><span id="__span-0-230"><a id="__codelineno-0-230" name="__codelineno-0-230" href="#__codelineno-0-230"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">ntype</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">ntype</span><span class="p">]</span><span class="o">.</span><span class="n">num_nodes</span><span class="si">}</span><span class="s2"> nodes, "</span>
+</span><span id="__span-0-231"><a id="__codelineno-0-231" name="__codelineno-0-231" href="#__codelineno-0-231"></a>              <span class="sa">f</span><span class="s2">"feature dim = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">ntype</span><span class="p">]</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-232"><a id="__codelineno-0-232" name="__codelineno-0-232" href="#__codelineno-0-232"></a>
+</span><span id="__span-0-233"><a id="__codelineno-0-233" name="__codelineno-0-233" href="#__codelineno-0-233"></a>    <span class="n">model</span> <span class="o">=</span> <span class="n">RelationalGNN</span><span class="p">(</span>
+</span><span id="__span-0-234"><a id="__codelineno-0-234" name="__codelineno-0-234" href="#__codelineno-0-234"></a>        <span class="n">metadata</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">metadata</span><span class="p">(),</span>
+</span><span id="__span-0-235"><a id="__codelineno-0-235" name="__codelineno-0-235" href="#__codelineno-0-235"></a>        <span class="n">hidden_dim</span><span class="o">=</span><span class="n">hidden_dim</span><span class="p">,</span>
+</span><span id="__span-0-236"><a id="__codelineno-0-236" name="__codelineno-0-236" href="#__codelineno-0-236"></a>        <span class="n">num_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+</span><span id="__span-0-237"><a id="__codelineno-0-237" name="__codelineno-0-237" href="#__codelineno-0-237"></a>    <span class="p">)</span>
+</span><span id="__span-0-238"><a id="__codelineno-0-238" name="__codelineno-0-238" href="#__codelineno-0-238"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span>
+</span><span id="__span-0-239"><a id="__codelineno-0-239" name="__codelineno-0-239" href="#__codelineno-0-239"></a>
+</span><span id="__span-0-240"><a id="__codelineno-0-240" name="__codelineno-0-240" href="#__codelineno-0-240"></a>    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+</span><span id="__span-0-241"><a id="__codelineno-0-241" name="__codelineno-0-241" href="#__codelineno-0-241"></a>        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-0-242"><a id="__codelineno-0-242" name="__codelineno-0-242" href="#__codelineno-0-242"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-0-243"><a id="__codelineno-0-243" name="__codelineno-0-243" href="#__codelineno-0-243"></a>        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x_dict</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index_dict</span><span class="p">)</span>  <span class="c1"># (num_customers, 2)</span>
+</span><span id="__span-0-244"><a id="__codelineno-0-244" name="__codelineno-0-244" href="#__codelineno-0-244"></a>        <span class="n">mask</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'customer'</span><span class="p">]</span><span class="o">.</span><span class="n">train_mask</span>
+</span><span id="__span-0-245"><a id="__codelineno-0-245" name="__codelineno-0-245" href="#__codelineno-0-245"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">'customer'</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span>
+</span><span id="__span-0-246"><a id="__codelineno-0-246" name="__codelineno-0-246" href="#__codelineno-0-246"></a>        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-0-247"><a id="__codelineno-0-247" name="__codelineno-0-247" href="#__codelineno-0-247"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-0-248"><a id="__codelineno-0-248" name="__codelineno-0-248" href="#__codelineno-0-248"></a>
+</span><span id="__span-0-249"><a id="__codelineno-0-249" name="__codelineno-0-249" href="#__codelineno-0-249"></a>        <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-0-250"><a id="__codelineno-0-250" name="__codelineno-0-250" href="#__codelineno-0-250"></a>            <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span id="__span-0-251"><a id="__codelineno-0-251" name="__codelineno-0-251" href="#__codelineno-0-251"></a>            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+</span><span id="__span-0-252"><a id="__codelineno-0-252" name="__codelineno-0-252" href="#__codelineno-0-252"></a>                <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x_dict</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index_dict</span><span class="p">)</span>
+</span><span id="__span-0-253"><a id="__codelineno-0-253" name="__codelineno-0-253" href="#__codelineno-0-253"></a>            <span class="n">val_mask</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">'customer'</span><span class="p">]</span><span class="o">.</span><span class="n">val_mask</span>
+</span><span id="__span-0-254"><a id="__codelineno-0-254" name="__codelineno-0-254" href="#__codelineno-0-254"></a>            <span class="n">pred</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="n">val_mask</span><span class="p">]</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-255"><a id="__codelineno-0-255" name="__codelineno-0-255" href="#__codelineno-0-255"></a>            <span class="n">val_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred</span> <span class="o">==</span> <span class="n">data</span><span class="p">[</span><span class="s1">'customer'</span><span class="p">]</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">val_mask</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-0-256"><a id="__codelineno-0-256" name="__codelineno-0-256" href="#__codelineno-0-256"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">:</span><span class="s2">3d</span><span class="si">}</span><span class="s2"> | Loss </span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | Val Acc </span><span class="si">{</span><span class="n">val_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-257"><a id="__codelineno-0-257" name="__codelineno-0-257" href="#__codelineno-0-257"></a>
+</span><span id="__span-0-258"><a id="__codelineno-0-258" name="__codelineno-0-258" href="#__codelineno-0-258"></a>    <span class="k">return</span> <span class="n">model</span><span class="p">,</span> <span class="n">data</span>
+</span><span id="__span-0-259"><a id="__codelineno-0-259" name="__codelineno-0-259" href="#__codelineno-0-259"></a>
+</span><span id="__span-0-260"><a id="__codelineno-0-260" name="__codelineno-0-260" href="#__codelineno-0-260"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+</span><span id="__span-0-261"><a id="__codelineno-0-261" name="__codelineno-0-261" href="#__codelineno-0-261"></a>    <span class="n">model</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">train_relational_gnn</span><span class="p">(</span><span class="n">epochs</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Three design decisions in this code deserve commentary. First, the <code>db_to_hetero</code> function adds edges in <strong>both directions</strong> for every FK relationship: an <code>order → customer</code> edge (following the FK) and a <code>customer → order</code> reverse edge. This bidirectional construction is standard practice because a unidirectional graph would prevent information from flowing from orders back to customers during GNN propagation. Second, the <code>Linear(-1, hidden_dim)</code> type-specific projections use PyG's lazy initialization, which automatically handles the fact that customers have 4-dimensional features while products have 6-dimensional features and orders have 1-dimensional features. Third, the prediction head is applied only to customer nodes — the GNN processes all nodes jointly (products, orders, order items, and customers), but only customer embeddings are supervised for the churn classification task.</p>
+<hr>
+<h2 id="179-benchmark-results-on-relbench">17.9 Benchmark Results on RelBench<a class="headerlink" href="#179-benchmark-results-on-relbench" title="Permanent link">¶</a></h2>
+<p>The following table reports results from the RelBench leaderboard on three representative tasks. The Feature Engineering + LightGBM baseline uses Featuretools automated deep feature synthesis (DFS) to generate hundreds of SQL-equivalent aggregates, providing a strong comparison point for what is achievable without graph learning.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>rel-amazon (Avg. Precision ↑)</th>
+<th>rel-hm NDCG@10 ↑</th>
+<th>rel-stack (Avg. Precision ↑)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shallow: LightGBM + DFS features</td>
+<td>0.241</td>
+<td>0.081</td>
+<td>0.498</td>
+</tr>
+<tr>
+<td>SAGE on relational graph</td>
+<td>0.271</td>
+<td>0.102</td>
+<td>0.531</td>
+</tr>
+<tr>
+<td>HGT on relational graph</td>
+<td>0.284</td>
+<td>0.111</td>
+<td>0.549</td>
+</tr>
+<tr>
+<td>RelGNN</td>
+<td>0.312</td>
+<td>0.134</td>
+<td>0.568</td>
+</tr>
+<tr>
+<td>RelGNN + temporal encoding</td>
+<td><strong>0.328</strong></td>
+<td><strong>0.148</strong></td>
+<td><strong>0.581</strong></td>
+</tr>
+</tbody>
+</table>
+<p><em>Results are approximate; see the RelBench leaderboard (relbench.github.io) for current state-of-the-art numbers, as the benchmark continues to receive new submissions.</em></p>
+<p>The pattern across all three tasks is consistent: graph-based methods outperform the flat feature engineering baseline, and temporal encoding provides a substantial additional gain on top of the static graph model. The gain of GNN over DFS features is most pronounced for the link prediction task (rel-hm NDCG@10: 0.081 → 0.148), which requires discovering non-trivial structural relationships between customers and items that aggregation-based features cannot easily express. The churn classification task (rel-amazon) shows a smaller gain (0.241 → 0.328), reflecting that temporal aggregates like "number of orders in the past 90 days" are already strong signals that DFS captures adequately — the graph model's advantage comes primarily from incorporating the product-category co-purchase structure.</p>
+<hr>
+<h2 id="1710-microsim-table-to-graph-converter">17.10 MicroSim: Table-to-Graph Converter<a class="headerlink" href="#1710-microsim-table-to-graph-converter" title="Permanent link">¶</a></h2>
+<h4 id="diagram-relational-schema-to-heterogeneous-graph">Diagram: Relational Schema to Heterogeneous Graph<a class="headerlink" href="#diagram-relational-schema-to-heterogeneous-graph" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch17-table-to-graph/main.html" width="100%" height="562px" scrolling="no"></iframe>
+<p><a href="../../sims/ch17-table-to-graph/main.html">Run Relational Schema to Heterogeneous Graph Fullscreen</a></p>
+<hr>
+<h2 id="1711-common-pitfalls">17.11 Common Pitfalls<a class="headerlink" href="#1711-common-pitfalls" title="Permanent link">¶</a></h2>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Four Ways Relational Graph Learning Goes Wrong</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning about common mistakes">
+Converting a database to a graph is straightforward in principle but error-prone in practice. The four failure modes that appear most frequently are: <strong>(1) Temporal leakage</strong> — including rows with timestamps after the prediction cutoff in the training graph; this is the most damaging error because the model learns to cheat on training data but degrades sharply at deployment time (see §17.5); <strong>(2) Missing reverse edges</strong> — constructing only FK-direction edges (order→customer) without their reverses (customer→order) prevents customers from aggregating information from their orders, which is typically the most informative signal for customer-level tasks; <strong>(3) Feature encoding for high-cardinality categoricals</strong> — naively one-hot encoding a product ID column with 100,000 distinct values creates 100,000-dimensional features that overwhelm the model; instead, use learned embeddings or hashed representations; <strong>(4) Ignoring scale imbalance</strong> — a customer with 500 orders has 500 incoming edges from the order nodes, while a customer with 2 orders has 2; mean aggregation handles this correctly (it normalizes by neighborhood size), but sum aggregation will make high-order customers dominate the loss and gradient signal, biasing the model toward predicting churn based on order count rather than behavioral patterns.</p>
+</div>
+<p><strong>The correct level of graph construction is the row, not the table.</strong> A common conceptual mistake is to add one node per table (a node for "all customers," a node for "all orders") and one edge between tables (a "has-orders" edge from the customer super-node to the order super-node). This collapses all the individual-row information into a single node and is equivalent to computing global aggregates — exactly the information-destroying operation that RDL is designed to avoid. The graph must have one node per row, not per table.</p>
+<p><strong>Null foreign keys require a design decision.</strong> Not all FK columns are mandatory — some orders may have a NULL value in an optional FK column (e.g., a coupon_id FK when no coupon was used). A NULL FK does not correspond to an edge in the graph — there is simply no edge for that row. This is the correct representation and should be handled by omitting the edge rather than by imputing a default target node. Imputing a default (e.g., linking all NULL-FK orders to a dummy node) creates artificial connections that will corrupt the GNN's representation of the dummy node.</p>
+<p><strong>Basis decomposition becomes important at large schema scale.</strong> Enterprise databases with 50–100 tables and hundreds of FK relationships generate an equivalently large set of meta-relations. Without basis decomposition (§15.5), the per-meta-relation weight matrices account for millions of parameters that overfit rapidly on schemas where most meta-relations appear in only a few rows. The heuristic <span class="arithmatex">\( B = \lceil\sqrt{|\mathcal{R}|}\rceil \)</span> from Chapter 15 applies directly here.</p>
+<hr>
+<h2 id="1712-exercises">17.12 Exercises<a class="headerlink" href="#1712-exercises" title="Permanent link">¶</a></h2>
+<p>The following 12 exercises span all six levels of Bloom's taxonomy.</p>
+<p><strong>Remember</strong></p>
+<ol>
+<li>Define the relational-to-graph construction formally, specifying how tables, rows, columns, and foreign keys map to node types, nodes, node features, and edges. What are the two directions in which edges can be oriented for a FK relationship, and why are both typically included?</li>
+<li>List the four table types in the e-commerce database example (Customers, Orders, OrderItems, Products) and state the node type, approximate feature dimensionality (before GNN processing), and task relevance for each.</li>
+</ol>
+<p><strong>Understand</strong></p>
+<ol>
+<li>Explain why temporal leakage is a more severe and harder-to-detect problem in relational databases than in standard graph benchmarks. Give a specific example of how a FK join across a timestamp boundary could expose future information to the training model.</li>
+<li>The RelBench feature engineering baseline uses Featuretools DFS (Deep Feature Synthesis). Explain what DFS computes, how it relates to multi-hop graph aggregation, and at what depth DFS aggregation becomes impractical.</li>
+</ol>
+<p><strong>Apply</strong></p>
+<ol>
+<li>Given the following three-table schema — Library (library_id, city), Borrowers (borrower_id, library_id FK, age), Loans (loan_id, borrower_id FK, book_id FK, loan_date) — draw the entity-relationship diagram and then specify the heterogeneous graph construction: list all node types, all meta-relations (with direction), and the column values that become node features for each node type.</li>
+<li>For the e-commerce churn prediction task with prediction time <span class="arithmatex">\( T \)</span>, implement a SQL query (or Python/Pandas equivalent) that extracts the flat feature engineering baseline: for each customer, compute the number of orders in the 90 days before <span class="arithmatex">\( T \)</span>, average order value in that window, and the number of distinct products purchased. Then explain which relational patterns this feature set cannot capture.</li>
+</ol>
+<p><strong>Analyze</strong></p>
+<ol>
+<li>Compare the RDL approach (rows → nodes, FK → edges, GNN) to the traditional feature engineering approach (SQL aggregates → feature vector → gradient boosting) on four dimensions: (a) sensitivity to schema changes (adding or removing a table), (b) ability to capture 3-hop relational patterns, (c) interpretability of the learned model, (d) computational cost for a database with 50 tables and 100M rows.</li>
+<li>The RelBench results show that temporal encoding provides a larger performance gain over the static graph baseline for some tasks than others. Hypothesize which properties of a prediction task make temporal recency encoding most and least impactful, and explain the mechanism by which temporal encoding introduces those gains.</li>
+</ol>
+<p><strong>Evaluate</strong></p>
+<ol>
+<li>A data scientist argues: "RDL is just automated feature engineering — instead of writing SQL to join and aggregate tables, we let the GNN do the joins implicitly. The result should be the same as a sufficiently expressive DFS." Evaluate this claim carefully: in what sense is it correct, and in what sense does GNN-based RDL provably compute representations that DFS cannot, even with unlimited depth?</li>
+<li>The RelGNN architecture handles junction tables via path-compressed edges (§17.7.2). Critically evaluate this design decision: what information is preserved and what is lost when the three-node path <span class="arithmatex">\( A \to J \to B \)</span> is compressed into a single <span class="arithmatex">\( A \to B \)</span> edge? Under what conditions would the uncompressed three-node path be strictly preferable?</li>
+</ol>
+<p><strong>Create</strong></p>
+<ol>
+<li>Design an RDL system for a hospital Electronic Health Record (EHR) database with the following tables: Patients (patient_id, age, diagnosis_codes), Visits (visit_id, patient_id FK, physician_id FK, visit_date, department), Prescriptions (rx_id, visit_id FK, drug_code, dosage), Physicians (physician_id, specialty). The prediction task is 30-day hospital readmission. Specify: (a) the complete heterogeneous graph construction, (b) the temporal cutoff mechanism, (c) which node type(s) should be predicted on, (d) any patient privacy concerns that affect the graph representation design.</li>
+<li>Propose an extension to the RelGNN temporal encoding that distinguishes between two events at the same time-to-cutoff but with different temporal patterns: a customer who placed 10 orders in the last week (high recency, concentrated) versus one who placed 10 orders uniformly over the past year (high recency for the most recent order but sparse overall). Formalize the extended encoding, explain what additional information it captures, and describe how you would train it.</li>
+</ol>
+<hr>
+<h2 id="1713-further-reading">17.13 Further Reading<a class="headerlink" href="#1713-further-reading" title="Permanent link">¶</a></h2>
+<p><strong>Relational Deep Learning: Graph Representation Learning on Relational Databases</strong> — Fey, Hu, Huang, Lenssen, Rajan, Robinson, Throckmorton, Yue (2024). The foundational paper establishing the relational-to-graph construction as a principled framework, providing formal definitions, the temporal leakage analysis, and empirical results across multiple relational learning tasks. The mathematical treatment of why GNNs on the relational graph are strictly more expressive than depth-bounded feature aggregation is particularly valuable.</p>
+<p><strong>RelBench: A Benchmark for Deep Learning on Relational Databases</strong> — Robinson, Rajan, Hu, Fey, Leskovec (2024). The benchmark paper, documenting the seven RelBench datasets, the evaluation protocol, and the baseline implementations. The appendix containing data construction details for each dataset is essential reading for practitioners who want to understand the temporal structure and schema diversity of the benchmark.</p>
+<p><strong>Graph Neural Networks for Relational Databases</strong> — Cvitkovic (2020). An earlier independent formulation of the relational-to-graph construction, predating the RelBench framework but anticipating many of its key ideas. Particularly useful for its discussion of how different database normalization forms (1NF, 2NF, 3NF) affect the structure of the constructed graph, and how denormalization for performance optimization can inadvertently remove graph structural information.</p>
+<p><strong>Entity Embeddings of Categorical Variables</strong> — Guo, Berkhahn (2016). Provides the foundational treatment of learned embeddings for categorical database columns, which underlies the initial feature encoding step in the RDL pipeline. The paper demonstrates on structured tabular data that learned embeddings consistently outperform one-hot encoding for high-cardinality categoricals, a finding directly applicable to the node feature initialization in relational graphs.</p>
+<p><strong>Featuretools: An Open Source Framework for Automated Feature Engineering</strong> — Kanter, Veeramachaneni (2015). Documents the automated feature engineering system used as the RDL baseline in RelBench. Reading this alongside the RelBench results reveals precisely which patterns DFS captures (depth-2 SQL aggregates) and misses (structural patterns, long relational chains), clarifying why GNN-based methods provide additional value.</p>
+<p><strong>Temporal Graph Networks for Deep Learning on Dynamic Graphs</strong> — Rossi, Chamberlain, Frasca, Eynard, Monti, Bronstein (2020). The TGN paper, introducing memory modules for continuous-time temporal graphs — the natural extension of the static relational graph construction to settings where entity representations should update as new events arrive. RelBench's temporal evaluation protocol is directly inspired by TGN's temporal graph formulation, and TGN is one of the baselines evaluated in the RelBench temporal tasks.</p>
+<p><strong>Deep Feature Synthesis: Towards Automating Data Science Endeavors</strong> — Kanter, Veeramachaneni (2015). The original DFS paper, presenting the algorithm for automatically generating features from relational databases by stacking aggregation and transformation primitives along join paths. Understanding DFS's computational complexity (exponential in join depth) makes the case for GNN-based alternatives more concrete: DFS at depth 4 on a 10-table schema generates <span class="arithmatex">\( O(10^4) \)</span> candidate features, of which most are irrelevant, versus the GNN's learned and compact relational propagation.</p>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">You've Linked the Tables</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating">
+The insight at the heart of Relational Deep Learning — that a relational database is already a graph, and its foreign keys are already edges — is one of those ideas that seems obvious once stated and yet took decades of separate development in database research and graph learning research before anyone formalized it explicitly. With this insight, the GNN toolkit developed across Chapters 6–16 becomes immediately applicable to the most abundant form of structured data in the world: not benchmark datasets curated for machine learning competitions, but the operational databases that run hospitals, banks, retailers, and governments. In Chapter 18, we shift focus from how information propagates through graphs to how graphs themselves are organized into communities — a question that is central to understanding social networks, biological systems, and the clustering structure of any large-scale relational system.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../16-recommender-systems/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

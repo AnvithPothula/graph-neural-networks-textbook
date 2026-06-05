@@ -1,0 +1,3473 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="GNNs for graphs that evolve over time: event-based vs. snapshot representations, TGN memory modules, time encoding, TGAT, CAWN, and traffic forecasting.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/22-temporal-graphs/">
+      
+      
+        <link rel="prev" href="../21-generative-models/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 22: Temporal and Dynamic Graphs - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 22: Temporal and Dynamic Graphs">
+  <meta property="og:description" content="GNNs for graphs that evolve over time: event-based vs. snapshot representations, TGN memory modules, time encoding, TGAT, CAWN, and traffic forecasting.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/22-temporal-graphs/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 22: Temporal and Dynamic Graphs">
+  <meta name="twitter:description" content="GNNs for graphs that evolve over time: event-based vs. snapshot representations, TGN memory modules, time encoding, TGAT, CAWN, and traffic forecasting.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-22-temporal-and-dynamic-graphs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 22: Temporal and Dynamic Graphs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_24" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_24" id="__nav_4_24_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_24_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_24">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    22. Temporal and Dynamic Graphs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#221-why-static-gnns-break-on-evolving-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.1 Why Static GNNs Break on Evolving Graphs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#222-two-representations-snapshots-vs-event-streams" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.2 Two Representations: Snapshots vs. Event Streams
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#223-temporal-graph-networks-tgn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.3 Temporal Graph Networks (TGN)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="22.3 Temporal Graph Networks (TGN)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2231-the-memory-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.3.1 The Memory Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2232-temporal-graph-memory-dynamics-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.3.2 Temporal Graph Memory Dynamics — Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="22.3.2 Temporal Graph Memory Dynamics — Causal Loop Diagram">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-temporal-graph-memory-dynamics-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Temporal Graph Memory Dynamics — Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2233-embedding-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.3.3 Embedding Module
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#224-time-encoding-making-elapsed-time-differentiable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.4 Time Encoding: Making Elapsed Time Differentiable
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#225-tgat-temporal-graph-attention-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.5 TGAT: Temporal Graph Attention Networks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#226-dyrep-and-jodie-learning-event-rate-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.6 DyRep and JODIE: Learning Event Rate Dynamics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#227-cawn-causal-anonymous-walks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.7 CAWN: Causal Anonymous Walks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#228-traffic-forecasting-with-temporal-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.8 Traffic Forecasting with Temporal GNNs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="22.8 Traffic Forecasting with Temporal GNNs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-traffic-forecasting-architecture-microsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Traffic Forecasting Architecture — MicroSim
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#229-benchmark-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.9 Benchmark Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2210-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.10 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2211-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.11 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2212-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        22.12 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    22. Temporal and Dynamic Graphs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/22-temporal-graphs/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-22-temporal-and-dynamic-graphs">Chapter 22: Temporal and Dynamic Graphs<a class="headerlink" href="#chapter-22-temporal-and-dynamic-graphs" title="Permanent link">¶</a></h1>
+<p><strong>Part 5: Scalability and Generation</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Treats graphs as evolving over time with TGN and TGAT, covering temporal graph representations, event-based memory modules, and applications to traffic forecasting.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 5 concepts from the learning graph:</p>
+<ol>
+<li>Traffic Forecasting (Graph)</li>
+<li>Temporal Graph</li>
+<li>Dynamic Graph</li>
+<li>Temporal GNN (TGN)</li>
+<li>TGAT</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../01-intro-to-graphs/">Chapter 1: Introduction to Graphs and Networks</a></li>
+<li><a href="../06-gnn-foundations/">Chapter 6: GNN Foundations: Message Passing and GCN</a></li>
+<li><a href="../07-gnn-design-space/">Chapter 7: GNN Design Space: GraphSAGE and GAT</a></li>
+<li><a href="../20-scaling-gnns/">Chapter 20: Scaling GNNs to Billion-Node Graphs</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Graphs Across Time</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waves hello">
+Every GNN we have built so far assumes the graph is a fixed object: the same nodes, the same edges, the same features — frozen in time while we train on them. Real graphs do not behave that way. A road network's traffic conditions change every minute. A financial transaction graph acquires thousands of new edges per second. A social platform's friendship graph grows as users join and shrinks as accounts close. This chapter asks what it takes to build GNNs that reason over graphs as they evolve — not just as a sequence of snapshots, but as a continuous stream of events with timestamps, causes, and consequences. The machinery we develop here — event memories, time encodings, and causal walks — forms the foundation of every modern temporal graph learning system.</p>
+</div>
+<h2 id="221-why-static-gnns-break-on-evolving-graphs">22.1 Why Static GNNs Break on Evolving Graphs<a class="headerlink" href="#221-why-static-gnns-break-on-evolving-graphs" title="Permanent link">¶</a></h2>
+<p>A social network at 9am is not the same network at 9pm. Between those twelve hours, millions of interactions have occurred: posts liked, messages sent, new follows initiated, old accounts suspended. A static GNN trained on the 9am snapshot and asked to predict the likelihood of a friendship at 9pm is working from stale topology — it has no mechanism to incorporate the twelve hours of events that intervened.</p>
+<p>Three structural properties of real dynamic systems expose the limits of static GNNs:</p>
+<ul>
+<li><strong>Temporal ordering matters.</strong> The sequence of interactions carries causal information. If user A messages user B and then user B buys a product, the message may have caused the purchase. A static snapshot that aggregates both events erases their temporal relationship.</li>
+<li><strong>Node representations should be recency-sensitive.</strong> A node's most important neighborhood information is typically from its recent interactions, not its entire history. Static GNNs treat all neighborhood messages as equally current.</li>
+<li><strong>New nodes and edges arrive continuously.</strong> Transductive GNNs (trained on a fixed node set) cannot handle new nodes arriving after training. A temporal model must be inductive by design.</li>
+</ul>
+<p>To address these properties, the field has developed two complementary paradigms for representing temporal graphs — and it is worth understanding both before choosing between them for a given application.</p>
+<h2 id="222-two-representations-snapshots-vs-event-streams">22.2 Two Representations: Snapshots vs. Event Streams<a class="headerlink" href="#222-two-representations-snapshots-vs-event-streams" title="Permanent link">¶</a></h2>
+<p>Before examining specific architectures, we must define the data structures that temporal GNNs operate on. Two representations dominate the literature, and the choice between them constrains every subsequent architectural decision.</p>
+<p>A <strong>snapshot graph</strong> (also called a discrete-time dynamic graph) discretizes time into uniform intervals <span class="arithmatex">\( t_1, t_2, \ldots, t_T \)</span> and represents the graph at each interval as a static snapshot <span class="arithmatex">\( G^{(t)} = (V^{(t)}, E^{(t)}, X^{(t)}) \)</span>. At each timestep, a standard GNN processes the current snapshot, and a sequence model (typically an RNN or Transformer) tracks how node embeddings evolve across snapshots. The approach is conceptually simple and compatible with any static GNN backbone, but it discards intra-interval temporal ordering and cannot represent graphs where events arrive at irregular, millisecond-level intervals.</p>
+<p>A <strong>continuous-time dynamic graph</strong> (CTDG) represents the graph as a timestamped stream of events. Each event is a tuple <span class="arithmatex">\( (u, v, t, \mathbf{e}_{uv}^{(t)}) \)</span> — a directed interaction from node <span class="arithmatex">\( u \)</span> to node <span class="arithmatex">\( v \)</span> at time <span class="arithmatex">\( t \)</span>, optionally annotated with an edge feature vector <span class="arithmatex">\( \mathbf{e}_{uv}^{(t)} \)</span> (e.g., transaction amount, message content). The node set <span class="arithmatex">\( V \)</span> may also grow over time as new users or entities appear. The CTDG representation preserves exact temporal ordering and supports millisecond-level timestamps, but requires architectures designed specifically for irregularly-spaced event streams.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Which Representation Should You Use?</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinks carefully">
+The choice between snapshots and event streams is not aesthetic — it reflects whether temporal ordering within your time granularity matters for your task. For traffic forecasting (§22.8), five-minute sensor readings are natural snapshot intervals: within five minutes, the ordering of individual car passages is irrelevant to predicting the next five-minute average speed. For fraud detection on credit card transactions, the ordering within a second matters: a card used to buy a $1 test charge immediately before a $4,000 electronics purchase is a classic fraud pattern that a five-minute snapshot would merge into a single "two transactions" observation. Match your representation to the temporal resolution of the signal you care about.</p>
+</div>
+<p>The following table summarizes the key differences between the two paradigms, covering the concepts we have just introduced.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th style="text-align: center;">Snapshot Graph</th>
+<th style="text-align: center;">Continuous-Time Dynamic Graph</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Time granularity</td>
+<td style="text-align: center;">Fixed intervals</td>
+<td style="text-align: center;">Arbitrary timestamps</td>
+</tr>
+<tr>
+<td>Intra-interval ordering</td>
+<td style="text-align: center;">Lost</td>
+<td style="text-align: center;">Preserved</td>
+</tr>
+<tr>
+<td>Backbone model</td>
+<td style="text-align: center;">Static GNN + RNN/Transformer</td>
+<td style="text-align: center;">Event-based memory model</td>
+</tr>
+<tr>
+<td>New node handling</td>
+<td style="text-align: center;">Requires re-training or inductive extension</td>
+<td style="text-align: center;">Native (nodes appear with first event)</td>
+</tr>
+<tr>
+<td>Representative models</td>
+<td style="text-align: center;">EvolveGCN, T-GCN</td>
+<td style="text-align: center;">TGN, TGAT, JODIE, CAWN</td>
+</tr>
+<tr>
+<td>Best for</td>
+<td style="text-align: center;">Regular sensor data, traffic</td>
+<td style="text-align: center;">Transactions, social interactions</td>
+</tr>
+</tbody>
+</table>
+<p>The remainder of this chapter focuses primarily on continuous-time dynamic graphs, which are the setting for the most sophisticated and general temporal GNN architectures (TGN, TGAT, CAWN). Traffic forecasting is covered as an application where snapshot graphs are the natural choice.</p>
+<h2 id="223-temporal-graph-networks-tgn">22.3 Temporal Graph Networks (TGN)<a class="headerlink" href="#223-temporal-graph-networks-tgn" title="Permanent link">¶</a></h2>
+<p><strong>Temporal Graph Networks</strong> (TGN, Rossi et al., 2020) is the most general and widely adopted continuous-time dynamic graph framework. TGN decomposes temporal graph learning into four modular components — memory, message function, message aggregator, and embedding module — that can be independently specified and combined. Understanding each component is essential before examining how they compose into a full training pipeline.</p>
+<h3 id="2231-the-memory-module">22.3.1 The Memory Module<a class="headerlink" href="#2231-the-memory-module" title="Permanent link">¶</a></h3>
+<p>The memory module is TGN's defining innovation. Each node <span class="arithmatex">\( v \)</span> maintains a persistent <strong>memory vector</strong> <span class="arithmatex">\( \mathbf{s}_v(t) \in \mathbb{R}^d \)</span> that summarizes all interactions involving <span class="arithmatex">\( v \)</span> up to time <span class="arithmatex">\( t \)</span>. Unlike a GNN node embedding (which is recomputed from scratch at each forward pass), the memory vector is a running state that accumulates information across the entire interaction history. When node <span class="arithmatex">\( v \)</span> participates in an interaction at time <span class="arithmatex">\( t \)</span>, its memory is updated; between interactions, the memory remains frozen at its last-updated value.</p>
+<p>Formally, when an event <span class="arithmatex">\( (u, v, t, \mathbf{e}) \)</span> occurs, TGN computes a <strong>temporal message</strong> for each endpoint and uses it to update their memories. The message for node <span class="arithmatex">\( u \)</span> is:</p>
+<div class="arithmatex">\[
+\mathbf{m}_u(t) = \text{msg}\!\left(\mathbf{s}_u(t^-),\, \mathbf{s}_v(t^-),\, \Delta t_u,\, \mathbf{e}_{uv}^{(t)}\right)
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{s}_u(t^-) \)</span> is node <span class="arithmatex">\( u \)</span>'s memory just before time <span class="arithmatex">\( t \)</span>, <span class="arithmatex">\( \Delta t_u = t - t_u^{\text{last}} \)</span> is the time elapsed since <span class="arithmatex">\( u \)</span>'s most recent prior interaction, and <span class="arithmatex">\( \mathbf{e}_{uv}^{(t)} \)</span> is the edge feature. The memory is then updated by a GRU:</p>
+<div class="arithmatex">\[
+\mathbf{s}_u(t) = \text{GRU}\!\left(\mathbf{m}_u(t),\, \mathbf{s}_u(t^-)\right)
+\]</div>
+<p>This is the core recurrence of TGN: each event triggers a memory update for both participants, and those updated memories influence how both nodes are processed in all future events.</p>
+<h3 id="2232-temporal-graph-memory-dynamics-causal-loop-diagram">22.3.2 Temporal Graph Memory Dynamics — Causal Loop Diagram<a class="headerlink" href="#2232-temporal-graph-memory-dynamics-causal-loop-diagram" title="Permanent link">¶</a></h3>
+<p>The memory update rule creates a self-reinforcing feedback loop: a node's memory influences how it processes future events, and those future events update the memory further. Time encoding introduces a counterbalancing decay mechanism. The following diagram formalizes these dynamics before we examine the time encoding in detail.</p>
+<h4 id="diagram-temporal-graph-memory-dynamics-causal-loop-diagram">Diagram: Temporal Graph Memory Dynamics — Causal Loop Diagram<a class="headerlink" href="#diagram-temporal-graph-memory-dynamics-causal-loop-diagram" title="Permanent link">¶</a></h4>
+<pre class="mermaid"><code>flowchart LR
+    M["Node Memory\nsᵥ(t)"] --&gt;|"(+) richer memory\nforms better"| MSG["Temporal\nMessage mᵥ(t)"]
+    MSG --&gt;|"(+) message\nupdates"| M
+
+    M --&gt;|"(+) memory quality\nimproves"| Q["Embedding\nQuality zᵥ(t)"]
+    Q --&gt;|"(+) better embeds\nattract"| I["Interaction\nRelevance"]
+    I --&gt;|"(+) more events\ngenerate"| MSG
+
+    I --&gt;|"(-) frequent events\nreduce"| DT["Elapsed Time\nΔt"]
+    DT --&gt;|"(+) longer gap\nmagnifies"| TE["Time Encoding\nφ(Δt)"]
+    TE --&gt;|"(-) discounts stale\nmessages in"| MSG
+
+    click M href "#2231-the-memory-module" "Memory vector sᵥ(t) — persistent summary of all interactions involving node v up to time t"
+    click MSG href "#2231-the-memory-module" "Temporal message mᵥ(t) — computed from both endpoints' memories, edge features, and elapsed time"
+    click Q href "#2233-embedding-module" "Embedding zᵥ(t) — combines memory with temporal attention over recent interaction history"
+    click I href "#2231-the-memory-module" "Interaction relevance — likelihood that node v participates in future events"
+    click DT href "#224-time-encoding-making-elapsed-time-differentiable" "Elapsed time Δt — time since node v's most recent interaction"
+    click TE href "#224-time-encoding-making-elapsed-time-differentiable" "Time encoding φ(Δt) — sinusoidal representation that discounts older events in memory updates"
+
+    style M fill:#e8f5e9,stroke:#388e3c
+    style MSG fill:#e8f5e9,stroke:#388e3c
+    style Q fill:#e8f5e9,stroke:#388e3c
+    style I fill:#e8f5e9,stroke:#388e3c
+    style DT fill:#fff3e0,stroke:#e65100
+    style TE fill:#e3f2fd,stroke:#1565c0</code></pre>
+<table>
+<thead>
+<tr>
+<th>Loop</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1: Memory Self-Update</td>
+<td>Reinforcing</td>
+<td>Richer memory → better messages → memory updates further → richer memory; longer path: richer memory → better embeddings → more interactions → more messages → richer memory</td>
+</tr>
+<tr>
+<td>B1: Memory Decay</td>
+<td>Balancing</td>
+<td>Longer inactivity (large <span class="arithmatex">\( \Delta t \)</span>) → larger time encoding → discounts incoming messages → limits stale memory reinforcement</td>
+</tr>
+</tbody>
+</table>
+<p>The diagram reveals two essential dynamics. The <strong>R1: Memory Self-Update</strong> loop (M → MSG → M) is reinforcing: a node's current memory shapes the messages it generates, which update its memory further. This is the core learning mechanism — nodes accumulate increasingly rich representations as they interact. The <strong>B1: Memory Decay</strong> loop closes through elapsed time: long inactivity (large <span class="arithmatex">\( \Delta t \)</span>) produces time encodings that discount incoming messages, preventing stale memories from being reinforced by outdated interactions. Together, R1 drives memory enrichment and B1 ensures recency sensitivity.</p>
+<h3 id="2233-embedding-module">22.3.3 Embedding Module<a class="headerlink" href="#2233-embedding-module" title="Permanent link">¶</a></h3>
+<p>The memory module provides a compact per-node summary, but it does not directly incorporate the node's current graph neighborhood. The <strong>embedding module</strong> computes a richer temporal embedding by combining the node's memory with a temporal attention over its recent interaction history:</p>
+<div class="arithmatex">\[
+\mathbf{z}_v(t) = \text{attn}\!\left(\mathbf{s}_v(t),\; \{(\mathbf{s}_u(t^-), \mathbf{e}_{uv}^{(t')}, \phi(t - t')) : (u, v, t') \in \mathcal{N}^k(v, t)\}\right)
+\]</div>
+<p>where <span class="arithmatex">\( \mathcal{N}^k(v, t) \)</span> is the set of up to <span class="arithmatex">\( k \)</span> most recent interactions involving <span class="arithmatex">\( v \)</span> before time <span class="arithmatex">\( t \)</span>, and <span class="arithmatex">\( \phi(t - t') \)</span> is a time encoding of the elapsed time since each historical interaction. The attention mechanism weights historical interactions by their recency and by how their source node memories align with the query node's current state — a temporal analogue of the static GAT attention introduced in Chapter 7.</p>
+<p>The following code implements the core TGN pipeline using PyG Temporal's <code>TGNMemory</code> module. Key parameters to understand before reading: <code>memory_dim</code> is the size of each node's memory vector <span class="arithmatex">\( d \)</span>; <code>time_dim</code> is the dimension of the time encoding; <code>embedding_module</code> selects the graph attention embedding; and <code>message_module</code> specifies the message function (identity, MLP, or LSTM).</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">TGNMemory</span><span class="p">,</span> <span class="n">TransformerConv</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn.models.tgn</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">IdentityMessage</span><span class="p">,</span> <span class="n">LastAggregator</span><span class="p">,</span> <span class="n">LastNeighborLoader</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Memory parameters:</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1">#   memory_dim: size of each node's persistent memory vector</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1">#   time_dim: size of the time-encoding vector phi(delta_t)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1">#   message_module: how to compute the temporal message from memory + edge features</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1">#   aggregator_module: how to aggregate multiple messages for the same node in one batch</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">memory</span> <span class="o">=</span> <span class="n">TGNMemory</span><span class="p">(</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="n">num_nodes</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="n">raw_message_dim</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>  <span class="c1"># edge feature dimension</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">memory_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">time_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">message_module</span><span class="o">=</span><span class="n">IdentityMessage</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">aggregator_module</span><span class="o">=</span><span class="n">LastAggregator</span><span class="p">(),</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="p">)</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="c1"># Embedding module: temporal graph attention (one-hop)</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="c1"># TransformerConv with in_channels = memory_dim + time_dim</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="n">gnn</span> <span class="o">=</span> <span class="n">TransformerConv</span><span class="p">(</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">in_channels</span><span class="o">=</span><span class="mi">100</span> <span class="o">+</span> <span class="mi">100</span><span class="p">,</span>     <span class="c1"># memory_dim + time_dim</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">out_channels</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">heads</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n">edge_dim</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>  <span class="c1"># edge features passed to attention</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="p">)</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="c1"># Link prediction head: score an edge from source to destination embedding</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="n">link_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="c1"># Neighbor loader: maintains a rolling window of recent neighbors per node</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="n">neighbor_loader</span> <span class="o">=</span> <span class="n">LastNeighborLoader</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">'cpu'</span><span class="p">)</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">neg_dst</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">last_neighbor_batch</span><span class="p">):</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="w">    </span><span class="sd">"""One training step for a batch of (src, dst) interaction events."""</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>    <span class="c1"># Step 1: Retrieve memories for all nodes in the batch</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="n">n_id</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">neg_dst</span><span class="p">])</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>    <span class="n">z</span><span class="p">,</span> <span class="n">last_update</span> <span class="o">=</span> <span class="n">memory</span><span class="p">(</span><span class="n">n_id</span><span class="p">)</span>             <span class="c1"># z: (num_unique_nodes, memory_dim)</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>    <span class="c1"># Step 2: Compute temporal embeddings using recent neighbors</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>    <span class="c1"># neighbor_loader returns the k most recent neighbors + their timestamps + edge features</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>    <span class="n">z</span> <span class="o">=</span> <span class="n">gnn</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">n_id</span><span class="p">],</span> <span class="n">last_neighbor_batch</span><span class="o">.</span><span class="n">edge_index</span><span class="p">,</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>            <span class="n">last_neighbor_batch</span><span class="o">.</span><span class="n">t</span> <span class="o">-</span> <span class="n">t</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>  <span class="c1"># relative timestamps</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>            <span class="n">last_neighbor_batch</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>    <span class="c1"># Step 3: Predict positive and negative link scores</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>    <span class="n">pos_out</span> <span class="o">=</span> <span class="n">link_pred</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">src</span><span class="p">]</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="n">dst</span><span class="p">])</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>    <span class="n">neg_out</span> <span class="o">=</span> <span class="n">link_pred</span><span class="p">(</span><span class="n">z</span><span class="p">[</span><span class="n">src</span><span class="p">]</span> <span class="o">*</span> <span class="n">z</span><span class="p">[</span><span class="n">neg_dst</span><span class="p">])</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>    <span class="c1"># Step 4: Update memory with events from this batch</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>    <span class="n">memory</span><span class="o">.</span><span class="n">update_state</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>    <span class="n">neighbor_loader</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>    <span class="k">return</span> <span class="n">pos_out</span><span class="p">,</span> <span class="n">neg_out</span>
+</span></code></pre></div>
+<p>Training TGN requires processing events in strict chronological order: the memory update from event at time <span class="arithmatex">\( t_1 \)</span> must be applied before any event at <span class="arithmatex">\( t_2 &gt; t_1 \)</span> is processed. Unlike static GNN training where mini-batches can be shuffled freely, TGN mini-batches are contiguous time windows sampled from the chronologically sorted event stream.</p>
+<h2 id="224-time-encoding-making-elapsed-time-differentiable">22.4 Time Encoding: Making Elapsed Time Differentiable<a class="headerlink" href="#224-time-encoding-making-elapsed-time-differentiable" title="Permanent link">¶</a></h2>
+<p>A critical design choice in both TGN and TGAT is how to encode elapsed time <span class="arithmatex">\( \Delta t \)</span> as a continuous vector that can participate in attention computations. A naive approach — using <span class="arithmatex">\( \Delta t \)</span> as a scalar feature — fails because neural networks cannot easily represent the rich periodicity of temporal signals (daily cycles, weekly patterns, seasonal rhythms) from a single scalar.</p>
+<p><strong>Time2Vec</strong> (Kazemi et al., 2019) provides an elegant solution by mapping <span class="arithmatex">\( \Delta t \)</span> to a vector of sinusoidal features with learnable frequency and phase parameters:</p>
+<div class="arithmatex">\[
+\phi(\Delta t)_k = \begin{cases} w_0 \Delta t + b_0 &amp; k = 0 \\ \sin(w_k \Delta t + b_k) &amp; 1 \leq k \leq d \end{cases}
+\]</div>
+<p>where <span class="arithmatex">\( w_0, b_0, w_1, b_1, \ldots, w_d, b_d \)</span> are learnable parameters. The linear component (<span class="arithmatex">\( k = 0 \)</span>) allows the model to represent monotonic time trends; the sinusoidal components allow it to capture periodic patterns. This is directly analogous to the positional encodings used in Transformer architectures, extended to handle irregular time intervals.</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Time Encoding = Positional Encoding for Irregular Sequences</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage offers a tip">
+If you have worked with Transformers, the Time2Vec encoding will look immediately familiar — it is the continuous-time generalization of the sinusoidal positional encoding used in BERT and GPT. The key difference is that Transformer positional encodings use fixed integer positions (1, 2, 3, ...), while Time2Vec uses actual timestamps with learnable frequencies. This means the model can discover that weekly periodicity (frequency ≈ 1/604800 seconds) or daily periodicity (frequency ≈ 1/86400 seconds) is relevant, without being told in advance. The linear term additionally allows the model to encode absolute time elapsed since the start of the dataset, capturing long-term drift.</p>
+</div>
+<p>The following code implements Time2Vec and shows how it integrates into the temporal attention mechanism:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">Time2Vec</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="sd">    Learned sinusoidal time encoding.</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="sd">    Maps a scalar elapsed time delta_t to a d-dimensional vector.</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="sd">    Parameters:</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="sd">        d: output dimension (includes 1 linear + d-1 sinusoidal components)</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="sd">    """</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">d</span> <span class="o">=</span> <span class="n">d</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>        <span class="c1"># Learnable frequency and phase parameters for each sinusoidal component</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>   <span class="c1"># frequencies</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">b</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>   <span class="c1"># phases</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delta_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>        <span class="c1"># delta_t: (batch,) or (batch, 1) — elapsed time in seconds (or normalized)</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>        <span class="n">delta_t</span> <span class="o">=</span> <span class="n">delta_t</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">delta_t</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">delta_t</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>        <span class="c1"># Linear component (k=0): captures monotonic trends</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>        <span class="n">linear</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">delta_t</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># (batch, 1)</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>        <span class="c1"># Sinusoidal components (k=1..d-1): capture periodic patterns</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>        <span class="n">periodic</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">w</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">*</span> <span class="n">delta_t</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>  <span class="c1"># (batch, d-1)</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">linear</span><span class="p">,</span> <span class="n">periodic</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (batch, d)</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="k">class</span><span class="w"> </span><span class="nc">TemporalAttention</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="sd">    Attention over a node's recent interaction history, weighted by time encoding.</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="sd">    q: query node memory (batch, memory_dim)</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="sd">    keys: neighbor memories (batch, k_neighbors, memory_dim)</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="sd">    delta_times: elapsed times since each neighbor interaction (batch, k_neighbors)</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="sd">    """</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memory_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">time_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">attn_dim</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">time_enc</span> <span class="o">=</span> <span class="n">Time2Vec</span><span class="p">(</span><span class="n">time_dim</span><span class="p">)</span>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>        <span class="c1"># Project memory + time encoding to attention key/value space</span>
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">key_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">memory_dim</span> <span class="o">+</span> <span class="n">time_dim</span><span class="p">,</span> <span class="n">attn_dim</span><span class="p">)</span>
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">val_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">memory_dim</span> <span class="o">+</span> <span class="n">time_dim</span><span class="p">,</span> <span class="n">attn_dim</span><span class="p">)</span>
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">query_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">memory_dim</span><span class="p">,</span> <span class="n">attn_dim</span><span class="p">)</span>
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">attn_dim</span><span class="p">)</span>
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a>
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">delta_times</span><span class="p">):</span>
+</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>        <span class="c1"># Encode elapsed time for each neighbor interaction</span>
+</span><span id="__span-1-47"><a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>        <span class="n">time_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_enc</span><span class="p">(</span><span class="n">delta_times</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>   <span class="c1"># (batch*k, time_dim)</span>
+</span><span id="__span-1-48"><a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a>        <span class="n">time_features</span> <span class="o">=</span> <span class="n">time_features</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">*</span><span class="n">delta_times</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># (batch, k, time_dim)</span>
+</span><span id="__span-1-49"><a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a>        <span class="c1"># Concatenate neighbor memory with time encoding</span>
+</span><span id="__span-1-50"><a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a>        <span class="n">keys_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">keys</span><span class="p">,</span> <span class="n">time_features</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>            <span class="c1"># (batch, k, mem+time)</span>
+</span><span id="__span-1-51"><a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a>        <span class="n">K</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">key_proj</span><span class="p">(</span><span class="n">keys_t</span><span class="p">)</span>       <span class="c1"># (batch, k, attn_dim)</span>
+</span><span id="__span-1-52"><a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a>        <span class="n">V</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_proj</span><span class="p">(</span><span class="n">keys_t</span><span class="p">)</span>       <span class="c1"># (batch, k, attn_dim)</span>
+</span><span id="__span-1-53"><a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a>        <span class="n">Q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_proj</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (batch, 1, attn_dim)</span>
+</span><span id="__span-1-54"><a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a>        <span class="c1"># Scaled dot-product attention</span>
+</span><span id="__span-1-55"><a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a>        <span class="n">scores</span> <span class="o">=</span> <span class="p">(</span><span class="n">Q</span> <span class="o">@</span> <span class="n">K</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span>  <span class="c1"># (batch, 1, k)</span>
+</span><span id="__span-1-56"><a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a>        <span class="n">weights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>           <span class="c1"># (batch, 1, k)</span>
+</span><span id="__span-1-57"><a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a>        <span class="n">out</span> <span class="o">=</span> <span class="p">(</span><span class="n">weights</span> <span class="o">@</span> <span class="n">V</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>                    <span class="c1"># (batch, attn_dim)</span>
+</span><span id="__span-1-58"><a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a>        <span class="k">return</span> <span class="n">out</span>
+</span></code></pre></div>
+<h2 id="225-tgat-temporal-graph-attention-networks">22.5 TGAT: Temporal Graph Attention Networks<a class="headerlink" href="#225-tgat-temporal-graph-attention-networks" title="Permanent link">¶</a></h2>
+<p><strong>TGAT</strong> (Temporal Graph Attention Network, Xu et al., 2020) predates the full TGN framework and specializes in inductive link prediction on continuous-time dynamic graphs. Its key contribution is showing that the combination of graph attention (from GAT) with Time2Vec time encoding is sufficient for strong temporal link prediction without an explicit memory module.</p>
+<p>TGAT's embedding for node <span class="arithmatex">\( v \)</span> at query time <span class="arithmatex">\( t \)</span> aggregates over its <span class="arithmatex">\( k \)</span>-most-recent temporal neighbors using attention scores that incorporate both neighbor features and elapsed time:</p>
+<div class="arithmatex">\[
+\mathbf{z}_v^{(t)} = \text{MultiHead-Attn}\!\left(\mathbf{x}_v \| \phi(0),\; \{(\mathbf{x}_u \| \phi(t - t')) : (u, t') \in \mathcal{N}^k(v, t)\}\right)
+\]</div>
+<p>where <span class="arithmatex">\( \| \)</span> denotes concatenation and <span class="arithmatex">\( \phi(\cdot) \)</span> is Time2Vec. The query is the node's own feature concatenated with the zero-time encoding (representing "now"), and the keys/values are neighbor features concatenated with their relative time encodings. Multiple TGAT layers stack temporal attention, expanding the temporal receptive field to <span class="arithmatex">\( L \)</span>-hop temporal neighborhoods.</p>
+<p>TGAT's inductive power comes from its purely feature-based design: because no global node identifiers enter the computation (only features and timestamps), TGAT naturally generalizes to nodes that did not appear during training. This distinguishes it from transductive methods like JODIE (§22.6), which require all nodes to be present during training.</p>
+<p>The comparison between TGAT and TGN highlights an important design trade-off in temporal GNN architecture:</p>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th style="text-align: center;">TGAT</th>
+<th style="text-align: center;">TGN</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Memory module</td>
+<td style="text-align: center;">None</td>
+<td style="text-align: center;">Per-node GRU memory</td>
+</tr>
+<tr>
+<td>Time encoding</td>
+<td style="text-align: center;">Time2Vec (fixed)</td>
+<td style="text-align: center;">Time2Vec (learnable in embedding)</td>
+</tr>
+<tr>
+<td>Inductive on new nodes</td>
+<td style="text-align: center;">Yes</td>
+<td style="text-align: center;">Yes (with embedding module)</td>
+</tr>
+<tr>
+<td>Long-term memory</td>
+<td style="text-align: center;">Limited (window of k neighbors)</td>
+<td style="text-align: center;">Unlimited (persistent memory)</td>
+</tr>
+<tr>
+<td>Computational cost</td>
+<td style="text-align: center;"><span class="arithmatex">\( O(k^L) \)</span> per node</td>
+<td style="text-align: center;"><span class="arithmatex">\( O(k) \)</span> per event + memory lookup</td>
+</tr>
+<tr>
+<td>Best suited for</td>
+<td style="text-align: center;">Sparse event streams</td>
+<td style="text-align: center;">Dense, recurring interaction networks</td>
+</tr>
+</tbody>
+</table>
+<h2 id="226-dyrep-and-jodie-learning-event-rate-dynamics">22.6 DyRep and JODIE: Learning Event Rate Dynamics<a class="headerlink" href="#226-dyrep-and-jodie-learning-event-rate-dynamics" title="Permanent link">¶</a></h2>
+<p>Two earlier temporal graph models address complementary aspects of dynamic graph learning and remain important reference points for understanding the design space.</p>
+<p><strong>DyRep</strong> (Trivedi et al., 2019) introduces a <strong>two-timescale framework</strong> that distinguishes between <em>structural events</em> (new edges forming between previously unconnected nodes, indicating a new relationship) and <em>communicative events</em> (interactions along existing edges, indicating an ongoing relationship). DyRep maintains a separate embedding for each timescale and uses a temporal point process to model the rate at which future events of each type will occur. This explicit event-rate modeling gives DyRep strong performance on event prediction tasks (predicting the time of the next interaction), not just binary link prediction at fixed time points.</p>
+<p><strong>JODIE</strong> (Kumar et al., 2019) focuses on <strong>interaction networks</strong> — bipartite graphs where two types of entities (e.g., users and items) interact over time. JODIE's key innovation is a <strong>trajectory projection</strong>: rather than computing a node's embedding only at interaction time, JODIE projects the embedding forward in time using a learned linear function of elapsed time. For user <span class="arithmatex">\( u \)</span> with embedding <span class="arithmatex">\( \mathbf{z}_u(t) \)</span>, the projected embedding at future time <span class="arithmatex">\( t + \Delta \)</span> is:</p>
+<div class="arithmatex">\[
+\tilde{\mathbf{z}}_u(t + \Delta) = (1 + \mathbf{W}_{\Delta} \cdot \Delta) \cdot \mathbf{z}_u(t)
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{W}_{\Delta} \in \mathbb{R}^{d \times 1} \)</span> is a learnable projection matrix. This projection allows JODIE to make predictions at arbitrary future times without requiring a new interaction to occur first — useful for tasks like predicting which item a user will interact with next, even if they have been inactive for hours.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">Temporal GNNs Are a Young Field</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encourages">
+The five models covered in this chapter (TGN, TGAT, DyRep, JODIE, CAWN) were all published between 2019 and 2021 — a remarkably short window for what is now a mature subfield. The architectural language (memory modules, temporal attention, event-rate modeling) was essentially invented from scratch during those three years. If you are reading the primary papers, don't be discouraged by the notation differences between them: each team developed their own conventions before the field converged. TGN's notation (memory, message, embedding modules) is now the closest to a standard, and framing the other models in TGN terms is often the clearest path to comparison.</p>
+</div>
+<h2 id="227-cawn-causal-anonymous-walks">22.7 CAWN: Causal Anonymous Walks<a class="headerlink" href="#227-cawn-causal-anonymous-walks" title="Permanent link">¶</a></h2>
+<p><strong>CAWN</strong> (Causal Anonymous Walks, Wang et al., 2021) takes a structurally different approach to temporal link prediction. Rather than maintaining node memory or computing temporal attention over interaction history, CAWN encodes a link <span class="arithmatex">\( (u, v, t) \)</span> by sampling <strong>causal temporal random walks</strong> rooted at each endpoint and encoding them using anonymized node identities.</p>
+<p>A causal temporal walk from node <span class="arithmatex">\( v \)</span> at time <span class="arithmatex">\( t \)</span> is a sequence of nodes <span class="arithmatex">\( v = w_0, w_1, \ldots, w_L \)</span> where each step <span class="arithmatex">\( (w_i, w_{i+1}) \)</span> must satisfy: there exists an edge <span class="arithmatex">\( (w_i, w_{i+1}, t') \)</span> in the event stream with <span class="arithmatex">\( t' &lt; t \)</span>. The causality constraint — each step must use only edges that existed before the query time — prevents temporal information leakage and ensures the walk only traverses the graph's past.</p>
+<p>The anonymization step distinguishes CAWN from most temporal GNNs: each node identity in the walk is replaced by a relative index indicating its role in the walk (walk position and distance from the root), not its global node ID. This makes CAWN's representation <strong>inductive over both new nodes and new graphs</strong>: it can predict links in graphs and node sets never seen during training, because the representation depends only on walk structure and edge timestamps, not on learned node embeddings.</p>
+<p>CAWN encodes each sampled walk sequence using an LSTM that processes the anonymized node indices and relative timestamps in order. The representations of all walks rooted at <span class="arithmatex">\( u \)</span> and <span class="arithmatex">\( v \)</span> are aggregated (via mean pooling) and concatenated to predict <span class="arithmatex">\( P(\text{edge}(u,v,t)) \)</span>. Empirically, CAWN achieves strong inductive link prediction performance, particularly on sparse graphs where memory-based methods (TGN) have limited interaction history to leverage.</p>
+<h2 id="228-traffic-forecasting-with-temporal-gnns">22.8 Traffic Forecasting with Temporal GNNs<a class="headerlink" href="#228-traffic-forecasting-with-temporal-gnns" title="Permanent link">¶</a></h2>
+<p>Traffic forecasting is the most industrially impactful application of temporal GNNs and the primary use case for snapshot-based dynamic graph models. A road network is naturally represented as a graph: intersections (or sensor locations) are nodes, road segments are edges, and the node features are time-varying sensor readings — traffic speed, flow, or occupancy — recorded at regular intervals (typically every 5 minutes).</p>
+<p>The forecasting task is: given the road network graph <span class="arithmatex">\( G \)</span> and node feature history <span class="arithmatex">\( X^{(t-T)}, \ldots, X^{(t)} \)</span>, predict the next <span class="arithmatex">\( H \)</span> timesteps <span class="arithmatex">\( X^{(t+1)}, \ldots, X^{(t+H)} \)</span>. This is a multi-step graph-to-graph prediction problem where both spatial dependencies (nearby roads influence each other) and temporal dependencies (recent traffic affects future traffic) must be modeled jointly.</p>
+<p>Two foundational architectures combine GNNs with temporal sequence models for this task:</p>
+<ul>
+<li><strong>DCRNN</strong> (Diffusion Convolutional Recurrent Neural Network, Li et al., 2018) models spatial dependencies using graph diffusion convolutions (which capture directional traffic flow along road segments) and temporal dependencies using an encoder-decoder RNN with scheduled sampling.</li>
+<li><strong>STGCN</strong> (Spatio-Temporal Graph Convolutional Network, Yu et al., 2018) replaces the RNN with purely convolutional temporal processing — 1D convolutions along the time axis — achieving faster training and inference with competitive accuracy.</li>
+</ul>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Temporal Leakage in Traffic Forecasting</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warns about data leakage">
+The most common evaluation mistake in traffic forecasting is using future sensor readings in the graph structure computation. If your adjacency matrix is learned or updated from data (rather than fixed from the physical road network), make absolutely sure the adjacency at prediction time <span class="arithmatex">\( t \)</span> uses only structural information available before <span class="arithmatex">\( t \)</span>. Using a correlation-based adjacency matrix computed on the entire dataset — including the test period — is a form of temporal leakage that will substantially inflate your reported performance. Always fix the adjacency from training data, or use the physical road network topology exclusively.</p>
+</div>
+<p>The standard benchmark is <strong>METR-LA</strong>, a traffic dataset from 207 sensors on Los Angeles highways, recording 5-minute average speeds over 4 months (March–June 2012). The dataset contains 34,272 timesteps and exhibits strong daily and weekly periodicity. The following code shows how to set up a simple snapshot-based temporal GNN training loop for METR-LA using PyG's <code>TemporalData</code> structure and a GCN backbone with GRU temporal processing:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">GCNConv</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">class</span><span class="w"> </span><span class="nc">STGCN_Simple</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="sd">    Simple spatio-temporal GCN: spatial GCN layer followed by temporal GRU.</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="sd">    in_steps: number of historical timesteps used as input (T)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="sd">    out_steps: number of future timesteps to predict (H)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="sd">    num_nodes: number of road sensors</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="sd">    in_channels: number of features per node per timestep (e.g., speed, flow)</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="sd">    hidden_dim: GCN hidden dimension</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="sd">    """</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_nodes</span><span class="p">,</span> <span class="n">in_steps</span><span class="p">,</span> <span class="n">out_steps</span><span class="p">,</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>                 <span class="n">in_channels</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">):</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">in_steps</span> <span class="o">=</span> <span class="n">in_steps</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">out_steps</span> <span class="o">=</span> <span class="n">out_steps</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">num_nodes</span> <span class="o">=</span> <span class="n">num_nodes</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>        <span class="c1"># Spatial: GCN applied to each snapshot independently</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">spatial_conv</span> <span class="o">=</span> <span class="n">GCNConv</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>        <span class="c1"># Temporal: GRU over T hidden states → predict H steps</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">temporal_gru</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>            <span class="n">input_size</span><span class="o">=</span><span class="n">hidden_dim</span><span class="p">,</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>            <span class="n">hidden_size</span><span class="o">=</span><span class="n">hidden_dim</span><span class="p">,</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>            <span class="n">num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>            <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>            <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>        <span class="p">)</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">output_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">out_steps</span> <span class="o">*</span> <span class="n">in_channels</span><span class="p">)</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x_seq</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">):</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>        <span class="c1"># x_seq: (batch, T, num_nodes, in_channels)</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>        <span class="c1"># edge_index: (2, num_edges) — static road network topology</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>        <span class="n">batch</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">x_seq</span><span class="o">.</span><span class="n">shape</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>        <span class="c1"># Apply spatial GCN to each snapshot</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>        <span class="n">spatial_out</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>            <span class="n">xt</span> <span class="o">=</span> <span class="n">x_seq</span><span class="p">[:,</span> <span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>   <span class="c1"># (batch*N, C)</span>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>            <span class="n">ht</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spatial_conv</span><span class="p">(</span><span class="n">xt</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>    <span class="c1"># (batch*N, hidden)</span>
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>            <span class="n">ht</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">ht</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>     <span class="c1"># (batch, N, hidden)</span>
+</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a>            <span class="n">spatial_out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ht</span><span class="p">)</span>
+</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>        <span class="c1"># Stack: (batch, T, N, hidden) → process each node's time series</span>
+</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a>        <span class="n">spatial_seq</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">spatial_out</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>   <span class="c1"># (batch, T, N, hidden)</span>
+</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>        <span class="n">spatial_seq</span> <span class="o">=</span> <span class="n">spatial_seq</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>  <span class="c1"># (batch, N, T, hidden)</span>
+</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a>        <span class="n">spatial_seq</span> <span class="o">=</span> <span class="n">spatial_seq</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch</span> <span class="o">*</span> <span class="n">N</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (batch*N, T, hidden)</span>
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a>        <span class="c1"># Temporal GRU over T snapshots</span>
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a>        <span class="n">gru_out</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">temporal_gru</span><span class="p">(</span><span class="n">spatial_seq</span><span class="p">)</span>         <span class="c1"># (batch*N, T, hidden)</span>
+</span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a>        <span class="n">last_hidden</span> <span class="o">=</span> <span class="n">gru_out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>                      <span class="c1"># (batch*N, hidden)</span>
+</span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a>        <span class="c1"># Project to output: predict H future timesteps per node</span>
+</span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a>        <span class="n">pred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_proj</span><span class="p">(</span><span class="n">last_hidden</span><span class="p">)</span>                 <span class="c1"># (batch*N, H*C)</span>
+</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a>        <span class="n">pred</span> <span class="o">=</span> <span class="n">pred</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_steps</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>    <span class="c1"># (batch, N, H, C)</span>
+</span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a>        <span class="k">return</span> <span class="n">pred</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>                     <span class="c1"># (batch, H, N, C)</span>
+</span></code></pre></div>
+<p>The key parameters: <code>in_steps=12</code> (60 minutes of history), <code>out_steps=12</code> (60 minutes of prediction), <code>num_nodes=207</code> (METR-LA sensors). The static <code>edge_index</code> encodes physical road connections, fixing the spatial adjacency across all timesteps and preventing temporal leakage.</p>
+<h4 id="diagram-traffic-forecasting-architecture-microsim">Diagram: Traffic Forecasting Architecture — MicroSim<a class="headerlink" href="#diagram-traffic-forecasting-architecture-microsim" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch22-traffic-temporal/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch22-traffic-temporal/main.html">Run Traffic Forecasting Architecture — MicroSim Fullscreen</a></p>
+<h2 id="229-benchmark-results">22.9 Benchmark Results<a class="headerlink" href="#229-benchmark-results" title="Permanent link">¶</a></h2>
+<p>The standard benchmark for continuous-time dynamic graph methods is temporal link prediction on the <strong>Wikipedia</strong> and <strong>Reddit</strong> datasets (recurring user-page edits and user-post interactions), and on <strong>MOOC</strong> (student activity on online courses). Methods are evaluated by mean average precision (MAP) and ROC-AUC on a chronological test split — the last 20% of events by timestamp.</p>
+<p>The following table summarizes results for the models covered in this chapter on the Wikipedia dataset (9,227 nodes, 157,474 events). All results use standard negative sampling (uniformly random negative destination nodes).</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th style="text-align: center;">MAP</th>
+<th style="text-align: center;">ROC-AUC</th>
+<th style="text-align: center;">Parameters</th>
+<th style="text-align: center;">Temporal Memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JODIE</td>
+<td style="text-align: center;">93.4%</td>
+<td style="text-align: center;">96.5%</td>
+<td style="text-align: center;">Low</td>
+<td style="text-align: center;">Trajectory projection</td>
+</tr>
+<tr>
+<td>DyRep</td>
+<td style="text-align: center;">93.8%</td>
+<td style="text-align: center;">96.6%</td>
+<td style="text-align: center;">Medium</td>
+<td style="text-align: center;">Event-rate process</td>
+</tr>
+<tr>
+<td>TGAT</td>
+<td style="text-align: center;">96.3%</td>
+<td style="text-align: center;">98.4%</td>
+<td style="text-align: center;">Medium</td>
+<td style="text-align: center;">Temporal attention only</td>
+</tr>
+<tr>
+<td>CAWN</td>
+<td style="text-align: center;">98.0%</td>
+<td style="text-align: center;">99.0%</td>
+<td style="text-align: center;">High</td>
+<td style="text-align: center;">Causal anonymous walks</td>
+</tr>
+<tr>
+<td>TGN (mean aggregator)</td>
+<td style="text-align: center;"><strong>98.5%</strong></td>
+<td style="text-align: center;"><strong>99.1%</strong></td>
+<td style="text-align: center;">High</td>
+<td style="text-align: center;">Per-node GRU memory</td>
+</tr>
+</tbody>
+</table>
+<p>TGN with the mean message aggregator achieves the best results on Wikipedia, with CAWN close behind. Critically, CAWN uses no per-node learned parameters (all identity is anonymous), making it the stronger choice when new nodes appear at test time with no prior interaction history — TGN's memory is empty for unseen nodes and defaults to random initialization.</p>
+<h2 id="2210-common-pitfalls">22.10 Common Pitfalls<a class="headerlink" href="#2210-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>Processing events out of chronological order.</strong> TGN's memory correctness depends on events being processed in timestamp order. If mini-batches are sampled randomly (as in standard GNN training), the memory update from a later event may be applied before an earlier event, corrupting the memory state. Always sort events by timestamp before batching.</p>
+<p><strong>Evaluating with future neighborhood information.</strong> At test time, node <span class="arithmatex">\( v \)</span>'s embedding at time <span class="arithmatex">\( t \)</span> should only use interactions before <span class="arithmatex">\( t \)</span>. A common implementation error includes the test-time interaction itself in the embedding computation (as if the model "saw" the edge it is trying to predict). Always compute embeddings from the graph state at <span class="arithmatex">\( t^- \)</span> (just before the test event).</p>
+<p><strong>Ignoring memory resets between training epochs.</strong> TGN's memory accumulates state across the entire training set. At the start of each epoch, if the memory is not reset, it carries stale state from the end of the previous epoch's last mini-batch — which may contain information about events near the train/test boundary, causing subtle leakage. Reset the memory state before each epoch and at the start of evaluation.</p>
+<p><strong>Confusing TGAT's window parameter with TGN's memory capacity.</strong> TGAT's <code>k_neighbors</code> parameter controls how many past interactions are retrieved per node. Increasing it linearly increases computation but has a natural ceiling beyond which older interactions contribute negligible attention weight. TGN's memory, by contrast, compresses all history into a fixed-size vector — increasing <code>memory_dim</code> may help quality but never increases temporal reach.</p>
+<h2 id="2211-further-reading">22.11 Further Reading<a class="headerlink" href="#2211-further-reading" title="Permanent link">¶</a></h2>
+<ul>
+<li>
+<p><strong>Rossi et al. (2020) — Temporal Graph Networks for Deep Learning on Dynamic Graphs.</strong> The TGN paper; Appendix A defines the full module API and Table 2 provides comprehensive ablations of memory vs. no-memory and different message aggregators. <a href="https://arxiv.org/abs/2006.10637">arXiv:2006.10637</a></p>
+</li>
+<li>
+<p><strong>Xu et al. (2020) — Inductive Representation Learning on Temporal Graphs (TGAT).</strong> The TGAT paper; Section 3.2 on temporal graph attention is the most reusable component and directly compatible with standard PyG attention layers. <a href="https://arxiv.org/abs/2002.07962">arXiv:2002.07962</a></p>
+</li>
+<li>
+<p><strong>Trivedi et al. (2019) — DyRep: Learning Representations over Dynamic Graphs.</strong> Introduces the two-timescale framework and temporal point process modeling for event rate prediction; Section 4 on the Hawkes process connection is theoretically rich. <a href="https://openreview.net/forum?id=HyePrhR5KX">OpenReview</a></p>
+</li>
+<li>
+<p><strong>Kumar et al. (2019) — JODIE: Predicting Dynamic Embedding Trajectory in Temporal Interaction Networks.</strong> The trajectory projection idea is elegant and practically useful for user-item bipartite graphs; Section 5 on the t-Batch training algorithm is the key engineering contribution. <a href="https://arxiv.org/abs/1908.01207">arXiv:1908.01207</a></p>
+</li>
+<li>
+<p><strong>Wang et al. (2021) — CAWN: Inductive Representation Learning in Temporal Networks via Causal Anonymous Walks.</strong> The anonymization strategy is the key theoretical contribution; Theorem 1 proves that CAWN is strictly more expressive than message-passing GNNs for temporal link prediction when node identities are not available. <a href="https://arxiv.org/abs/2101.05974">arXiv:2101.05974</a></p>
+</li>
+</ul>
+<h2 id="2212-exercises">22.12 Exercises<a class="headerlink" href="#2212-exercises" title="Permanent link">¶</a></h2>
+<p><strong>Remembering</strong></p>
+<ol>
+<li>
+<p>Define a continuous-time dynamic graph (CTDG) formally as a set of timestamped events. What is the minimum information each event must contain, and what optional information can be included?</p>
+</li>
+<li>
+<p>List the four components of the TGN framework (memory, message function, message aggregator, embedding module) and describe what each component does in one sentence.</p>
+</li>
+</ol>
+<p><strong>Understanding</strong></p>
+<ol>
+<li>
+<p>Explain why processing TGN training events out of chronological order produces incorrect memory states. Give a concrete example involving three events at times <span class="arithmatex">\( t_1 &lt; t_2 &lt; t_3 \)</span> where out-of-order processing produces a qualitatively different memory state than correct chronological processing.</p>
+</li>
+<li>
+<p>Time2Vec uses both a linear component and sinusoidal components to encode elapsed time. Explain what temporal patterns each component is designed to capture, and describe a type of interaction network where the sinusoidal components would be more important than the linear component (and why).</p>
+</li>
+</ol>
+<p><strong>Applying</strong></p>
+<ol>
+<li>
+<p>Adapt the <code>STGCN_Simple</code> code from §22.8 to use <code>GAT</code> (graph attention convolution from PyG) instead of <code>GCNConv</code> for the spatial layer, with 4 attention heads. Explain what advantage GAT's attention mechanism provides over GCN's symmetric normalization for road network traffic prediction.</p>
+</li>
+<li>
+<p>Using the <code>TemporalAttention</code> class from §22.4, implement a two-layer TGAT that stacks two temporal attention layers. Describe how the temporal receptive field of the two-layer model differs from the single-layer version.</p>
+</li>
+</ol>
+<p><strong>Analyzing</strong></p>
+<ol>
+<li>
+<p>Compare TGAT and TGN on a node that has never appeared in the training set (a cold-start node that joins the platform one week after training ends). For each model, describe exactly what embedding the model would compute for this node's first interaction, and identify which model handles this case better and why.</p>
+</li>
+<li>
+<p>The CAWN model anonymizes node identities in causal walks, replacing global node IDs with relative walk positions. A critic argues this design makes CAWN less expressive than TGN because it cannot learn node-specific behavior. Construct a counter-argument: describe a link prediction scenario where CAWN's anonymization is an advantage rather than a limitation.</p>
+</li>
+</ol>
+<p><strong>Evaluating</strong></p>
+<ol>
+<li>
+<p>A team proposes evaluating their new temporal GNN by including the test-time interaction in the embedding computation (arguing it is a "self-supervised" signal). Identify the specific evaluation error this introduces, explain which metric (MAP, ROC-AUC, or both) is most affected, and estimate the direction and magnitude of the bias in their reported results.</p>
+</li>
+<li>
+<p>For a high-frequency trading application where a new financial event arrives every millisecond, evaluate the computational feasibility of TGN vs. TGAT vs. CAWN. Consider: (a) per-event computation cost, (b) memory storage cost as event count grows, and (c) whether chronological mini-batching is tractable at millisecond granularity.</p>
+</li>
+</ol>
+<p><strong>Creating</strong></p>
+<ol>
+<li>
+<p>Design a temporal GNN for a <strong>temporal knowledge graph</strong> where entities and relations have timestamps (e.g., "Obama was president of USA from 2009 to 2017"). Your design must: (a) represent fact validity intervals, not just event timestamps, (b) define how to compute an entity embedding valid at a specific query time, and (c) handle facts that become invalid over time (e.g., the Obama-presidency fact should not contribute to queries after 2017).</p>
+</li>
+<li>
+<p>Propose a hybrid architecture that combines TGN's per-node memory with CAWN's causal anonymous walk encoding. Specifically: (a) define how walk encodings would be computed using TGN memory states (rather than node features) at each step of the walk, (b) describe how this hybrid uses both global (per-node memory) and local (walk structure) information, and (c) identify one scenario where the hybrid would outperform pure TGN and one where it would underperform.</p>
+</li>
+</ol>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Graphs That Remember and Forget</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrates">
+You have now equipped yourself with the full temporal graph toolkit: the snapshot-vs.-event-stream choice that sets up the whole architectural design space; TGN's modular memory framework with its self-reinforcing and decay dynamics; TGAT's attention-only approach that forgoes memory in favor of simplicity; CAWN's causal walk encoding that dispenses with node identity entirely; and traffic forecasting as a grounding application where snapshot GNNs shine. The field is still young, and the design space is still being charted — every model we covered was published between 2019 and 2021, and the benchmarks are already due for revision with larger, more diverse datasets. But the core tension — how much to memorize vs. how much to recompute from the current graph state — will remain the fundamental trade-off in temporal graph learning for years to come.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../21-generative-models/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

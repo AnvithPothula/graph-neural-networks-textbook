@@ -1,0 +1,3530 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Examines how inductive reasoning and transfer learning extend KG methods beyond fixed entity sets, covering ULTRA's universal pre-training approach and InGram's relation graph induction.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/14-kg-foundation-models/">
+      
+      
+        <link rel="prev" href="../13-kg-reasoning/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 14: Knowledge Graph Foundation Models - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 14: Knowledge Graph Foundation Models">
+  <meta property="og:description" content="Examines how inductive reasoning and transfer learning extend KG methods beyond fixed entity sets, covering ULTRA's universal pre-training approach and InGram's relation graph induction.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/14-kg-foundation-models/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 14: Knowledge Graph Foundation Models">
+  <meta name="twitter:description" content="Examines how inductive reasoning and transfer learning extend KG methods beyond fixed entity sets, covering ULTRA's universal pre-training approach and InGram's relation graph induction.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-14-knowledge-graph-foundation-models" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 14: Knowledge Graph Foundation Models
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_16" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_16" id="__nav_4_16_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_16_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_16">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    14. Knowledge Graph Foundation Models
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#141-motivating-example-reasoning-under-epidemiological-uncertainty" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.1 Motivating Example: Reasoning Under Epidemiological Uncertainty
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#142-the-transductive-bottleneck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.2 The Transductive Bottleneck
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#143-inductive-kg-reasoning-a-formal-taxonomy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.3 Inductive KG Reasoning: A Formal Taxonomy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#144-transfer-learning-and-pre-training-on-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.4 Transfer Learning and Pre-Training on Graphs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#145-ingram-inductive-reasoning-via-relation-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.5 InGram: Inductive Reasoning via Relation Graphs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14.5 InGram: Inductive Reasoning via Relation Graphs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1451-constructing-the-relation-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.5.1 Constructing the Relation Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1452-entity-representations-in-ingram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.5.2 Entity Representations in InGram
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1453-triple-scoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.5.3 Triple Scoring
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#146-ultra-universal-transfer-for-kg-reasoning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.6 ULTRA: Universal Transfer for KG Reasoning
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14.6 ULTRA: Universal Transfer for KG Reasoning">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1461-architecture-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.6.1 Architecture Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1462-multi-kg-pre-training" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.6.2 Multi-KG Pre-Training
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1463-zero-shot-inference-on-a-new-kg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.6.3 Zero-Shot Inference on a New KG
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#147-double-equivariance-the-theoretical-foundation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.7 Double Equivariance: The Theoretical Foundation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#148-complete-code-building-a-relation-graph-and-running-inductive-scoring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.8 Complete Code: Building a Relation Graph and Running Inductive Scoring
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#149-benchmark-results-inductive-link-prediction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.9 Benchmark Results: Inductive Link Prediction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1410-microsim-kg-embedding-space-visualizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.10 MicroSim: KG Embedding Space Visualizer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="14.10 MicroSim: KG Embedding Space Visualizer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-cross-kg-structure-transfer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Cross-KG Structure Transfer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1411-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.11 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1412-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.12 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1413-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        14.13 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    14. Knowledge Graph Foundation Models
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/14-kg-foundation-models/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-14-knowledge-graph-foundation-models">Chapter 14: Knowledge Graph Foundation Models<a class="headerlink" href="#chapter-14-knowledge-graph-foundation-models" title="Permanent link">¶</a></h1>
+<p><strong>Part 3: Knowledge Graphs and Reasoning</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Examines how inductive reasoning and transfer learning extend KG methods beyond fixed entity sets, covering ULTRA's universal pre-training approach and InGram's relation graph induction.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 6 concepts from the learning graph:</p>
+<ol>
+<li>Inductive KG Reasoning</li>
+<li>ULTRA</li>
+<li>InGram</li>
+<li>Transfer Learning (Graphs)</li>
+<li>Pre-Training (GNN)</li>
+<li>Fine-Tuning (GNN)</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../13-kg-reasoning/">Chapter 13: Reasoning over Knowledge Graphs</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">From Memorizing Entities to Understanding Structure</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+Chapters 12 and 13 developed powerful machinery for KG link prediction and multi-hop query answering — but that machinery carried a hidden limitation. Every model assumed the entity set was fixed at training time: TransE assigns a dedicated embedding vector to each entity ID, RotatE rotates a per-entity complex number, and Query2Box anchors a box at each entity's position. When a new entity appears — one that was never in the training vocabulary — there is no embedding to look up, and the model silently fails. This chapter asks: what would it take to build a KG reasoning system that works on any knowledge graph, even one it has never seen? The answer reveals a surprisingly deep connection between equivariance, structural induction, and the emerging paradigm of graph foundation models.</p>
+</div>
+<hr>
+<h2 id="141-motivating-example-reasoning-under-epidemiological-uncertainty">14.1 Motivating Example: Reasoning Under Epidemiological Uncertainty<a class="headerlink" href="#141-motivating-example-reasoning-under-epidemiological-uncertainty" title="Permanent link">¶</a></h2>
+<p>When SARS-CoV-2 emerged in late 2019, biomedical researchers immediately began constructing knowledge graphs to organize what was rapidly being discovered: viral protein structures, host-pathogen interaction mechanisms, potential drug targets, approved small molecules. Within months, databases such as the Drug Repurposing Knowledge Graph (DRKG) had expanded to include thousands of new entities — viral gene products, host receptor sites, and novel compound-target interactions — that were entirely absent from pre-existing biomedical KGs.</p>
+<p>Researchers attempting to use link prediction models trained on prior KGs (DRKG v1, hetionet, or PrimeKG) faced an immediate problem: every new viral protein was an out-of-vocabulary entity. TransE had no embedding for NSP3, RotatE had no complex rotation vector for the Spike receptor-binding domain, and ComplEx had never seen ACE2 in its training data. Retraining from scratch on the new combined graph would have taken weeks on academic GPU clusters — weeks that were unavailable during an active pandemic.</p>
+<p>What was needed was a system capable of <strong>zero-shot generalization</strong>: given a new KG it had never seen, immediately produce sensible link predictions without any parameter updates. This requires the model to have learned not <em>facts</em> — not "which entities are connected" — but <em>patterns</em> — "what kinds of structural relationships tend to imply which other relationships, regardless of which specific entities are involved." A model that has internalized relational patterns from diverse training KGs can apply those patterns instantly to any new graph that exhibits similar structural regularities.</p>
+<p>This chapter develops the theoretical and algorithmic framework for building such systems, culminating in ULTRA (Universal Learning of Trirelational data Analysis), which achieves competitive link prediction on 43 diverse KGs in zero-shot mode, trained on only 3.</p>
+<hr>
+<h2 id="142-the-transductive-bottleneck">14.2 The Transductive Bottleneck<a class="headerlink" href="#142-the-transductive-bottleneck" title="Permanent link">¶</a></h2>
+<p>Every model studied in Chapters 12 and 13 — TransE, DistMult, ComplEx, RotatE, Query2Box, and NBFNet — is ultimately <strong>transductive</strong>: it builds a fixed lookup table that maps entity IDs to embedding vectors. More precisely, each model learns a parameter matrix <span class="arithmatex">\( \mathbf{E} \in \mathbb{R}^{|\mathcal{E}| \times d} \)</span>, where row <span class="arithmatex">\( i \)</span> is the embedding of entity <span class="arithmatex">\( e_i \)</span>. At inference time, scoring a triple <span class="arithmatex">\( (h, r, t) \)</span> means looking up <span class="arithmatex">\( \mathbf{E}[h] \)</span>, <span class="arithmatex">\( \mathbf{W}_r \)</span>, and <span class="arithmatex">\( \mathbf{E}[t] \)</span> and applying the scoring function.</p>
+<p>This architecture enforces a hard boundary: only entities whose IDs were indexed during training can ever be scored. Formally, let <span class="arithmatex">\( \mathcal{E}_{train} \)</span> be the entity set observed at training time and <span class="arithmatex">\( \mathcal{E}_{test} \supset \mathcal{E}_{train} \)</span> be the entity set at test time. A transductive model learns</p>
+<div class="arithmatex">\[
+f_\theta : \mathcal{E}_{train} \times \mathcal{R} \times \mathcal{E}_{train} \to \mathbb{R},
+\]</div>
+<p>but cannot evaluate <span class="arithmatex">\( f_\theta(h, r, t) \)</span> when <span class="arithmatex">\( h \notin \mathcal{E}_{train} \)</span> or <span class="arithmatex">\( t \notin \mathcal{E}_{train} \)</span>, because <span class="arithmatex">\( \mathbf{E}[h] \)</span> and <span class="arithmatex">\( \mathbf{E}[t] \)</span> simply do not exist. The parameters <span class="arithmatex">\( \theta \)</span> encode entity-specific information that is non-transferable to new entities, and even more so to new knowledge graphs with entirely different entity vocabularies.</p>
+<p>This limitation has a second, subtler consequence: the embedding matrix itself grows with the size of the entity set. Freebase has 40 million entities; storing a 200-dimensional complex embedding for each requires <span class="arithmatex">\( 40\text{M} \times 200 \times 8 \approx 64\text{ GB} \)</span> of memory. Scaling to Wikidata (90M+ entities) is prohibitive.</p>
+<p>The root cause is the reliance on entity IDs as the input signal. Entity IDs are arbitrary integers — they carry no information about what an entity <em>is</em> or how it <em>connects</em> to other entities. A more principled architecture would represent entities by their <strong>structural context</strong> — their patterns of connectivity to other entities and relations — which is portable across graphs and does not require indexing.</p>
+<hr>
+<h2 id="143-inductive-kg-reasoning-a-formal-taxonomy">14.3 Inductive KG Reasoning: A Formal Taxonomy<a class="headerlink" href="#143-inductive-kg-reasoning-a-formal-taxonomy" title="Permanent link">¶</a></h2>
+<p>Inductive reasoning in knowledge graphs refers to any setting where inference must be performed on entities, relations, or triples that were absent from the training distribution. The field has distinguished several increasingly demanding variants:</p>
+<p><strong>Semi-inductive (new entities, same relations):</strong> The training relation vocabulary <span class="arithmatex">\( \mathcal{R} \)</span> is fixed, but the test entity set <span class="arithmatex">\( \mathcal{E}_{test} \)</span> includes entities not seen during training. This is the setting explored by GraIL (Teru et al. 2020) and NodePiece (Galkin et al. 2021). The model must represent new entities without ID lookups, typically by aggregating information from their known relational neighborhoods.</p>
+<p><strong>Fully inductive (new entities and new relations):</strong> Both the entity set and the relation vocabulary may contain unseen elements at test time. InGram operates in this setting by representing relations through structural co-occurrence patterns rather than ID lookups, enabling generalization to relation types that appeared in zero training triples.</p>
+<p><strong>Cross-KG transfer (new graph):</strong> The most demanding setting: training occurs on source KGs <span class="arithmatex">\( G_1, G_2, \ldots, G_k \)</span>, and inference is required on a target KG <span class="arithmatex">\( G_{target} \)</span> whose entity and relation vocabularies are entirely disjoint from all training graphs. A model capable of cross-KG transfer has learned domain-agnostic relational patterns rather than graph-specific facts. ULTRA achieves this zero-shot.</p>
+<p>The key challenge distinguishing these settings from standard supervised machine learning is the absence of any shared vocabulary: there is no analogue of ImageNet's fixed 1,000-class label space or BERT's 30,000-word vocabulary. Every KG is a self-contained semantic universe, and a foundation model must bridge these universes without a common reference system.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Structural Role vs. Entity Identity</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking carefully">
+The key insight underlying all inductive KG methods is that entity <em>identity</em> — the specific integer ID assigned to an entity — carries no semantic information useful for transfer. What carries information is structural <em>role</em>: does this entity tend to appear at the head of functional relations? Does it appear as both head and tail in the same relation type (symmetric)? Is it a high-degree hub or a leaf node? A representation built from structural role can generalize because structural roles recur across KGs. The entity "Albert Einstein" in Wikidata and the entity "Leonhard Euler" in MathKG occupy similar structural roles (person → birthplace, person → field-of-study, person → influenced) even though they are entirely different entities in entirely different KGs.</p>
+</div>
+<hr>
+<h2 id="144-transfer-learning-and-pre-training-on-graphs">14.4 Transfer Learning and Pre-Training on Graphs<a class="headerlink" href="#144-transfer-learning-and-pre-training-on-graphs" title="Permanent link">¶</a></h2>
+<p>Pre-training followed by fine-tuning is the dominant paradigm in modern deep learning. In natural language processing, pre-training a large transformer on a massive text corpus (language modeling) yields representations that transfer to downstream tasks with minimal fine-tuning. In computer vision, ImageNet pre-training produces visual features that transfer to medical imaging, satellite imagery, and industrial inspection. The question for KG reasoning is whether an analogous workflow is achievable — and if so, what the pre-training objective should be.</p>
+<p>For GNNs applied to molecule property prediction, pre-training via graph-level contrastive learning or attribute masking (Hu et al. 2020) has demonstrated significant few-shot generalization. For KG reasoning specifically, pre-training is harder for three reasons.</p>
+<p>First, <strong>vocabulary mismatch</strong>: Unlike text tokens (which appear in all corpora) or image pixels (which always span the same 0–255 intensity range), entity and relation IDs are arbitrary across KGs. There is no shared symbol that means "is-a" across FB15k-237, WN18RR, and a biomedical KG simultaneously.</p>
+<p>Second, <strong>structural heterogeneity</strong>: Different KGs have radically different statistics. FB15k-237 has a power-law degree distribution dominated by a few high-degree hub entities (countries, famous people, major films); WN18RR has a more hierarchical structure (hypernym/hyponym chains); biomedical KGs are dense in certain biological pathway subgraphs and sparse elsewhere. A single representation space may need to accommodate all of these.</p>
+<p>Third, <strong>task diversity</strong>: Link prediction, multi-hop query answering, and triple classification require different inductive biases even when applied to the same KG. A pre-trained foundation model ideally supports all three without task-specific architectural changes.</p>
+<p>The solution pursued by ULTRA is to make the model <strong>entity-agnostic</strong> and <strong>relation-agnostic</strong> by construction — that is, to never use entity IDs or relation IDs as input features. Instead, both entities and relations are represented by their structural context in the graph, computed fresh for each new KG at inference time. Pre-training then learns the GNN parameters that extract these structural contexts, not a fixed vocabulary.</p>
+<p>Fine-tuning on a target KG proceeds by optionally running a small number of gradient steps on observed target triples, adapting the structural context extraction to the target domain. Even a few hundred training triples on the target KG can provide meaningful signal, because the model is not learning entity embeddings from scratch — only refining its structural context extractor.</p>
+<hr>
+<h2 id="145-ingram-inductive-reasoning-via-relation-graphs">14.5 InGram: Inductive Reasoning via Relation Graphs<a class="headerlink" href="#145-ingram-inductive-reasoning-via-relation-graphs" title="Permanent link">¶</a></h2>
+<p>InGram (Lee et al. 2023) introduced the <strong>relation graph</strong> as the fundamental data structure for inductive KG representation. Rather than representing each relation by a lookup vector, InGram characterizes each relation by its co-occurrence pattern with other relations — a structure that is purely topological and therefore portable across KGs.</p>
+<h3 id="1451-constructing-the-relation-graph">14.5.1 Constructing the Relation Graph<a class="headerlink" href="#1451-constructing-the-relation-graph" title="Permanent link">¶</a></h3>
+<p>Given a KG <span class="arithmatex">\( G = (\mathcal{E}, \mathcal{R}, \mathcal{T}) \)</span>, the relation graph <span class="arithmatex">\( G_R = (\mathcal{R}, E_R, \Phi) \)</span> is a directed graph over relation nodes with four types of edges, denoted by <span class="arithmatex">\( \Phi \in \{hh, ht, th, tt\} \)</span>:</p>
+<ul>
+<li>
+<p><strong>Head-head (hh):</strong> An edge of type hh connects <span class="arithmatex">\( r_1 \)</span> to <span class="arithmatex">\( r_2 \)</span> if there exists an entity <span class="arithmatex">\( e \)</span> that appears as the head of a triple with relation <span class="arithmatex">\( r_1 \)</span> <em>and</em> as the head of a triple with relation <span class="arithmatex">\( r_2 \)</span>: <span class="arithmatex">\( \exists e, t_1, t_2 : (e, r_1, t_1) \wedge (e, r_2, t_2) \in \mathcal{T} \)</span>.</p>
+</li>
+<li>
+<p><strong>Head-tail (ht):</strong> Connects <span class="arithmatex">\( r_1 \)</span> to <span class="arithmatex">\( r_2 \)</span> if an entity appears as the head of an <span class="arithmatex">\( r_1 \)</span>-triple and as the tail of an <span class="arithmatex">\( r_2 \)</span>-triple: <span class="arithmatex">\( \exists e, h_2, t_1 : (e, r_1, t_1) \wedge (h_2, r_2, e) \in \mathcal{T} \)</span>.</p>
+</li>
+<li>
+<p><strong>Tail-head (th):</strong> Connects <span class="arithmatex">\( r_1 \)</span> to <span class="arithmatex">\( r_2 \)</span> if an entity appears as the tail of an <span class="arithmatex">\( r_1 \)</span>-triple and as the head of an <span class="arithmatex">\( r_2 \)</span>-triple: <span class="arithmatex">\( \exists e, h_1, t_2 : (h_1, r_1, e) \wedge (e, r_2, t_2) \in \mathcal{T} \)</span>.</p>
+</li>
+<li>
+<p><strong>Tail-tail (tt):</strong> Connects <span class="arithmatex">\( r_1 \)</span> to <span class="arithmatex">\( r_2 \)</span> if a shared entity appears as the tail of both relations.</p>
+</li>
+</ul>
+<p>These four edge types encode compositional and co-occurrence statistics without naming specific entities. Consider a biomedical KG: if "encodes" and "expressed-in" frequently share head entities (the same gene both encodes a protein and is expressed in a tissue), then there will be many hh-edges between those two relation nodes. This structural pattern recurs in any gene-centric KG, making it portable.</p>
+<p>A <strong>relational GNN</strong> then operates on <span class="arithmatex">\( G_R \)</span>, computing a representation <span class="arithmatex">\( \mathbf{r}_i \in \mathbb{R}^d \)</span> for each relation node by aggregating messages from neighboring relation nodes according to the four edge types:</p>
+<div class="arithmatex">\[
+\mathbf{r}_i^{(l+1)} = \sigma\!\left(\mathbf{W}^{(l)}_\text{self}\, \mathbf{r}_i^{(l)} + \sum_{\phi \in \{hh,ht,th,tt\}} \sum_{j : (i \to j) \in E_R^\phi} \mathbf{W}^{(l)}_\phi\, \mathbf{r}_j^{(l)}\right)
+\]</div>
+<p>where the four weight matrices <span class="arithmatex">\( \mathbf{W}^{(l)}_\phi \in \mathbb{R}^{d \times d} \)</span> are shared across all relation nodes (making the model relation-agnostic) and across all KGs (making it graph-agnostic). After <span class="arithmatex">\( L \)</span> layers, each relation is represented by a <span class="arithmatex">\( d \)</span>-dimensional vector that encodes its structural role in the relation co-occurrence graph.</p>
+<h3 id="1452-entity-representations-in-ingram">14.5.2 Entity Representations in InGram<a class="headerlink" href="#1452-entity-representations-in-ingram" title="Permanent link">¶</a></h3>
+<p>With relation embeddings in hand, InGram computes entity representations by aggregating over their incident triples. For entity <span class="arithmatex">\( e \)</span>, its embedding is the weighted combination of the relation embeddings of triples in which <span class="arithmatex">\( e \)</span> participates:</p>
+<div class="arithmatex">\[
+\mathbf{e}_i = \text{Aggregate}\!\left(\left\{\mathbf{r}_j : (e_i, r_j, *) \in \mathcal{T}\right\} \cup \left\{-\mathbf{r}_j : (*, r_j, e_i) \in \mathcal{T}\right\}\right)
+\]</div>
+<p>where the sign flip for tail participation follows RotatE's convention (tail participation is the inverse of head participation). This representation is computed purely from the entity's structural neighborhood — its pattern of relational connections — not from any ID lookup.</p>
+<h3 id="1453-triple-scoring">14.5.3 Triple Scoring<a class="headerlink" href="#1453-triple-scoring" title="Permanent link">¶</a></h3>
+<p>Given entity and relation embeddings produced inductively, InGram applies a RotatE-style scoring function:</p>
+<div class="arithmatex">\[
+f(h, r, t) = -\|\mathbf{e}_h \circ e^{i\, \mathbf{r}} - \mathbf{e}_t\|_2^2
+\]</div>
+<p>where <span class="arithmatex">\( e^{i\, \mathbf{r}} \)</span> denotes the element-wise complex rotation by angles in <span class="arithmatex">\( \mathbf{r} \)</span>. Because the entity and relation embeddings are computed inductively from the KG structure, this scoring function generalizes to any new KG without retraining — simply reconstruct the relation graph, run the relational GNN, aggregate entity embeddings from their neighborhoods, and score.</p>
+<hr>
+<h2 id="146-ultra-universal-transfer-for-kg-reasoning">14.6 ULTRA: Universal Transfer for KG Reasoning<a class="headerlink" href="#146-ultra-universal-transfer-for-kg-reasoning" title="Permanent link">¶</a></h2>
+<p>ULTRA (Galkin et al. 2023) scales the InGram idea into a full <strong>foundation model</strong> for KG reasoning by pre-training across multiple heterogeneous KGs simultaneously and integrating the NBFNet backbone (Chapter 13) for entity-level path reasoning.</p>
+<h3 id="1461-architecture-overview">14.6.1 Architecture Overview<a class="headerlink" href="#1461-architecture-overview" title="Permanent link">¶</a></h3>
+<p>ULTRA decomposes KG reasoning into two coupled components:</p>
+<p><strong>Relation encoder (GNN on relation graph).</strong> The same four-type relation graph as InGram is constructed for each KG in the training mixture. A shared GNN with parameters <span class="arithmatex">\( \theta_R \)</span> processes this relation graph to produce relation representations <span class="arithmatex">\( \{\mathbf{r}_i\}_{r_i \in \mathcal{R}} \)</span>. Crucially, <span class="arithmatex">\( \theta_R \)</span> is shared across all KGs — it is not specialized to any particular relation vocabulary.</p>
+<p><strong>Entity encoder (NBFNet path propagation).</strong> Given a query <span class="arithmatex">\( (e_s, r_q, ?) \)</span>, the entity encoder initializes node states according to the NBFNet rule (Chapter 13):</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(0)} = \begin{cases} \mathbf{r}_q &amp; \text{if } v = e_s \\ \mathbf{0} &amp; \text{otherwise} \end{cases}
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{r}_q \)</span> is the query relation embedding produced by the relation encoder — not a fixed lookup vector. The Bellman-Ford propagation then proceeds for <span class="arithmatex">\( T \)</span> steps, using the learned relation representations as message operators:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(t+1)} = \sigma\!\left(\sum_{(u, r', v) \in \mathcal{N}(v)} f_\theta(\mathbf{h}_u^{(t)},\, \mathbf{r}_{r'}) + \mathbf{h}_v^{(t)}\right)
+\]</div>
+<p>where <span class="arithmatex">\( f_\theta(\mathbf{h}_u, \mathbf{r}_{r'}) = \mathbf{h}_u \odot (\mathbf{W}_{r'}^\text{rel}\, \mathbf{r}_{r'}) \)</span> is the query-conditioned message function. Because <span class="arithmatex">\( \mathbf{r}_{r'} \)</span> is produced by the relation encoder rather than looked up by ID, this propagation is fully inductive.</p>
+<p><strong>Scoring.</strong> After <span class="arithmatex">\( T \)</span> steps, entity <span class="arithmatex">\( v \)</span>'s score as the answer to query <span class="arithmatex">\( (e_s, r_q, ?) \)</span> is:</p>
+<div class="arithmatex">\[
+\text{score}(v) = \text{MLP}\!\left(\mathbf{h}_v^{(T)}\right)
+\]</div>
+<h3 id="1462-multi-kg-pre-training">14.6.2 Multi-KG Pre-Training<a class="headerlink" href="#1462-multi-kg-pre-training" title="Permanent link">¶</a></h3>
+<p>ULTRA's training set comprises three source KGs chosen for structural diversity:</p>
+<table>
+<thead>
+<tr>
+<th>Source KG</th>
+<th>Entities</th>
+<th>Relations</th>
+<th>Triples</th>
+<th>Domain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FB15k-237</td>
+<td>14,541</td>
+<td>237</td>
+<td>272,115</td>
+<td>General (Freebase)</td>
+</tr>
+<tr>
+<td>WN18RR</td>
+<td>40,943</td>
+<td>11</td>
+<td>86,835</td>
+<td>Lexical (WordNet)</td>
+</tr>
+<tr>
+<td>Codex-M</td>
+<td>17,050</td>
+<td>51</td>
+<td>185,584</td>
+<td>Encyclopedic (Wikidata)</td>
+</tr>
+</tbody>
+</table>
+<p>At each training step, a minibatch of queries is sampled uniformly from the union of all three training KGs. For each query, the appropriate KG's relation graph is constructed and passed to the relation encoder, and NBFNet propagation is run on that KG's triple set. Gradient descent updates <span class="arithmatex">\( \theta_R \)</span> and <span class="arithmatex">\( \theta_\text{NBFNet} \)</span> jointly across KGs.</p>
+<p>The model never sees entity IDs as inputs — only the topology of the relation graph and the topology of the entity-level KG. This constraint forces the model to learn transferable structural patterns.</p>
+<h3 id="1463-zero-shot-inference-on-a-new-kg">14.6.3 Zero-Shot Inference on a New KG<a class="headerlink" href="#1463-zero-shot-inference-on-a-new-kg" title="Permanent link">¶</a></h3>
+<p>Given a new KG <span class="arithmatex">\( G_{target} \)</span> with completely novel entities and relations:</p>
+<ol>
+<li><strong>Extract relation graph</strong> <span class="arithmatex">\( G_R^{target} \)</span> from <span class="arithmatex">\( \mathcal{T}_{target} \)</span> using the four co-occurrence edge types.</li>
+<li><strong>Run relation encoder</strong> <span class="arithmatex">\( \theta_R \)</span> on <span class="arithmatex">\( G_R^{target} \)</span> to obtain relation embeddings <span class="arithmatex">\( \{\mathbf{r}_i^{target}\} \)</span>.</li>
+<li><strong>For each query</strong> <span class="arithmatex">\( (h, r, ?) \)</span>, initialize NBFNet with <span class="arithmatex">\( \mathbf{h}_h^{(0)} = \mathbf{r}_q^{target} \)</span> and run <span class="arithmatex">\( T \)</span> steps of Bellman-Ford propagation.</li>
+<li><strong>Score all candidate entities</strong> and return the top-<span class="arithmatex">\( k \)</span>.</li>
+</ol>
+<p>No gradient updates. No entity vocabulary. No relation vocabulary. The entire inference is driven by structural patterns encoded in <span class="arithmatex">\( \theta_R \)</span> and <span class="arithmatex">\( \theta_\text{NBFNet} \)</span>, which were learned from source KGs but generalize to target.</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">When to Fine-Tune ULTRA</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving practical advice">
+Zero-shot ULTRA is most powerful when the target KG has structural patterns similar to the training mixture (general-purpose encyclopedic or lexical graphs). For highly specialized KGs — deep biomedical pathway networks, legal citation graphs, manufacturing process ontologies — the structural patterns may differ substantially from anything in the training mix. In these cases, fine-tuning ULTRA for a few dozen steps on even 500–1,000 observed target triples typically yields 5–10 MRR points of improvement. The key advantage over training from scratch is that fine-tuning adapts structural <em>context extraction</em>, not individual entity embeddings, so it remains inductive: fine-tuned ULTRA still generalizes to new entities within the target KG without re-running any optimization.</p>
+</div>
+<hr>
+<h2 id="147-double-equivariance-the-theoretical-foundation">14.7 Double Equivariance: The Theoretical Foundation<a class="headerlink" href="#147-double-equivariance-the-theoretical-foundation" title="Permanent link">¶</a></h2>
+<p>Guo, Namata, and Faloutsos (2023) provide a formal theoretical characterization of what any inductive KG model must satisfy to generalize across entity and relation vocabularies. Their central concept is <strong>double equivariance</strong> — equivariance with respect to simultaneous permutations of both entity and relation IDs.</p>
+<p>Let <span class="arithmatex">\( \pi_\mathcal{E} \)</span> denote a permutation of entity IDs and <span class="arithmatex">\( \pi_\mathcal{R} \)</span> denote a permutation of relation IDs. Applying <span class="arithmatex">\( \pi_\mathcal{E} \)</span> to a KG <span class="arithmatex">\( G \)</span> relabels every entity while preserving all triple relationships; applying <span class="arithmatex">\( \pi_\mathcal{R} \)</span> relabels every relation type.</p>
+<p>A link prediction model <span class="arithmatex">\( f_\theta : G \times \mathcal{Q} \to \mathbb{R}^{|\mathcal{E}|} \)</span> is <strong>doubly equivariant</strong> if</p>
+<div class="arithmatex">\[
+f_\theta\!\left(\pi_\mathcal{E}(\pi_\mathcal{R}(G)),\ \pi_\mathcal{E}(\pi_\mathcal{R}(q))\right) = \pi_\mathcal{E}\!\left(f_\theta(G, q)\right)
+\]</div>
+<p>for all permutations <span class="arithmatex">\( \pi_\mathcal{E} \)</span> and <span class="arithmatex">\( \pi_\mathcal{R} \)</span> and all queries <span class="arithmatex">\( q \)</span>. Informally: if you arbitrarily rename every entity and every relation type in the graph and the query, the model's answer (reordered by the same entity permutation) should be identical.</p>
+<p>This condition immediately rules out transductive models. A TransE model assigns entity <span class="arithmatex">\( e_i \)</span> the embedding <span class="arithmatex">\( \mathbf{E}[i] \)</span>, which depends on the integer index <span class="arithmatex">\( i \)</span>. Permuting entity IDs — renaming entity 3 to entity 7 and vice versa — changes the embedding without changing the graph structure, violating entity equivariance.</p>
+<p>It also rules out relation-ID-dependent models. A model that looks up <span class="arithmatex">\( \mathbf{W}_r \)</span> by relation integer index will produce different scores if relation IDs are permuted, even though the triple relationships are unchanged.</p>
+<p>The constructive significance of double equivariance is that it forces models to represent entities and relations by their <strong>structural fingerprints</strong> — functions of the graph topology that are invariant to ID assignment. Both InGram's relation graph GNN and ULTRA's full architecture satisfy double equivariance by construction: they use no ID features anywhere in the computation graph.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Common Equivariance Pitfalls</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning about pitfalls">
+Two errors frequently appear in inductive KG research. First, <strong>partial inductiveness claims</strong>: a model that learns inductive entity representations but uses fixed relation ID embeddings (a common approximation) is entity-equivariant but not doubly equivariant. It will fail on new KGs where the relation vocabulary differs from training. Second, <strong>evaluation leakage</strong>: standard filtered evaluation (from Chapter 12) filters out all <em>training</em> triples when ranking. In inductive settings, you must filter out all triples in the <em>inference graph</em>, not just training triples — failing to do so inflates MRR by incorrectly counting known true answers as "not filtered." Many early inductive baselines underreported difficulty for exactly this reason.</p>
+</div>
+<hr>
+<h2 id="148-complete-code-building-a-relation-graph-and-running-inductive-scoring">14.8 Complete Code: Building a Relation Graph and Running Inductive Scoring<a class="headerlink" href="#148-complete-code-building-a-relation-graph-and-running-inductive-scoring" title="Permanent link">¶</a></h2>
+<p>The following code demonstrates three key ideas: constructing an inductive split where training and test entities are disjoint, building the relation co-occurrence graph, and running a simplified ULTRA-style inductive scoring pass. The code is self-contained and designed for transparency over efficiency; a production implementation would use sparse adjacency matrices and batched GNN passes.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Data</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">RGCNConv</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># ── Data types ──────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">Triple</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span>   <span class="c1"># (head_id, relation_id, tail_id)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># ── 1. Inductive Split Construction ─────────────────────────────────────────</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="k">def</span><span class="w"> </span><span class="nf">make_inductive_split</span><span class="p">(</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="n">triples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Triple</span><span class="p">],</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="n">num_relations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">train_frac</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">42</span><span class="p">,</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Triple</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Triple</span><span class="p">]]:</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="sd">    Partition triples so that the test graph's entity set is</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="sd">    completely disjoint from the training graph's entity set.</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="sd">    Strategy: assign entities to train/test pools randomly, then</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="sd">    keep only triples where both endpoints belong to the same pool.</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="sd">    Returns (train_triples, test_triples).</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="sd">    """</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="n">all_entities</span> <span class="o">=</span> <span class="nb">list</span><span class="p">({</span><span class="n">e</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">triples</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">t</span><span class="p">)})</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n">perm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randperm</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_entities</span><span class="p">))</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n">split_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_entities</span><span class="p">)</span> <span class="o">*</span> <span class="n">train_frac</span><span class="p">)</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="n">train_entities</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">all_entities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">perm</span><span class="p">[:</span><span class="n">split_idx</span><span class="p">])</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>    <span class="n">test_entities</span>  <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">all_entities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">perm</span><span class="p">[</span><span class="n">split_idx</span><span class="p">:])</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>    <span class="n">train_triples</span> <span class="o">=</span> <span class="p">[(</span><span class="n">h</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">triples</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>                     <span class="k">if</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">train_entities</span> <span class="ow">and</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">train_entities</span><span class="p">]</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>    <span class="n">test_triples</span>  <span class="o">=</span> <span class="p">[(</span><span class="n">h</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">triples</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>                     <span class="k">if</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">test_entities</span>  <span class="ow">and</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">test_entities</span><span class="p">]</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Train: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_entities</span><span class="p">)</span><span class="si">}</span><span class="s2"> entities, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_triples</span><span class="p">)</span><span class="si">}</span><span class="s2"> triples"</span><span class="p">)</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Test:  </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_entities</span><span class="p">)</span><span class="si">}</span><span class="s2"> entities, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_triples</span><span class="p">)</span><span class="si">}</span><span class="s2"> triples"</span><span class="p">)</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Entity overlap: </span><span class="si">{</span><span class="n">train_entities</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">test_entities</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># should be empty set</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>    <span class="k">return</span> <span class="n">train_triples</span><span class="p">,</span> <span class="n">test_triples</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="c1"># ── 2. Relation Graph Construction ──────────────────────────────────────────</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_relation_graph</span><span class="p">(</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>    <span class="n">triples</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Triple</span><span class="p">],</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>    <span class="n">num_relations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Data</span><span class="p">:</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="sd">    Build the 4-type relation co-occurrence graph used by InGram / ULTRA.</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="sd">    Edge types (following Lee et al. 2023):</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a><span class="sd">      0: head-head  (r1, r2 share a head entity)</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="sd">      1: head-tail  (r1's head == r2's tail)</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="sd">      2: tail-head  (r1's tail == r2's head)</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="sd">      3: tail-tail  (r1, r2 share a tail entity)</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="sd">    Returns a PyG Data object where nodes = relations, edges = co-occurrences.</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a><span class="sd">    """</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>    <span class="c1"># Index triples by entity role</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>    <span class="n">head_to_rels</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># entity -&gt; list of rels where entity is head</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>    <span class="n">tail_to_rels</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>  <span class="c1"># entity -&gt; list of rels where entity is tail</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>    <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">triples</span><span class="p">:</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>        <span class="n">head_to_rels</span><span class="p">[</span><span class="n">h</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>        <span class="n">tail_to_rels</span><span class="p">[</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>    <span class="n">edges</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>    <span class="n">edge_types</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">add_edges</span><span class="p">(</span><span class="n">rels_a</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">rels_b</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">etype</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>        <span class="k">for</span> <span class="n">r1</span> <span class="ow">in</span> <span class="n">rels_a</span><span class="p">:</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>            <span class="k">for</span> <span class="n">r2</span> <span class="ow">in</span> <span class="n">rels_b</span><span class="p">:</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>                <span class="k">if</span> <span class="n">r1</span> <span class="o">!=</span> <span class="n">r2</span><span class="p">:</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>                    <span class="n">edges</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">))</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>                    <span class="n">edge_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">etype</span><span class="p">)</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>    <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">head_to_rels</span><span class="p">:</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>        <span class="n">rels</span> <span class="o">=</span> <span class="n">head_to_rels</span><span class="p">[</span><span class="n">entity</span><span class="p">]</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>        <span class="c1"># head-head: entity is head of both</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>        <span class="n">add_edges</span><span class="p">(</span><span class="n">rels</span><span class="p">,</span> <span class="n">rels</span><span class="p">,</span> <span class="n">etype</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>        <span class="c1"># head-tail: entity is head of r1 and tail of r2</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>        <span class="k">if</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">tail_to_rels</span><span class="p">:</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>            <span class="n">add_edges</span><span class="p">(</span><span class="n">rels</span><span class="p">,</span> <span class="n">tail_to_rels</span><span class="p">[</span><span class="n">entity</span><span class="p">],</span> <span class="n">etype</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>    <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">tail_to_rels</span><span class="p">:</span>
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>        <span class="n">rels</span> <span class="o">=</span> <span class="n">tail_to_rels</span><span class="p">[</span><span class="n">entity</span><span class="p">]</span>
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>        <span class="c1"># tail-tail: entity is tail of both</span>
+</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>        <span class="n">add_edges</span><span class="p">(</span><span class="n">rels</span><span class="p">,</span> <span class="n">rels</span><span class="p">,</span> <span class="n">etype</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>        <span class="c1"># tail-head: entity is tail of r1 and head of r2</span>
+</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>        <span class="k">if</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">head_to_rels</span><span class="p">:</span>
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>            <span class="n">add_edges</span><span class="p">(</span><span class="n">rels</span><span class="p">,</span> <span class="n">head_to_rels</span><span class="p">[</span><span class="n">entity</span><span class="p">],</span> <span class="n">etype</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>
+</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">edges</span><span class="p">:</span>
+</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>        <span class="c1"># Degenerate: return empty graph</span>
+</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>        <span class="k">return</span> <span class="n">Data</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="n">num_relations</span><span class="p">,</span>
+</span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>                    <span class="n">edge_index</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">),</span>
+</span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a>                    <span class="n">edge_type</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">))</span>
+</span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a>
+</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a>    <span class="n">edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span><span class="o">.</span><span class="n">t</span><span class="p">()</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>    <span class="n">edge_type</span>  <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">edge_types</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+</span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>    <span class="k">return</span> <span class="n">Data</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="n">num_relations</span><span class="p">,</span> <span class="n">edge_index</span><span class="o">=</span><span class="n">edge_index</span><span class="p">,</span> <span class="n">edge_type</span><span class="o">=</span><span class="n">edge_type</span><span class="p">)</span>
+</span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a>
+</span><span id="__span-0-108"><a id="__codelineno-0-108" name="__codelineno-0-108" href="#__codelineno-0-108"></a>
+</span><span id="__span-0-109"><a id="__codelineno-0-109" name="__codelineno-0-109" href="#__codelineno-0-109"></a><span class="c1"># ── 3. Relation Encoder (GNN on Relation Graph) ──────────────────────────────</span>
+</span><span id="__span-0-110"><a id="__codelineno-0-110" name="__codelineno-0-110" href="#__codelineno-0-110"></a>
+</span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111" href="#__codelineno-0-111"></a><span class="k">class</span><span class="w"> </span><span class="nc">RelationEncoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-112"><a id="__codelineno-0-112" name="__codelineno-0-112" href="#__codelineno-0-112"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113" href="#__codelineno-0-113"></a><span class="sd">    GNN that operates on the relation co-occurrence graph to produce</span>
+</span><span id="__span-0-114"><a id="__codelineno-0-114" name="__codelineno-0-114" href="#__codelineno-0-114"></a><span class="sd">    relation representations. Shared parameters across all KGs — this</span>
+</span><span id="__span-0-115"><a id="__codelineno-0-115" name="__codelineno-0-115" href="#__codelineno-0-115"></a><span class="sd">    is what makes ULTRA's transfer possible.</span>
+</span><span id="__span-0-116"><a id="__codelineno-0-116" name="__codelineno-0-116" href="#__codelineno-0-116"></a>
+</span><span id="__span-0-117"><a id="__codelineno-0-117" name="__codelineno-0-117" href="#__codelineno-0-117"></a><span class="sd">    Uses R-GCN (Schlichtkrull et al. 2018) with 4 relation types (hh/ht/th/tt).</span>
+</span><span id="__span-0-118"><a id="__codelineno-0-118" name="__codelineno-0-118" href="#__codelineno-0-118"></a><span class="sd">    In ULTRA's full implementation this is a more expressive GNN; R-GCN</span>
+</span><span id="__span-0-119"><a id="__codelineno-0-119" name="__codelineno-0-119" href="#__codelineno-0-119"></a><span class="sd">    suffices for this pedagogical demonstration.</span>
+</span><span id="__span-0-120"><a id="__codelineno-0-120" name="__codelineno-0-120" href="#__codelineno-0-120"></a>
+</span><span id="__span-0-121"><a id="__codelineno-0-121" name="__codelineno-0-121" href="#__codelineno-0-121"></a><span class="sd">    Parameters</span>
+</span><span id="__span-0-122"><a id="__codelineno-0-122" name="__codelineno-0-122" href="#__codelineno-0-122"></a><span class="sd">    ----------</span>
+</span><span id="__span-0-123"><a id="__codelineno-0-123" name="__codelineno-0-123" href="#__codelineno-0-123"></a><span class="sd">    hidden_dim : int</span>
+</span><span id="__span-0-124"><a id="__codelineno-0-124" name="__codelineno-0-124" href="#__codelineno-0-124"></a><span class="sd">        Dimension of relation representations.</span>
+</span><span id="__span-0-125"><a id="__codelineno-0-125" name="__codelineno-0-125" href="#__codelineno-0-125"></a><span class="sd">    num_layers : int</span>
+</span><span id="__span-0-126"><a id="__codelineno-0-126" name="__codelineno-0-126" href="#__codelineno-0-126"></a><span class="sd">        Number of GNN message-passing rounds over the relation graph.</span>
+</span><span id="__span-0-127"><a id="__codelineno-0-127" name="__codelineno-0-127" href="#__codelineno-0-127"></a><span class="sd">    num_edge_types : int</span>
+</span><span id="__span-0-128"><a id="__codelineno-0-128" name="__codelineno-0-128" href="#__codelineno-0-128"></a><span class="sd">        Always 4 for the standard InGram / ULTRA relation graph.</span>
+</span><span id="__span-0-129"><a id="__codelineno-0-129" name="__codelineno-0-129" href="#__codelineno-0-129"></a><span class="sd">    """</span>
+</span><span id="__span-0-130"><a id="__codelineno-0-130" name="__codelineno-0-130" href="#__codelineno-0-130"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+</span><span id="__span-0-131"><a id="__codelineno-0-131" name="__codelineno-0-131" href="#__codelineno-0-131"></a>                 <span class="n">num_edge_types</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">4</span><span class="p">):</span>
+</span><span id="__span-0-132"><a id="__codelineno-0-132" name="__codelineno-0-132" href="#__codelineno-0-132"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-133"><a id="__codelineno-0-133" name="__codelineno-0-133" href="#__codelineno-0-133"></a>        <span class="c1"># Initial relation features: learned per relation-graph edge type</span>
+</span><span id="__span-0-134"><a id="__codelineno-0-134" name="__codelineno-0-134" href="#__codelineno-0-134"></a>        <span class="c1"># but the *initial node features* are set to all-ones (no ID information)</span>
+</span><span id="__span-0-135"><a id="__codelineno-0-135" name="__codelineno-0-135" href="#__codelineno-0-135"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+</span><span id="__span-0-136"><a id="__codelineno-0-136" name="__codelineno-0-136" href="#__codelineno-0-136"></a>            <span class="n">RGCNConv</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">num_relations</span><span class="o">=</span><span class="n">num_edge_types</span><span class="p">)</span>
+</span><span id="__span-0-137"><a id="__codelineno-0-137" name="__codelineno-0-137" href="#__codelineno-0-137"></a>            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">)</span>
+</span><span id="__span-0-138"><a id="__codelineno-0-138" name="__codelineno-0-138" href="#__codelineno-0-138"></a>        <span class="p">])</span>
+</span><span id="__span-0-139"><a id="__codelineno-0-139" name="__codelineno-0-139" href="#__codelineno-0-139"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">=</span> <span class="n">hidden_dim</span>
+</span><span id="__span-0-140"><a id="__codelineno-0-140" name="__codelineno-0-140" href="#__codelineno-0-140"></a>
+</span><span id="__span-0-141"><a id="__codelineno-0-141" name="__codelineno-0-141" href="#__codelineno-0-141"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rel_graph</span><span class="p">:</span> <span class="n">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+</span><span id="__span-0-142"><a id="__codelineno-0-142" name="__codelineno-0-142" href="#__codelineno-0-142"></a><span class="w">        </span><span class="sd">"""</span>
+</span><span id="__span-0-143"><a id="__codelineno-0-143" name="__codelineno-0-143" href="#__codelineno-0-143"></a><span class="sd">        Parameters</span>
+</span><span id="__span-0-144"><a id="__codelineno-0-144" name="__codelineno-0-144" href="#__codelineno-0-144"></a><span class="sd">        ----------</span>
+</span><span id="__span-0-145"><a id="__codelineno-0-145" name="__codelineno-0-145" href="#__codelineno-0-145"></a><span class="sd">        rel_graph : Data</span>
+</span><span id="__span-0-146"><a id="__codelineno-0-146" name="__codelineno-0-146" href="#__codelineno-0-146"></a><span class="sd">            The relation graph produced by build_relation_graph().</span>
+</span><span id="__span-0-147"><a id="__codelineno-0-147" name="__codelineno-0-147" href="#__codelineno-0-147"></a>
+</span><span id="__span-0-148"><a id="__codelineno-0-148" name="__codelineno-0-148" href="#__codelineno-0-148"></a><span class="sd">        Returns</span>
+</span><span id="__span-0-149"><a id="__codelineno-0-149" name="__codelineno-0-149" href="#__codelineno-0-149"></a><span class="sd">        -------</span>
+</span><span id="__span-0-150"><a id="__codelineno-0-150" name="__codelineno-0-150" href="#__codelineno-0-150"></a><span class="sd">        rel_emb : Tensor of shape (num_relations, hidden_dim)</span>
+</span><span id="__span-0-151"><a id="__codelineno-0-151" name="__codelineno-0-151" href="#__codelineno-0-151"></a><span class="sd">            Inductively computed relation embeddings. No entity IDs used.</span>
+</span><span id="__span-0-152"><a id="__codelineno-0-152" name="__codelineno-0-152" href="#__codelineno-0-152"></a><span class="sd">        """</span>
+</span><span id="__span-0-153"><a id="__codelineno-0-153" name="__codelineno-0-153" href="#__codelineno-0-153"></a>        <span class="c1"># Initial features: uniform (no relation-ID information)</span>
+</span><span id="__span-0-154"><a id="__codelineno-0-154" name="__codelineno-0-154" href="#__codelineno-0-154"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">rel_graph</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span>
+</span><span id="__span-0-155"><a id="__codelineno-0-155" name="__codelineno-0-155" href="#__codelineno-0-155"></a>
+</span><span id="__span-0-156"><a id="__codelineno-0-156" name="__codelineno-0-156" href="#__codelineno-0-156"></a>        <span class="k">for</span> <span class="n">conv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+</span><span id="__span-0-157"><a id="__codelineno-0-157" name="__codelineno-0-157" href="#__codelineno-0-157"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rel_graph</span><span class="o">.</span><span class="n">edge_index</span><span class="p">,</span> <span class="n">rel_graph</span><span class="o">.</span><span class="n">edge_type</span><span class="p">)</span>
+</span><span id="__span-0-158"><a id="__codelineno-0-158" name="__codelineno-0-158" href="#__codelineno-0-158"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-0-159"><a id="__codelineno-0-159" name="__codelineno-0-159" href="#__codelineno-0-159"></a>
+</span><span id="__span-0-160"><a id="__codelineno-0-160" name="__codelineno-0-160" href="#__codelineno-0-160"></a>        <span class="k">return</span> <span class="n">x</span>  <span class="c1"># shape: (num_relations, hidden_dim)</span>
+</span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161" href="#__codelineno-0-161"></a>
+</span><span id="__span-0-162"><a id="__codelineno-0-162" name="__codelineno-0-162" href="#__codelineno-0-162"></a>
+</span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163" href="#__codelineno-0-163"></a><span class="c1"># ── 4. Simplified Inductive Scoring (ULTRA-style) ────────────────────────────</span>
+</span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164" href="#__codelineno-0-164"></a>
+</span><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165" href="#__codelineno-0-165"></a><span class="k">class</span><span class="w"> </span><span class="nc">ULTRAScorer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166" href="#__codelineno-0-166"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167" href="#__codelineno-0-167"></a><span class="sd">    Simplified ULTRA: combines the RelationEncoder with a 1-step</span>
+</span><span id="__span-0-168"><a id="__codelineno-0-168" name="__codelineno-0-168" href="#__codelineno-0-168"></a><span class="sd">    Bellman-Ford propagation over the entity graph.</span>
+</span><span id="__span-0-169"><a id="__codelineno-0-169" name="__codelineno-0-169" href="#__codelineno-0-169"></a>
+</span><span id="__span-0-170"><a id="__codelineno-0-170" name="__codelineno-0-170" href="#__codelineno-0-170"></a><span class="sd">    For a query (head, rel, ?):</span>
+</span><span id="__span-0-171"><a id="__codelineno-0-171" name="__codelineno-0-171" href="#__codelineno-0-171"></a><span class="sd">      1. Encode relations inductively via RelationEncoder.</span>
+</span><span id="__span-0-172"><a id="__codelineno-0-172" name="__codelineno-0-172" href="#__codelineno-0-172"></a><span class="sd">      2. Initialize source entity with the query relation embedding.</span>
+</span><span id="__span-0-173"><a id="__codelineno-0-173" name="__codelineno-0-173" href="#__codelineno-0-173"></a><span class="sd">      3. Propagate one hop over entity graph using relation embeddings.</span>
+</span><span id="__span-0-174"><a id="__codelineno-0-174" name="__codelineno-0-174" href="#__codelineno-0-174"></a><span class="sd">      4. Score all entities.</span>
+</span><span id="__span-0-175"><a id="__codelineno-0-175" name="__codelineno-0-175" href="#__codelineno-0-175"></a><span class="sd">    """</span>
+</span><span id="__span-0-176"><a id="__codelineno-0-176" name="__codelineno-0-176" href="#__codelineno-0-176"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">64</span><span class="p">):</span>
+</span><span id="__span-0-177"><a id="__codelineno-0-177" name="__codelineno-0-177" href="#__codelineno-0-177"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-178"><a id="__codelineno-0-178" name="__codelineno-0-178" href="#__codelineno-0-178"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">rel_encoder</span> <span class="o">=</span> <span class="n">RelationEncoder</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">)</span>
+</span><span id="__span-0-179"><a id="__codelineno-0-179" name="__codelineno-0-179" href="#__codelineno-0-179"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">msg_lin</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>
+</span><span id="__span-0-180"><a id="__codelineno-0-180" name="__codelineno-0-180" href="#__codelineno-0-180"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">score_lin</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-181"><a id="__codelineno-0-181" name="__codelineno-0-181" href="#__codelineno-0-181"></a>
+</span><span id="__span-0-182"><a id="__codelineno-0-182" name="__codelineno-0-182" href="#__codelineno-0-182"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
+</span><span id="__span-0-183"><a id="__codelineno-0-183" name="__codelineno-0-183" href="#__codelineno-0-183"></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-0-184"><a id="__codelineno-0-184" name="__codelineno-0-184" href="#__codelineno-0-184"></a>        <span class="n">rel_graph</span><span class="p">:</span> <span class="n">Data</span><span class="p">,</span>
+</span><span id="__span-0-185"><a id="__codelineno-0-185" name="__codelineno-0-185" href="#__codelineno-0-185"></a>        <span class="n">entity_edge_index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>   <span class="c1"># (2, num_triples) — edges in entity graph</span>
+</span><span id="__span-0-186"><a id="__codelineno-0-186" name="__codelineno-0-186" href="#__codelineno-0-186"></a>        <span class="n">entity_edge_rel</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>     <span class="c1"># (num_triples,) — relation type for each edge</span>
+</span><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187" href="#__codelineno-0-187"></a>        <span class="n">query_head</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="__span-0-188"><a id="__codelineno-0-188" name="__codelineno-0-188" href="#__codelineno-0-188"></a>        <span class="n">query_rel</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="__span-0-189"><a id="__codelineno-0-189" name="__codelineno-0-189" href="#__codelineno-0-189"></a>        <span class="n">num_entities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190" href="#__codelineno-0-190"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+</span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191" href="#__codelineno-0-191"></a><span class="w">        </span><span class="sd">"""Returns a score for each entity in [0, num_entities)."""</span>
+</span><span id="__span-0-192"><a id="__codelineno-0-192" name="__codelineno-0-192" href="#__codelineno-0-192"></a>        <span class="c1"># Step 1: encode relations</span>
+</span><span id="__span-0-193"><a id="__codelineno-0-193" name="__codelineno-0-193" href="#__codelineno-0-193"></a>        <span class="n">rel_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rel_encoder</span><span class="p">(</span><span class="n">rel_graph</span><span class="p">)</span>  <span class="c1"># (num_relations, d)</span>
+</span><span id="__span-0-194"><a id="__codelineno-0-194" name="__codelineno-0-194" href="#__codelineno-0-194"></a>
+</span><span id="__span-0-195"><a id="__codelineno-0-195" name="__codelineno-0-195" href="#__codelineno-0-195"></a>        <span class="c1"># Step 2: initialize entity states</span>
+</span><span id="__span-0-196"><a id="__codelineno-0-196" name="__codelineno-0-196" href="#__codelineno-0-196"></a>        <span class="n">d</span> <span class="o">=</span> <span class="n">rel_emb</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-197"><a id="__codelineno-0-197" name="__codelineno-0-197" href="#__codelineno-0-197"></a>        <span class="n">h</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_entities</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+</span><span id="__span-0-198"><a id="__codelineno-0-198" name="__codelineno-0-198" href="#__codelineno-0-198"></a>        <span class="n">h</span><span class="p">[</span><span class="n">query_head</span><span class="p">]</span> <span class="o">=</span> <span class="n">rel_emb</span><span class="p">[</span><span class="n">query_rel</span><span class="p">]</span>    <span class="c1"># query-conditioned source initialization</span>
+</span><span id="__span-0-199"><a id="__codelineno-0-199" name="__codelineno-0-199" href="#__codelineno-0-199"></a>
+</span><span id="__span-0-200"><a id="__codelineno-0-200" name="__codelineno-0-200" href="#__codelineno-0-200"></a>        <span class="c1"># Step 3: 1-hop propagation</span>
+</span><span id="__span-0-201"><a id="__codelineno-0-201" name="__codelineno-0-201" href="#__codelineno-0-201"></a>        <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">entity_edge_index</span>          <span class="c1"># both shape (num_triples,)</span>
+</span><span id="__span-0-202"><a id="__codelineno-0-202" name="__codelineno-0-202" href="#__codelineno-0-202"></a>        <span class="n">msgs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg_lin</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">src</span><span class="p">]</span> <span class="o">*</span> <span class="n">rel_emb</span><span class="p">[</span><span class="n">entity_edge_rel</span><span class="p">])</span>  <span class="c1"># element-wise modulation</span>
+</span><span id="__span-0-203"><a id="__codelineno-0-203" name="__codelineno-0-203" href="#__codelineno-0-203"></a>        <span class="n">h_new</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+</span><span id="__span-0-204"><a id="__codelineno-0-204" name="__codelineno-0-204" href="#__codelineno-0-204"></a>        <span class="n">h_new</span><span class="o">.</span><span class="n">scatter_add_</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dst</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">msgs</span><span class="p">),</span> <span class="n">msgs</span><span class="p">)</span>
+</span><span id="__span-0-205"><a id="__codelineno-0-205" name="__codelineno-0-205" href="#__codelineno-0-205"></a>        <span class="n">h_new</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">h_new</span><span class="p">)</span>
+</span><span id="__span-0-206"><a id="__codelineno-0-206" name="__codelineno-0-206" href="#__codelineno-0-206"></a>
+</span><span id="__span-0-207"><a id="__codelineno-0-207" name="__codelineno-0-207" href="#__codelineno-0-207"></a>        <span class="c1"># Step 4: score each entity</span>
+</span><span id="__span-0-208"><a id="__codelineno-0-208" name="__codelineno-0-208" href="#__codelineno-0-208"></a>        <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score_lin</span><span class="p">(</span><span class="n">h_new</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (num_entities,)</span>
+</span><span id="__span-0-209"><a id="__codelineno-0-209" name="__codelineno-0-209" href="#__codelineno-0-209"></a>        <span class="k">return</span> <span class="n">scores</span>
+</span><span id="__span-0-210"><a id="__codelineno-0-210" name="__codelineno-0-210" href="#__codelineno-0-210"></a>
+</span><span id="__span-0-211"><a id="__codelineno-0-211" name="__codelineno-0-211" href="#__codelineno-0-211"></a>
+</span><span id="__span-0-212"><a id="__codelineno-0-212" name="__codelineno-0-212" href="#__codelineno-0-212"></a><span class="c1"># ── 5. Quick demonstration on a toy KG ────────────────────────────────────────</span>
+</span><span id="__span-0-213"><a id="__codelineno-0-213" name="__codelineno-0-213" href="#__codelineno-0-213"></a>
+</span><span id="__span-0-214"><a id="__codelineno-0-214" name="__codelineno-0-214" href="#__codelineno-0-214"></a><span class="k">def</span><span class="w"> </span><span class="nf">demo_inductive_scoring</span><span class="p">():</span>
+</span><span id="__span-0-215"><a id="__codelineno-0-215" name="__codelineno-0-215" href="#__codelineno-0-215"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-216"><a id="__codelineno-0-216" name="__codelineno-0-216" href="#__codelineno-0-216"></a><span class="sd">    Demonstrates zero-shot inductive scoring on a tiny toy KG</span>
+</span><span id="__span-0-217"><a id="__codelineno-0-217" name="__codelineno-0-217" href="#__codelineno-0-217"></a><span class="sd">    with 10 entities and 3 relation types.</span>
+</span><span id="__span-0-218"><a id="__codelineno-0-218" name="__codelineno-0-218" href="#__codelineno-0-218"></a><span class="sd">    """</span>
+</span><span id="__span-0-219"><a id="__codelineno-0-219" name="__codelineno-0-219" href="#__codelineno-0-219"></a>    <span class="c1"># Toy training triples</span>
+</span><span id="__span-0-220"><a id="__codelineno-0-220" name="__codelineno-0-220" href="#__codelineno-0-220"></a>    <span class="n">train_triples</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-0-221"><a id="__codelineno-0-221" name="__codelineno-0-221" href="#__codelineno-0-221"></a>        <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+</span><span id="__span-0-222"><a id="__codelineno-0-222" name="__codelineno-0-222" href="#__codelineno-0-222"></a>        <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+</span><span id="__span-0-223"><a id="__codelineno-0-223" name="__codelineno-0-223" href="#__codelineno-0-223"></a>    <span class="p">]</span>
+</span><span id="__span-0-224"><a id="__codelineno-0-224" name="__codelineno-0-224" href="#__codelineno-0-224"></a>    <span class="c1"># Toy test triples (disjoint entities: 6,7,8,9)</span>
+</span><span id="__span-0-225"><a id="__codelineno-0-225" name="__codelineno-0-225" href="#__codelineno-0-225"></a>    <span class="n">test_triples</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-0-226"><a id="__codelineno-0-226" name="__codelineno-0-226" href="#__codelineno-0-226"></a>        <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+</span><span id="__span-0-227"><a id="__codelineno-0-227" name="__codelineno-0-227" href="#__codelineno-0-227"></a>    <span class="p">]</span>
+</span><span id="__span-0-228"><a id="__codelineno-0-228" name="__codelineno-0-228" href="#__codelineno-0-228"></a>
+</span><span id="__span-0-229"><a id="__codelineno-0-229" name="__codelineno-0-229" href="#__codelineno-0-229"></a>    <span class="n">num_relations</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span id="__span-0-230"><a id="__codelineno-0-230" name="__codelineno-0-230" href="#__codelineno-0-230"></a>    <span class="n">num_train_entities</span> <span class="o">=</span> <span class="mi">6</span>
+</span><span id="__span-0-231"><a id="__codelineno-0-231" name="__codelineno-0-231" href="#__codelineno-0-231"></a>    <span class="n">num_test_entities</span> <span class="o">=</span> <span class="mi">4</span>   <span class="c1"># entities 6,7,8,9 — re-indexed as 0,1,2,3</span>
+</span><span id="__span-0-232"><a id="__codelineno-0-232" name="__codelineno-0-232" href="#__codelineno-0-232"></a>
+</span><span id="__span-0-233"><a id="__codelineno-0-233" name="__codelineno-0-233" href="#__codelineno-0-233"></a>    <span class="c1"># Build relation graph from training triples</span>
+</span><span id="__span-0-234"><a id="__codelineno-0-234" name="__codelineno-0-234" href="#__codelineno-0-234"></a>    <span class="n">rel_graph</span> <span class="o">=</span> <span class="n">build_relation_graph</span><span class="p">(</span><span class="n">train_triples</span><span class="p">,</span> <span class="n">num_relations</span><span class="p">)</span>
+</span><span id="__span-0-235"><a id="__codelineno-0-235" name="__codelineno-0-235" href="#__codelineno-0-235"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Relation graph: </span><span class="si">{</span><span class="n">rel_graph</span><span class="o">.</span><span class="n">num_nodes</span><span class="si">}</span><span class="s2"> relation nodes, "</span>
+</span><span id="__span-0-236"><a id="__codelineno-0-236" name="__codelineno-0-236" href="#__codelineno-0-236"></a>          <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">rel_graph</span><span class="o">.</span><span class="n">edge_index</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2"> co-occurrence edges"</span><span class="p">)</span>
+</span><span id="__span-0-237"><a id="__codelineno-0-237" name="__codelineno-0-237" href="#__codelineno-0-237"></a>
+</span><span id="__span-0-238"><a id="__codelineno-0-238" name="__codelineno-0-238" href="#__codelineno-0-238"></a>    <span class="c1"># Build entity graph for test triples (re-indexed: entity 6→0, 7→1, etc.)</span>
+</span><span id="__span-0-239"><a id="__codelineno-0-239" name="__codelineno-0-239" href="#__codelineno-0-239"></a>    <span class="n">reindex</span> <span class="o">=</span> <span class="p">{</span><span class="mi">6</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">:</span> <span class="mi">3</span><span class="p">}</span>
+</span><span id="__span-0-240"><a id="__codelineno-0-240" name="__codelineno-0-240" href="#__codelineno-0-240"></a>    <span class="n">test_src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">reindex</span><span class="p">[</span><span class="n">h</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">test_triples</span><span class="p">])</span>
+</span><span id="__span-0-241"><a id="__codelineno-0-241" name="__codelineno-0-241" href="#__codelineno-0-241"></a>    <span class="n">test_dst</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">reindex</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">test_triples</span><span class="p">])</span>
+</span><span id="__span-0-242"><a id="__codelineno-0-242" name="__codelineno-0-242" href="#__codelineno-0-242"></a>    <span class="n">test_rel</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">r</span> <span class="k">for</span> <span class="n">h</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">test_triples</span><span class="p">])</span>
+</span><span id="__span-0-243"><a id="__codelineno-0-243" name="__codelineno-0-243" href="#__codelineno-0-243"></a>    <span class="n">entity_edge_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">test_src</span><span class="p">,</span> <span class="n">test_dst</span><span class="p">])</span>
+</span><span id="__span-0-244"><a id="__codelineno-0-244" name="__codelineno-0-244" href="#__codelineno-0-244"></a>
+</span><span id="__span-0-245"><a id="__codelineno-0-245" name="__codelineno-0-245" href="#__codelineno-0-245"></a>    <span class="n">model</span> <span class="o">=</span> <span class="n">ULTRAScorer</span><span class="p">(</span><span class="n">hidden_dim</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+</span><span id="__span-0-246"><a id="__codelineno-0-246" name="__codelineno-0-246" href="#__codelineno-0-246"></a>    <span class="n">scores</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+</span><span id="__span-0-247"><a id="__codelineno-0-247" name="__codelineno-0-247" href="#__codelineno-0-247"></a>        <span class="n">rel_graph</span><span class="o">=</span><span class="n">rel_graph</span><span class="p">,</span>
+</span><span id="__span-0-248"><a id="__codelineno-0-248" name="__codelineno-0-248" href="#__codelineno-0-248"></a>        <span class="n">entity_edge_index</span><span class="o">=</span><span class="n">entity_edge_index</span><span class="p">,</span>
+</span><span id="__span-0-249"><a id="__codelineno-0-249" name="__codelineno-0-249" href="#__codelineno-0-249"></a>        <span class="n">entity_edge_rel</span><span class="o">=</span><span class="n">test_rel</span><span class="p">,</span>
+</span><span id="__span-0-250"><a id="__codelineno-0-250" name="__codelineno-0-250" href="#__codelineno-0-250"></a>        <span class="n">query_head</span><span class="o">=</span><span class="n">reindex</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span>
+</span><span id="__span-0-251"><a id="__codelineno-0-251" name="__codelineno-0-251" href="#__codelineno-0-251"></a>        <span class="n">query_rel</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>          <span class="c1"># query relation type 0</span>
+</span><span id="__span-0-252"><a id="__codelineno-0-252" name="__codelineno-0-252" href="#__codelineno-0-252"></a>        <span class="n">num_entities</span><span class="o">=</span><span class="n">num_test_entities</span><span class="p">,</span>
+</span><span id="__span-0-253"><a id="__codelineno-0-253" name="__codelineno-0-253" href="#__codelineno-0-253"></a>    <span class="p">)</span>
+</span><span id="__span-0-254"><a id="__codelineno-0-254" name="__codelineno-0-254" href="#__codelineno-0-254"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Scores for query (entity 6, rel 0, ?): </span><span class="si">{</span><span class="n">scores</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-255"><a id="__codelineno-0-255" name="__codelineno-0-255" href="#__codelineno-0-255"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Top-1 predicted answer (test entity index): </span><span class="si">{</span><span class="n">scores</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-256"><a id="__codelineno-0-256" name="__codelineno-0-256" href="#__codelineno-0-256"></a>
+</span><span id="__span-0-257"><a id="__codelineno-0-257" name="__codelineno-0-257" href="#__codelineno-0-257"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+</span><span id="__span-0-258"><a id="__codelineno-0-258" name="__codelineno-0-258" href="#__codelineno-0-258"></a>    <span class="n">demo_inductive_scoring</span><span class="p">()</span>
+</span></code></pre></div>
+<p>The code highlights the three load-bearing ideas: the inductive split ensures entity sets are disjoint (line 43), the relation graph is built purely from triple co-occurrence topology with no entity-ID features (lines 60–107), and the scoring pass uses relation embeddings computed fresh for each graph rather than a pre-stored lookup table (lines 150–165).</p>
+<hr>
+<h2 id="149-benchmark-results-inductive-link-prediction">14.9 Benchmark Results: Inductive Link Prediction<a class="headerlink" href="#149-benchmark-results-inductive-link-prediction" title="Permanent link">¶</a></h2>
+<p>The standard inductive evaluation protocol, introduced by Teru et al. (2020), constructs four versions (v1–v4) of inductive FB15k-237 where training and test entity sets are disjoint. We report Hits@10 and MRR on v1, the most widely reported split, to allow comparison across methods.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>Setting</th>
+<th>Hits@10</th>
+<th>MRR</th>
+<th>Year</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rule Mining (AMIE3)</td>
+<td>Inductive (transductive rules)</td>
+<td>38.7</td>
+<td>0.218</td>
+<td>2020</td>
+</tr>
+<tr>
+<td>GraIL</td>
+<td>Inductive supervised</td>
+<td>64.2</td>
+<td>0.359</td>
+<td>2020</td>
+</tr>
+<tr>
+<td>DRUM</td>
+<td>Inductive (soft rules)</td>
+<td>61.2</td>
+<td>0.337</td>
+<td>2019</td>
+</tr>
+<tr>
+<td>NodePiece</td>
+<td>Semi-inductive</td>
+<td>70.4</td>
+<td>0.401</td>
+<td>2021</td>
+</tr>
+<tr>
+<td>NBFNet (adapted)</td>
+<td>Inductive (adapted)</td>
+<td>78.3</td>
+<td>0.452</td>
+<td>2021</td>
+</tr>
+<tr>
+<td>InGram</td>
+<td>Fully inductive</td>
+<td>75.1</td>
+<td>0.427</td>
+<td>2023</td>
+</tr>
+<tr>
+<td>ULTRA (zero-shot)</td>
+<td>Cross-KG transfer</td>
+<td>81.3</td>
+<td>0.487</td>
+<td>2023</td>
+</tr>
+<tr>
+<td>ULTRA (fine-tuned)</td>
+<td>Fine-tuned 3 epochs</td>
+<td>86.2</td>
+<td>0.531</td>
+<td>2023</td>
+</tr>
+</tbody>
+</table>
+<p>Several patterns are worth noting. First, rule-mining methods (AMIE3) perform poorly because inductive rules mined on the training graph frequently do not generalize when entity sets change — structural rules tend to overfit to entity-specific regularities. Second, GraIL, which uses local subgraph structure to represent entities, was the first method to demonstrate that GNNs could generalize inductively at all; its competitive performance in 2020 established the paradigm. Third, ULTRA's zero-shot performance (81.3 Hits@10) exceeds <em>every supervised baseline</em> except the adapted NBFNet — meaning ULTRA achieves this without seeing a single test-graph triple during optimization. Fine-tuning with as few as 3 epochs on the test graph's training split pushes ULTRA to state-of-the-art.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">Abstract Patterns, Concrete Power</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encouraging the reader">
+The ULTRA benchmark numbers can feel abstract — 86.2 Hits@10 on an inductive split of a Facebook dataset. Bring it back to the motivating example. An ULTRA model pre-trained on encyclopedic KGs (Freebase, WordNet, Codex) achieves competitive link prediction on a new biomedical KG for which it has seen zero triples. The model has not memorized which gene encodes which protein — it has internalized structural patterns like "if two entities share many co-relations of type X, they are likely to share a direct edge of type Y." These patterns, extracted from general-purpose KGs, generalize because biological knowledge graphs and encyclopedic knowledge graphs obey similar structural laws. The abstraction is the power.</p>
+</div>
+<hr>
+<h2 id="1410-microsim-kg-embedding-space-visualizer">14.10 MicroSim: KG Embedding Space Visualizer<a class="headerlink" href="#1410-microsim-kg-embedding-space-visualizer" title="Permanent link">¶</a></h2>
+<h4 id="diagram-cross-kg-structure-transfer">Diagram: Cross-KG Structure Transfer<a class="headerlink" href="#diagram-cross-kg-structure-transfer" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch14-kg-embedding-space/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch14-kg-embedding-space/main.html">Run Cross-KG Structure Transfer Fullscreen</a></p>
+<hr>
+<h2 id="1411-common-pitfalls">14.11 Common Pitfalls<a class="headerlink" href="#1411-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>Conflating levels of inductiveness.</strong> "Inductive KG reasoning" is not a single problem but a spectrum from semi-inductive (new entities, same relations) to cross-KG transfer (new entities, new relations, new graph). A model that handles the first setting may fail catastrophically on the third. Always specify which inductiveness level an experiment evaluates.</p>
+<p><strong>Forgetting filtered evaluation in inductive settings.</strong> Standard filtered evaluation (Chapter 12) removes known true triples from the ranking. In inductive settings, the "known true triples" are those of the <em>inference graph</em>, not the training graph. Using training-graph triples for filtering conflates the two entity sets and produces systematically optimistic MRR estimates, because training-graph entities are never the answer entities in a truly inductive split.</p>
+<p><strong>Assuming all relation vocabularies transfer.</strong> ULTRA pre-trains on Freebase, WordNet, and Codex. If your target KG has extremely unusual relation patterns absent from all three — for instance, a KG encoding temporal dependencies between manufacturing operations — zero-shot transfer may perform worse than a simple heuristic. Structural fingerprints generalize when structural patterns generalize; if the target domain has unique topological regularities, fine-tuning is essential.</p>
+<p><strong>Underestimating fine-tuning efficiency.</strong> A common misconception is that ULTRA requires thousands of fine-tuning triples to improve. In practice, 100–500 target-KG triples and 3–5 training epochs typically recover most of the gap between zero-shot and fully supervised performance. This is because ULTRA is not learning entity embeddings during fine-tuning — it is adapting its structural context extractor, which converges quickly when the structural patterns are broadly similar to the training distribution.</p>
+<p><strong>Confusing InGram with GraIL.</strong> GraIL (Teru et al. 2020) represents each entity by the subgraph structure of its local enclosing neighborhood — a fixed-radius enclosing subgraph that is extracted and fed to a GNN. This is a different abstraction from InGram's relation graph. GraIL is entity-equivariant but not relation-equivariant: it still requires a fixed relation vocabulary because the relational GNN over the enclosing subgraph uses relation IDs as features. InGram's relation graph explicitly breaks relation-ID dependence.</p>
+<hr>
+<h2 id="1412-exercises">14.12 Exercises<a class="headerlink" href="#1412-exercises" title="Permanent link">¶</a></h2>
+<p>The following 12 exercises span all six levels of Bloom's taxonomy.</p>
+<p><strong>Remember</strong></p>
+<ol>
+<li>Define "inductive KG reasoning" and explain how it differs from transductive link prediction in one sentence each.</li>
+<li>List the four edge types used in InGram's relation graph and describe what structural co-occurrence each one captures.</li>
+</ol>
+<p><strong>Understand</strong></p>
+<ol>
+<li>Explain why TransE is not entity-equivariant. Use the formal definition of equivariance and show which step in the TransE computation breaks equivariance when entity IDs are permuted.</li>
+<li>Describe in plain language why pre-training on FB15k-237 and WN18RR would likely transfer better to a general encyclopedic KG than to a domain-specific legal citation network.</li>
+</ol>
+<p><strong>Apply</strong></p>
+<ol>
+<li>Given the following 6 triples over 4 entities and 2 relation types, manually construct the relation graph nodes and at least 3 edges with their correct edge types:
+   <span class="arithmatex">\( (A, r_1, B), (A, r_1, C), (B, r_2, D), (C, r_2, D), (D, r_1, A), (B, r_2, C) \)</span>.</li>
+<li>Write pseudocode (not full Python) for a function <code>inductive_mrr(model, test_triples, train_triples)</code> that evaluates MRR on a fully inductive split, correctly applying filtered evaluation using only inference-graph triples.</li>
+</ol>
+<p><strong>Analyze</strong></p>
+<ol>
+<li>The GraIL model uses local subgraph structure to represent entities and achieves Hits@10 = 64.2 on inductive FB15k-237 v1. ULTRA achieves 81.3 zero-shot. Analyze two specific structural reasons why ULTRA outperforms GraIL, drawing on the double equivariance framework.</li>
+<li>Compare InGram and ULTRA on three dimensions: (a) training data requirements, (b) the level of inductiveness they achieve, and (c) computational cost at inference time. Which would you prefer for a streaming KG that receives 1,000 new entities per hour? Justify your choice.</li>
+</ol>
+<p><strong>Evaluate</strong></p>
+<ol>
+<li>A colleague argues: "Since ULTRA achieves 86.2 Hits@10 when fine-tuned, and supervised models on the transductive split achieve ~88 Hits@10, the gap between transductive and inductive performance is negligible." Critically evaluate this claim. What additional information would you need to assess it fairly?</li>
+<li>Evaluate the following experimental design: a researcher trains ULTRA on FB15k-237 + WN18RR, then tests zero-shot on Codex-M. They compare against a TransE baseline trained <em>transductively</em> on Codex-M. Identify all confounds in this comparison and propose a fairer evaluation protocol.</li>
+</ol>
+<p><strong>Create</strong></p>
+<ol>
+<li>Design a <strong>relation graph augmentation strategy</strong> for KGs that have very few triples (fewer than 500), where the standard co-occurrence graph is too sparse to support meaningful GNN propagation. Propose at least two augmentation techniques, explain the structural justification for each, and describe how you would validate whether the augmentation improves inductive generalization.</li>
+<li>Propose a training curriculum for ULTRA that dynamically adjusts which source KGs contribute to each training batch based on their structural similarity to a target KG. Describe the similarity metric you would use, how the curriculum would be implemented, and which hyperparameters require tuning.</li>
+</ol>
+<hr>
+<h2 id="1413-further-reading">14.13 Further Reading<a class="headerlink" href="#1413-further-reading" title="Permanent link">¶</a></h2>
+<p>The following papers are recommended for readers who wish to deepen their understanding of inductive KG reasoning and graph foundation models.</p>
+<p><strong>ULTRA: Towards Foundation Models for KG Reasoning</strong> — Galkin, Yuan, Mostafa, Tang, Hamilton (2023). The primary paper for this chapter. ULTRA establishes the multi-KG pre-training + double equivariance + NBFNet backbone combination that enables zero-shot transfer to 43 KGs. The paper includes extensive ablations showing the contribution of each design choice, including the number of source KGs, the number of relation graph edge types, and the number of NBFNet propagation steps. Appendix A provides a clean theoretical derivation of the double equivariance requirement.</p>
+<p><strong>InGram: Inductive KG Embedding via Relation Graphs</strong> — Lee, Lee, Seo (2023). The foundational paper on relation graph construction for inductive KG embedding. Particularly recommended for its empirical analysis of which edge types in the relation graph carry the most useful structural information (Section 5.2), which provides intuition for when the four-type construction can be simplified without major performance loss.</p>
+<p><strong>Double Equivariance for Inductive KG Link Prediction</strong> — Guo, Namata, Faloutsos (2023). The theoretical companion to ULTRA. Provides formal proofs that entity equivariance and relation equivariance are necessary conditions for cross-KG generalization, and shows that existing inductive methods satisfy varying subsets of these conditions. Recommended for readers interested in the mathematical foundations.</p>
+<p><strong>Inductive Relation Prediction by Subgraph Reasoning (GraIL)</strong> — Teru, Denis, Hamilton (2020). The paper that introduced the inductive benchmark splits used throughout this chapter and established GNN-based subgraph reasoning as the dominant approach. Reading GraIL alongside ULTRA clarifies how much the field has progressed in three years: from 64 Hits@10 (GraIL supervised) to 81 Hits@10 (ULTRA zero-shot).</p>
+<p><strong>NodePiece: Compositional and Parameter-Efficient Representations of Large Knowledge Graphs</strong> — Galkin, Denis, Pautasso, Shu, Siekiera (2021). NodePiece addresses the entity-scalability problem by representing each entity as a set of anchor tokens — a small subset of entities that serve as structural landmarks. This tokenized representation is inductive for new entities (new entities can be represented by their distances to anchors) but still requires a fixed relation vocabulary. Useful background for understanding the spectrum between purely transductive and fully inductive approaches.</p>
+<p><strong>PRODIGY: Enabling In-Context Learning Over Graphs</strong> — Huang, Cao, Goldsmith, Velickovic, Grohe, Leskovec, Jegelka (2023). Extends the foundation model concept by framing graph tasks as in-context learning: the model receives a few labeled examples as "context" alongside the query graph and performs the task without gradient updates. Demonstrates that the structural inductive biases learned during pre-training generalize to few-shot settings in a manner analogous to LLM in-context learning.</p>
+<p><strong>Towards Foundation Models for KG Reasoning (Workshop Version)</strong> — Galkin, Yuan, Mostafa, Tang, Hamilton (2023). An earlier, shorter presentation of the ULTRA ideas, useful for getting the core intuitions without the full technical apparatus. Recommended as a first read before the main ULTRA paper.</p>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">You've Crossed the Transductive Boundary</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating">
+Part 3 of this textbook — knowledge graph embeddings, multi-hop reasoning, and now foundation models — has taken you from memorizing individual facts (TransE) to reasoning over chains of unknown facts (Query2Box, NBFNet) to generalizing across entirely unknown knowledge graphs (ULTRA). The unifying thread is a shift from <em>identity-based</em> representations (entity ID → embedding) toward <em>structure-based</em> representations (entity neighborhood → embedding). This shift mirrors what happened in NLP when fixed word vectors gave way to contextual representations: the meaning of a word is not intrinsic to the word, but emerges from its context. For knowledge graphs, the "context" is the relational neighborhood. In the next part of the textbook, we'll extend this structural perspective to heterogeneous graphs, recommender systems, and beyond.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../13-kg-reasoning/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

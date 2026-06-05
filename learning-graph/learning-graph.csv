@@ -1,0 +1,301 @@
+ConceptID,ConceptLabel,Dependencies,TaxonomyID
+1,Matrix Multiplication,,PREREQ
+2,Matrix Transpose,,PREREQ
+3,Eigenvalue Decomposition,1|2|5,PREREQ
+4,Eigenvector,3,PREREQ
+5,Symmetric Matrix,,PREREQ
+6,Positive Semi-Definite Matrix,3|5,PREREQ
+7,Singular Value Decomp (SVD),1|2|3|8,PREREQ
+8,Matrix Rank,1|2,PREREQ
+9,Dot Product,1,PREREQ
+10,Cosine Similarity,9,PREREQ
+11,Gradient Descent,,PREREQ
+12,Backpropagation,11|13,PREREQ
+13,Chain Rule (Calculus),,PREREQ
+14,Automatic Differentiation,12|13,PREREQ
+15,PyTorch Tensor,,PREREQ
+16,PyTorch Autograd,14|15,PREREQ
+17,Neural Network Layer,11|12|15,PREREQ
+18,Softmax Function,9,PREREQ
+19,Cross-Entropy Loss,18,PREREQ
+20,Adam Optimizer,11,PREREQ
+21,Graph (Undirected),,FOUND
+22,Graph (Directed),21,FOUND
+23,Node (Vertex),21,FOUND
+24,Edge (Link),21|23,FOUND
+25,Adjacency Matrix,21|23|24|1,FOUND
+26,Node Degree,24|25,FOUND
+27,In-Degree,22|26,FOUND
+28,Out-Degree,22|26,FOUND
+29,Degree Distribution,26,FOUND
+30,Power-Law Degree Distribution,29,FOUND
+31,Graph Path,23|24,FOUND
+32,Shortest Path,31|88,FOUND
+33,Graph Diameter,32,FOUND
+34,Connected Component,31,FOUND
+35,Strongly Connected Component,22|34,FOUND
+36,Weakly Connected Component,22|34,FOUND
+37,Bipartite Graph,21|24,FOUND
+38,Heterogeneous Graph,23|24,FOUND
+39,Multigraph,24,FOUND
+40,Weighted Graph,24,FOUND
+41,Attribute Graph,23|24,FOUND
+42,Subgraph,21|23|24,FOUND
+43,Ego Network,42|26,FOUND
+44,Clique,42,FOUND
+45,Cycle,31|24,FOUND
+46,Tree (Graph Theory),21|34|45,FOUND
+47,Spanning Tree,46,FOUND
+48,Planar Graph,21,FOUND
+49,Graph Isomorphism,21|25,FOUND
+50,Graph Homomorphism,49,FOUND
+51,Small-World Network,57|33|21|29,FOUND
+52,Scale-Free Network,29|30|55,FOUND
+53,Erdős–Rényi Random Graph,21|29,FOUND
+54,Barabási–Albert Model,52|55,FOUND
+55,Preferential Attachment,29|30,FOUND
+56,Giant Component,34|53,FOUND
+57,Transitivity,26|24,FOUND
+58,Local Clustering Coefficient,26|44,ALGO
+59,Betweenness Centrality,32|23,ALGO
+60,Closeness Centrality,32|23,ALGO
+61,Eigenvector Centrality,4|25|23,ALGO
+62,PageRank,25|65|66|67,ALGO
+63,Personalized PageRank,62|43,ALGO
+64,HITS Algorithm,22|62|27|28,ALGO
+65,Random Walk,25|31,ALGO
+66,Stationary Distribution,65,ALGO
+67,Power Iteration,65|3|25,ALGO
+68,Teleportation (PageRank),62|65,ALGO
+69,Community Detection,21|34|58,ALGO
+70,Modularity (Network),69|58,ALGO
+71,Louvain Algorithm,70|69,ALGO
+72,Girvan-Newman Algorithm,59|69,ALGO
+73,Spectral Clustering,4|143,ALGO
+74,Normalized Cut,73|143,ALGO
+75,Overlapping Community,69,ALGO
+76,BigCLAM Model,69|75,ALGO
+77,Network Motif,42|21,ALGO
+78,Graphlet,77|42,ALGO
+79,Graphlet Degree Vector,78|26,ALGO
+80,Graph Kernel,78|42|50,ALGO
+81,Weisfeiler-Lehman Kernel,80|49|25,ALGO
+82,Label Propagation,25|23|26|107,ALGO
+83,Belief Propagation,25|82,ALGO
+84,Influence Maximization,85|86|60|87,ALGO
+85,Linear Threshold Model,21|26,ALGO
+86,Independent Cascade Model,21|26,ALGO
+87,SIR Epidemic Model,21|29,ALGO
+88,Breadth-First Search,31|34,ALGO
+89,Depth-First Search,31|34,ALGO
+90,Katz Similarity,25|32,ALGO
+91,Node Embedding,21|9|10,EMB
+92,Embedding Space,91|9,EMB
+93,Encoder-Decoder Framework,91|17,EMB
+94,Shallow Embedding,91|93,EMB
+95,Matrix Factorization (Graph),91|1|7|25,EMB
+96,DeepWalk,65|91|101,EMB
+97,node2vec,96,EMB
+98,Biased Random Walk,65|97,EMB
+99,BFS Strategy (node2vec),88|98,EMB
+100,DFS Strategy (node2vec),89|98,EMB
+101,Skip-Gram Model,91|17,EMB
+102,Negative Sampling,101|91,EMB
+103,LINE Embedding,91|25|101,EMB
+104,Transductive Learning,91,EMB
+105,Inductive Learning,91,EMB
+106,Structural Equivalence,91|49,EMB
+107,Homophily,26|29|21,EMB
+108,Graph Neural Network (GNN),21|17|12|25|91|20,GNN
+109,Message Passing Neural Net,108|110|111|112,GNN
+110,Message Function,108|17,GNN
+111,Aggregation Function,108|17,GNN
+112,Update Function,108|17,GNN
+113,Graph Convolutional Network,109|141|144|25|142,GNN
+114,GraphSAGE,109|113|105,GNN
+115,Graph Attention Network (GAT),109|116|117,GNN
+116,Attention Mechanism (Graph),17|9|18,GNN
+117,Multi-Head Attention (Graph),116,GNN
+118,Graph Isomorphism Network,109|119|152,GNN
+119,Sum Aggregation,111,GNN
+120,Mean Aggregation,111,GNN
+121,Max Aggregation,111,GNN
+122,Neighborhood Aggregation,109|26,GNN
+123,K-Hop Neighborhood,26|124,GNN
+124,Receptive Field (GNN),108|26,GNN
+125,Layer Depth (GNN),108|124,GNN
+126,Skip Connection (GNN),108|17,GNN
+127,Residual Connection (GNN),126,GNN
+128,Jumping Knowledge Network,126|125,GNN
+129,Graph-Level Readout,108|130|131,GNN
+130,Global Mean Pooling,120,GNN
+131,Global Sum Pooling,119,GNN
+132,DiffPool,129|113,GNN
+133,MinCutPool,129|73,GNN
+134,Node-Level Task,108|138,GNN
+135,Edge-Level Task,108|137,GNN
+136,Graph-Level Task,108|139,GNN
+137,Link Prediction,108|91|25,GNN
+138,Node Classification,108|82,GNN
+139,Graph Classification,108|129,GNN
+140,Graph Regression,139|132|133,GNN
+141,Spectral Graph Convolution,143|3|145,GNN
+142,Chebyshev Polynomial Conv,141|143,GNN
+143,Graph Laplacian,25|4|3|6,GNN
+144,Normalized Graph Laplacian,143|26,GNN
+145,Spectral Domain (Graph),143|3,GNN
+146,Spatial Domain (Graph),109|26,GNN
+147,Virtual Node Augmentation,108|23,GNN
+148,Virtual Edge Augmentation,108|24,GNN
+149,Weisfeiler-Lehman (WL) Test,49|108|25,THEORY
+150,1-WL Test,149,THEORY
+151,k-WL Test,150,THEORY
+152,GNN Expressiveness,108|149|150,THEORY
+153,Graph Isomorphism Problem,49,THEORY
+154,GNN Distinguishing Power,152|153,THEORY
+155,Over-Smoothing,108|125,THEORY
+156,Over-Squashing,108|124|155|33,THEORY
+157,GNN Bottleneck,156|124,THEORY
+158,Graph Equivariance,108|160|161,THEORY
+159,Graph Invariance,158,THEORY
+160,Permutation Invariance,108,THEORY
+161,Permutation Equivariance,108,THEORY
+162,Position-Aware GNN,108|170,THEORY
+163,Identity-Aware GNN,108|152,THEORY
+164,Higher-Order GNN,108|151|165,THEORY
+165,Subgraph GNN,42|108|152,THEORY
+166,Graph Transformer,108|116|117|170,TRANS
+167,Graphormer,166|175|174,TRANS
+168,SAN (Spectral Attention Net),166|170,TRANS
+169,GPS (General Powerful GNN),166|108,TRANS
+170,Laplacian Positional Encoding,143|144,TRANS
+171,Random Walk Struct Encoding,65|170,TRANS
+172,Sign-Invariant Network,170|158,TRANS
+173,Basis-Invariant Network,170|172,TRANS
+174,Spatial Bias (Graph Attention),116|32,TRANS
+175,Centrality Encoding,61|26,TRANS
+176,Edge Encoding (Transformer),116|24,TRANS
+177,Relative Positional Encoding,170|32,TRANS
+178,Knowledge Graph,21|38,KG
+179,KG Entity,178|23,KG
+180,KG Relation,178|24,KG
+181,KG Triple,179|180,KG
+182,KG Completion,178|181,KG
+183,Link Prediction (KG),182|137,KG
+184,TransE,181|91|182,KG
+185,TransR,184,KG
+186,DistMult,181|182|91,KG
+187,ComplEx,186,KG
+188,RotatE,184|187,KG
+189,KG Embedding Geometry,184|185|186|187|188,KG
+190,Bilinear KG Model,186|1,KG
+191,Symmetry (Relation Pattern),180,KG
+192,Antisymmetry (Relation),180,KG
+193,Inversion (Relation),180,KG
+194,Composition (Relation),180,KG
+195,Query Embedding,91|178|197,KG
+196,Box Embedding (Query2Box),195|197,KG
+197,Multi-Hop Query,178|31,KG
+198,Conjunctive Query,197,KG
+199,Neural Bellman-Ford Net,178|108,KG
+200,Inductive KG Reasoning,178|105|199,KG
+201,ULTRA,200|178|108|291,KG
+202,InGram,200|178|292,KG
+203,Heterogeneous GNN,38|108|207,HETERO
+204,R-GCN (Relational GCN),113|38|208,HETERO
+205,Heterogeneous Graph Trans,166|203|207,HETERO
+206,HAN (Hetero Attention Net),203|207|116,HETERO
+207,Meta-Path,38|31,HETERO
+208,Relation-Specific Weights,111|38,HETERO
+209,Basis Decomposition (R-GCN),204|208,HETERO
+210,Type-Specific Projection,203|208,HETERO
+211,Recommender System (Graph),37|108|212,APP
+212,Collaborative Filtering,37|95|104,APP
+213,Matrix Factorization (Rec),95|212,APP
+214,Neural Collaborative Filter,212|108,APP
+215,LightGCN,114|212|211,APP
+216,PinSage,114|211,APP
+217,Drug-Drug Interaction,219|108,APP
+218,Protein-Protein Interaction,21|108,APP
+219,Molecular Graph,21|41|108,APP
+220,Drug Discovery with GNNs,219|108|246,APP
+221,Social Network Analysis,21|29|58|62|51|52|56|57|59|60,APP
+222,Fraud Detection (Graph),108|138|221|293,APP
+223,Traffic Forecasting (Graph),108|226|40,APP
+224,Scene Graph,21|38|108,APP
+225,Relational Database as Graph,21|38,APP
+226,Temporal Graph,21|24,APP
+227,Dynamic Graph,21|226,APP
+228,Temporal GNN (TGN),108|226|227,APP
+229,TGAT,228|116,APP
+230,Frequent Subgraph Mining,78|77|231,APP
+231,Subgraph Isomorphism,42|49,APP
+232,Order Embedding,42|91,APP
+233,SPMiner,232|231,APP
+234,Mini-Batch Training (GNN),108|17,SCALE
+235,Neighbor Sampling,26|234|108,SCALE
+236,GraphSAINT,234|241|298,SCALE
+237,Cluster-GCN,234|241|73|47,SCALE
+238,LADIES Sampler,235|239,SCALE
+239,Layer-Wise Sampling,234|235,SCALE
+240,Historical Embeddings (SIGN),91|234,SCALE
+241,Graph Partitioning,21|73|35|36|47,SCALE
+242,Graph Generative Model,108|21,GEN
+243,GraphRNN,242|46|12,GEN
+244,GCPN,242|108|219,GEN
+245,Molecule Generation,219|242|244,GEN
+246,Variational Autoencoder (VGAE),108|91|17|137,GEN
+247,DiGress,242|108|219,GEN
+248,Graph Generation Metrics,242,GEN
+249,In-Context Learning (Graphs),108|251,ADV
+250,Conformalized GNN,108|138,ADV
+251,Graph Foundation Model,108|295|252|283|294,ADV
+252,LLM + GNN Integration,108|253,ADV
+253,Text-Attributed Graph,41|108,ADV
+254,Graph Instruction Tuning,252|253,ADV
+255,One-For-All (OFA) Model,251|252|296,ADV
+256,Agent Memory as Graph,21|178,ADV
+257,Tool-Use Graph,256|21,ADV
+258,Relational Deep Learning,38|108|225,ADV
+259,RelBench,258,ADV
+260,RelGNN,258|203|259,ADV
+261,Cross-Entropy (Node Class),19|138,TRAIN
+262,Binary Cross-Entropy (LP),19|137,TRAIN
+263,Negative Sampling (LP),102|137,TRAIN
+264,Data Augmentation (Graph),108|21,TRAIN
+265,Dropout (GNN),108|17,TRAIN
+266,Batch Normalization (GNN),108|17,TRAIN
+267,Layer Normalization (GNN),108|17,TRAIN
+268,DropEdge,264|265,TRAIN
+269,PairNorm,155|266,TRAIN
+270,Early Stopping (GNN),108|261,TRAIN
+271,Train/Val/Test Split (Trans),104|108,TRAIN
+272,Train/Val/Test Split (Ind),105|108,TRAIN
+273,Curriculum Learning (Graph),108|234,TRAIN
+274,PyTorch Geometric (PyG),15|16|17|108,TOOLS
+275,NetworkX,21,TOOLS
+276,Open Graph Benchmark,108|138|137,TOOLS
+277,SNAP,21|59,TOOLS
+278,DeepSNAP,274|108,TOOLS
+279,DGL,108|15,TOOLS
+280,TUDataset,139|276,TOOLS
+281,PyKEEN,178|184,TOOLS
+282,RelBench (Benchmark),225|258|276,TOOLS
+283,Self-Supervised Learning,17|12,ADV
+284,Deep Graph Infomax (DGI),283|108|129,ADV
+285,Graph Contrastive Learning,283|284|286,ADV
+286,Contrastive Loss,283|19,TRAIN
+287,Graph Augmentation (SSL),264|283,TRAIN
+288,APPNP,113|63,GNN
+289,Simple Graph Conv (SGC),113|141,GNN
+290,Principal Neighborhood Agg,118|119|120|121|289,GNN
+291,Mean Reciprocal Rank (MRR),183|182,TRAIN
+292,Hits@K Metric,183|182,TRAIN
+293,ROC-AUC Score,138|261,TRAIN
+294,Transfer Learning (Graphs),91|108|105,ADV
+295,Pre-Training (GNN),283|108|294,ADV
+296,Fine-Tuning (GNN),295|108,ADV
+297,Node Feature Normalization,108|17,TRAIN
+298,Graph Sampling Strategy,234|235,SCALE
+299,Stochastic Depth (GNN),265|125|268,TRAIN
+300,SIGN Architecture,240|108|289,SCALE

@@ -1,0 +1,3577 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Explores the GNN design space through GraphSAGE and GAT, covering aggregation choices, skip connections, hierarchical pooling, and the full taxonomy of node, edge, and graph-level prediction tasks.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/07-gnn-design-space/">
+      
+      
+        <link rel="prev" href="../06-gnn-foundations/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 7: GNN Design Space: GraphSAGE and GAT - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 7: GNN Design Space: GraphSAGE and GAT">
+  <meta property="og:description" content="Explores the GNN design space through GraphSAGE and GAT, covering aggregation choices, skip connections, hierarchical pooling, and the full taxonomy of node, edge, and graph-level prediction tasks.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/07-gnn-design-space/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 7: GNN Design Space: GraphSAGE and GAT">
+  <meta name="twitter:description" content="Explores the GNN design space through GraphSAGE and GAT, covering aggregation choices, skip connections, hierarchical pooling, and the full taxonomy of node, edge, and graph-level prediction tasks.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-7-gnn-design-space-graphsage-and-gat" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 7: GNN Design Space: GraphSAGE and GAT
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_9" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_9" id="__nav_4_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#71-a-taxonomy-of-gnn-prediction-tasks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.1 A Taxonomy of GNN Prediction Tasks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#72-graphsage-inductive-neighborhood-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.2 GraphSAGE: Inductive Neighborhood Aggregation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#73-graph-attention-networks-learning-which-neighbors-matter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3 Graph Attention Networks: Learning Which Neighbors Matter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.3 Graph Attention Networks: Learning Which Neighbors Matter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#731-attention-score-computation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3.1 Attention Score Computation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#732-multi-head-attention" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.3.2 Multi-Head Attention
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.3.2 Multi-Head Attention">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-gat-attention-weight-visualizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: GAT Attention Weight Visualizer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#74-skip-connections-and-jumping-knowledge" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4 Skip Connections and Jumping Knowledge
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.4 Skip Connections and Jumping Knowledge">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#741-residual-connections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4.1 Residual Connections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#742-jumping-knowledge-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.4.2 Jumping Knowledge Networks
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#75-graph-level-readout-and-pooling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5 Graph-Level Readout and Pooling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.5 Graph-Level Readout and Pooling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#751-flat-global-pooling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5.1 Flat Global Pooling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#752-hierarchical-pooling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.5.2 Hierarchical Pooling
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.5.2 Hierarchical Pooling">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diffpool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiffPool
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mincutpool" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MinCutPool
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#76-graph-augmentation-virtual-nodes-and-edges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.6 Graph Augmentation: Virtual Nodes and Edges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#77-the-gnn-design-space-a-systematic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.7 The GNN Design Space: A Systematic View
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#78-pyg-and-deepsnap-frameworks-for-multi-task-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.8 PyG and DeepSNAP: Frameworks for Multi-Task GNNs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#79-code-graphsage-and-gat-on-cora-with-pyg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.9 Code: GraphSAGE and GAT on Cora with PyG
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.9 Code: GraphSAGE and GAT on Cora with PyG">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-gnn-design-space-interactive-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: GNN Design Space Interactive Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#710-benchmark-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.10 Benchmark Comparison
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#711-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.11 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#712-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.12 Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="7.12 Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analyze
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#713-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7.13 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    7. GNN Design Space: GraphSAGE and GAT
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/07-gnn-design-space/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-7-gnn-design-space-graphsage-and-gat">Chapter 7: GNN Design Space: GraphSAGE and GAT<a class="headerlink" href="#chapter-7-gnn-design-space-graphsage-and-gat" title="Permanent link">¶</a></h1>
+<p><strong>Part 2: Graph Neural Networks</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Explores the GNN design space through GraphSAGE and GAT, covering aggregation choices, skip connections, hierarchical pooling, and the full taxonomy of node, edge, and graph-level prediction tasks.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 22 concepts from the learning graph:</p>
+<ol>
+<li>GraphSAGE</li>
+<li>Graph Attention Network (GAT)</li>
+<li>Attention Mechanism (Graph)</li>
+<li>Multi-Head Attention (Graph)</li>
+<li>Skip Connection (GNN)</li>
+<li>Residual Connection (GNN)</li>
+<li>Jumping Knowledge Network</li>
+<li>Graph-Level Readout</li>
+<li>Global Mean Pooling</li>
+<li>Global Sum Pooling</li>
+<li>DiffPool</li>
+<li>MinCutPool</li>
+<li>Node-Level Task</li>
+<li>Edge-Level Task</li>
+<li>Graph-Level Task</li>
+<li>Link Prediction</li>
+<li>Node Classification</li>
+<li>Graph Classification</li>
+<li>Graph Regression</li>
+<li>Virtual Node Augmentation</li>
+<li>Virtual Edge Augmentation</li>
+<li>DeepSNAP</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../06-gnn-foundations/">Chapter 6: GNN Foundations: Message Passing and GCN</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Designing the Right GNN</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+Chapter 6 gave you the GCN — a single, principled GNN architecture derived from spectral graph theory. This chapter steps back and asks a harder question: given the enormous space of possible design choices for a GNN (aggregation function, skip connections, pooling strategy, task head), how do you navigate it to build the right model for your specific problem? We will work through GraphSAGE and GAT as two architectures that push different design levers, develop a complete taxonomy of what GNNs can predict, and learn how to read pooled graph-level representations. By the end, you will have a principled decision framework rather than a bag of heuristics.</p>
+</div>
+<hr>
+<h2 id="71-a-taxonomy-of-gnn-prediction-tasks">7.1 A Taxonomy of GNN Prediction Tasks<a class="headerlink" href="#71-a-taxonomy-of-gnn-prediction-tasks" title="Permanent link">¶</a></h2>
+<p>Before examining specific architectures, it is worth establishing the full scope of what GNNs can be asked to predict. The chapter outline covers three fundamentally different prediction regimes, and the appropriate model design — particularly the output head — depends critically on which regime you are in.</p>
+<p>Three levels of prediction exist on graphs, corresponding to three different scopes of the output:</p>
+<ul>
+<li>
+<p><strong>Node-level tasks:</strong> the model predicts a label or continuous value for each node individually. <strong>Node classification</strong> assigns each node to one of <span class="arithmatex">\( C \)</span> categorical classes; <strong>node regression</strong> outputs a continuous value. Examples include classifying users in a social network by community membership, or predicting the atomic partial charge of each atom in a molecule.</p>
+</li>
+<li>
+<p><strong>Edge-level tasks:</strong> the model predicts a property of each edge or the presence of edges that do not yet exist. <strong>Link prediction</strong> is the canonical edge-level task: given the current graph, predict which pairs of nodes will form edges in the future (or which edges are missing from an incomplete observation). Examples include recommending new connections in a professional network, predicting drug-drug interactions, or inferring protein-protein binding from partial interaction databases.</p>
+</li>
+<li>
+<p><strong>Graph-level tasks:</strong> the model predicts a single label or value for an entire graph. <strong>Graph classification</strong> assigns the whole graph to a category; <strong>graph regression</strong> outputs a scalar property. Examples include predicting whether a molecule is toxic (binary classification), estimating its binding affinity to a target protein (regression), or classifying a brain connectivity graph by neurological condition.</p>
+</li>
+</ul>
+<p>These three regimes require different output architectures. For node-level tasks, the node representations <span class="arithmatex">\( \mathbf{h}_v^{(K)} \)</span> from the final GNN layer are fed directly into a per-node classifier or regression head (typically a linear layer). For edge-level tasks, an edge representation is formed from the endpoint node representations (by concatenation, element-wise product, or dot product) and passed to an edge classifier. For graph-level tasks, all node representations must be aggregated into a single graph-level vector — the <strong>graph-level readout</strong> — before the final prediction head.</p>
+<hr>
+<h2 id="72-graphsage-inductive-neighborhood-aggregation">7.2 GraphSAGE: Inductive Neighborhood Aggregation<a class="headerlink" href="#72-graphsage-inductive-neighborhood-aggregation" title="Permanent link">¶</a></h2>
+<p>The <strong>Graph SAmple and aggreGatE</strong> (GraphSAGE) model, introduced by Hamilton, Ying, and Leskovec (2017), addresses a limitation of GCN that becomes critical in production settings: GCN is transductive, requiring the full graph to be present during training. When new nodes are added to the graph after training (new users joining a social network, new papers published in a citation database), GCN must be retrained from scratch.</p>
+<p>GraphSAGE resolves this by learning an <strong>inductive</strong> aggregation function: rather than learning a fixed embedding for each node, it learns the function <span class="arithmatex">\( f(\mathbf{x}_v, \{\mathbf{x}_u : u \in \mathcal{N}(v)\}) \)</span> that maps a node's features and its neighborhood features to an embedding. This function can be applied to any node — seen during training or not — as long as its neighborhood features are available.</p>
+<p>The GraphSAGE layer has two distinguishing features relative to GCN:</p>
+<p><strong>1. Concatenation instead of averaging.</strong> While GCN computes a weighted average of the node's own representation and its neighbors', GraphSAGE explicitly concatenates the node's own representation <span class="arithmatex">\( \mathbf{h}_v^{(k-1)} \)</span> with the aggregated neighborhood representation <span class="arithmatex">\( \mathbf{h}_{\mathcal{N}(v)}^{(k)} \)</span>, then applies a linear transformation:</p>
+<p>[
+\mathbf{h}<em _mathcal_n="\mathcal{N">{\mathcal{N}(v)}^{(k)} = \text{AGGREGATE}_k!\left(\left{\mathbf{h}_u^{(k-1)} : u \in \mathcal{N}(v)\right}\right)
+]
+[
+\mathbf{h}_v^{(k)} = \sigma!\left(W^{(k)} \cdot \left[\mathbf{h}_v^{(k-1)} \;\big|\; \mathbf{h}</em>\right]\right)
+]}(v)}^{(k)</p>
+<p>where <span class="arithmatex">\( \| \)</span> denotes vector concatenation. The weight matrix <span class="arithmatex">\( W^{(k)} \in \mathbb{R}^{d^{(k+1)} \times 2d^{(k)}} \)</span> has twice as many input columns as GCN's <span class="arithmatex">\( W^{(k)} \)</span>, because it processes the concatenated vector. This design preserves the distinction between the node's own identity and its neighborhood context — a distinction GCN's averaging operation conflates.</p>
+<p><strong>2. Neighborhood sampling.</strong> On large graphs, computing the exact neighborhood aggregation for every node at every layer is computationally prohibitive: a node with degree 1,000 requires 1,000 message computations per layer, and those 1,000 neighbors each have their own large neighborhoods at the next layer, causing exponential blowup. GraphSAGE addresses this by sampling a fixed-size subset of each node's neighbors at each layer — typically 25 neighbors at layer 1 and 10 at layer 2 — making the per-node compute cost independent of degree.</p>
+<p>GraphSAGE supports four aggregator variants, each with a different inductive bias:</p>
+<ul>
+<li><strong>Mean aggregator:</strong> <span class="arithmatex">\( \mathbf{h}_{\mathcal{N}(v)}^{(k)} = \text{mean}(\{\mathbf{h}_u^{(k-1)} : u \in \mathcal{N}(v)\}) \)</span> — the simplest variant, equivalent to GCN (without concatenation) when combined with a linear transform.</li>
+<li><strong>Max-pooling aggregator:</strong> <span class="arithmatex">\( \mathbf{h}_{\mathcal{N}(v)}^{(k)} = \max(\{\sigma(W_{\text{pool}}\, \mathbf{h}_u^{(k-1)} + \mathbf{b}) : u \in \mathcal{N}(v)\}) \)</span> — applies a learned linear transformation to each neighbor before taking the element-wise max, allowing the network to learn which features to "look for" before pooling.</li>
+<li><strong>LSTM aggregator:</strong> applies a Long Short-Term Memory network to the sequence of neighbor embeddings (in a random permutation). This is the most expressive but also the most expensive, and its permutation-sensitivity is a theoretical weakness.</li>
+<li><strong>Attention aggregator:</strong> generalizes toward GAT (described below), computing a weighted sum using learned attention scores.</li>
+</ul>
+<hr>
+<h2 id="73-graph-attention-networks-learning-which-neighbors-matter">7.3 Graph Attention Networks: Learning Which Neighbors Matter<a class="headerlink" href="#73-graph-attention-networks-learning-which-neighbors-matter" title="Permanent link">¶</a></h2>
+<p>GCN assigns each neighbor a weight inversely proportional to the geometric mean of the two nodes' degrees — a fixed, structure-determined weighting that ignores the content of the representations. GraphSAGE's mean and max aggregators similarly treat all (sampled) neighbors as equally worthy of consideration. Neither architecture allows the model to learn that, in a citation network, a paper on differential geometry should attend more strongly to other geometry papers than to unrelated papers that happen to cite it.</p>
+<p>The <strong>Graph Attention Network</strong> (GAT), introduced by Veličković et al. (2018), resolves this by replacing fixed structural weights with <strong>learned, content-dependent attention coefficients</strong> that are computed from the feature representations of both endpoints of each edge.</p>
+<h3 id="731-attention-score-computation">7.3.1 Attention Score Computation<a class="headerlink" href="#731-attention-score-computation" title="Permanent link">¶</a></h3>
+<p>Before the attention coefficient is computed, both the sending node <span class="arithmatex">\( j \)</span> and the receiving node <span class="arithmatex">\( i \)</span> undergo a shared linear transformation <span class="arithmatex">\( W \in \mathbb{R}^{d' \times d} \)</span> (projecting from dimension <span class="arithmatex">\( d \)</span> to <span class="arithmatex">\( d' \)</span>). An <strong>attention mechanism</strong> <span class="arithmatex">\( a : \mathbb{R}^{d'} \times \mathbb{R}^{d'} \to \mathbb{R} \)</span> then maps the concatenated transformed representations to a scalar attention score:</p>
+<div class="arithmatex">\[
+e_{ij} = \text{LeakyReLU}\!\left(\mathbf{a}^T \left[W\mathbf{h}_i \;\big\|\; W\mathbf{h}_j\right]\right)
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{a} \in \mathbb{R}^{2d'} \)</span> is a learnable attention vector and LeakyReLU (with negative slope 0.2) is used rather than ReLU to prevent dead neurons on negative scores. The score <span class="arithmatex">\( e_{ij} \)</span> represents, in unnormalized form, how important node <span class="arithmatex">\( j \)</span> is to node <span class="arithmatex">\( i \)</span> given their current representations.</p>
+<p>The unnormalized scores are normalized across the neighborhood of node <span class="arithmatex">\( i \)</span> using softmax:</p>
+<div class="arithmatex">\[
+\alpha_{ij} = \frac{\exp(e_{ij})}{\displaystyle\sum_{k \in \mathcal{N}(i) \cup \{i\}} \exp(e_{ik})}
+\]</div>
+<p>This normalization ensures that attention coefficients sum to 1 over each node's neighborhood (including the self-loop), making them interpretable as a learned probability distribution over which neighbors to attend to. The final node representation is a weighted sum of transformed neighbor features:</p>
+<div class="arithmatex">\[
+\mathbf{h}_i' = \sigma\!\left(\sum_{j \in \mathcal{N}(i) \cup \{i\}} \alpha_{ij}\, W\, \mathbf{h}_j\right)
+\]</div>
+<p>A key architectural property is that this computation is <strong>local</strong>: the attention coefficients for node <span class="arithmatex">\( i \)</span> are computed solely from the features of <span class="arithmatex">\( i \)</span> and its direct neighbors, requiring no global information. This means GAT retains the <span class="arithmatex">\( O(|E|) \)</span> per-layer computational complexity of other message-passing GNNs.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Why Attention Is Richer Than Fixed Weights</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking">
+The attention coefficient <span class="arithmatex">\( \alpha_{ij} \)</span> depends on both <span class="arithmatex">\( h_i \)</span> and <span class="arithmatex">\( h_j \)</span> — the current representations of both endpoints. This means attention is dynamic: as representations evolve across layers, the same edge can receive different weights in layer 1 versus layer 2. A neighbor that is superficially similar to the center node (similar initial features) may receive high attention early on, then low attention later once the center node has aggregated its context and can better distinguish relevant from irrelevant neighbors. GCN's fixed normalization factor <span class="arithmatex">\( \frac{1}{\sqrt{\tilde{d}_i \tilde{d}_j}} \)</span> can never adapt this way — it is a property of the graph topology, not the learned representations.</p>
+</div>
+<h3 id="732-multi-head-attention">7.3.2 Multi-Head Attention<a class="headerlink" href="#732-multi-head-attention" title="Permanent link">¶</a></h3>
+<p>To stabilize training and allow the model to jointly attend to information from multiple representation subspaces, GAT uses <strong>multi-head attention</strong>: <span class="arithmatex">\( K \)</span> independent attention mechanisms are run in parallel, each with its own parameters <span class="arithmatex">\( (W^{(k)}, \mathbf{a}^{(k)}) \)</span>, and their outputs are either concatenated (for intermediate layers) or averaged (for the final layer).</p>
+<p><strong>Concatenation</strong> (intermediate layers): the representations from <span class="arithmatex">\( K \)</span> heads are concatenated, producing a <span class="arithmatex">\( Kd' \)</span>-dimensional output:</p>
+<div class="arithmatex">\[
+\mathbf{h}_i' = \Big\|_{k=1}^{K} \sigma\!\left(\sum_{j \in \mathcal{N}(i)} \alpha_{ij}^{(k)}\, W^{(k)}\, \mathbf{h}_j\right)
+\]</div>
+<p><strong>Averaging</strong> (final layer): concatenating at the output layer would produce an overly wide representation; instead, the <span class="arithmatex">\( K \)</span> head outputs are averaged:</p>
+<div class="arithmatex">\[
+\mathbf{h}_i' = \sigma\!\left(\frac{1}{K}\sum_{k=1}^{K} \sum_{j \in \mathcal{N}(i)} \alpha_{ij}^{(k)}\, W^{(k)}\, \mathbf{h}_j\right)
+\]</div>
+<p>The original GAT paper uses <span class="arithmatex">\( K = 8 \)</span> heads in the first layer and <span class="arithmatex">\( K = 1 \)</span> (or averaging <span class="arithmatex">\( K = 8 \)</span>) in the output layer.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Multi-Head Attention Memory Cost</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning">
+Multi-head attention with <span class="arithmatex">\( K \)</span> heads and hidden dimension <span class="arithmatex">\( d' \)</span> requires storing <span class="arithmatex">\( K \)</span> separate weight matrices <span class="arithmatex">\( W^{(1)}, \ldots, W^{(K)} \)</span> and attention vectors <span class="arithmatex">\( \mathbf{a}^{(1)}, \ldots, \mathbf{a}^{(K)} \)</span>, plus the attention score <span class="arithmatex">\( \alpha_{ij}^{(k)} \)</span> for every edge and every head. On a graph with 1 million edges and <span class="arithmatex">\( K = 8 \)</span> heads, storing float32 attention scores requires <span class="arithmatex">\( 1{,}000{,}000 \times 8 \times 4 = 32 \)</span> MB per layer — manageable, but non-trivial on GPU. More critically, the softmax normalization over each node's neighborhood is a sequential reduction that is hard to parallelize on GPU hardware when neighborhoods have highly variable sizes. For large graphs, <strong>GATv2</strong> (Brody et al., 2022) addresses this with a modified attention mechanism that is both more expressive and more GPU-friendly.</p>
+</div>
+<h4 id="diagram-gat-attention-weight-visualizer">Diagram: GAT Attention Weight Visualizer<a class="headerlink" href="#diagram-gat-attention-weight-visualizer" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch07-gat-attention-weights/main.html" width="100%" height="502px" scrolling="no"></iframe>
+<p><a href="../../sims/ch07-gat-attention-weights/main.html">Run GAT Attention Weight Visualizer Fullscreen</a></p>
+<hr>
+<h2 id="74-skip-connections-and-jumping-knowledge">7.4 Skip Connections and Jumping Knowledge<a class="headerlink" href="#74-skip-connections-and-jumping-knowledge" title="Permanent link">¶</a></h2>
+<p>The over-smoothing problem established in Chapter 6 limits most GNN architectures to 2–3 layers. Two complementary mechanisms allow deeper networks while preserving discriminative node representations: <strong>residual (skip) connections</strong> and the <strong>Jumping Knowledge</strong> (JK) architecture.</p>
+<h3 id="741-residual-connections">7.4.1 Residual Connections<a class="headerlink" href="#741-residual-connections" title="Permanent link">¶</a></h3>
+<p>A <strong>residual connection</strong> (or <strong>skip connection</strong>) adds the input representation of a layer directly to its output:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(k)} = \sigma\!\left(\text{GNN}^{(k)}\!\left(\mathbf{h}_v^{(k-1)},\, \{\mathbf{h}_u^{(k-1)} : u \in \mathcal{N}(v)\}\right)\right) + \mathbf{h}_v^{(k-1)}
+\]</div>
+<p>The additive identity path means that even a very deep GNN can always fall back to its earlier representations — gradient flow is improved (no vanishing gradients), and the network can learn to use deeper aggregation only when it is beneficial. The requirement that input and output have the same dimension (for the addition to be defined) can be relaxed by using a learned linear projection: <span class="arithmatex">\( W_{\text{skip}}\, \mathbf{h}_v^{(k-1)} \)</span> instead of <span class="arithmatex">\( \mathbf{h}_v^{(k-1)} \)</span>.</p>
+<p>The You et al. (2020) design space study found that skip connections are nearly universally beneficial across GNN architectures, tasks, and datasets — one of the few unambiguous findings in a space full of dataset-specific best practices.</p>
+<h3 id="742-jumping-knowledge-networks">7.4.2 Jumping Knowledge Networks<a class="headerlink" href="#742-jumping-knowledge-networks" title="Permanent link">¶</a></h3>
+<p>The <strong>Jumping Knowledge Network</strong> (JK-Net, Xu et al., 2018) takes a different approach: rather than adding intermediate representations to the final output, it concatenates representations from <strong>all</strong> layers:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{\text{final}} = f\!\left(\mathbf{h}_v^{(1)} \;\big\|\; \mathbf{h}_v^{(2)} \;\big\|\; \cdots \;\big\|\; \mathbf{h}_v^{(K)}\right)
+\]</div>
+<p>where <span class="arithmatex">\( f \)</span> can be a concatenation (forming a <span class="arithmatex">\( Kd \)</span>-dimensional vector), a max operation (taking the element-wise maximum across layers), or a learned LSTM operating over the layer sequence. The JK-Net insight is that different nodes may benefit from different effective depths: nodes near labeled boundary regions may need only 1-hop context, while nodes deep inside a homogeneous cluster may need 3-hop context to access label information at all. By preserving all layer representations, JK-Net lets a downstream aggregation function adapt the effective depth <strong>per node</strong> rather than applying a uniform depth to all nodes.</p>
+<p>The trade-off relative to residual connections is parameter cost: JK-Net with concatenation expands the final representation dimension by a factor of <span class="arithmatex">\( K \)</span>, while residual connections add no extra parameters.</p>
+<hr>
+<h2 id="75-graph-level-readout-and-pooling">7.5 Graph-Level Readout and Pooling<a class="headerlink" href="#75-graph-level-readout-and-pooling" title="Permanent link">¶</a></h2>
+<p>For <strong>graph-level tasks</strong> (graph classification and regression), a graph-level representation must be computed by aggregating the final node embeddings <span class="arithmatex">\( \{\mathbf{h}_v^{(K)} : v \in V\}  \)</span> into a single fixed-size vector <span class="arithmatex">\( \mathbf{h}_G \)</span>. Two categories of readout exist: flat global pooling and hierarchical pooling.</p>
+<h3 id="751-flat-global-pooling">7.5.1 Flat Global Pooling<a class="headerlink" href="#751-flat-global-pooling" title="Permanent link">¶</a></h3>
+<p>The simplest graph-level readout operations apply a permutation-invariant function directly to the set of all node embeddings:</p>
+<p><strong>Global mean pooling:</strong></p>
+<div class="arithmatex">\[
+\mathbf{h}_G = \frac{1}{|V|} \sum_{v \in V} \mathbf{h}_v^{(K)}
+\]</div>
+<p><strong>Global sum pooling:</strong></p>
+<div class="arithmatex">\[
+\mathbf{h}_G = \sum_{v \in V} \mathbf{h}_v^{(K)}
+\]</div>
+<p><strong>Global max pooling:</strong> element-wise maximum across all node embeddings.</p>
+<p>Mean pooling is scale-invariant (graph size does not affect magnitude) and robust to outlier nodes, but it destroys information about graph size and the total quantity of a feature across the graph. Sum pooling preserves size sensitivity and is more expressive (two graphs with different node counts cannot produce the same sum if their node embeddings are consistent), but gradients can become large for big graphs. In practice, both variants are used, and they are often combined: concatenating mean and sum pooling provides both size-invariant and size-sensitive signals.</p>
+<h3 id="752-hierarchical-pooling">7.5.2 Hierarchical Pooling<a class="headerlink" href="#752-hierarchical-pooling" title="Permanent link">¶</a></h3>
+<p>Flat pooling discards all intermediate structural information — it treats the graph as a bag of node embeddings without regard for which nodes are connected. For graphs where hierarchical community structure carries predictive signal (e.g., functional groups in molecules, subregions in brain connectivity graphs), <strong>hierarchical pooling</strong> methods iteratively cluster nodes and coarsen the graph.</p>
+<h4 id="diffpool">DiffPool<a class="headerlink" href="#diffpool" title="Permanent link">¶</a></h4>
+<p><strong>DiffPool</strong> (Ying et al., 2018) learns a soft cluster assignment matrix <span class="arithmatex">\( S^{(l)} \in \mathbb{R}^{n_l \times n_{l+1}} \)</span> at each pooling level using a dedicated GNN:</p>
+<div class="arithmatex">\[
+S^{(l)} = \text{softmax}\!\left(\text{GNN}_{\text{pool}}^{(l)}\!\left(A^{(l)},\, X^{(l)}\right)\right)
+\]</div>
+<p>where <span class="arithmatex">\( n_l \)</span> is the number of nodes at level <span class="arithmatex">\( l \)</span> and <span class="arithmatex">\( n_{l+1} &lt; n_l \)</span> is the target cluster count. A second GNN simultaneously computes node embeddings at level <span class="arithmatex">\( l \)</span>:</p>
+<div class="arithmatex">\[
+Z^{(l)} = \text{GNN}_{\text{embed}}^{(l)}\!\left(A^{(l)},\, X^{(l)}\right)
+\]</div>
+<p>The coarsened graph at the next level is obtained by aggregating node features and adjacency according to the soft assignment:</p>
+<div class="arithmatex">\[
+X^{(l+1)} = S^{(l)T} Z^{(l)}, \qquad A^{(l+1)} = S^{(l)T} A^{(l)} S^{(l)}
+\]</div>
+<p>The assignment <span class="arithmatex">\( S^{(l)T} Z^{(l)} \)</span> computes a weighted average of node embeddings within each cluster, while <span class="arithmatex">\( S^{(l)T} A^{(l)} S^{(l)} \)</span> computes a dense cluster-level adjacency. DiffPool is trained end-to-end with two auxiliary losses: an entropy loss encouraging discrete cluster assignments (rather than soft uniform distributions) and a link prediction loss encouraging cluster-level adjacency to reflect the original adjacency.</p>
+<p>The major limitation of DiffPool is computational: the cluster-level adjacency <span class="arithmatex">\( A^{(l+1)} \)</span> is generally dense, losing the sparsity that makes GNN message passing efficient. For graphs with more than a few hundred nodes, DiffPool becomes memory-intensive.</p>
+<h4 id="mincutpool">MinCutPool<a class="headerlink" href="#mincutpool" title="Permanent link">¶</a></h4>
+<p><strong>MinCutPool</strong> (Bianchi et al., 2020) provides a spectral relaxation interpretation of the pooling problem. Rather than the entropy regularization of DiffPool, MinCutPool minimizes a normalized cut objective over the cluster assignments directly in the loss function:</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{MinCut}} = -\frac{\text{tr}\!\left(S^T A S\right)}{\text{tr}\!\left(S^T D S\right)} + \left\| \frac{S^T S}{\| S^T S \|_F} - \frac{I_{n'}}{\sqrt{n'}} \right\|_F
+\]</div>
+<p>The first term encourages clusters with dense internal connections (small normalized cut), while the second term (an orthogonality regularizer) penalizes the cluster assignments from collapsing to a trivial solution where all nodes are assigned to the same cluster. MinCutPool has a tighter connection to spectral clustering than DiffPool and often achieves better cluster quality on structured graphs.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">Hierarchical Pooling Is Worth the Complexity</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encouraging">
+DiffPool and MinCutPool introduce substantial complexity — two GNNs running simultaneously, auxiliary losses, and dense intermediate adjacency matrices. If that feels overwhelming, hold onto the core idea: they are learning to do hierarchically what label propagation does level by level. At each pooling step, nodes that are tightly connected and have similar features are merged into a super-node. The resulting coarser graph preserves the global structure while discarding local detail. For molecular graphs, this naturally discovers functional groups; for social graphs, it discovers communities. The complexity is the price of doing graph classification properly when structure at multiple scales matters.</p>
+</div>
+<hr>
+<h2 id="76-graph-augmentation-virtual-nodes-and-edges">7.6 Graph Augmentation: Virtual Nodes and Edges<a class="headerlink" href="#76-graph-augmentation-virtual-nodes-and-edges" title="Permanent link">¶</a></h2>
+<p>Two simple but highly effective graph preprocessing strategies improve GNN performance on tasks that involve long-range dependencies.</p>
+<p><strong>Virtual node augmentation</strong> adds a single new node <span class="arithmatex">\( v_G \)</span> to the graph and connects it to every other node with bidirectional edges. During message passing, the virtual node aggregates information from the entire graph (via its direct connections to all nodes) and distributes global context back to every node at each layer. This effectively gives every node in the graph a 2-hop path to every other node — radically shrinking the effective graph diameter while adding only <span class="arithmatex">\( 2|V| \)</span> edges. The virtual node is initialized with a learned feature vector (or zero vector) and is discarded at readout, where it is either excluded or used as the graph-level representation directly. Hamilton et al. (2017) showed that virtual nodes consistently improve performance on molecular property prediction benchmarks.</p>
+<p><strong>Virtual edge augmentation</strong> adds edges between pairs of nodes that are currently disconnected but share structural features — for example, adding edges between all pairs of nodes within 2 hops (completing the 2-hop neighborhood into a dense subgraph) or between nodes with high Personalized PageRank scores. This technique is particularly useful in chemistry, where reactive sites in a molecule may be geometrically proximal but graph-distance far due to the rigid ring-based topology of many drug candidates. The <strong>SEAL</strong> framework (Zhang and Chen, 2018) for link prediction systematically adds edges based on local subgraph topology.</p>
+<p>The following table summarizes the two augmentation strategies and their primary use cases, which we have just described.</p>
+<table>
+<thead>
+<tr>
+<th>Augmentation</th>
+<th>What it adds</th>
+<th>Primary benefit</th>
+<th>Overhead</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Virtual node</td>
+<td>One super-node connected to all <span class="arithmatex">\( V \)</span> nodes</td>
+<td>Global context at each layer; shorter effective diameter</td>
+<td>( O(</td>
+</tr>
+<tr>
+<td>Virtual edge</td>
+<td>Edges between structurally proximate node pairs</td>
+<td>Long-range interactions without extra GNN layers</td>
+<td>( O(</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="77-the-gnn-design-space-a-systematic-view">7.7 The GNN Design Space: A Systematic View<a class="headerlink" href="#77-the-gnn-design-space-a-systematic-view" title="Permanent link">¶</a></h2>
+<p>The You et al. (2020) paper "Design Space of Graph Neural Networks" ran a large-scale empirical study evaluating GNN designs across four axes — message passing, aggregation, skip connections, and training regularization — on 12 datasets spanning node classification, link prediction, and graph classification. Their key findings are worth internalizing before choosing a GNN architecture.</p>
+<p>Before reading the summary table below, note the definitions: <strong>intra-layer design</strong> covers how a single GNN layer aggregates and transforms; <strong>inter-layer design</strong> covers how layers are connected (skip connections, JK-Net); <strong>learning configuration</strong> covers batch size, learning rate schedule, dropout placement.</p>
+<table>
+<thead>
+<tr>
+<th>Design axis</th>
+<th>Key finding</th>
+<th>Practical implication</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Aggregation function</td>
+<td>Sum aggregation outperforms mean on most graph classification tasks; mean is more robust for node classification</td>
+<td>Match aggregation to task: sum for graph-level, mean for node-level</td>
+</tr>
+<tr>
+<td>Skip connections</td>
+<td>Residual connections improve accuracy on 10 of 12 datasets</td>
+<td>Default to residual connections for any GNN with depth ≥ 2</td>
+</tr>
+<tr>
+<td>Batch normalization</td>
+<td>Post-aggregation batch norm is beneficial; pre-aggregation hurts</td>
+<td>Apply batch norm after the update function, not inside aggregation</td>
+</tr>
+<tr>
+<td>Layer depth</td>
+<td>2–4 layers optimal across all tasks; deeper is rarely better</td>
+<td>Start with 2 layers, ablate to 4; never start with 8+</td>
+</tr>
+<tr>
+<td>Pre-processing MLP</td>
+<td>Applying a 2-layer MLP to input features before the first GNN layer consistently helps</td>
+<td>Always pre-process node features before GNN layers</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition mascot-tip">
+<p class="admonition-title">How to Pick Your Architecture</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving a tip">
+Here is the decision flowchart for practitioners. (1) Is inductiveness required? If you need to embed new nodes at inference time without retraining, use GraphSAGE or GAT; rule out GCN. (2) Do neighbor weights matter semantically? If adjacent nodes have very different relevance levels (heterogeneous neighborhoods), use GAT; otherwise, start with GCN or GraphSAGE-mean. (3) Is your graph large (&gt;100K nodes)? GraphSAGE's neighborhood sampling is essential; full-graph GCN/GAT will OOM. (4) Is the task graph-level? Add global mean + sum pooling; try a virtual node; run a DiffPool ablation only if your graph has clear hierarchical structure and you have the compute budget. (5) When in doubt: 2-layer GCN with residual connections, batch normalization, and pre-processing MLP is a competitive baseline on almost every benchmark.</p>
+</div>
+<hr>
+<h2 id="78-pyg-and-deepsnap-frameworks-for-multi-task-gnns">7.8 PyG and DeepSNAP: Frameworks for Multi-Task GNNs<a class="headerlink" href="#78-pyg-and-deepsnap-frameworks-for-multi-task-gnns" title="Permanent link">¶</a></h2>
+<p>Chapter 6 introduced PyTorch Geometric (PyG) as the primary GNN framework. For this chapter's broader set of prediction tasks — particularly heterogeneous graphs and multi-task pipelines — <strong>DeepSNAP</strong> extends PyG with a higher-level graph abstraction.</p>
+<p><strong>DeepSNAP</strong> (Hu et al., 2021) wraps PyG's <code>Data</code> and <code>HeteroData</code> objects in a <code>Graph</code> class that explicitly tracks multiple node types, edge types, label locations (node/edge/graph), and task configurations. Its primary design goal is enabling heterogeneous multi-task training without manually managing multiple tensor indices. Key features:</p>
+<ul>
+<li><strong>Typed node and edge features:</strong> <code>graph.node_feature</code>, <code>graph.edge_feature</code>, and <code>graph.graph_feature</code> are keyed dictionaries for heterogeneous graphs.</li>
+<li><strong>Task-aware splitting:</strong> <code>graph.split()</code> correctly partitions node, edge, or graph labels into train/val/test while respecting graph structure (e.g., not including test edges in the training message-passing graph).</li>
+<li><strong>Negative sampling:</strong> built-in support for link prediction negative sampling with configurable strategies (random, structure-aware).</li>
+</ul>
+<p>For the homogeneous, single-task scenarios covered in most of this textbook, raw PyG is sufficient. DeepSNAP becomes valuable in Chapters 12–17 (knowledge graphs, heterogeneous graphs, recommender systems) where multi-relational and multi-task training are the norm.</p>
+<hr>
+<h2 id="79-code-graphsage-and-gat-on-cora-with-pyg">7.9 Code: GraphSAGE and GAT on Cora with PyG<a class="headerlink" href="#79-code-graphsage-and-gat-on-cora-with-pyg" title="Permanent link">¶</a></h2>
+<p>The following implementation trains both GraphSAGE and GAT on the Cora citation network for node classification. The key parameters are: <code>SAGEConv</code> uses <code>aggr='mean'</code> by default (can be changed to <code>'max'</code> or <code>'lstm'</code>); <code>GATConv</code>'s <code>heads</code> parameter controls multi-head attention width, with <code>concat=True</code> for all but the final layer.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Planetoid</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">SAGEConv</span><span class="p">,</span> <span class="n">GATConv</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">Planetoid</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">'/tmp/Cora'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'Cora'</span><span class="p">)</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># ── GraphSAGE ────────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="k">class</span><span class="w"> </span><span class="nc">GraphSAGE</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="sd">    Two-layer GraphSAGE with mean aggregation.</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="sd">    SAGEConv(in, out, aggr='mean') computes:</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="sd">        h_N(v) = mean({h_u : u in N(v)})</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="sd">        h_v    = W · [h_v || h_N(v)]   (concat then linear)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="sd">    """</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_ch</span><span class="p">,</span> <span class="n">hid_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">):</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">SAGEConv</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">hid_ch</span><span class="p">,</span> <span class="n">aggr</span><span class="o">=</span><span class="s1">'mean'</span><span class="p">)</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">SAGEConv</span><span class="p">(</span><span class="n">hid_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">aggr</span><span class="o">=</span><span class="s1">'mean'</span><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>        <span class="n">x</span><span class="p">,</span> <span class="n">ei</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ei</span><span class="p">))</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ei</span><span class="p">)</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="c1"># ── GAT ──────────────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="k">class</span><span class="w"> </span><span class="nc">GAT</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="sd">    Two-layer GAT.</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="sd">    Layer 1: 8 attention heads, hidden_dim=8 per head → 64-dim output (concatenated).</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="sd">    Layer 2: 1 head (averaging), out_dim = num_classes.</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="sd">    GATConv(in, out_per_head, heads=K, concat=True) computes:</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="sd">        alpha_ij = softmax(LeakyReLU(a^T [Wh_i || Wh_j]))</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="sd">        h_i'     = sigma(sum_j alpha_ij * W * h_j)   (one head)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="sd">    Concatenation across K heads → K * out_per_head final dim.</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="sd">    """</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_ch</span><span class="p">,</span> <span class="n">hid_ch</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>        <span class="c1"># Layer 1: heads=8, each head output dim = hid_ch, concat → 8*hid_ch</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">GATConv</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="n">hid_ch</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="n">heads</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">concat</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>        <span class="c1"># Layer 2: 1 head → out_ch (no concat needed)</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">GATConv</span><span class="p">(</span><span class="n">hid_ch</span> <span class="o">*</span> <span class="n">heads</span><span class="p">,</span> <span class="n">out_ch</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">concat</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>        <span class="n">x</span><span class="p">,</span> <span class="n">ei</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">elu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ei</span><span class="p">))</span>        <span class="c1"># ELU instead of ReLU (from GAT paper)</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ei</span><span class="p">)</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="c1"># ── Training loop ─────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">wd</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">wd</span><span class="p">)</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>    <span class="n">best_val</span> <span class="o">=</span> <span class="mf">0.0</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">nll_loss</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">train_mask</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">train_mask</span><span class="p">])</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>        <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>        <span class="n">pred</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>        <span class="n">val_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">val_mask</span><span class="p">]</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">val_mask</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>        <span class="n">best_val</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">best_val</span><span class="p">,</span> <span class="n">val_acc</span><span class="p">)</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>    <span class="n">pred</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>    <span class="n">test_acc</span> <span class="o">=</span> <span class="p">(</span><span class="n">pred</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">test_mask</span><span class="p">]</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">test_mask</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>    <span class="k">return</span> <span class="n">best_val</span><span class="p">,</span> <span class="n">test_acc</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a><span class="n">sage</span> <span class="o">=</span> <span class="n">GraphSAGE</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_node_features</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">)</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a><span class="n">gat</span>  <span class="o">=</span> <span class="n">GAT</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_node_features</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">,</span> <span class="n">heads</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a><span class="n">sage_val</span><span class="p">,</span> <span class="n">sage_test</span> <span class="o">=</span> <span class="n">run_model</span><span class="p">(</span><span class="n">sage</span><span class="p">)</span>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a><span class="n">gat_val</span><span class="p">,</span>  <span class="n">gat_test</span>  <span class="o">=</span> <span class="n">run_model</span><span class="p">(</span><span class="n">gat</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"GraphSAGE  | Val: </span><span class="si">{</span><span class="n">sage_val</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> | Test: </span><span class="si">{</span><span class="n">sage_test</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"GAT        | Val: </span><span class="si">{</span><span class="n">gat_val</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">  | Test: </span><span class="si">{</span><span class="n">gat_test</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="diagram-gnn-design-space-interactive-comparison">Diagram: GNN Design Space Interactive Comparison<a class="headerlink" href="#diagram-gnn-design-space-interactive-comparison" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch07-gnn-design-comparison/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch07-gnn-design-comparison/main.html">Run GNN Design Space Interactive Comparison Fullscreen</a></p>
+<hr>
+<h2 id="710-benchmark-comparison">7.10 Benchmark Comparison<a class="headerlink" href="#710-benchmark-comparison" title="Permanent link">¶</a></h2>
+<p>The following table reports test accuracy on three node classification benchmarks and graph classification accuracy on the TUDataset MUTAG molecular graph benchmark.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Cora</th>
+<th>CiteSeer</th>
+<th>ogbn-arxiv</th>
+<th>MUTAG (graph cls.)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GCN (Kipf &amp; Welling 2017)</td>
+<td>81.5%</td>
+<td>70.3%</td>
+<td>71.7%</td>
+<td>85.7%</td>
+</tr>
+<tr>
+<td>GraphSAGE-mean (Hamilton et al. 2017)</td>
+<td>82.0%</td>
+<td>71.3%</td>
+<td>71.5%</td>
+<td>87.6%</td>
+</tr>
+<tr>
+<td>GAT (Veličković et al. 2018)</td>
+<td>83.0%</td>
+<td>72.5%</td>
+<td>73.9%</td>
+<td>89.4%</td>
+</tr>
+<tr>
+<td>GATv2 (Brody et al. 2022)</td>
+<td>83.7%</td>
+<td>73.1%</td>
+<td>74.1%</td>
+<td>—</td>
+</tr>
+<tr>
+<td>GCN + Residual + BN</td>
+<td>82.8%</td>
+<td>71.9%</td>
+<td>72.6%</td>
+<td>87.2%</td>
+</tr>
+<tr>
+<td>GraphSAGE + Virtual Node</td>
+<td>83.1%</td>
+<td>72.0%</td>
+<td>73.2%</td>
+<td>89.0%</td>
+</tr>
+</tbody>
+</table>
+<p>Several patterns are worth noting. GAT consistently outperforms both GCN and GraphSAGE on homophilic citation networks, reflecting the value of content-dependent neighbor weighting when features are informative. The residual + batch norm augmentation (fifth row) substantially closes the gap between GCN and GAT on Cora, suggesting that much of GAT's advantage comes from implicit regularization rather than the attention mechanism itself. Virtual node augmentation benefits GraphSAGE on graph classification (MUTAG) significantly, as molecular graphs often contain reactive groups far apart in graph distance.</p>
+<hr>
+<h2 id="711-common-pitfalls">7.11 Common Pitfalls<a class="headerlink" href="#711-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>1. Using GAT without the self-loop in the softmax denominator.</strong> The attention normalization sums over <span class="arithmatex">\( \mathcal{N}(i) \cup \{i\} \)</span> — including the self-loop — not just <span class="arithmatex">\( \mathcal{N}(i) \)</span>. Omitting the self-loop inflates attention weights on neighbors (they sum to 1 instead of sharing probability mass with the self-connection), which tends to push attention-weighted aggregation toward pure neighborhood averaging and loses the self-representation benefit of the self-loop in GCN. PyG's <code>GATConv</code> adds self-loops by default; if building GAT manually, do not forget to include <span class="arithmatex">\( (i, i) \)</span> in the attention denominator.</p>
+<p><strong>2. Forgetting to divide hidden dimension by the number of heads.</strong> With 8 attention heads and hidden dimension 64, each head should operate on dimension 8, not 64 — otherwise the first layer outputs <span class="arithmatex">\( 8 \times 64 = 512 \)</span> dimensions, not 64. A common mistake is setting <code>GATConv(in, 64, heads=8)</code>, which gives a 512-dimensional intermediate representation and a parameter count 8× larger than intended. The correct call is <code>GATConv(in, 8, heads=8)</code> for a 64-dimensional output.</p>
+<p><strong>3. Applying DiffPool to sparse graphs.</strong> DiffPool's coarsened adjacency <span class="arithmatex">\( S^T A S \)</span> is dense by construction: even if the original graph is sparse, any two clusters share some weighted connection after pooling. For graphs with more than 1,000 nodes, this dense intermediate adjacency grows quadratically in memory and makes DiffPool impractical without truncation. Use MinCutPool with sparse approximations, or flat global pooling with a virtual node, for large graphs.</p>
+<p><strong>4. Using graph-level mean pooling without also trying sum pooling.</strong> Mean pooling is scale-invariant — a graph with 10 nodes and a graph with 100 nodes will produce the same mean representation if their per-node embeddings are identical. For tasks where graph size is predictive (e.g., predicting molecular weight, which scales with atom count), mean pooling discards critical information. Always try concatenating mean and sum pooling before settling on one.</p>
+<p><strong>5. Treating link prediction as a node-level task.</strong> A common implementation mistake is using node classification infrastructure (softmax over classes at each node) to perform link prediction. Link prediction requires forming an edge-level score from the representations of both endpoint nodes — typically via dot product or bilinear scoring — followed by binary cross-entropy with negative samples. The negative sampling strategy (random vs. hard negatives) significantly affects both training dynamics and evaluation metrics; choose carefully based on the application domain.</p>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">The Design Space Is Now Yours</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating">
+Twenty-two concepts in one chapter — that is a lot of aggregating. You now have a complete picture of the modern GNN design space: from the inductive sampling of GraphSAGE and the learned attention of GAT, through skip connections and jumping knowledge that tame over-smoothing, to the full taxonomy of node-, edge-, and graph-level prediction tasks and the hierarchical pooling strategies that serve them. Most importantly, you have a decision framework rather than a list of facts. The next two chapters (GNN Training and GNN Theory) examine the mechanics and limits of everything you just learned. Your neighbors have insights too — and now you know exactly which ones to listen to.</p>
+</div>
+<hr>
+<h2 id="712-exercises">7.12 Exercises<a class="headerlink" href="#712-exercises" title="Permanent link">¶</a></h2>
+<h3 id="remember">Remember<a class="headerlink" href="#remember" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>State the GraphSAGE layer update equation, identifying the three components: the neighborhood aggregator <span class="arithmatex">\( \text{AGGREGATE}_k \)</span>, the concatenation, and the linear transformation with nonlinearity. How does this update differ structurally from the GCN update?</p>
+</li>
+<li>
+<p>Define the three levels of GNN prediction tasks (node, edge, graph). Give one real-world application example for each level from a different domain (social networks, chemistry, and biology).</p>
+</li>
+</ol>
+<h3 id="understand">Understand<a class="headerlink" href="#understand" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Explain why multi-head attention in GAT improves stability over single-head attention. What is the information-theoretic argument for maintaining multiple independent attention patterns simultaneously, and how does the averaging operation in the final layer relate to ensemble learning?</p>
+</li>
+<li>
+<p>A residual connection adds the input representation to the output of a GNN layer: <span class="arithmatex">\( \mathbf{h}_v^{(k)} = \text{GNN}^{(k)}(\mathbf{h}_v^{(k-1)}) + \mathbf{h}_v^{(k-1)} \)</span>. Explain how this addition helps with gradient flow in deep networks and why it mitigates (but does not eliminate) the over-smoothing problem.</p>
+</li>
+</ol>
+<h3 id="apply">Apply<a class="headerlink" href="#apply" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>You are building a link prediction system for a protein-protein interaction (PPI) network. The network has 20,000 proteins (nodes) with 128-dimensional feature vectors and 150,000 known interactions (edges). Propose a complete GNN pipeline: specify the architecture (GCN, GraphSAGE, or GAT), number of layers, hidden dimension, pooling strategy if any, edge scoring function, and loss function. Justify each choice.</p>
+</li>
+<li>
+<p>Implement a two-layer GAT with <span class="arithmatex">\( K = 4 \)</span> attention heads on the Karate Club graph using PyG's <code>GATConv</code>. For each node, print the attention weight vector over its neighborhood after training for 100 epochs on the faction labels (2 classes). Report the node (besides the two seeds) that receives the most concentrated attention (highest max <span class="arithmatex">\( \alpha_{ij} \)</span> over its neighbors).</p>
+</li>
+</ol>
+<h3 id="analyze">Analyze<a class="headerlink" href="#analyze" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>GraphSAGE's LSTM aggregator applies an LSTM to the sequence of neighbor embeddings in a <strong>random permutation</strong>. Analyze why this is a design flaw from a theoretical standpoint: what property does a valid aggregation function for sets of neighbors need to satisfy, and how does the LSTM aggregator violate it? What are the practical consequences on training stability?</p>
+</li>
+<li>
+<p>DiffPool learns a soft assignment <span class="arithmatex">\( S^{(l)} \)</span> using a GNN. At convergence, rows of <span class="arithmatex">\( S^{(l)} \)</span> ideally approach one-hot vectors (hard cluster assignments). Analyze the trade-off: if the entropy regularization is too strong, what happens to gradient flow during training? If it is too weak, what happens to the quality of cluster assignments? How does MinCutPool's orthogonality regularizer avoid this particular tension?</p>
+</li>
+</ol>
+<h3 id="evaluate">Evaluate<a class="headerlink" href="#evaluate" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Compare the computational complexity of GAT and GCN, both in terms of space (memory per forward pass) and time (FLOPs per layer). Assume a graph with <span class="arithmatex">\( |V| \)</span> nodes, <span class="arithmatex">\( |E| \)</span> edges, input dimension <span class="arithmatex">\( d \)</span>, hidden dimension <span class="arithmatex">\( d' \)</span>, and <span class="arithmatex">\( K \)</span> attention heads. Under what graph regime (dense vs. sparse, large vs. small) does the attention overhead of GAT become prohibitive relative to GCN?</p>
+</li>
+<li>
+<p>Evaluate the claim: "Virtual node augmentation is strictly better than adding a 4th GNN layer because it achieves global information exchange without over-smoothing." Identify any conditions under which this claim is false, and describe a graph structure where adding the virtual node would actually hurt performance rather than help it.</p>
+</li>
+</ol>
+<h3 id="create">Create<a class="headerlink" href="#create" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Design a <strong>hierarchical attention pooling</strong> architecture that combines the ideas of DiffPool (learned cluster assignments) and GAT (content-dependent attention). Specifically, define a cluster assignment mechanism that uses attention scores rather than a separate GNN for assignment, write the cluster-level adjacency and feature update equations, and describe the auxiliary losses needed to train the system.</p>
+</li>
+<li>
+<p>Propose a <strong>task-adaptive readout</strong> layer that dynamically selects between global mean pooling, global sum pooling, and virtual-node-based readout based on the graph's structural properties (e.g., size, density, diameter). Formally define the selection mechanism (what input does it use, what is the output distribution over readout strategies), and describe how you would train this mechanism end-to-end with the rest of the GNN.</p>
+</li>
+</ol>
+<hr>
+<h2 id="713-further-reading">7.13 Further Reading<a class="headerlink" href="#713-further-reading" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Hamilton, W., Ying, R., &amp; Leskovec, J. (2017). Inductive representation learning on large graphs.</strong> <em>Advances in Neural Information Processing Systems (NeurIPS 30).</em> The GraphSAGE paper. Pay particular attention to the theoretical analysis (Section 4) showing that GraphSAGE embeddings satisfy a VC-dimension bound that enables generalization to unseen nodes — the key result that makes inductiveness more than a convenience feature.</p>
+</li>
+<li>
+<p><strong>Veličković, P., Cucurull, G., Casanova, A., Romero, A., Liò, P., &amp; Bengio, Y. (2018). Graph attention networks.</strong> <em>International Conference on Learning Representations (ICLR 2018).</em> The GAT paper. Section 2.2's analysis of attention as a generalization of GCN's fixed structural weights is essential reading. Compare the computational complexity table (Table 1) with GCN and SplineCNN.</p>
+</li>
+<li>
+<p><strong>Brody, S., Alon, U., &amp; Yahav, E. (2022). How attentive are graph attention networks?</strong> <em>International Conference on Learning Representations (ICLR 2022).</em> Demonstrates that GAT's attention mechanism is, counterintuitively, static — it cannot distinguish different graphs with the same local structure. GATv2 fixes this with a modified attention that is strictly more expressive. Essential reading before using GAT in production.</p>
+</li>
+<li>
+<p><strong>Xu, K., Li, C., Tian, Y., Sonobe, T., Kawarabayashi, K., &amp; Jegelka, S. (2018). Representation learning on graphs with jumping knowledge networks.</strong> <em>Proceedings of ICML 2018.</em> Introduces JK-Net with a clean analysis of why different nodes benefit from different effective depths. The empirical study across 4 aggregation strategies (max, concatenation, LSTM, mean) is directly applicable when choosing a JK-Net variant.</p>
+</li>
+<li>
+<p><strong>You, J., Ying, R., &amp; Leskovec, J. (2020). Design space for graph neural networks.</strong> <em>Advances in Neural Information Processing Systems (NeurIPS 33).</em> The systematic empirical study covering 315,000 GNN configurations across 12 tasks. Table 3's ranking of design choices by importance should be committed to memory by anyone building GNNs in practice.</p>
+</li>
+<li>
+<p><strong>Ying, R., You, J., Morris, C., Ren, X., Hamilton, W. L., &amp; Leskovec, J. (2018). Hierarchical graph representation learning with differentiable pooling.</strong> <em>Advances in Neural Information Processing Systems (NeurIPS 31).</em> The DiffPool paper. The visualization of learned cluster assignments on the ENZYMES dataset (Figure 3) provides strong intuition for what hierarchical pooling is actually doing.</p>
+</li>
+<li>
+<p><strong>Bianchi, F. M., Grattarola, D., &amp; Alippi, C. (2020). Spectral clustering with graph neural networks for graph pooling.</strong> <em>Proceedings of ICML 2020.</em> The MinCutPool paper. Section 3's derivation of the MinCut loss from the normalized cut objective makes the connection to spectral clustering precise and readable.</p>
+</li>
+<li>
+<p><strong>Zhang, M., &amp; Chen, Y. (2018). Link prediction based on graph neural networks.</strong> <em>Advances in Neural Information Processing Systems (NeurIPS 31).</em> Introduces SEAL — an enclosing-subgraph-based link prediction framework that systematically uses virtual edges (local subgraph extraction) to provide structural context for link prediction. Benchmark results show consistent improvements over pure embedding-based methods on citation and biological networks.</p>
+</li>
+</ol>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../06-gnn-foundations/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

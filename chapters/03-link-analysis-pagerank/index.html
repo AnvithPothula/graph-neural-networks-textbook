@@ -1,0 +1,3446 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Derives PageRank from random walk theory, covering power iteration, personalized PageRank, HITS, and the teleportation trick for handling dangling nodes and spider traps.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/03-link-analysis-pagerank/">
+      
+      
+        <link rel="prev" href="../02-graph-properties-and-features/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 3: Link Analysis and PageRank - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 3: Link Analysis and PageRank">
+  <meta property="og:description" content="Derives PageRank from random walk theory, covering power iteration, personalized PageRank, HITS, and the teleportation trick for handling dangling nodes and spider traps.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/03-link-analysis-pagerank/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 3: Link Analysis and PageRank">
+  <meta name="twitter:description" content="Derives PageRank from random walk theory, covering power iteration, personalized PageRank, HITS, and the teleportation trick for handling dangling nodes and spider traps.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-3-link-analysis-and-pagerank" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 3: Link Analysis and PageRank
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_5" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_5" id="__nav_4_5_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    3. Link Analysis and PageRank
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#31-the-influence-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 The Influence Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#32-random-walks-the-surfing-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 Random Walks: The Surfing Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#33-stationary-distributions-and-eigenvectors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 Stationary Distributions and Eigenvectors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#34-pagerank-the-flow-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 PageRank: The Flow Formulation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#35-pagerank-the-matrix-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 PageRank: The Matrix Formulation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#36-spider-traps-and-dead-ends" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.6 Spider Traps and Dead Ends
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#37-teleportation-the-fix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7 Teleportation: The Fix
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.7 Teleportation: The Fix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#371-causal-loop-diagram-pagerank-feedback-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.7.1 Causal Loop Diagram: PageRank Feedback Dynamics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.7.1 Causal Loop Diagram: PageRank Feedback Dynamics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-pagerank-feedback-loops" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: PageRank Feedback Loops
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#38-power-iteration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.8 Power Iteration
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#39-personalized-pagerank" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.9 Personalized PageRank
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#310-the-hits-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.10 The HITS Algorithm
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#311-empirical-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.11 Empirical Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#312-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.12 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#313-microsim-pagerank-power-iteration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.13 MicroSim: PageRank Power Iteration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.13 MicroSim: PageRank Power Iteration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-pagerank-power-iteration-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: PageRank Power Iteration Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#314-chapter-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.14 Chapter Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#315-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.15 Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3.15 Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analyze
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#316-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.16 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    3. Link Analysis and PageRank
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/03-link-analysis-pagerank/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-3-link-analysis-and-pagerank">Chapter 3: Link Analysis and PageRank<a class="headerlink" href="#chapter-3-link-analysis-and-pagerank" title="Permanent link">¶</a></h1>
+<p><strong>Part 1: Classical Graph Analysis</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Derives PageRank from random walk theory, covering power iteration, personalized PageRank, HITS, and the teleportation trick for handling dangling nodes and spider traps.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 7 concepts from the learning graph:</p>
+<ol>
+<li>PageRank</li>
+<li>Personalized PageRank</li>
+<li>HITS Algorithm</li>
+<li>Random Walk</li>
+<li>Stationary Distribution</li>
+<li>Power Iteration</li>
+<li>Teleportation (PageRank)</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../02-graph-properties-and-features/">Chapter 2: Graph Properties and Traditional ML Features</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Welcome to Chapter 3 — Let's Follow the Links</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waves hello">
+The web is a directed graph with billions of nodes and trillions of edges, and for decades the central problem in information retrieval was deceptively simple: which nodes matter most? The breakthrough that powered one of the most consequential software products in history was not a feature-engineering trick — it was a recursive definition of importance grounded in the mathematics of random walks. In this chapter we derive PageRank from first principles, confront the pathological cases that break the naive formulation, and then extend the framework into Personalized PageRank and the HITS algorithm. Every technique here is a building block for GNN aggregation strategies you will encounter starting in Chapter 6.</p>
+</div>
+<h2 id="31-the-influence-problem">3.1 The Influence Problem<a class="headerlink" href="#31-the-influence-problem" title="Permanent link">¶</a></h2>
+<p>Before search engines could rank pages by content relevance, they confronted a deeper problem: any document can claim to be authoritative, but a self-proclaimed authority is worth little. Early keyword-based systems ranked pages by how often a search term appeared, which immediately invited manipulation — pages stuffed with repeated keywords dominated results regardless of actual quality. The structural insight that changed everything came from the observation that the web's link structure itself encodes credibility: a page earns authority not by claiming it but by being chosen as a link destination by other credible pages. This circularity — credibility conferred by credible sources — is precisely the kind of recursive relationship that graph algorithms are well suited to resolve.</p>
+<p>The same structure appears throughout science and society. Academic papers gain influence by accumulating citations from influential papers; legal decisions acquire precedential weight by being cited in subsequent high-profile rulings; social media users accumulate reach by being followed by well-connected accounts. In every case, the question is the same: given only the link structure of a directed graph <span class="arithmatex">\( G = (V, E) \)</span>, assign a scalar importance score <span class="arithmatex">\( r(v) \)</span> to each node <span class="arithmatex">\( v \in V \)</span> such that the scores collectively respect the recursive definition of authority.</p>
+<h2 id="32-random-walks-the-surfing-model">3.2 Random Walks: The Surfing Model<a class="headerlink" href="#32-random-walks-the-surfing-model" title="Permanent link">¶</a></h2>
+<p>Before introducing any equations, it is worth building the correct physical intuition. Imagine a web surfer who, starting at an arbitrary page, repeatedly selects a hyperlink uniformly at random and follows it. Over time, the surfer traces a path through the graph, spending more time on pages that are frequently reached and less time on isolated backwaters. The fraction of total time steps spent at node <span class="arithmatex">\( v \)</span> — in the limit, as the walk grows infinitely long — is precisely the PageRank score we want to assign to <span class="arithmatex">\( v \)</span>.</p>
+<p>Formally, a <strong>random walk</strong> on a directed graph <span class="arithmatex">\( G = (V, E) \)</span> is a discrete-time stochastic process <span class="arithmatex">\( \{v_0, v_1, v_2, \ldots\} \)</span> defined by the transition rule: at each time step <span class="arithmatex">\( t \)</span>, if the current node is <span class="arithmatex">\( v_t \)</span>, the next node <span class="arithmatex">\( v_{t+1} \)</span> is chosen uniformly at random from the out-neighbors of <span class="arithmatex">\( v_t \)</span>. That is,</p>
+<div class="arithmatex">\[
+\Pr[v_{t+1} = u \mid v_t = v] = \frac{\mathbf{1}[(v, u) \in E]}{d^{\text{out}}(v)}
+\]</div>
+<p>where <span class="arithmatex">\( d^{\text{out}}(v) \)</span> is the out-degree of <span class="arithmatex">\( v \)</span>. This rule defines a <strong>Markov chain</strong> on <span class="arithmatex">\( V \)</span>: the distribution over the next state depends only on the current state, not on the history of prior states. The entire walk is therefore determined by a single <span class="arithmatex">\( |V| \times |V| \)</span> transition matrix <span class="arithmatex">\( M \)</span>, whose <span class="arithmatex">\((u, v)\)</span>-entry is</p>
+<div class="arithmatex">\[
+M_{uv} = \frac{\mathbf{1}[(v, u) \in E]}{d^{\text{out}}(v)}
+\]</div>
+<p>where the convention here is that column <span class="arithmatex">\( v \)</span> of <span class="arithmatex">\( M \)</span> encodes the transition probabilities <em>out</em> of <span class="arithmatex">\( v \)</span>. This makes <span class="arithmatex">\( M \)</span> <strong>column-stochastic</strong>: every column sums to 1 (assuming <span class="arithmatex">\( d^{\text{out}}(v) &gt; 0 \)</span> for all <span class="arithmatex">\( v \)</span>).</p>
+<h2 id="33-stationary-distributions-and-eigenvectors">3.3 Stationary Distributions and Eigenvectors<a class="headerlink" href="#33-stationary-distributions-and-eigenvectors" title="Permanent link">¶</a></h2>
+<p>The probability distribution over nodes at time <span class="arithmatex">\( t \)</span> is a vector <span class="arithmatex">\( \mathbf{r}^{(t)} \in \mathbb{R}^{|V|} \)</span> with <span class="arithmatex">\( r^{(t)}_v \geq 0 \)</span> and <span class="arithmatex">\( \sum_v r^{(t)}_v = 1 \)</span>. Given an initial distribution <span class="arithmatex">\( \mathbf{r}^{(0)} \)</span>, the distribution at time <span class="arithmatex">\( t \)</span> is</p>
+<div class="arithmatex">\[
+\mathbf{r}^{(t)} = M^t \, \mathbf{r}^{(0)}
+\]</div>
+<p>A <strong>stationary distribution</strong> <span class="arithmatex">\( \mathbf{\pi} \)</span> is one that satisfies <span class="arithmatex">\( M \mathbf{\pi} = \mathbf{\pi} \)</span>, meaning the distribution is unchanged by one step of the walk. In eigenvector language, <span class="arithmatex">\( \mathbf{\pi} \)</span> is the eigenvector of <span class="arithmatex">\( M \)</span> corresponding to eigenvalue 1. For a column-stochastic matrix, eigenvalue 1 is always guaranteed by the Perron–Frobenius theorem; whether it is <em>unique</em> and whether the chain <em>converges</em> to it depends on two structural properties of the chain.</p>
+<p>A Markov chain is <strong>irreducible</strong> if every node is reachable from every other node — that is, the underlying directed graph is strongly connected. It is <strong>aperiodic</strong> if the greatest common divisor of all cycle lengths is 1, which prevents the chain from oscillating among states in a regular pattern. When both properties hold, the fundamental theorem of Markov chains guarantees that (a) a unique stationary distribution <span class="arithmatex">\( \mathbf{\pi} \)</span> exists, (b) the chain converges to <span class="arithmatex">\( \mathbf{\pi} \)</span> from any starting distribution, and (c) <span class="arithmatex">\( \pi_v \)</span> equals the long-run fraction of time spent at <span class="arithmatex">\( v \)</span>. This convergence is exactly why the random surfer's visit frequency is a well-defined and meaningful score.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">The Eigenvector Insight</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinks carefully">
+A recurring pattern in this chapter — and throughout graph ML — is that the "right" answer to a graph ranking problem turns out to be an eigenvector of a carefully constructed matrix. PageRank is the principal eigenvector of the Google matrix. HITS authority scores are the principal eigenvector of <span class="arithmatex">\( A^\top A \)</span>. Spectral clustering (Chapter 6) uses eigenvectors of the graph Laplacian. When you see an iterative "update and normalize" procedure converging to a fixed point, it is almost always implementing the power method for finding a leading eigenvector. Recognizing this unifying thread makes the mathematics of graph analysis considerably less intimidating.</p>
+</div>
+<h2 id="34-pagerank-the-flow-formulation">3.4 PageRank: The Flow Formulation<a class="headerlink" href="#34-pagerank-the-flow-formulation" title="Permanent link">¶</a></h2>
+<p>With the statistical interpretation in place, we can now derive the defining equation of PageRank. Define <span class="arithmatex">\( r(v) \)</span> as the stationary probability of node <span class="arithmatex">\( v \)</span> under the random walk — equivalently, the fraction of the surfer's time spent at <span class="arithmatex">\( v \)</span>. Since each node <span class="arithmatex">\( u \)</span> with an out-edge to <span class="arithmatex">\( v \)</span> sends <span class="arithmatex">\( 1 / d^{\text{out}}(u) \)</span> of its rank to <span class="arithmatex">\( v \)</span>, the balance equation for <span class="arithmatex">\( r(v) \)</span> is</p>
+<div class="arithmatex">\[
+r(v) = \sum_{u : (u, v) \in E} \frac{r(u)}{d^{\text{out}}(u)}
+\]</div>
+<p>This is the <strong>flow formulation</strong> of PageRank. Reading it aloud: the rank of <span class="arithmatex">\( v \)</span> equals the sum over all pages <span class="arithmatex">\( u \)</span> that link to <span class="arithmatex">\( v \)</span> of <span class="arithmatex">\( u \)</span>'s rank divided by <span class="arithmatex">\( u \)</span>'s out-degree. The division by out-degree implements the "split evenly" rule — a page with 100 out-links contributes far less per link than a page with a single out-link. This equation must hold simultaneously for every node in the graph, yielding a system of <span class="arithmatex">\( |V| \)</span> equations in <span class="arithmatex">\( |V| \)</span> unknowns.</p>
+<p>To see this concretely, consider the Zachary Karate Club graph — a network of 34 members of a university karate club, connected by an edge whenever two members interacted outside of club activities. Treating each undirected edge as two directed edges, the PageRank flow equation for the club instructor (node 0) accumulates contributions from all 16 members who interacted with them, weighted by each contributor's own influence and out-degree. Intuitively, we expect node 0 and the club president (node 33) — the two most structurally central members — to receive the highest PageRank scores, which is exactly what the algorithm produces.</p>
+<h2 id="35-pagerank-the-matrix-formulation">3.5 PageRank: The Matrix Formulation<a class="headerlink" href="#35-pagerank-the-matrix-formulation" title="Permanent link">¶</a></h2>
+<p>Writing the flow equations for all nodes simultaneously reveals the matrix structure. Stack the scores into a column vector <span class="arithmatex">\( \mathbf{r} \in \mathbb{R}^{|V|} \)</span>. The column-stochastic adjacency matrix <span class="arithmatex">\( M \)</span> defined earlier encodes exactly the coefficients of the flow equations, so the entire system becomes</p>
+<div class="arithmatex">\[
+\mathbf{r} = M \mathbf{r}
+\]</div>
+<p>This is an eigenvector equation: <span class="arithmatex">\( \mathbf{r} \)</span> is the eigenvector of <span class="arithmatex">\( M \)</span> with eigenvalue 1, which (for a well-behaved chain) is the unique stationary distribution. The <strong>power iteration</strong> algorithm exploits this structure: starting from the uniform distribution <span class="arithmatex">\( \mathbf{r}^{(0)} = \frac{1}{|V|}\mathbf{1} \)</span>, repeatedly apply</p>
+<div class="arithmatex">\[
+\mathbf{r}^{(t+1)} = M \, \mathbf{r}^{(t)}
+\]</div>
+<p>until <span class="arithmatex">\( \|\mathbf{r}^{(t+1)} - \mathbf{r}^{(t)}\|_1 &lt; \epsilon \)</span> for some convergence threshold <span class="arithmatex">\( \epsilon \)</span>. Each iteration is a sparse matrix–vector product costing <span class="arithmatex">\( O(|E|) \)</span> — the same as traversing the graph once — which makes PageRank tractable even on graphs with billions of edges.</p>
+<p>The following table summarizes the two equivalent formulations and their respective strengths.</p>
+<table>
+<thead>
+<tr>
+<th>Formulation</th>
+<th>Equation</th>
+<th>Primary Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Flow</td>
+<td><span class="arithmatex">\( r(v) = \sum_{u \to v} r(u) / d^{\text{out}}(u) \)</span></td>
+<td>Intuition and derivation</td>
+</tr>
+<tr>
+<td>Matrix</td>
+<td><span class="arithmatex">\( \mathbf{r} = M \mathbf{r} \)</span></td>
+<td>Algorithmic implementation and analysis</td>
+</tr>
+</tbody>
+</table>
+<h2 id="36-spider-traps-and-dead-ends">3.6 Spider Traps and Dead Ends<a class="headerlink" href="#36-spider-traps-and-dead-ends" title="Permanent link">¶</a></h2>
+<p>The idealized random walk model breaks down in two well-known situations, both of which occur in any real-world web graph. Understanding them is essential before the algorithm can be deployed.</p>
+<p>A <strong>spider trap</strong> is a subset <span class="arithmatex">\( S \subseteq V \)</span> of nodes whose only outgoing edges lead back within <span class="arithmatex">\( S \)</span> — in other words, a strongly connected component with no out-edges to the rest of the graph. Once the random surfer enters <span class="arithmatex">\( S \)</span>, they can never leave. Over time, all PageRank mass concentrates within <span class="arithmatex">\( S \)</span>, and nodes outside <span class="arithmatex">\( S \)</span> converge to score zero regardless of how well-connected they are. Spider traps arise naturally on the web when a site uses relative internal links exclusively, or when crawlers generate URLs that cycle back into the same domain.</p>
+<p>A <strong>dead end</strong> is a node <span class="arithmatex">\( v \)</span> with <span class="arithmatex">\( d^{\text{out}}(v) = 0 \)</span> — a page with no outgoing links. When the surfer reaches <span class="arithmatex">\( v \)</span>, the transition matrix has a column of zeros, violating the column-stochastic property. In practice, the surfer "falls off" the graph and the total probability mass leaks out of the system: <span class="arithmatex">\( \sum_v r^{(t)}_v \)</span> decreases below 1 with each visit to a dead end, causing the entire rank vector to collapse toward zero asymptotically. Dead ends appear frequently in web crawls as pages whose links have not yet been fetched.</p>
+<p>Both problems reduce, at root, to the same failure mode: the Markov chain defined by <span class="arithmatex">\( M \)</span> is not irreducible, violating the condition required for a unique stationary distribution.</p>
+<h2 id="37-teleportation-the-fix">3.7 Teleportation: The Fix<a class="headerlink" href="#37-teleportation-the-fix" title="Permanent link">¶</a></h2>
+<p>The standard solution to both pathologies is <strong>teleportation</strong> — also called the damping factor or restart probability. Rather than always following a random link, the surfer follows a link with probability <span class="arithmatex">\( d \in (0, 1) \)</span> (typically <span class="arithmatex">\( d = 0.85 \)</span>) and with complementary probability <span class="arithmatex">\( 1 - d \)</span> teleports instantaneously to a node chosen uniformly at random from all nodes in <span class="arithmatex">\( V \)</span>. Formally, the revised transition probability is</p>
+<div class="arithmatex">\[
+\Pr[v_{t+1} = u \mid v_t = v] = d \cdot \frac{\mathbf{1}[(v, u) \in E]}{d^{\text{out}}(v)} + (1 - d) \cdot \frac{1}{|V|}
+\]</div>
+<p>This modification yields the <strong>Google matrix</strong></p>
+<div class="arithmatex">\[
+A = d \, M + \frac{1 - d}{|V|} \, \mathbf{1}\mathbf{1}^\top
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{1} \)</span> is the all-ones column vector and <span class="arithmatex">\( \mathbf{1}\mathbf{1}^\top \)</span> is the <span class="arithmatex">\( |V| \times |V| \)</span> all-ones matrix. Every entry of <span class="arithmatex">\( A \)</span> is strictly positive (since <span class="arithmatex">\( (1-d)/|V| &gt; 0 \)</span>), which implies that every pair of nodes communicates in a single step, making the chain both irreducible and aperiodic. By the Perron–Frobenius theorem, <span class="arithmatex">\( A \)</span> has a unique stationary distribution <span class="arithmatex">\( \mathbf{r} \)</span> satisfying <span class="arithmatex">\( A\mathbf{r} = \mathbf{r} \)</span>, and the power iteration <span class="arithmatex">\( \mathbf{r}^{(t+1)} = A\mathbf{r}^{(t)} \)</span> converges geometrically at rate <span class="arithmatex">\( d \)</span>. The PageRank equation with teleportation is therefore</p>
+<div class="arithmatex">\[
+\mathbf{r} = d \, M \mathbf{r} + \frac{1 - d}{|V|} \mathbf{1}
+\]</div>
+<p>Teleportation is not merely a numerical trick: it carries a meaningful interpretation. The <span class="arithmatex">\( (1-d) \)</span> term ensures that even completely isolated or terminally trapped nodes receive some baseline rank, reflecting the real-world observation that a user bored with one part of the web might type a new URL rather than keep clicking. The parameter <span class="arithmatex">\( d \)</span> controls the trade-off between structural fidelity (following the link graph) and coverage (exploring all nodes).</p>
+<h3 id="371-causal-loop-diagram-pagerank-feedback-dynamics">3.7.1 Causal Loop Diagram: PageRank Feedback Dynamics<a class="headerlink" href="#371-causal-loop-diagram-pagerank-feedback-dynamics" title="Permanent link">¶</a></h3>
+<p>Before examining the power iteration algorithm in detail, it is instructive to examine the feedback structure that makes PageRank both powerful and potentially unstable without teleportation. The diagram below depicts two interlocked feedback loops. Two structural properties are at play: a <strong>reinforcing loop</strong> (R) that amplifies rank through link propagation, and a <strong>balancing loop</strong> (B) that the teleportation term imposes to prevent runaway concentration.</p>
+<h4 id="diagram-pagerank-feedback-loops">Diagram: PageRank Feedback Loops<a class="headerlink" href="#diagram-pagerank-feedback-loops" title="Permanent link">¶</a></h4>
+<pre class="mermaid"><code>flowchart LR
+    PR["r(v) — Page Rank Score"]
+    NR["r(u) for u→v\nNeighbor Ranks"]
+    IL["Inbound High-Rank\nLink Count"]
+    RC["Rank Concentration\nRisk"]
+    TP["Teleportation\n(1-d)/|V|"]
+
+    PR --&gt;|"+ propagates to\nout-neighbors"| NR
+    NR --&gt;|"+ boosts v's score\nvia flow equation"| IL
+    IL --&gt;|"+ raises"| PR
+
+    PR --&gt;|"+ amplifies"| RC
+    TP --&gt;|"− dampens"| RC
+    RC --&gt;|"− reduces effective\npropagation to periphery"| NR
+
+    click PR href "#pagerank-the-flow-formulation" "PageRank flow equation"
+    click NR href "#pagerank-the-matrix-formulation" "Matrix formulation and neighbor contributions"
+    click TP href "#teleportation-the-fix" "How teleportation prevents rank collapse"
+    click RC href "#spider-traps-and-dead-ends" "Rank concentration pathologies"
+
+    style PR fill:#e8f5e9,stroke:#388e3c
+    style NR fill:#e8f5e9,stroke:#388e3c
+    style IL fill:#e8f5e9,stroke:#388e3c
+    style RC fill:#ffebee,stroke:#c62828
+    style TP fill:#e3f2fd,stroke:#1565c0</code></pre>
+<p><strong>R loop — Rank Propagation (green nodes):</strong> A page's PageRank score propagates to its out-neighbors, boosting their inbound high-rank link counts, which in turn raises their scores. Those neighbors then propagate their elevated scores onward, creating a self-reinforcing amplification cycle. Without any dampening, highly-linked nodes would absorb all rank mass.</p>
+<p><strong>B loop — Teleportation Dampening (blue node):</strong> The (1-d)/|V| teleportation term injects rank uniformly at every node regardless of link structure. As rank concentration risk grows, this constant injection effectively dilutes the reinforcing loop's output, bounding the maximum achievable concentration. The balancing loop is what makes the stationary distribution well-defined and ensures every node retains nonzero rank.</p>
+<h2 id="38-power-iteration">3.8 Power Iteration<a class="headerlink" href="#38-power-iteration" title="Permanent link">¶</a></h2>
+<p>With teleportation in place, the power iteration algorithm is straightforward to implement. Before presenting the code, note three key quantities: <code>alpha</code> is the damping factor <span class="arithmatex">\( d \)</span> (NetworkX uses the equivalent parameter with that name); <code>max_iter</code> is the maximum number of iterations before declaring non-convergence; and <code>tol</code> is the <span class="arithmatex">\( L_1 \)</span>-norm convergence tolerance <span class="arithmatex">\( \epsilon \)</span>. In practice, <span class="arithmatex">\( \epsilon = 10^{-6} \)</span> and at most 100 iterations suffice for graphs with millions of nodes.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Load the Zachary Karate Club graph</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Built-in PageRank (uses power iteration internally)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">pr</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">pagerank</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Display top-5 nodes by PageRank</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">top5</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">5</span><span class="p">]</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"Top-5 PageRank nodes in Karate Club graph:"</span><span class="p">)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">top5</span><span class="p">:</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Node </span><span class="si">{</span><span class="n">node</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Running this on the Karate Club graph produces node 0 (the instructor) and node 33 (the president) as the two highest-ranked nodes — the same individuals around whom the club eventually split — validating that PageRank captures structural influence even in social graphs with no explicit authority labels.</p>
+<p>To understand the convergence dynamics, it is instructive to implement power iteration from scratch and track the <span class="arithmatex">\( L_1 \)</span> error across iterations.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">pagerank_power_iteration</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="sd">    Manual power iteration for PageRank.</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="sd">    G: a NetworkX DiGraph (or undirected graph, treated as bidirectional)</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="sd">    d: damping factor (probability of following a link)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="sd">    tol: L1-norm convergence threshold</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="sd">    max_iter: maximum iterations before stopping</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="sd">    Returns: dict mapping node -&gt; PageRank score</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="sd">    """</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">node_idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodes</span><span class="p">)}</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="c1"># Build column-stochastic matrix M</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    <span class="c1"># M[i, j] = 1/out_degree(j) if edge j-&gt;i exists, else 0</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>        <span class="n">out_neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">if</span> <span class="n">G</span><span class="o">.</span><span class="n">is_directed</span><span class="p">()</span> <span class="k">else</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>        <span class="k">if</span> <span class="n">out_neighbors</span><span class="p">:</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>            <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">out_neighbors</span><span class="p">:</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>                <span class="n">M</span><span class="p">[</span><span class="n">node_idx</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">node_idx</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_neighbors</span><span class="p">)</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>        <span class="c1"># Dead-end handling: dangling nodes spread rank uniformly (teleportation handles this)</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>    <span class="c1"># Initialize uniform distribution</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="o">/</span> <span class="n">N</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>    <span class="k">for</span> <span class="n">iteration</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>        <span class="c1"># Apply Google matrix: r &lt;- d*M*r + (1-d)/N * 1</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>        <span class="n">r_new</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="n">M</span> <span class="o">@</span> <span class="n">r</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="n">N</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>        <span class="c1"># Check L1-norm convergence</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">r_new</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Converged after </span><span class="si">{</span><span class="n">iteration</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2"> iterations"</span><span class="p">)</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>            <span class="k">break</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>        <span class="n">r</span> <span class="o">=</span> <span class="n">r_new</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>    <span class="k">return</span> <span class="p">{</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)}</span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="c1"># Treat undirected Karate Club as directed (both directions per edge)</span>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="n">G_directed</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">to_directed</span><span class="p">()</span>
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="n">pr_manual</span> <span class="o">=</span> <span class="n">pagerank_power_iteration</span><span class="p">(</span><span class="n">G_directed</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Convergence Rate Depends on the Damping Factor</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage offers a practical tip">
+The geometric convergence rate of power iteration is bounded by the damping factor <span class="arithmatex">\( d \)</span> — specifically, the error after <span class="arithmatex">\( t \)</span> iterations is <span class="arithmatex">\( O(d^t) \)</span>. For the standard <span class="arithmatex">\( d = 0.85 \)</span>, this means errors decay by a factor of 0.85 per iteration, giving about 40 iterations to reach <span class="arithmatex">\( 10^{-6} \)</span> precision. Setting <span class="arithmatex">\( d \)</span> lower (e.g., <span class="arithmatex">\( d = 0.5 \)</span>) accelerates convergence dramatically but changes the semantic meaning of PageRank, overweighting teleportation and underweighting link structure. In production systems, <span class="arithmatex">\( d = 0.85 \)</span> is the industry consensus; tune it only if you have domain-specific evidence that a different value better reflects the task at hand.</p>
+</div>
+<h2 id="39-personalized-pagerank">3.9 Personalized PageRank<a class="headerlink" href="#39-personalized-pagerank" title="Permanent link">¶</a></h2>
+<p>The teleportation step in standard PageRank distributes the "restart" probability uniformly across all nodes, producing a global notion of importance. <strong>Personalized PageRank (PPR)</strong> replaces the uniform teleportation target with an arbitrary probability distribution <span class="arithmatex">\( \mathbf{s} \in \Delta^{|V|-1} \)</span> over nodes (a probability simplex vector), yielding a score that measures proximity relative to <span class="arithmatex">\( \mathbf{s} \)</span>. The PPR vector <span class="arithmatex">\( \mathbf{r}_{\mathbf{s}} \)</span> satisfies</p>
+<div class="arithmatex">\[
+\mathbf{r}_{\mathbf{s}} = d \, M \, \mathbf{r}_{\mathbf{s}} + (1 - d) \, \mathbf{s}
+\]</div>
+<p>When <span class="arithmatex">\( \mathbf{s} = \frac{1}{|V|}\mathbf{1} \)</span>, this reduces to standard PageRank. When <span class="arithmatex">\( \mathbf{s} = \mathbf{e}_q \)</span> — a one-hot vector concentrating all probability on a query node <span class="arithmatex">\( q \)</span> — the PPR vector <span class="arithmatex">\( \mathbf{r}_{\mathbf{e}_q}(v) \)</span> measures how likely a random walk starting at <span class="arithmatex">\( q \)</span> is to visit <span class="arithmatex">\( v \)</span> before the walk resets. This is a powerful notion of <strong>local graph proximity</strong>: nodes structurally close to <span class="arithmatex">\( q \)</span> in the link graph receive high PPR scores even if they have low global PageRank.</p>
+<p>Several practically important tasks reduce to computing PPR scores:</p>
+<ul>
+<li><strong>Recommendation systems:</strong> given a user's interaction history as query nodes, PPR identifies items in the same neighborhood; this underlies Pinterest's PinSage system.</li>
+<li><strong>Community detection:</strong> nodes with high mutual PPR scores tend to belong to the same community, providing a soft alternative to modularity optimization.</li>
+<li><strong>GNN propagation:</strong> the Approximate Personalized Propagation of Neural Predictions (APPNP) architecture replaces standard GNN message passing with PPR-based propagation, decoupling the propagation depth from the number of trainable layers and achieving competitive node classification accuracy with superior stability against over-smoothing.</li>
+</ul>
+<p>In the Karate Club example, computing PPR with <span class="arithmatex">\( \mathbf{s} = \mathbf{e}_0 \)</span> (teleporting only to the instructor, node 0) assigns high scores to the instructor's training group — nodes 1, 2, 3, 7, 11, 13 — which ultimately formed one of the two factions after the club's social split. PPR thus recovers community structure relative to a seed node without explicit community detection.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">personalized_pagerank</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">query_node</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="sd">    PPR with teleportation concentrated on a single query node.</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="sd">    Returns a dict of node -&gt; PPR score relative to query_node.</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="sd">    """</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">node_idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">nodes</span><span class="p">)}</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="c1"># Build column-stochastic M (same as before)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">M</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">N</span><span class="p">))</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">G_dir</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">to_directed</span><span class="p">()</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>        <span class="n">out_neighbors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G_dir</span><span class="o">.</span><span class="n">successors</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>        <span class="k">if</span> <span class="n">out_neighbors</span><span class="p">:</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>            <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">out_neighbors</span><span class="p">:</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>                <span class="n">M</span><span class="p">[</span><span class="n">node_idx</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">node_idx</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_neighbors</span><span class="p">)</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>    <span class="c1"># Teleportation vector: all mass on query node</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="n">s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="n">s</span><span class="p">[</span><span class="n">node_idx</span><span class="p">[</span><span class="n">query_node</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.0</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    <span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>  <span class="c1"># Initialize at query node</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_iter</span><span class="p">):</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>        <span class="n">r_new</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="n">M</span> <span class="o">@</span> <span class="n">r</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">d</span><span class="p">)</span> <span class="o">*</span> <span class="n">s</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">r_new</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">:</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>            <span class="k">break</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>        <span class="n">r</span> <span class="o">=</span> <span class="n">r_new</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>    <span class="k">return</span> <span class="p">{</span><span class="n">nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)}</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a><span class="n">ppr_from_instructor</span> <span class="o">=</span> <span class="n">personalized_pagerank</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">query_node</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mf">0.85</span><span class="p">)</span>
+</span></code></pre></div>
+<h2 id="310-the-hits-algorithm">3.10 The HITS Algorithm<a class="headerlink" href="#310-the-hits-algorithm" title="Permanent link">¶</a></h2>
+<p>An alternative to PageRank that was developed concurrently assigns <em>two</em> scores to each node rather than one. The <strong>Hyperlink-Induced Topic Search (HITS)</strong> algorithm, introduced by Jon Kleinberg in 1999, observes that in topic-specific link graphs there are two distinct roles: <strong>authorities</strong> — nodes that contain high-quality, relevant information — and <strong>hubs</strong> — nodes that aggregate and point to many authorities. The two roles are mutually reinforcing: a good hub is one that points to good authorities, and a good authority is one that receives links from good hubs.</p>
+<p>Formally, let <span class="arithmatex">\( \mathbf{a} \in \mathbb{R}^{|V|} \)</span> denote the authority score vector and <span class="arithmatex">\( \mathbf{h} \in \mathbb{R}^{|V|} \)</span> the hub score vector. Their defining equations are</p>
+<div class="arithmatex">\[
+a(v) = \sum_{u : (u, v) \in E} h(u), \qquad h(v) = \sum_{(v, w) \in E} a(w)
+\]</div>
+<p>That is, the authority score of <span class="arithmatex">\( v \)</span> is the sum of the hub scores of all pages that link <em>to</em> <span class="arithmatex">\( v \)</span>, and the hub score of <span class="arithmatex">\( v \)</span> is the sum of the authority scores of all pages that <span class="arithmatex">\( v \)</span> links <em>to</em>. Writing <span class="arithmatex">\( A \)</span> for the adjacency matrix of <span class="arithmatex">\( G \)</span>, these equations become</p>
+<div class="arithmatex">\[
+\mathbf{a} = A^\top \mathbf{h}, \qquad \mathbf{h} = A \mathbf{a}
+\]</div>
+<p>Substituting one equation into the other yields</p>
+<div class="arithmatex">\[
+\mathbf{a} = A^\top A \, \mathbf{a}, \qquad \mathbf{h} = A A^\top \mathbf{h}
+\]</div>
+<p>so the authority scores are the principal eigenvector of <span class="arithmatex">\( A^\top A \)</span> (the <strong>co-citation</strong> matrix) and the hub scores are the principal eigenvector of <span class="arithmatex">\( A A^\top \)</span> (the <strong>bibliographic coupling</strong> matrix). The iterative algorithm applies the update rules alternately and normalizes after each step:</p>
+<ol>
+<li>Initialize <span class="arithmatex">\( \mathbf{a}^{(0)} = \mathbf{h}^{(0)} = \frac{1}{\sqrt{|V|}}\mathbf{1} \)</span></li>
+<li>Update: <span class="arithmatex">\( \mathbf{a}^{(t+1)} = A^\top \mathbf{h}^{(t)} \)</span>, then <span class="arithmatex">\( \mathbf{h}^{(t+1)} = A \mathbf{a}^{(t+1)} \)</span></li>
+<li>Normalize: <span class="arithmatex">\( \mathbf{a}^{(t+1)} \leftarrow \mathbf{a}^{(t+1)} / \|\mathbf{a}^{(t+1)}\|_2 \)</span>, and similarly for <span class="arithmatex">\( \mathbf{h}^{(t+1)} \)</span></li>
+<li>Repeat until <span class="arithmatex">\( \|\mathbf{a}^{(t+1)} - \mathbf{a}^{(t)}\|_2 &lt; \epsilon \)</span></li>
+</ol>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">hits</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="sd">    HITS algorithm: returns (authority_scores, hub_scores) as dicts.</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="sd">    Uses NetworkX's built-in implementation.</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="sd">    """</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="c1"># nx.hits returns (hubs, authorities) — note the order</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">hubs</span><span class="p">,</span> <span class="n">authorities</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">hits</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="k">return</span> <span class="n">authorities</span><span class="p">,</span> <span class="n">hubs</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="c1"># Apply to the directed Karate Club graph</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">G_directed</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">to_directed</span><span class="p">()</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">auth</span><span class="p">,</span> <span class="n">hubs_score</span> <span class="o">=</span> <span class="n">hits</span><span class="p">(</span><span class="n">G_directed</span><span class="p">)</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="n">top_auth</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">auth</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="n">top_hubs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">hubs_score</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"Top authorities:"</span><span class="p">,</span> <span class="p">[(</span><span class="n">n</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">s</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">top_auth</span><span class="p">])</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"Top hubs:"</span><span class="p">,</span> <span class="p">[(</span><span class="n">n</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">s</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">top_hubs</span><span class="p">])</span>
+</span></code></pre></div>
+<div class="admonition mascot-warning">
+<p class="admonition-title">HITS Is Query-Dependent, Not Global</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warns about a subtle pitfall">
+A common misconception is that HITS produces a global node ranking analogous to PageRank. In its original formulation, HITS is designed to run on a <strong>topic-specific subgraph</strong> retrieved for a particular query, not on the full web graph. Running HITS on the entire web graph makes it susceptible to <strong>topic drift</strong> and <strong>mutually reinforcing spam communities</strong> — tightly-knit sets of pages that link exclusively to each other and artificially inflate each other's hub and authority scores without providing genuinely useful content. PageRank's global, query-independent computation with teleportation is more robust to this type of manipulation. Both algorithms have their place, but be skeptical of HITS results on large, uncurated graphs without careful preprocessing.</p>
+</div>
+<h2 id="311-empirical-results">3.11 Empirical Results<a class="headerlink" href="#311-empirical-results" title="Permanent link">¶</a></h2>
+<p>To ground these algorithms in practical performance, the following table compares PageRank, Personalized PageRank, and HITS across several graph analysis tasks, and then presents node classification accuracy on the Cora citation network using APPNP — a GNN architecture whose propagation rule is derived from the PPR fixed-point equation.</p>
+<table>
+<thead>
+<tr>
+<th>Algorithm</th>
+<th>Task</th>
+<th>Graph Type</th>
+<th>Strengths</th>
+<th>Weaknesses</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PageRank</td>
+<td>Global importance ranking</td>
+<td>Any directed graph</td>
+<td>Global, query-independent, robust to spam</td>
+<td>Cannot capture local or topical importance</td>
+</tr>
+<tr>
+<td>Personalized PageRank</td>
+<td>Local proximity / recommendation</td>
+<td>Any directed graph</td>
+<td>Query-relative, captures community proximity</td>
+<td>Must recompute per query node</td>
+</tr>
+<tr>
+<td>HITS</td>
+<td>Hub/authority discovery</td>
+<td>Topic subgraphs</td>
+<td>Distinguishes information aggregators from sources</td>
+<td>Vulnerable to topic drift on large graphs</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Node classification accuracy (Cora, 2708 nodes, 5429 edges, 7 classes):</strong></p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Test Accuracy</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GCN (Kipf &amp; Welling, 2017)</td>
+<td>81.5%</td>
+<td>Standard 2-layer GCN</td>
+</tr>
+<tr>
+<td>GAT (Veličković et al., 2018)</td>
+<td>83.0%</td>
+<td>Graph attention</td>
+</tr>
+<tr>
+<td>APPNP (Klicpera et al., 2019)</td>
+<td><strong>83.3%</strong></td>
+<td>PPR propagation, separates feature transformation from propagation</td>
+</tr>
+<tr>
+<td>APPNP (CiteSeer)</td>
+<td>71.8%</td>
+<td>vs. GCN 70.3%, GAT 72.5%</td>
+</tr>
+</tbody>
+</table>
+<p>APPNP's competitive accuracy demonstrates that the PPR framework, derived from classical link analysis, translates directly into improved GNN architectures — the connection between this chapter and Part 2 of the textbook is more than historical.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">HITS Looks Complex — But the Pattern Is Familiar</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encourages when things look hard">
+The HITS update rule — alternating between authority and hub updates, then normalizing — can feel like a new machinery to learn on top of everything else in this chapter. Notice, however, that it is structurally identical to the power iteration you already understand, just applied to <span class="arithmatex">\( A^\top A \)</span> and <span class="arithmatex">\( A A^\top \)</span> instead of the Google matrix. Once you have internalized "repeatedly multiply by a matrix and normalize until convergence = find the principal eigenvector," HITS is simply that pattern applied twice in alternation. The apparent complexity is superficial; the underlying algorithm is the same one.</p>
+</div>
+<h2 id="312-common-pitfalls">3.12 Common Pitfalls<a class="headerlink" href="#312-common-pitfalls" title="Permanent link">¶</a></h2>
+<p>Even experienced practitioners make systematic errors when implementing or interpreting PageRank-family algorithms. The following pitfalls are worth memorizing explicitly.</p>
+<p><strong>1. Forgetting to handle dangling nodes before the damping factor.</strong> If a node has zero out-degree, its column in the transition matrix is all zeros, violating the column-stochastic property. The standard fix is to replace dangling-node columns with <span class="arithmatex">\( \frac{1}{|V|}\mathbf{1} \)</span> before applying the damping factor — that is, model dangling nodes as teleporting to all nodes uniformly. Failing to do this causes <span class="arithmatex">\( \|\mathbf{r}^{(t)}\|_1 \)</span> to decay below 1, producing scores that do not form a proper probability distribution.</p>
+<p><strong>2. Confusing in-degree centrality with PageRank.</strong> High in-degree is necessary but not sufficient for high PageRank. A node with 1000 in-links from low-PageRank leaf nodes may have lower PageRank than a node with 5 in-links from highly authoritative hubs. The recursive structure of PageRank is the entire point; computing in-degree as a proxy discards it entirely.</p>
+<p><strong>3. Setting the damping factor too high.</strong> Values of <span class="arithmatex">\( d \)</span> approaching 1 slow convergence dramatically (rate <span class="arithmatex">\( \approx d^t \)</span>) and make PageRank excessively sensitive to spider traps and link structure artifacts. Values of <span class="arithmatex">\( d \)</span> approaching 0 converge rapidly but produce near-uniform scores with little discriminative power. The value <span class="arithmatex">\( d = 0.85 \)</span> is not arbitrary; it was empirically calibrated on early web crawl data and has been widely validated as the right balance.</p>
+<p><strong>4. Running HITS on the full graph.</strong> As noted above, HITS is designed for topic-specific subgraphs. On a large, heterogeneous graph, the principal eigenvectors of <span class="arithmatex">\( A^\top A \)</span> can be dominated by dense, mutually-linking communities that bear no relation to the analyst's intended topic. Always scope the input graph to a relevant subgraph before applying HITS.</p>
+<p><strong>5. Treating convergence in <span class="arithmatex">\( L_2 \)</span> norm as equivalent to convergence in <span class="arithmatex">\( L_1 \)</span> norm.</strong> For PageRank specifically, the natural stopping criterion is <span class="arithmatex">\( \|\mathbf{r}^{(t+1)} - \mathbf{r}^{(t)}\|_1 &lt; \epsilon \)</span> (sum of absolute changes), because PageRank is a probability distribution and <span class="arithmatex">\( L_1 \)</span> deviation has a direct probabilistic interpretation. The <span class="arithmatex">\( L_2 \)</span> norm can appear to have converged (small Euclidean distance) while individual node scores are still shifting meaningfully in absolute terms.</p>
+<h2 id="313-microsim-pagerank-power-iteration">3.13 MicroSim: PageRank Power Iteration<a class="headerlink" href="#313-microsim-pagerank-power-iteration" title="Permanent link">¶</a></h2>
+<p>The following interactive simulation allows you to watch PageRank scores converge on a small configurable graph, visualizing both the evolving node sizes (proportional to rank) and the convergence curve.</p>
+<h4 id="diagram-pagerank-power-iteration-simulator">Diagram: PageRank Power Iteration Simulator<a class="headerlink" href="#diagram-pagerank-power-iteration-simulator" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch03-pagerank-power-iteration/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch03-pagerank-power-iteration/main.html">Run PageRank Power Iteration Simulator Fullscreen</a></p>
+<h2 id="314-chapter-summary">3.14 Chapter Summary<a class="headerlink" href="#314-chapter-summary" title="Permanent link">¶</a></h2>
+<p>This chapter derived PageRank and its principal variants from first principles, establishing a coherent framework for link-based node importance.</p>
+<p>The central conceptual arc is:</p>
+<ol>
+<li><strong>Random walk → stationary distribution:</strong> A random surfer's long-run visit frequencies are the stationary distribution of the column-stochastic transition matrix — a solution to <span class="arithmatex">\( \mathbf{r} = M\mathbf{r} \)</span>.</li>
+<li><strong>Pathologies → teleportation:</strong> Spider traps and dead ends break irreducibility, destroying the unique stationary distribution. Teleportation — mixing the link-following rule with a uniform random restart at rate <span class="arithmatex">\( 1 - d \)</span> — restores irreducibility and aperiodicity, yielding the Google matrix <span class="arithmatex">\( A = dM + \frac{1-d}{|V|}\mathbf{1}\mathbf{1}^\top \)</span>.</li>
+<li><strong>Power iteration:</strong> Repeated multiplication <span class="arithmatex">\( \mathbf{r}^{(t+1)} = A\mathbf{r}^{(t)} \)</span> converges geometrically at rate <span class="arithmatex">\( d \)</span> to the unique stationary distribution of <span class="arithmatex">\( A \)</span>.</li>
+<li><strong>PPR:</strong> Replacing the uniform teleportation target with a query-specific distribution yields Personalized PageRank, which measures local proximity and underlies both recommendation systems and the APPNP GNN architecture.</li>
+<li><strong>HITS:</strong> Assigning separate hub and authority scores via alternating eigenvector computation captures the distinction between information aggregators and information sources, at the cost of query-dependence and susceptibility to link spam.</li>
+</ol>
+<p><strong>Key equations to remember:</strong></p>
+<div class="arithmatex">\[ r(v) = \sum_{u \to v} \frac{r(u)}{d^{\text{out}}(u)} \quad \text{(flow)} \]</div>
+<div class="arithmatex">\[ \mathbf{r} = dM\mathbf{r} + \frac{1-d}{|V|}\mathbf{1} \quad \text{(Google matrix fixed point)} \]</div>
+<div class="arithmatex">\[ \mathbf{r}_\mathbf{s} = dM\mathbf{r}_\mathbf{s} + (1-d)\mathbf{s} \quad \text{(Personalized PageRank)} \]</div>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">You've Aggregated Real Knowledge</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrates chapter completion">
+PageRank is one of the most studied algorithms in computer science — you now understand it at the mathematical level from which it was originally derived. More importantly, you have seen how the same idea (stationary distribution of a random walk) extends to Personalized PageRank and directly informs modern GNN propagation rules. In Chapter 4, you will meet random walks in a different role: as the engine that generates node embedding training data for DeepWalk and node2vec. The walk is the thread connecting classical graph algorithms to the neural era.</p>
+</div>
+<hr>
+<h2 id="315-exercises">3.15 Exercises<a class="headerlink" href="#315-exercises" title="Permanent link">¶</a></h2>
+<h3 id="remember">Remember<a class="headerlink" href="#remember" title="Permanent link">¶</a></h3>
+<p><strong>R1.</strong> State the flow formulation of PageRank: write the equation that defines <span class="arithmatex">\( r(v) \)</span> in terms of the ranks and out-degrees of <span class="arithmatex">\( v \)</span>'s in-neighbors. Identify each term and explain what it computes.</p>
+<p><strong>R2.</strong> Define the following four terms without consulting the chapter: (a) spider trap, (b) dead end, (c) damping factor, (d) stationary distribution. For each, give a one-sentence example of where it arises in a real-world graph.</p>
+<h3 id="understand">Understand<a class="headerlink" href="#understand" title="Permanent link">¶</a></h3>
+<p><strong>U1.</strong> Explain, in your own words, why a spider trap causes the PageRank of all nodes <em>outside</em> the trap to converge to zero. Your explanation should describe the flow of rank mass through the graph over successive power iterations and identify precisely where the conservation property breaks down.</p>
+<p><strong>U2.</strong> Explain why the HITS hub and authority scores satisfy <span class="arithmatex">\( \mathbf{a} = A^\top A \, \mathbf{a} \)</span> and <span class="arithmatex">\( \mathbf{h} = A A^\top \mathbf{h} \)</span>. Derive these expressions from the original mutual reinforcement equations <span class="arithmatex">\( a(v) = \sum_{u \to v} h(u) \)</span> and <span class="arithmatex">\( h(v) = \sum_{(v,w) \in E} a(w) \)</span> by substitution.</p>
+<h3 id="apply">Apply<a class="headerlink" href="#apply" title="Permanent link">¶</a></h3>
+<p><strong>A1.</strong> Consider the following directed graph with 4 nodes: <span class="arithmatex">\( 1 \to 2, \, 2 \to 3, \, 3 \to 1, \, 3 \to 2 \)</span>. Compute PageRank by hand using damping factor <span class="arithmatex">\( d = 0.8 \)</span> and the power iteration formula, starting from the uniform distribution <span class="arithmatex">\( \mathbf{r}^{(0)} = (0.25, 0.25, 0.25, 0.25) \)</span>. Perform 3 iterations and report the rank vector after each. Verify that nodes 1, 2, and 3 receive rank and node 4 converges to a stable (though low) value due to teleportation.</p>
+<p><strong>A2.</strong> Implement Personalized PageRank in Python using only NumPy (no NetworkX <code>pagerank</code> function). Apply it to the Zachary Karate Club graph with query node <span class="arithmatex">\( q = 33 \)</span> (the club president) and damping factor <span class="arithmatex">\( d = 0.85 \)</span>. Report the top-5 nodes by PPR score and comment on whether the result recovers the president's social cluster (nodes 24–33 in Zachary's partition).</p>
+<h3 id="analyze">Analyze<a class="headerlink" href="#analyze" title="Permanent link">¶</a></h3>
+<p><strong>An1.</strong> Analyze how the convergence rate of power iteration changes as <span class="arithmatex">\( d \)</span> varies from 0.5 to 0.99. Specifically: (a) derive the theoretical bound on the number of iterations required to achieve <span class="arithmatex">\( L_1 \)</span> error <span class="arithmatex">\( &lt; 10^{-6} \)</span> as a function of <span class="arithmatex">\( d \)</span>; (b) compute this bound for <span class="arithmatex">\( d \in \{0.5, 0.7, 0.85, 0.95, 0.99\} \)</span>; (c) describe the trade-off between convergence speed and the semantic meaning of the PageRank scores.</p>
+<p><strong>An2.</strong> Compare the top-10 nodes by PageRank and by in-degree centrality on the Karate Club graph. Identify at least two nodes where the rankings disagree substantially and explain, in terms of the flow equation, why the discrepancy arises. What does this comparison reveal about the limitations of in-degree as a proxy for influence?</p>
+<h3 id="evaluate">Evaluate<a class="headerlink" href="#evaluate" title="Permanent link">¶</a></h3>
+<p><strong>E1.</strong> A colleague proposes using HITS (with hub and authority scores) instead of PageRank for ranking web pages in a general-purpose search engine. Critically evaluate this proposal. Identify at least three specific failure modes or limitations of HITS in this context, and for each, explain whether PageRank addresses the problem or shares it.</p>
+<p><strong>E2.</strong> Evaluate the appropriateness of Personalized PageRank versus global PageRank for each of the following tasks: (a) ranking academic papers by overall field-wide importance, (b) recommending papers similar to a specific seed paper, (c) detecting anomalous nodes in a financial transaction graph, (d) computing node features for input to a graph neural network. For each task, justify your choice and note any caveats.</p>
+<h3 id="create">Create<a class="headerlink" href="#create" title="Permanent link">¶</a></h3>
+<p><strong>C1.</strong> Design a <strong>TrustRank</strong> variant of PageRank for detecting web spam. Your design should: (a) define a set of "seed" trusted nodes and explain how to select them in practice; (b) specify the modified teleportation distribution that biases rank toward the trusted set; (c) describe the expected behavior — how spam pages (which are unlikely to be reachable from trusted nodes in few hops) should receive low scores; (d) implement TrustRank in Python using the PPR framework from this chapter.</p>
+<p><strong>C2.</strong> Graph Neural Networks that propagate node features across the graph can be interpreted as performing multiple rounds of a PageRank-like random walk. Design a <strong>hybrid link analysis + GNN pipeline</strong> for citation network node classification: (a) compute PPR scores from each node as the query, producing an <span class="arithmatex">\( |V| \times |V| \)</span> proximity matrix; (b) describe how to use PPR scores as attention weights in a message-passing GNN layer, replacing learned attention with precomputed structural proximity; (c) discuss under what conditions this fixed-attention approach would outperform learned attention (GAT), and under what conditions it would underperform.</p>
+<hr>
+<h2 id="316-further-reading">3.16 Further Reading<a class="headerlink" href="#316-further-reading" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Brin, S. &amp; Page, L. (1998). The anatomy of a large-scale hypertextual Web search engine.</strong> <em>Computer Networks and ISDN Systems, 30</em>(1–7), 107–117. The foundational paper introducing PageRank, including the original derivation, the teleportation fix, and early empirical results on the Stanford web crawl. Essential primary literature.</p>
+</li>
+<li>
+<p><strong>Kleinberg, J. M. (1999). Authoritative sources in a hyperlinked environment.</strong> <em>Journal of the ACM, 46</em>(5), 604–632. The paper that introduced HITS, including the convergence analysis showing that authority and hub vectors correspond to eigenvectors of <span class="arithmatex">\( A^\top A \)</span> and <span class="arithmatex">\( A A^\top \)</span>. Beautifully written and historically significant.</p>
+</li>
+<li>
+<p><strong>Langville, A. N. &amp; Meyer, C. D. (2006). <em>Google's PageRank and beyond: The science of search engine rankings</em>.</strong> Princeton University Press. A comprehensive textbook covering the linear algebra of PageRank, convergence theory, personalization, and TrustRank. The reference for mathematical depth on everything in this chapter.</p>
+</li>
+<li>
+<p><strong>Klicpera, J., Bojchevski, A., &amp; Günnemann, S. (2019). Predict then propagate: Graph neural networks meet personalized PageRank.</strong> <em>ICLR 2019.</em> Introduces APPNP, demonstrating that replacing standard GNN propagation with PPR's fixed-point iteration achieves superior node classification accuracy while mitigating over-smoothing. The bridge from this chapter's theory to Part 2 of this textbook.</p>
+</li>
+<li>
+<p><strong>Andersen, R., Chung, F., &amp; Lang, K. (2006). Local graph partitioning using PageRank vectors.</strong> <em>FOCS 2006.</em> Proves that a single PPR computation from a seed node can identify a community with near-optimal conductance in nearly linear time. The theoretical foundation for local community detection with PPR.</p>
+</li>
+<li>
+<p><strong>Gyöngyi, Z., Garcia-Molina, H., &amp; Pedersen, J. (2004). Combating web spam with TrustRank.</strong> <em>VLDB 2004.</em> Extends PPR to spam detection by biasing teleportation toward a curated set of trusted seed pages. An instructive application of the framework introduced in this chapter, directly implementable using the PPR code above.</p>
+</li>
+<li>
+<p><strong>Ying, R., He, R., Chen, K., Eksombatchai, P., Hamilton, W. L., &amp; Leskovec, J. (2018). Graph convolutional neural networks for web-scale recommender systems.</strong> <em>KDD 2018.</em> Describes Pinterest's PinSage system, which uses PPR-based neighborhood sampling to train GNNs on a graph with three billion nodes. A production-scale validation of the ideas in this chapter.</p>
+</li>
+</ol>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../02-graph-properties-and-features/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

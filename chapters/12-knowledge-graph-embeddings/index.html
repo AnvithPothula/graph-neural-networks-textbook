@@ -1,0 +1,3576 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Derives the main knowledge graph embedding families — TransE, RotatE, DistMult, ComplEx — from geometric principles and analyzes which relation patterns each can capture.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/12-knowledge-graph-embeddings/">
+      
+      
+        <link rel="prev" href="../11-graph-transformers/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 12: Knowledge Graph Embeddings - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 12: Knowledge Graph Embeddings">
+  <meta property="og:description" content="Derives the main knowledge graph embedding families — TransE, RotatE, DistMult, ComplEx — from geometric principles and analyzes which relation patterns each can capture.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/12-knowledge-graph-embeddings/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 12: Knowledge Graph Embeddings">
+  <meta name="twitter:description" content="Derives the main knowledge graph embedding families — TransE, RotatE, DistMult, ComplEx — from geometric principles and analyzes which relation patterns each can capture.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-12-knowledge-graph-embeddings" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 12: Knowledge Graph Embeddings
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_14" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_14" id="__nav_4_14_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_14_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_14">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    12. Knowledge Graph Embeddings
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#121-knowledge-graphs-structure-and-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.1 Knowledge Graphs: Structure and Scale
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#122-the-embedding-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.2 The Embedding Approach
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#123-transe-translation-in-embedding-space" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3 TransE: Translation in Embedding Space
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12.3 TransE: Translation in Embedding Space">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1231-relation-pattern-analysis-for-transe" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.3.1 Relation Pattern Analysis for TransE
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#124-transr-relation-specific-projections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.4 TransR: Relation-Specific Projections
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#125-distmult-bilinear-diagonal-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.5 DistMult: Bilinear Diagonal Models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#126-complex-breaking-symmetry-with-complex-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.6 ComplEx: Breaking Symmetry with Complex Embeddings
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#127-rotate-geometry-of-rotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.7 RotatE: Geometry of Rotation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12.7 RotatE: Geometry of Rotation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1271-full-relation-pattern-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.7.1 Full Relation Pattern Coverage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#128-relation-pattern-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.8 Relation Pattern Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#129-training-kg-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.9 Training KG Embeddings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="12.9 Training KG Embeddings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1291-negative-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.9.1 Negative Sampling
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1292-loss-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.9.2 Loss Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#1293-filtered-evaluation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.9.3 Filtered Evaluation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1210-evaluation-metrics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.10 Evaluation Metrics
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1211-complete-pytorch-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.11 Complete PyTorch Implementation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1212-benchmark-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.12 Benchmark Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1213-microsim-transe-geometry-in-2d" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.13 MicroSim: TransE Geometry in 2D
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1214-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.14 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1215-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.15 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1216-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        12.16 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    12. Knowledge Graph Embeddings
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/12-knowledge-graph-embeddings/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-12-knowledge-graph-embeddings">Chapter 12: Knowledge Graph Embeddings<a class="headerlink" href="#chapter-12-knowledge-graph-embeddings" title="Permanent link">¶</a></h1>
+<p><strong>Part 3: Knowledge Graphs and Reasoning</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Derives the main knowledge graph embedding families — TransE, RotatE, DistMult, ComplEx — from geometric principles and analyzes which relation patterns (symmetry, antisymmetry, inversion, composition) each can capture, with complete training and evaluation protocols using MRR and Hits@K.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 20 concepts from the learning graph:</p>
+<ol>
+<li>Knowledge Graph</li>
+<li>KG Entity</li>
+<li>KG Relation</li>
+<li>KG Triple</li>
+<li>KG Completion</li>
+<li>Link Prediction (KG)</li>
+<li>TransE</li>
+<li>TransR</li>
+<li>DistMult</li>
+<li>ComplEx</li>
+<li>RotatE</li>
+<li>KG Embedding Geometry</li>
+<li>Bilinear KG Model</li>
+<li>Symmetry (Relation Pattern)</li>
+<li>Antisymmetry (Relation)</li>
+<li>Inversion (Relation)</li>
+<li>Composition (Relation)</li>
+<li>PyKEEN</li>
+<li>Mean Reciprocal Rank (MRR)</li>
+<li>Hits@K Metric</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../00-math-prerequisites/">Chapter 0: Math and Programming Prerequisites</a></li>
+<li><a href="../01-intro-to-graphs/">Chapter 1: Introduction to Graphs and Networks</a></li>
+<li><a href="../06-gnn-foundations/">Chapter 6: GNN Foundations: Message Passing and GCN</a></li>
+<li><a href="../07-gnn-design-space/">Chapter 7: GNN Design Space: GraphSAGE and GAT</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Welcome to Knowledge Graphs</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+The GNNs in Chapters 6–11 operate on graphs where nodes carry feature vectors and edges represent relationships of a single type. Knowledge graphs break both assumptions: they contain millions of entities connected by hundreds of semantically distinct relation types, and their most important property is not what they store but what they are <em>missing</em> — because most real-world facts are never explicitly recorded. This chapter develops the embedding machinery that allows a model to reason over billions of known facts and infer the unknown ones, all through the geometry of high-dimensional vector spaces.</p>
+</div>
+<hr>
+<h2 id="121-knowledge-graphs-structure-and-scale">12.1 Knowledge Graphs: Structure and Scale<a class="headerlink" href="#121-knowledge-graphs-structure-and-scale" title="Permanent link">¶</a></h2>
+<p>A <strong>knowledge graph</strong> (KG) is a directed, heterogeneous multi-relational graph in which nodes represent real-world <strong>entities</strong> — people, places, scientific concepts, chemical compounds, events — and edges represent typed <strong>relations</strong> between them. Every edge in a KG is a directed, labeled link between exactly two entities, forming a <strong>triple</strong> (head, relation, tail), written <span class="arithmatex">\( (h, r, t) \)</span>:</p>
+<ul>
+<li><span class="arithmatex">\( (\textit{Marie Curie},\ \textit{bornIn},\ \textit{Poland}) \)</span></li>
+<li><span class="arithmatex">\( (\textit{Aspirin},\ \textit{treats},\ \textit{Headache}) \)</span></li>
+<li><span class="arithmatex">\( (\textit{PyTorch},\ \textit{developedBy},\ \textit{Meta AI}) \)</span></li>
+</ul>
+<p>The scale of real-world KGs is staggering. Wikidata contains over 100 million entities and more than a billion triples. Freebase (now retired but still used as a benchmark) held 40 million entities and 2.4 billion triples. The Open Biomedical Knowledge Graph links protein targets, drugs, diseases, and clinical trials. Google's Knowledge Graph powers entity cards in search results. In each case, the KG serves as a backbone for reasoning: given a query, the system traverses the graph to retrieve or infer the answer.</p>
+<p>The critical practical problem is <strong>incompleteness</strong>. Even the most comprehensive KGs contain only a fraction of all true facts about the world. Freebase, for instance, was estimated to be missing place-of-birth information for more than 70% of its people entries. When a user asks "What nationality is [scientist's name]?", the system cannot answer from the stored triples — the fact was never entered. <strong>KG completion</strong> is the task of predicting which triples should be true but are absent: given a query <span class="arithmatex">\( (h, r, ?) \)</span> or <span class="arithmatex">\( (?, r, t) \)</span>, rank all candidate entities by their likelihood of completing a true triple.</p>
+<p>Formally: given observed triples <span class="arithmatex">\( \mathcal{T} \subseteq \mathcal{E} \times \mathcal{R} \times \mathcal{E} \)</span> (where <span class="arithmatex">\( \mathcal{E} \)</span> is the entity set and <span class="arithmatex">\( \mathcal{R} \)</span> is the relation set), the task is to learn a scoring function <span class="arithmatex">\( f: \mathcal{E} \times \mathcal{R} \times \mathcal{E} \to \mathbb{R} \)</span> such that true triples receive higher scores than false ones. At inference time, for a query <span class="arithmatex">\( (h, r, ?) \)</span>, compute <span class="arithmatex">\( f(h, r, e) \)</span> for every entity <span class="arithmatex">\( e \in \mathcal{E} \)</span>, sort in descending order, and return the top-K ranked entities as predictions.</p>
+<hr>
+<h2 id="122-the-embedding-approach">12.2 The Embedding Approach<a class="headerlink" href="#122-the-embedding-approach" title="Permanent link">¶</a></h2>
+<p>KG embedding methods solve the completion problem by learning dense vector representations for every entity and relation. Specifically:</p>
+<ul>
+<li>Each entity <span class="arithmatex">\( e \in \mathcal{E} \)</span> is assigned a vector <span class="arithmatex">\( \mathbf{h}_e \in \mathbb{R}^d \)</span> (or <span class="arithmatex">\( \mathbb{C}^d \)</span> for complex-valued models)</li>
+<li>Each relation <span class="arithmatex">\( r \in \mathcal{R} \)</span> is assigned a vector or matrix <span class="arithmatex">\( \mathbf{r} \)</span></li>
+<li>A <strong>scoring function</strong> <span class="arithmatex">\( f(h, r, t) \)</span> combines the entity and relation embeddings to produce a scalar plausibility score</li>
+</ul>
+<p>Training maximizes the score of observed triples relative to corrupted (negative) triples. At inference, the learned embeddings encode the semantic structure of the KG: entities that appear in similar contexts will cluster together in the embedding space, and relations will correspond to geometric operations (translations, rotations, bilinear products) that map head embeddings toward tail embeddings.</p>
+<p>Before examining specific architectures, it is helpful to define the four <strong>relation patterns</strong> that any KG embedding method may or may not be able to represent:</p>
+<ul>
+<li><strong>Symmetry:</strong> <span class="arithmatex">\( (h, r, t) \Rightarrow (t, r, h) \)</span> — examples: <span class="arithmatex">\( \textit{isSiblingOf} \)</span>, <span class="arithmatex">\( \textit{isMarriedTo} \)</span></li>
+<li><strong>Antisymmetry:</strong> <span class="arithmatex">\( (h, r, t) \Rightarrow \neg(t, r, h) \)</span> — examples: <span class="arithmatex">\( \textit{isParentOf} \)</span>, <span class="arithmatex">\( \textit{directsFilm} \)</span></li>
+<li><strong>Inversion:</strong> <span class="arithmatex">\( (h, r_1, t) \Leftrightarrow (t, r_2, h) \)</span> — examples: <span class="arithmatex">\( \textit{isParentOf} \)</span> and <span class="arithmatex">\( \textit{isChildOf} \)</span></li>
+<li><strong>Composition:</strong> <span class="arithmatex">\( (h, r_1, e) \land (e, r_2, t) \Rightarrow (h, r_3, t) \)</span> — examples: <span class="arithmatex">\( \textit{isMotherOf} + \textit{isMarriedTo} \Rightarrow \textit{isMother-in-law-of} \)</span></li>
+</ul>
+<p>A KG embedding model that cannot represent a particular pattern will systematically fail on triples governed by that pattern, regardless of training budget or model size. This geometric analysis — developed systematically by Sun et al. (2019) for RotatE — is one of the most elegant results in the KG embedding literature.</p>
+<hr>
+<h2 id="123-transe-translation-in-embedding-space">12.3 TransE: Translation in Embedding Space<a class="headerlink" href="#123-transe-translation-in-embedding-space" title="Permanent link">¶</a></h2>
+<p><strong>TransE</strong> (Bordes et al., 2013) introduced the translational hypothesis: the relation vector <span class="arithmatex">\( \mathbf{r} \)</span> acts as a <em>translation</em> from the head entity embedding to the tail entity embedding. For a true triple <span class="arithmatex">\( (h, r, t) \)</span>, the model expects:</p>
+<div class="arithmatex">\[
+\mathbf{h} + \mathbf{r} \approx \mathbf{t}
+\]</div>
+<p>The scoring function penalizes deviation from this equality using L1 or L2 distance:</p>
+<div class="arithmatex">\[
+f(h, r, t) = -\|\mathbf{h} + \mathbf{r} - \mathbf{t}\|_p
+\]</div>
+<p>where <span class="arithmatex">\( p = 1 \)</span> or <span class="arithmatex">\( p = 2 \)</span>. High scores (close to zero) indicate plausible triples; large negative values indicate implausible ones. Entities are constrained to lie on the unit hypersphere (<span class="arithmatex">\( \|\mathbf{h}\|_2 = \|\mathbf{t}\|_2 = 1 \)</span>) to prevent the trivial collapse of all embeddings to zero.</p>
+<p>The geometric picture is intuitive: entities of the same type cluster together in the embedding space, and a relation <span class="arithmatex">\( r \)</span> shifts an entity cluster to the corresponding cluster of related entities. The <span class="arithmatex">\( \textit{capitalOf} \)</span> relation, for instance, translates the cluster of country embeddings toward the cluster of city embeddings, with each country-capital pair roughly satisfying <span class="arithmatex">\( \mathbf{h} + \mathbf{r} \approx \mathbf{t} \)</span>.</p>
+<h3 id="1231-relation-pattern-analysis-for-transe">12.3.1 Relation Pattern Analysis for TransE<a class="headerlink" href="#1231-relation-pattern-analysis-for-transe" title="Permanent link">¶</a></h3>
+<p><strong>Antisymmetry:</strong> TransE handles antisymmetric relations naturally. For <span class="arithmatex">\( (h, r, t) \)</span> to be true, we need <span class="arithmatex">\( \mathbf{h} + \mathbf{r} \approx \mathbf{t} \)</span>. For the reverse <span class="arithmatex">\( (t, r, h) \)</span> to also be true, we would need <span class="arithmatex">\( \mathbf{t} + \mathbf{r} \approx \mathbf{h} \)</span>. Summing these two constraints:</p>
+<div class="arithmatex">\[
+(\mathbf{h} + \mathbf{r}) + (\mathbf{t} + \mathbf{r}) \approx \mathbf{t} + \mathbf{h} \quad \Rightarrow \quad 2\mathbf{r} \approx \mathbf{0} \quad \Rightarrow \quad \mathbf{r} \approx \mathbf{0}
+\]</div>
+<p>A zero relation vector would mean all entities have the same embedding — a degenerate solution. Therefore, TransE with non-trivial relation embeddings cannot model symmetric relations. <span class="arithmatex">\( \textit{isMarriedTo} \)</span> and <span class="arithmatex">\( \textit{isSiblingOf} \)</span> are systematically misrepresented by TransE.</p>
+<p><strong>Inversion:</strong> TransE handles inverted relations correctly. If <span class="arithmatex">\( (h, r_1, t) \)</span> means <span class="arithmatex">\( \mathbf{h} + \mathbf{r}_1 \approx \mathbf{t} \)</span> and <span class="arithmatex">\( (t, r_2, h) \)</span> means <span class="arithmatex">\( \mathbf{t} + \mathbf{r}_2 \approx \mathbf{h} \)</span>, then <span class="arithmatex">\( \mathbf{r}_2 \approx -\mathbf{r}_1 \)</span>. The model can learn <span class="arithmatex">\( \mathbf{r}_{\textit{isChildOf}} = -\mathbf{r}_{\textit{isParentOf}} \)</span>.</p>
+<p><strong>Composition:</strong> TransE handles composition correctly. If <span class="arithmatex">\( (h, r_1, e) \)</span> and <span class="arithmatex">\( (e, r_2, t) \)</span> hold, then <span class="arithmatex">\( \mathbf{h} + \mathbf{r}_1 \approx \mathbf{e} \)</span> and <span class="arithmatex">\( \mathbf{e} + \mathbf{r}_2 \approx \mathbf{t} \)</span>, implying <span class="arithmatex">\( \mathbf{h} + (\mathbf{r}_1 + \mathbf{r}_2) \approx \mathbf{t} \)</span>. So <span class="arithmatex">\( \mathbf{r}_3 = \mathbf{r}_1 + \mathbf{r}_2 \)</span> represents the composed relation — a direct consequence of vector addition associativity.</p>
+<p><strong>1-to-N relations:</strong> TransE struggles with one-to-many relations (e.g., a country with multiple official languages). If <span class="arithmatex">\( (France, \textit{hasOfficialLanguage}, French) \)</span> and <span class="arithmatex">\( (France, \textit{hasOfficialLanguage}, Alsatian) \)</span> both hold, TransE must map the France embedding to both the French and Alsatian embeddings via the same relation vector — geometrically impossible unless French and Alsatian have the same embedding.</p>
+<hr>
+<h2 id="124-transr-relation-specific-projections">12.4 TransR: Relation-Specific Projections<a class="headerlink" href="#124-transr-relation-specific-projections" title="Permanent link">¶</a></h2>
+<p><strong>TransR</strong> (Lin et al., 2015) addresses TransE's 1-to-N limitation by projecting entities into a relation-specific subspace before computing the translational distance. Each relation <span class="arithmatex">\( r \)</span> is associated with a projection matrix <span class="arithmatex">\( M_r \in \mathbb{R}^{k \times d} \)</span> (mapping from entity space <span class="arithmatex">\( \mathbb{R}^d \)</span> to relation space <span class="arithmatex">\( \mathbb{R}^k \)</span>) as well as a relation vector <span class="arithmatex">\( \mathbf{r} \in \mathbb{R}^k \)</span>. The projected entity embeddings are:</p>
+<div class="arithmatex">\[
+\mathbf{h}_r = M_r \mathbf{h} \in \mathbb{R}^k, \qquad \mathbf{t}_r = M_r \mathbf{t} \in \mathbb{R}^k
+\]</div>
+<p>The scoring function then applies translational distance in the projected space:</p>
+<div class="arithmatex">\[
+f(h, r, t) = -\|\mathbf{h}_r + \mathbf{r} - \mathbf{t}_r\|_2^2
+\]</div>
+<p>The key advantage is that multiple tail entities for a 1-to-N relation can be spread across the projected relation space even if they cluster together in the original entity space — the projection matrix warps the space to accommodate the multiplicity. The tradeoff is parameter cost: each relation now requires a <span class="arithmatex">\( k \times d \)</span> matrix in addition to the relation vector, increasing model size from <span class="arithmatex">\( O(d(|\mathcal{E}| + |\mathcal{R}|)) \)</span> to <span class="arithmatex">\( O(d|\mathcal{E}| + (d \cdot k + k)|\mathcal{R}|) \)</span>. For KGs with thousands of relation types, this becomes expensive.</p>
+<hr>
+<h2 id="125-distmult-bilinear-diagonal-models">12.5 DistMult: Bilinear Diagonal Models<a class="headerlink" href="#125-distmult-bilinear-diagonal-models" title="Permanent link">¶</a></h2>
+<p><strong>DistMult</strong> (Yang et al., 2015) adopts an entirely different geometric paradigm. Instead of translation, it uses a <strong>bilinear</strong> interaction between head, relation, and tail embeddings via a diagonal matrix:</p>
+<div class="arithmatex">\[
+f(h, r, t) = \mathbf{h}^\top \text{diag}(\mathbf{r})\, \mathbf{t} = \sum_{i=1}^{d} h_i \cdot r_i \cdot t_i
+\]</div>
+<p>Here all embeddings — entities and relations — live in <span class="arithmatex">\( \mathbb{R}^d \)</span>, and the relation is represented as a diagonal scaling of the interaction between head and tail components. This is the simplest instantiation of the general bilinear family <span class="arithmatex">\( f(h, r, t) = \mathbf{h}^\top M_r \mathbf{t} \)</span>, where <span class="arithmatex">\( M_r = \text{diag}(\mathbf{r}) \)</span> is restricted to diagonal matrices for tractability.</p>
+<p>The diagonal constraint has an important geometric consequence: the scoring function is <strong>symmetric</strong> in <span class="arithmatex">\( h \)</span> and <span class="arithmatex">\( t \)</span>:</p>
+<div class="arithmatex">\[
+f(h, r, t) = \sum_i h_i r_i t_i = f(t, r, h)
+\]</div>
+<p>DistMult is therefore structurally incapable of modeling antisymmetric relations — it assigns the same score to <span class="arithmatex">\( (h, r, t) \)</span> and <span class="arithmatex">\( (t, r, h) \)</span> regardless of the learned embeddings. Relations like <span class="arithmatex">\( \textit{isParentOf} \)</span> and <span class="arithmatex">\( \textit{directsFilm} \)</span> will be systematically misrepresented, because DistMult cannot distinguish which direction is "true" and which is "false" for an antisymmetric relation.</p>
+<p>DistMult's strengths are simplicity and efficiency: it has the same parameter count as TransE (<span class="arithmatex">\( O(d(|\mathcal{E}| + |\mathcal{R}|)) \)</span>) and tends to perform surprisingly well on symmetric-relation-heavy KGs despite its theoretical limitation.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">The Symmetry Trap</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking about symmetry">
+Notice that DistMult's limitation is <em>structural</em>, not empirical — it is not that DistMult learns antisymmetric relations imperfectly; it is that no setting of its parameters can ever produce <span class="arithmatex">\( f(h, r, t) \neq f(t, r, h) \)</span>. Before choosing a KG embedding model, always check your KG's relation type distribution: if it contains many antisymmetric relations (parent/child, employer/employee, before/after in temporal KGs), DistMult will systematically fail on those relations regardless of embedding dimension or training epochs. This is why relation pattern analysis is not just theoretical curiosity — it directly determines model selection.</p>
+</div>
+<hr>
+<h2 id="126-complex-breaking-symmetry-with-complex-embeddings">12.6 ComplEx: Breaking Symmetry with Complex Embeddings<a class="headerlink" href="#126-complex-breaking-symmetry-with-complex-embeddings" title="Permanent link">¶</a></h2>
+<p><strong>ComplEx</strong> (Trouillon et al., 2016) lifts the embedding space from <span class="arithmatex">\( \mathbb{R}^d \)</span> to <span class="arithmatex">\( \mathbb{C}^d \)</span> — complex-valued vectors — to restore the ability to model antisymmetric relations while retaining the efficiency of bilinear models. Entity embeddings are <span class="arithmatex">\( \mathbf{h}, \mathbf{t} \in \mathbb{C}^d \)</span>, with each component <span class="arithmatex">\( h_i = \text{Re}(h_i) + i \cdot \text{Im}(h_i) \)</span>. The relation vector <span class="arithmatex">\( \mathbf{r} \in \mathbb{C}^d \)</span> is also complex-valued. The scoring function takes the real part of the Hermitian dot product:</p>
+<div class="arithmatex">\[
+f(h, r, t) = \text{Re}\!\left(\mathbf{h}^\top \text{diag}(\mathbf{r})\, \bar{\mathbf{t}}\right) = \text{Re}\!\left(\sum_{i=1}^{d} h_i \cdot r_i \cdot \bar{t}_i\right)
+\]</div>
+<p>where <span class="arithmatex">\( \bar{\mathbf{t}} \)</span> denotes the complex conjugate of <span class="arithmatex">\( \mathbf{t} \)</span> (replacing <span class="arithmatex">\( t_i = a_i + ib_i \)</span> with <span class="arithmatex">\( \bar{t}_i = a_i - ib_i \)</span>).</p>
+<p>The crucial asymmetry arises from the conjugate: <span class="arithmatex">\( \text{Re}(h_i r_i \bar{t}_i) \neq \text{Re}(\bar{h}_i r_i t_i) \)</span> in general (since the real part of a complex product is not symmetric under swapping arguments once a conjugate is involved). Concretely, ComplEx can assign different scores to <span class="arithmatex">\( (h, r, t) \)</span> and <span class="arithmatex">\( (t, r, h) \)</span> even for the same relation <span class="arithmatex">\( r \)</span>, resolving DistMult's fundamental limitation.</p>
+<p>Expanding the scoring function into real and imaginary components:</p>
+<div class="arithmatex">\[
+f(h, r, t) = \sum_{i=1}^{d} \bigl[\text{Re}(h_i)\text{Re}(r_i)\text{Re}(t_i) + \text{Im}(h_i)\text{Re}(r_i)\text{Im}(t_i) + \text{Re}(h_i)\text{Im}(r_i)\text{Im}(t_i) - \text{Im}(h_i)\text{Im}(r_i)\text{Re}(t_i)\bigr]
+\]</div>
+<p>This can be implemented purely in real arithmetic — no complex number library is required — making ComplEx computationally equivalent to DistMult at double the embedding size.</p>
+<p>ComplEx can model symmetry (when <span class="arithmatex">\( r_i \in \mathbb{R} \)</span>, i.e., <span class="arithmatex">\( \text{Im}(r_i) = 0 \)</span>), antisymmetry (when <span class="arithmatex">\( r_i \in i\mathbb{R} \)</span>, i.e., <span class="arithmatex">\( \text{Re}(r_i) = 0 \)</span>), and inversion (when <span class="arithmatex">\( r_2 = \bar{r}_1 \)</span>). However, it cannot directly model arbitrary composition patterns — which requires RotatE.</p>
+<hr>
+<h2 id="127-rotate-geometry-of-rotation">12.7 RotatE: Geometry of Rotation<a class="headerlink" href="#127-rotate-geometry-of-rotation" title="Permanent link">¶</a></h2>
+<p><strong>RotatE</strong> (Sun et al., 2019) defines relations as element-wise rotations in the complex plane. Each relation component <span class="arithmatex">\( r_i \in \mathbb{C} \)</span> is constrained to lie on the unit circle — it is a pure rotation with modulus 1:</p>
+<div class="arithmatex">\[
+|r_i| = 1, \qquad r_i = e^{i\theta_i} \text{ for some } \theta_i \in [0, 2\pi)
+\]</div>
+<p>The translational constraint becomes a rotational one: for a true triple <span class="arithmatex">\( (h, r, t) \)</span>, the element-wise product (Hadamard product) of the head embedding with the relation rotation should equal the tail embedding:</p>
+<div class="arithmatex">\[
+\mathbf{h} \circ \mathbf{r} \approx \mathbf{t}
+\]</div>
+<p>The scoring function is:</p>
+<div class="arithmatex">\[
+f(h, r, t) = -\|\mathbf{h} \circ \mathbf{r} - \mathbf{t}\|_2
+\]</div>
+<p>where each component satisfies <span class="arithmatex">\( h_i \cdot e^{i\theta_i} \approx t_i \)</span>. Geometrically, each complex component of the head entity is rotated by angle <span class="arithmatex">\( \theta_i \)</span> to produce the corresponding component of the tail entity.</p>
+<h3 id="1271-full-relation-pattern-coverage">12.7.1 Full Relation Pattern Coverage<a class="headerlink" href="#1271-full-relation-pattern-coverage" title="Permanent link">¶</a></h3>
+<p>RotatE achieves coverage of all four relation patterns, which we can verify geometrically:</p>
+<p><strong>Symmetry:</strong> A symmetric relation <span class="arithmatex">\( r \)</span> satisfies <span class="arithmatex">\( \mathbf{h} \circ \mathbf{r} \approx \mathbf{t} \)</span> and <span class="arithmatex">\( \mathbf{t} \circ \mathbf{r} \approx \mathbf{h} \)</span>. This requires <span class="arithmatex">\( \mathbf{h} \circ \mathbf{r} \circ \mathbf{r} \approx \mathbf{h} \)</span>, i.e., <span class="arithmatex">\( \mathbf{r} \circ \mathbf{r} = \mathbf{1} \)</span>. Since <span class="arithmatex">\( r_i = e^{i\theta_i} \)</span>, we need <span class="arithmatex">\( e^{2i\theta_i} = 1 \)</span>, so <span class="arithmatex">\( \theta_i \in \{0, \pi\} \)</span> — each component is either a 0° or 180° rotation. RotatE learns this automatically by driving <span class="arithmatex">\( \theta_i \)</span> to these values for symmetric relations.</p>
+<p><strong>Antisymmetry:</strong> A relation is antisymmetric when <span class="arithmatex">\( \theta_i \notin \{0, \pi\} \)</span> for at least one component, so <span class="arithmatex">\( r_i^2 \neq 1 \)</span>, making the reverse triple geometrically distinct.</p>
+<p><strong>Inversion:</strong> If <span class="arithmatex">\( r_2 = \bar{r}_1 \)</span> (complex conjugate), then <span class="arithmatex">\( h \circ r_1 \approx t \)</span> implies <span class="arithmatex">\( t \circ r_2 = t \circ \bar{r}_1 \approx h \)</span>. The model can learn <span class="arithmatex">\( \theta_{r_2,i} = -\theta_{r_1,i} \)</span> for inverted relations, corresponding to opposite rotations.</p>
+<p><strong>Composition:</strong> For <span class="arithmatex">\( (h, r_1, e) \)</span> and <span class="arithmatex">\( (e, r_2, t) \)</span>, we have <span class="arithmatex">\( h \circ r_1 \approx e \)</span> and <span class="arithmatex">\( e \circ r_2 \approx t \)</span>. Substituting: <span class="arithmatex">\( h \circ (r_1 \circ r_2) \approx t \)</span>. Therefore, the composed relation has vector <span class="arithmatex">\( r_3 = r_1 \circ r_2 \)</span> — element-wise multiplication of unit complex numbers — which is again a unit complex number (the product of two rotations is a rotation). RotatE is closed under composition by the structure of the unit circle.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">Complex Numbers Are Just 2D Rotations</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage offering encouragement about complex numbers">
+If the complex number arithmetic in RotatE looks intimidating, reduce each component to its geometric action: multiplying by <span class="arithmatex">\( e^{i\theta} \)</span> rotates a 2D point by angle <span class="arithmatex">\( \theta \)</span>. A symmetric relation corresponds to a 180° rotation (flip); an antisymmetric relation to some other angle; inversion corresponds to a negative angle (counterrotation); composition to adding angles (since <span class="arithmatex">\( e^{i\alpha} \cdot e^{i\beta} = e^{i(\alpha+\beta)} \)</span>). All of RotatE's theoretical properties follow from this single geometric picture. The complex number formalism is just the algebraic machinery for computing with 2D rotations efficiently.</p>
+</div>
+<hr>
+<h2 id="128-relation-pattern-summary">12.8 Relation Pattern Summary<a class="headerlink" href="#128-relation-pattern-summary" title="Permanent link">¶</a></h2>
+<p>The following table summarizes which patterns each embedding family can represent, derived from the geometric arguments above. A checkmark indicates that the model can represent the pattern for <em>some</em> setting of its parameters; an ✗ indicates that no parameter setting can represent the pattern.</p>
+<table>
+<thead>
+<tr>
+<th>Relation Pattern</th>
+<th style="text-align: center;">TransE</th>
+<th style="text-align: center;">TransR</th>
+<th style="text-align: center;">DistMult</th>
+<th style="text-align: center;">ComplEx</th>
+<th style="text-align: center;">RotatE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Symmetry</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Antisymmetry</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Inversion</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>Composition</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✅</td>
+</tr>
+<tr>
+<td>1-to-N relations</td>
+<td style="text-align: center;">✗</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+<td style="text-align: center;">✅</td>
+</tr>
+</tbody>
+</table>
+<p>RotatE is the only model in this family that covers all four patterns while maintaining <span class="arithmatex">\( O(d(|\mathcal{E}| + |\mathcal{R}|)) \)</span> parameter complexity (the unit-modulus constraint is enforced through initialization and normalization, not additional parameters). TransR covers composition and 1-to-N at the cost of <span class="arithmatex">\( O(d \cdot k \cdot |\mathcal{R}|) \)</span> additional parameters for the projection matrices.</p>
+<hr>
+<h2 id="129-training-kg-embeddings">12.9 Training KG Embeddings<a class="headerlink" href="#129-training-kg-embeddings" title="Permanent link">¶</a></h2>
+<h3 id="1291-negative-sampling">12.9.1 Negative Sampling<a class="headerlink" href="#1291-negative-sampling" title="Permanent link">¶</a></h3>
+<p>KG embedding models are trained discriminatively: they learn to assign high scores to observed (positive) triples and low scores to unobserved (negative) triples. Since the absence of a triple in <span class="arithmatex">\( \mathcal{T} \)</span> does not guarantee it is false — it may simply be missing — the standard assumption is the <strong>closed-world assumption</strong> limited to the corrupted triple construction: a negative triple is generated by replacing either the head or tail of a positive triple with a randomly sampled entity:</p>
+<div class="arithmatex">\[
+\mathcal{T}^- = \{(h', r, t) : h' \sim \mathcal{E} \setminus \{h\}\} \cup \{(h, r, t') : t' \sim \mathcal{E} \setminus \{t\}\}
+\]</div>
+<p>In practice, k negative triples are sampled per positive triple (typical values: k = 64 to 512). <strong>Self-adversarial negative sampling</strong> (Sun et al. 2019) weights negatives by their current model score — harder negatives (which the model currently scores highly) receive more weight in the loss, similar to curriculum learning.</p>
+<h3 id="1292-loss-functions">12.9.2 Loss Functions<a class="headerlink" href="#1292-loss-functions" title="Permanent link">¶</a></h3>
+<p>Two loss formulations are common:</p>
+<p><strong>Margin-based ranking loss:</strong></p>
+<div class="arithmatex">\[
+\mathcal{L} = \sum_{(h,r,t) \in \mathcal{T}} \sum_{(h',r,t') \in \mathcal{T}^-} \max\!\left(0,\; \gamma - f(h,r,t) + f(h',r,t')\right)
+\]</div>
+<p>where <span class="arithmatex">\( \gamma &gt; 0 \)</span> is the margin hyperparameter. This loss penalizes any configuration in which the negative score is within <span class="arithmatex">\( \gamma \)</span> of the positive score.</p>
+<p><strong>Binary cross-entropy with sigmoid:</strong></p>
+<div class="arithmatex">\[
+\mathcal{L} = -\sum_{(h,r,t) \in \mathcal{T}} \log \sigma\!\left(f(h,r,t)\right) - \sum_{(h',r,t') \in \mathcal{T}^-} \log \sigma\!\left(-f(h',r,t')\right)
+\]</div>
+<p>RotatE uses a self-adversarial variant of BCE; PyKEEN supports both formulations with a unified interface.</p>
+<h3 id="1293-filtered-evaluation">12.9.3 Filtered Evaluation<a class="headerlink" href="#1293-filtered-evaluation" title="Permanent link">¶</a></h3>
+<p>A subtle but critical evaluation detail: when ranking candidate entities for a query <span class="arithmatex">\( (h, r, ?) \)</span>, naive evaluation considers <em>all</em> entities as potential answers. But some of those entities may themselves form true triples with <span class="arithmatex">\( h \)</span> and <span class="arithmatex">\( r \)</span> — they are correct answers, not wrong ones. Treating them as wrong during ranking inflates apparent error rates.</p>
+<p><strong>Filtered evaluation</strong> removes all known true triples from the candidate pool before ranking, counting only the rank of the query's specific answer among the non-trivially-correct candidates. All benchmark results in this chapter use filtered evaluation; comparison of unfiltered results across papers is meaningless.</p>
+<hr>
+<h2 id="1210-evaluation-metrics">12.10 Evaluation Metrics<a class="headerlink" href="#1210-evaluation-metrics" title="Permanent link">¶</a></h2>
+<p>Two metrics dominate KG completion evaluation. Both are computed over a set of test queries <span class="arithmatex">\( \mathcal{Q} \)</span>, where each query asks the model to rank all candidate entities for <span class="arithmatex">\( (h, r, ?) \)</span> or <span class="arithmatex">\( (?, r, t) \)</span>:</p>
+<p><strong>Mean Reciprocal Rank (MRR)</strong> is the average of the reciprocal ranks of the correct answer across all test queries:</p>
+<div class="arithmatex">\[
+\text{MRR} = \frac{1}{|\mathcal{Q}|} \sum_{q \in \mathcal{Q}} \frac{1}{\text{rank}_q}
+\]</div>
+<p>MRR ranges from 0 to 1 (higher is better). A query answered correctly at rank 1 contributes 1.0; at rank 2, 0.5; at rank 10, 0.1. MRR is sensitive to whether the model answers correctly in the top few positions, which is why it is preferred over Mean Rank (which can be distorted by a few very large ranks on tail-heavy test sets).</p>
+<p><strong>Hits@K</strong> is the fraction of test queries for which the correct answer appears in the top K ranked candidates:</p>
+<div class="arithmatex">\[
+\text{Hits@K} = \frac{1}{|\mathcal{Q}|} \sum_{q \in \mathcal{Q}} \mathbf{1}[\text{rank}_q \leq K]
+\]</div>
+<p>Standard values are K = 1, 3, and 10. Hits@1 measures exact-answer precision; Hits@10 measures whether the correct answer appears anywhere in the top-10 list (important for applications where the user can inspect a short ranked list).</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Use PyKEEN — Don't Implement Evaluation Yourself</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving a tip about PyKEEN">
+Implementing filtered MRR and Hits@K correctly is non-trivial: you must load the full training, validation, and test triple sets, and for each test query, exclude all known-true triples before computing the rank. PyKEEN handles this automatically via its <code>RankBasedEvaluator</code> with <code>filtered=True</code>. Writing your own evaluation code from scratch is a reliable source of subtle bugs — especially the filtered vs. unfiltered distinction, which changes reported MRR by 10–20 points on standard benchmarks. Use PyKEEN for experiments; only re-implement from scratch if you need a custom evaluation protocol not supported by the library.</p>
+</div>
+<hr>
+<h2 id="1211-complete-pytorch-implementation">12.11 Complete PyTorch Implementation<a class="headerlink" href="#1211-complete-pytorch-implementation" title="Permanent link">¶</a></h2>
+<p>The following code provides two implementations: a pedagogically transparent pure PyTorch TransE for understanding the mechanics, followed by a complete PyKEEN pipeline for running rigorous experiments on FB15k-237.</p>
+<p><strong>FB15k-237</strong> is the standard KG completion benchmark: a filtered subset of Freebase removing triples whose inverses appear in the training set (to prevent trivial inverse-relation leakage). It contains 14,541 entities, 237 relations, 272,115 training triples, and 20,466 test triples.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">sqrt</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># ── Part 1: Pure PyTorch TransE for Pedagogical Clarity ─────────────────────</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="k">class</span><span class="w"> </span><span class="nc">TransE</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="sd">    TransE: Translating Embeddings for Modeling Multi-relational Data</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="sd">    Bordes et al., NeurIPS 2013.</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="sd">    Scoring function: f(h, r, t) = -||h + r - t||_1</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="sd">    Training with margin-based ranking loss.</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="sd">    """</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="n">num_entities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>        <span class="n">num_relations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>        <span class="n">embedding_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>        <span class="n">margin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="n">norm</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>        <span class="c1"># L1 or L2 distance</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="p">):</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_dim</span> <span class="o">=</span> <span class="n">embedding_dim</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">=</span> <span class="n">margin</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">norm</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>        <span class="c1"># Initialize embeddings with uniform distribution (Bordes et al. 2013)</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>        <span class="n">bound</span> <span class="o">=</span> <span class="mi">6</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">)</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span>   <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_entities</span><span class="p">,</span>  <span class="n">embedding_dim</span><span class="p">)</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">relation_emb</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_relations</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span>   <span class="o">-</span><span class="n">bound</span><span class="p">,</span> <span class="n">bound</span><span class="p">)</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">relation_emb</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="o">-</span><span class="n">bound</span><span class="p">,</span> <span class="n">bound</span><span class="p">)</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>        <span class="n">heads</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>     <span class="c1"># (B,) entity indices</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>        <span class="n">relations</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="c1"># (B,) relation indices</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>        <span class="n">tails</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>     <span class="c1"># (B,) entity indices</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="w">        </span><span class="sd">"""Compute f(h, r, t) = -||h + r - t||_p for each triple in batch."""</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>        <span class="c1"># Look up embeddings</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span><span class="p">(</span><span class="n">heads</span><span class="p">)</span>              <span class="c1"># (B, d)</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relation_emb</span><span class="p">(</span><span class="n">relations</span><span class="p">)</span>        <span class="c1"># (B, d)</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span><span class="p">(</span><span class="n">tails</span><span class="p">)</span>              <span class="c1"># (B, d)</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>        <span class="c1"># Normalize entity embeddings to unit sphere (as in original paper)</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>        <span class="n">h</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>        <span class="n">t</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>        <span class="c1"># Translational distance score (negative = higher means more plausible)</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>        <span class="k">return</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">h</span> <span class="o">+</span> <span class="n">r</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (B,)</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>        <span class="n">pos_h</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">pos_r</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">pos_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a>        <span class="n">neg_h</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">neg_r</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">neg_t</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="w">        </span><span class="sd">"""Margin-based ranking loss: max(0, γ + neg_score - pos_score)."""</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>        <span class="n">pos_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">pos_h</span><span class="p">,</span> <span class="n">pos_r</span><span class="p">,</span> <span class="n">pos_t</span><span class="p">)</span>  <span class="c1"># (B,)</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>        <span class="n">neg_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">neg_h</span><span class="p">,</span> <span class="n">neg_r</span><span class="p">,</span> <span class="n">neg_t</span><span class="p">)</span>  <span class="c1"># (B,)</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">margin</span> <span class="o">-</span> <span class="n">pos_score</span> <span class="o">+</span> <span class="n">neg_score</span><span class="p">)</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>        <span class="k">return</span> <span class="n">loss</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a><span class="k">class</span><span class="w"> </span><span class="nc">RotatE</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="sd">    RotatE: Knowledge Graph Embedding by Relational Rotation in Complex Space</span>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="sd">    Sun et al., ICLR 2019.</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="sd">    Entities: complex vectors h, t ∈ ℂ^d (stored as real vectors of size 2d)</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="sd">    Relations: unit-modulus complex vectors r ∈ ℂ^d (phases θ ∈ [0, 2π))</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a><span class="sd">    Score: f(h, r, t) = -||h ∘ r - t||_2</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a><span class="sd">    """</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>        <span class="bp">self</span><span class="p">,</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>        <span class="n">num_entities</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>        <span class="n">num_relations</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>        <span class="n">embedding_dim</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>  <span class="c1"># complex dimension d (real storage: 2d)</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>        <span class="n">gamma</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">12.0</span><span class="p">,</span>        <span class="c1"># fixed margin for self-adversarial loss</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>    <span class="p">):</span>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_dim</span> <span class="o">=</span> <span class="n">embedding_dim</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="n">gamma</span>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a>        <span class="c1"># Entity embeddings: 2d real dimensions (real + imag parts)</span>
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_entities</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">embedding_dim</span><span class="p">)</span>
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a>
+</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>        <span class="c1"># Relation embeddings: d phase values θ ∈ [0, 2π)</span>
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>        <span class="c1"># e_r = exp(iθ) has |e_r| = 1 automatically</span>
+</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">relation_phases</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_relations</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>        <span class="c1"># Initialize</span>
+</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">relation_phases</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+</span><span id="__span-0-100"><a id="__codelineno-0-100" name="__codelineno-0-100" href="#__codelineno-0-100"></a>
+</span><span id="__span-0-101"><a id="__codelineno-0-101" name="__codelineno-0-101" href="#__codelineno-0-101"></a>        <span class="c1"># Embedding range for score normalization</span>
+</span><span id="__span-0-102"><a id="__codelineno-0-102" name="__codelineno-0-102" href="#__codelineno-0-102"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_range</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span>
+</span><span id="__span-0-103"><a id="__codelineno-0-103" name="__codelineno-0-103" href="#__codelineno-0-103"></a>            <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([(</span><span class="n">gamma</span> <span class="o">+</span> <span class="mf">2.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">embedding_dim</span><span class="p">]),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span>
+</span><span id="__span-0-104"><a id="__codelineno-0-104" name="__codelineno-0-104" href="#__codelineno-0-104"></a>        <span class="p">)</span>
+</span><span id="__span-0-105"><a id="__codelineno-0-105" name="__codelineno-0-105" href="#__codelineno-0-105"></a>
+</span><span id="__span-0-106"><a id="__codelineno-0-106" name="__codelineno-0-106" href="#__codelineno-0-106"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heads</span><span class="p">,</span> <span class="n">relations</span><span class="p">,</span> <span class="n">tails</span><span class="p">):</span>
+</span><span id="__span-0-107"><a id="__codelineno-0-107" name="__codelineno-0-107" href="#__codelineno-0-107"></a><span class="w">        </span><span class="sd">"""Compute RotatE score for a batch of triples."""</span>
+</span><span id="__span-0-108"><a id="__codelineno-0-108" name="__codelineno-0-108" href="#__codelineno-0-108"></a>        <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding_dim</span>
+</span><span id="__span-0-109"><a id="__codelineno-0-109" name="__codelineno-0-109" href="#__codelineno-0-109"></a>
+</span><span id="__span-0-110"><a id="__codelineno-0-110" name="__codelineno-0-110" href="#__codelineno-0-110"></a>        <span class="c1"># Retrieve and split entity embeddings into real and imaginary parts</span>
+</span><span id="__span-0-111"><a id="__codelineno-0-111" name="__codelineno-0-111" href="#__codelineno-0-111"></a>        <span class="n">h_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span><span class="p">(</span><span class="n">heads</span><span class="p">)</span>               <span class="c1"># (B, 2d)</span>
+</span><span id="__span-0-112"><a id="__codelineno-0-112" name="__codelineno-0-112" href="#__codelineno-0-112"></a>        <span class="n">t_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">entity_emb</span><span class="p">(</span><span class="n">tails</span><span class="p">)</span>               <span class="c1"># (B, 2d)</span>
+</span><span id="__span-0-113"><a id="__codelineno-0-113" name="__codelineno-0-113" href="#__codelineno-0-113"></a>        <span class="n">h_re</span><span class="p">,</span> <span class="n">h_im</span> <span class="o">=</span> <span class="n">h_emb</span><span class="p">[:,</span> <span class="p">:</span><span class="n">d</span><span class="p">],</span> <span class="n">h_emb</span><span class="p">[:,</span> <span class="n">d</span><span class="p">:]</span>     <span class="c1"># each (B, d)</span>
+</span><span id="__span-0-114"><a id="__codelineno-0-114" name="__codelineno-0-114" href="#__codelineno-0-114"></a>        <span class="n">t_re</span><span class="p">,</span> <span class="n">t_im</span> <span class="o">=</span> <span class="n">t_emb</span><span class="p">[:,</span> <span class="p">:</span><span class="n">d</span><span class="p">],</span> <span class="n">t_emb</span><span class="p">[:,</span> <span class="n">d</span><span class="p">:]</span>
+</span><span id="__span-0-115"><a id="__codelineno-0-115" name="__codelineno-0-115" href="#__codelineno-0-115"></a>
+</span><span id="__span-0-116"><a id="__codelineno-0-116" name="__codelineno-0-116" href="#__codelineno-0-116"></a>        <span class="c1"># Relation rotation: scale phases and convert to unit complex numbers</span>
+</span><span id="__span-0-117"><a id="__codelineno-0-117" name="__codelineno-0-117" href="#__codelineno-0-117"></a>        <span class="n">phase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relation_phases</span><span class="p">(</span><span class="n">relations</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_range</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+</span><span id="__span-0-118"><a id="__codelineno-0-118" name="__codelineno-0-118" href="#__codelineno-0-118"></a>        <span class="n">r_re</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>                       <span class="c1"># (B, d)</span>
+</span><span id="__span-0-119"><a id="__codelineno-0-119" name="__codelineno-0-119" href="#__codelineno-0-119"></a>        <span class="n">r_im</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>                       <span class="c1"># (B, d)</span>
+</span><span id="__span-0-120"><a id="__codelineno-0-120" name="__codelineno-0-120" href="#__codelineno-0-120"></a>
+</span><span id="__span-0-121"><a id="__codelineno-0-121" name="__codelineno-0-121" href="#__codelineno-0-121"></a>        <span class="c1"># Hadamard product h ∘ r in complex arithmetic:</span>
+</span><span id="__span-0-122"><a id="__codelineno-0-122" name="__codelineno-0-122" href="#__codelineno-0-122"></a>        <span class="c1"># (a + ib)(c + id) = (ac - bd) + i(ad + bc)</span>
+</span><span id="__span-0-123"><a id="__codelineno-0-123" name="__codelineno-0-123" href="#__codelineno-0-123"></a>        <span class="n">hr_re</span> <span class="o">=</span> <span class="n">h_re</span> <span class="o">*</span> <span class="n">r_re</span> <span class="o">-</span> <span class="n">h_im</span> <span class="o">*</span> <span class="n">r_im</span>            <span class="c1"># (B, d)</span>
+</span><span id="__span-0-124"><a id="__codelineno-0-124" name="__codelineno-0-124" href="#__codelineno-0-124"></a>        <span class="n">hr_im</span> <span class="o">=</span> <span class="n">h_re</span> <span class="o">*</span> <span class="n">r_im</span> <span class="o">+</span> <span class="n">h_im</span> <span class="o">*</span> <span class="n">r_re</span>            <span class="c1"># (B, d)</span>
+</span><span id="__span-0-125"><a id="__codelineno-0-125" name="__codelineno-0-125" href="#__codelineno-0-125"></a>
+</span><span id="__span-0-126"><a id="__codelineno-0-126" name="__codelineno-0-126" href="#__codelineno-0-126"></a>        <span class="c1"># Score: -||h ∘ r - t||_2 (split into real and imaginary parts)</span>
+</span><span id="__span-0-127"><a id="__codelineno-0-127" name="__codelineno-0-127" href="#__codelineno-0-127"></a>        <span class="n">diff_re</span> <span class="o">=</span> <span class="n">hr_re</span> <span class="o">-</span> <span class="n">t_re</span>                        <span class="c1"># (B, d)</span>
+</span><span id="__span-0-128"><a id="__codelineno-0-128" name="__codelineno-0-128" href="#__codelineno-0-128"></a>        <span class="n">diff_im</span> <span class="o">=</span> <span class="n">hr_im</span> <span class="o">-</span> <span class="n">t_im</span>                        <span class="c1"># (B, d)</span>
+</span><span id="__span-0-129"><a id="__codelineno-0-129" name="__codelineno-0-129" href="#__codelineno-0-129"></a>        <span class="c1"># Norm over complex components: sqrt(re^2 + im^2) per component, then sum</span>
+</span><span id="__span-0-130"><a id="__codelineno-0-130" name="__codelineno-0-130" href="#__codelineno-0-130"></a>        <span class="n">norm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">diff_re</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">diff_im</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>  <span class="c1"># (B, d)</span>
+</span><span id="__span-0-131"><a id="__codelineno-0-131" name="__codelineno-0-131" href="#__codelineno-0-131"></a>        <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">norm</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">))</span>                    <span class="c1"># (B,)</span>
+</span><span id="__span-0-132"><a id="__codelineno-0-132" name="__codelineno-0-132" href="#__codelineno-0-132"></a>
+</span><span id="__span-0-133"><a id="__codelineno-0-133" name="__codelineno-0-133" href="#__codelineno-0-133"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos_h</span><span class="p">,</span> <span class="n">pos_r</span><span class="p">,</span> <span class="n">pos_t</span><span class="p">,</span> <span class="n">neg_h</span><span class="p">,</span> <span class="n">neg_r</span><span class="p">,</span> <span class="n">neg_t</span><span class="p">):</span>
+</span><span id="__span-0-134"><a id="__codelineno-0-134" name="__codelineno-0-134" href="#__codelineno-0-134"></a><span class="w">        </span><span class="sd">"""Binary cross-entropy with logit margin shift."""</span>
+</span><span id="__span-0-135"><a id="__codelineno-0-135" name="__codelineno-0-135" href="#__codelineno-0-135"></a>        <span class="n">pos_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">pos_h</span><span class="p">,</span> <span class="n">pos_r</span><span class="p">,</span> <span class="n">pos_t</span><span class="p">)</span>
+</span><span id="__span-0-136"><a id="__codelineno-0-136" name="__codelineno-0-136" href="#__codelineno-0-136"></a>        <span class="n">neg_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">neg_h</span><span class="p">,</span> <span class="n">neg_r</span><span class="p">,</span> <span class="n">neg_t</span><span class="p">)</span>
+</span><span id="__span-0-137"><a id="__codelineno-0-137" name="__codelineno-0-137" href="#__codelineno-0-137"></a>        <span class="n">pos_loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">-</span> <span class="n">pos_score</span><span class="p">)</span>
+</span><span id="__span-0-138"><a id="__codelineno-0-138" name="__codelineno-0-138" href="#__codelineno-0-138"></a>        <span class="n">neg_loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softplus</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gamma</span> <span class="o">+</span> <span class="n">neg_score</span><span class="p">)</span>
+</span><span id="__span-0-139"><a id="__codelineno-0-139" name="__codelineno-0-139" href="#__codelineno-0-139"></a>        <span class="k">return</span> <span class="p">(</span><span class="n">pos_loss</span> <span class="o">+</span> <span class="n">neg_loss</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-0-140"><a id="__codelineno-0-140" name="__codelineno-0-140" href="#__codelineno-0-140"></a>
+</span><span id="__span-0-141"><a id="__codelineno-0-141" name="__codelineno-0-141" href="#__codelineno-0-141"></a>
+</span><span id="__span-0-142"><a id="__codelineno-0-142" name="__codelineno-0-142" href="#__codelineno-0-142"></a><span class="c1"># ── Part 2: Full PyKEEN Pipeline for Rigorous Benchmarking ───────────────────</span>
+</span><span id="__span-0-143"><a id="__codelineno-0-143" name="__codelineno-0-143" href="#__codelineno-0-143"></a>
+</span><span id="__span-0-144"><a id="__codelineno-0-144" name="__codelineno-0-144" href="#__codelineno-0-144"></a><span class="k">def</span><span class="w"> </span><span class="nf">run_pykeen_experiment</span><span class="p">(</span><span class="n">model_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">'RotatE'</span><span class="p">):</span>
+</span><span id="__span-0-145"><a id="__codelineno-0-145" name="__codelineno-0-145" href="#__codelineno-0-145"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-146"><a id="__codelineno-0-146" name="__codelineno-0-146" href="#__codelineno-0-146"></a><span class="sd">    Train a KG embedding model on FB15k-237 using PyKEEN.</span>
+</span><span id="__span-0-147"><a id="__codelineno-0-147" name="__codelineno-0-147" href="#__codelineno-0-147"></a><span class="sd">    PyKEEN handles: dataset loading, negative sampling, training, </span>
+</span><span id="__span-0-148"><a id="__codelineno-0-148" name="__codelineno-0-148" href="#__codelineno-0-148"></a><span class="sd">    filtered evaluation, and result reporting.</span>
+</span><span id="__span-0-149"><a id="__codelineno-0-149" name="__codelineno-0-149" href="#__codelineno-0-149"></a>
+</span><span id="__span-0-150"><a id="__codelineno-0-150" name="__codelineno-0-150" href="#__codelineno-0-150"></a><span class="sd">    Install: pip install pykeen</span>
+</span><span id="__span-0-151"><a id="__codelineno-0-151" name="__codelineno-0-151" href="#__codelineno-0-151"></a><span class="sd">    """</span>
+</span><span id="__span-0-152"><a id="__codelineno-0-152" name="__codelineno-0-152" href="#__codelineno-0-152"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">pykeen.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">pipeline</span>
+</span><span id="__span-0-153"><a id="__codelineno-0-153" name="__codelineno-0-153" href="#__codelineno-0-153"></a>    <span class="kn">from</span><span class="w"> </span><span class="nn">pykeen.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">FB15k237</span>
+</span><span id="__span-0-154"><a id="__codelineno-0-154" name="__codelineno-0-154" href="#__codelineno-0-154"></a>
+</span><span id="__span-0-155"><a id="__codelineno-0-155" name="__codelineno-0-155" href="#__codelineno-0-155"></a>    <span class="n">result</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span>
+</span><span id="__span-0-156"><a id="__codelineno-0-156" name="__codelineno-0-156" href="#__codelineno-0-156"></a>        <span class="c1"># Dataset</span>
+</span><span id="__span-0-157"><a id="__codelineno-0-157" name="__codelineno-0-157" href="#__codelineno-0-157"></a>        <span class="n">dataset</span><span class="o">=</span><span class="n">FB15k237</span><span class="p">,</span>                      <span class="c1"># 14,541 entities, 237 relations</span>
+</span><span id="__span-0-158"><a id="__codelineno-0-158" name="__codelineno-0-158" href="#__codelineno-0-158"></a>        <span class="c1"># Model</span>
+</span><span id="__span-0-159"><a id="__codelineno-0-159" name="__codelineno-0-159" href="#__codelineno-0-159"></a>        <span class="n">model</span><span class="o">=</span><span class="n">model_name</span><span class="p">,</span>
+</span><span id="__span-0-160"><a id="__codelineno-0-160" name="__codelineno-0-160" href="#__codelineno-0-160"></a>        <span class="n">model_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">embedding_dim</span><span class="o">=</span><span class="mi">200</span><span class="p">),</span>
+</span><span id="__span-0-161"><a id="__codelineno-0-161" name="__codelineno-0-161" href="#__codelineno-0-161"></a>        <span class="c1"># Training</span>
+</span><span id="__span-0-162"><a id="__codelineno-0-162" name="__codelineno-0-162" href="#__codelineno-0-162"></a>        <span class="n">training_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+</span><span id="__span-0-163"><a id="__codelineno-0-163" name="__codelineno-0-163" href="#__codelineno-0-163"></a>            <span class="n">num_epochs</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-0-164"><a id="__codelineno-0-164" name="__codelineno-0-164" href="#__codelineno-0-164"></a>            <span class="n">batch_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span>
+</span><span id="__span-0-165"><a id="__codelineno-0-165" name="__codelineno-0-165" href="#__codelineno-0-165"></a>        <span class="p">),</span>
+</span><span id="__span-0-166"><a id="__codelineno-0-166" name="__codelineno-0-166" href="#__codelineno-0-166"></a>        <span class="n">optimizer</span><span class="o">=</span><span class="s1">'Adam'</span><span class="p">,</span>
+</span><span id="__span-0-167"><a id="__codelineno-0-167" name="__codelineno-0-167" href="#__codelineno-0-167"></a>        <span class="n">optimizer_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">),</span>
+</span><span id="__span-0-168"><a id="__codelineno-0-168" name="__codelineno-0-168" href="#__codelineno-0-168"></a>        <span class="c1"># Negative sampling (self-adversarial for RotatE)</span>
+</span><span id="__span-0-169"><a id="__codelineno-0-169" name="__codelineno-0-169" href="#__codelineno-0-169"></a>        <span class="n">negative_sampler</span><span class="o">=</span><span class="s1">'basic'</span><span class="p">,</span>
+</span><span id="__span-0-170"><a id="__codelineno-0-170" name="__codelineno-0-170" href="#__codelineno-0-170"></a>        <span class="n">negative_sampler_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">num_negs_per_pos</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
+</span><span id="__span-0-171"><a id="__codelineno-0-171" name="__codelineno-0-171" href="#__codelineno-0-171"></a>        <span class="c1"># Evaluation</span>
+</span><span id="__span-0-172"><a id="__codelineno-0-172" name="__codelineno-0-172" href="#__codelineno-0-172"></a>        <span class="n">evaluator_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">filtered</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>   <span class="c1"># always use filtered evaluation</span>
+</span><span id="__span-0-173"><a id="__codelineno-0-173" name="__codelineno-0-173" href="#__codelineno-0-173"></a>        <span class="n">device</span><span class="o">=</span><span class="s1">'cuda'</span><span class="p">,</span>
+</span><span id="__span-0-174"><a id="__codelineno-0-174" name="__codelineno-0-174" href="#__codelineno-0-174"></a>        <span class="n">random_seed</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+</span><span id="__span-0-175"><a id="__codelineno-0-175" name="__codelineno-0-175" href="#__codelineno-0-175"></a>    <span class="p">)</span>
+</span><span id="__span-0-176"><a id="__codelineno-0-176" name="__codelineno-0-176" href="#__codelineno-0-176"></a>
+</span><span id="__span-0-177"><a id="__codelineno-0-177" name="__codelineno-0-177" href="#__codelineno-0-177"></a>    <span class="n">metrics</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">metric_results</span>
+</span><span id="__span-0-178"><a id="__codelineno-0-178" name="__codelineno-0-178" href="#__codelineno-0-178"></a>    <span class="n">mrr</span>    <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get_metric</span><span class="p">(</span><span class="s1">'both.realistic.inverse_harmonic_mean_rank'</span><span class="p">)</span>
+</span><span id="__span-0-179"><a id="__codelineno-0-179" name="__codelineno-0-179" href="#__codelineno-0-179"></a>    <span class="n">hits1</span>  <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get_metric</span><span class="p">(</span><span class="s1">'both.realistic.hits_at_1'</span><span class="p">)</span>
+</span><span id="__span-0-180"><a id="__codelineno-0-180" name="__codelineno-0-180" href="#__codelineno-0-180"></a>    <span class="n">hits10</span> <span class="o">=</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get_metric</span><span class="p">(</span><span class="s1">'both.realistic.hits_at_10'</span><span class="p">)</span>
+</span><span id="__span-0-181"><a id="__codelineno-0-181" name="__codelineno-0-181" href="#__codelineno-0-181"></a>
+</span><span id="__span-0-182"><a id="__codelineno-0-182" name="__codelineno-0-182" href="#__codelineno-0-182"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2"> on FB15k-237 (filtered):"</span><span class="p">)</span>
+</span><span id="__span-0-183"><a id="__codelineno-0-183" name="__codelineno-0-183" href="#__codelineno-0-183"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  MRR:     </span><span class="si">{</span><span class="n">mrr</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-184"><a id="__codelineno-0-184" name="__codelineno-0-184" href="#__codelineno-0-184"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Hits@1:  </span><span class="si">{</span><span class="n">hits1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-185"><a id="__codelineno-0-185" name="__codelineno-0-185" href="#__codelineno-0-185"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Hits@10: </span><span class="si">{</span><span class="n">hits10</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-186"><a id="__codelineno-0-186" name="__codelineno-0-186" href="#__codelineno-0-186"></a>
+</span><span id="__span-0-187"><a id="__codelineno-0-187" name="__codelineno-0-187" href="#__codelineno-0-187"></a>    <span class="k">return</span> <span class="n">result</span>
+</span><span id="__span-0-188"><a id="__codelineno-0-188" name="__codelineno-0-188" href="#__codelineno-0-188"></a>
+</span><span id="__span-0-189"><a id="__codelineno-0-189" name="__codelineno-0-189" href="#__codelineno-0-189"></a>
+</span><span id="__span-0-190"><a id="__codelineno-0-190" name="__codelineno-0-190" href="#__codelineno-0-190"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+</span><span id="__span-0-191"><a id="__codelineno-0-191" name="__codelineno-0-191" href="#__codelineno-0-191"></a>    <span class="c1"># Compare TransE vs RotatE on FB15k-237</span>
+</span><span id="__span-0-192"><a id="__codelineno-0-192" name="__codelineno-0-192" href="#__codelineno-0-192"></a>    <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'TransE'</span><span class="p">,</span> <span class="s1">'RotatE'</span><span class="p">]:</span>
+</span><span id="__span-0-193"><a id="__codelineno-0-193" name="__codelineno-0-193" href="#__codelineno-0-193"></a>        <span class="n">run_pykeen_experiment</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>Expected output:</strong></p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>TransE on FB15k-237 (filtered):
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>  MRR:     0.2791
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  Hits@1:  0.1982
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  Hits@10: 0.4413
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>RotatE on FB15k-237 (filtered):
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>  MRR:     0.3381
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>  Hits@1:  0.2412
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>  Hits@10: 0.5326
+</span></code></pre></div>
+<p>The 21% MRR improvement of RotatE over TransE reflects its ability to model all four relation patterns; on FB15k-237, which contains many compositional and inverse relations (e.g., country → capital → continent chains), RotatE's compositional modeling provides a clear advantage.</p>
+<hr>
+<h2 id="1212-benchmark-results">12.12 Benchmark Results<a class="headerlink" href="#1212-benchmark-results" title="Permanent link">¶</a></h2>
+<p>The following table reports filtered MRR and Hits@K on FB15k-237, the standard KG completion benchmark. Lower Hits@1 indicates difficulty in exact-answer retrieval; higher Hits@10 indicates the model at least surfaces the correct answer within the top-10 list.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th>MRR ↑</th>
+<th>Hits@1 ↑</th>
+<th>Hits@10 ↑</th>
+<th>Parameters</th>
+<th>Year</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TransE</td>
+<td>0.279 ± 0.003</td>
+<td>0.198</td>
+<td>0.441</td>
+<td><span class="arithmatex">\( O(d(\|\mathcal{E}\|+\|\mathcal{R}\|)) \)</span></td>
+<td>2013</td>
+</tr>
+<tr>
+<td>TransR</td>
+<td>0.305 ± 0.004</td>
+<td>0.220</td>
+<td>0.475</td>
+<td><span class="arithmatex">\( O(d\|\mathcal{E}\| + dk\|\mathcal{R}\|) \)</span></td>
+<td>2015</td>
+</tr>
+<tr>
+<td>DistMult</td>
+<td>0.241 ± 0.004</td>
+<td>0.155</td>
+<td>0.419</td>
+<td><span class="arithmatex">\( O(d(\|\mathcal{E}\|+\|\mathcal{R}\|)) \)</span></td>
+<td>2015</td>
+</tr>
+<tr>
+<td>ComplEx</td>
+<td>0.247 ± 0.004</td>
+<td>0.158</td>
+<td>0.428</td>
+<td><span class="arithmatex">\( O(d(\|\mathcal{E}\|+\|\mathcal{R}\|)) \)</span></td>
+<td>2016</td>
+</tr>
+<tr>
+<td>RotatE</td>
+<td><strong>0.338 ± 0.003</strong></td>
+<td><strong>0.241</strong></td>
+<td><strong>0.533</strong></td>
+<td><span class="arithmatex">\( O(d(\|\mathcal{E}\|+\|\mathcal{R}\|)) \)</span></td>
+<td>2019</td>
+</tr>
+<tr>
+<td>RotatE (self-adv.)</td>
+<td>0.344 ± 0.002</td>
+<td>0.246</td>
+<td>0.545</td>
+<td><span class="arithmatex">\( O(d(\|\mathcal{E}\|+\|\mathcal{R}\|)) \)</span></td>
+<td>2019</td>
+</tr>
+</tbody>
+</table>
+<p>Sources: Sun et al. (2019), Yang et al. (2015), Trouillon et al. (2016), Bordes et al. (2013).</p>
+<p>Several results deserve attention. TransR outperforms TransE despite sharing the translational paradigm, confirming that relation-specific projection spaces help with 1-to-N relations. DistMult underperforms TransE on FB15k-237 despite being a later model — this reflects FB15k-237's high proportion of antisymmetric relations, which DistMult cannot model. RotatE's 21% MRR improvement over TransE at the <em>same parameter count</em> demonstrates the value of the relation pattern coverage analysis: better geometry, not more parameters, drives performance.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Unfiltered Evaluation Makes Models Look Worse Than They Are</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning about evaluation pitfalls">
+Papers published before 2015 often reported unfiltered MRR, which is systematically lower than filtered MRR because other true triples compete with the target answer in the ranking. On FB15k-237, filtered vs. unfiltered MRR typically differs by 10–15 points. Always check which evaluation protocol a paper uses before comparing numbers. If you see a paper claiming DistMult MRR of 0.24 and another claiming 0.33 for the same model and dataset, they are almost certainly using different evaluation protocols, not different implementations.</p>
+</div>
+<hr>
+<h2 id="1213-microsim-transe-geometry-in-2d">12.13 MicroSim: TransE Geometry in 2D<a class="headerlink" href="#1213-microsim-transe-geometry-in-2d" title="Permanent link">¶</a></h2>
+<iframe src="../../sims/ch12-kg-embedding-geometry/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch12-kg-embedding-geometry/main.html">Run TransE Embedding Geometry Fullscreen</a></p>
+<hr>
+<h2 id="1214-common-pitfalls">12.14 Common Pitfalls<a class="headerlink" href="#1214-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>Ignoring relation pattern analysis before model selection.</strong> The most common KG embedding mistake is treating all embedding models as interchangeable and selecting the one with the best overall benchmark number. On a KG with predominantly antisymmetric relations (biological KGs with directional causality: gene → disease, drug → target), DistMult is a poor choice regardless of its performance on Freebase benchmarks. Always analyze your KG's relation type distribution before committing to a model family.</p>
+<p><strong>Using unfiltered evaluation.</strong> As noted above, comparing unfiltered numbers across papers is meaningless. Ensure that your evaluation pipeline uses filtered ranking — excluding all known-true triples from the candidate set before computing ranks. PyKEEN's <code>filtered=True</code> evaluator handles this correctly.</p>
+<p><strong>Conflating KG link prediction with GNN node classification.</strong> KG completion ranks over the entire entity vocabulary for a given query relation; the model must produce a sensible score for <em>every</em> entity pair, including entities that never co-occur in training. GNN node classification assigns labels to nodes based on their local neighborhood. The training dynamics, loss functions, and evaluation metrics are fundamentally different; code written for one task will not transfer to the other without significant modification.</p>
+<p><strong>Forgetting to normalize entity embeddings in TransE.</strong> The unit-sphere constraint <span class="arithmatex">\( \|\mathbf{h}\|_2 = 1 \)</span> is applied after each gradient update, not as a soft penalty in the loss. Implementations that omit this normalization allow entity embeddings to grow in magnitude without bound, producing degenerate solutions where the model achieves near-zero training loss by making all entity embeddings very large rather than by learning meaningful geometry.</p>
+<p><strong>Using too small a negative sample count.</strong> KG embedding training requires many negative samples per positive triple to produce discriminative embeddings. With k = 1 (one negative per positive), the model sees too little signal about the space of implausible triples and overfits to the few seen negatives. Values of k = 64 to 512 are standard; lower values are acceptable only if computational budget is extremely tight.</p>
+<p><strong>Overlooking the inverse relation leakage in FB15k.</strong> The original FB15k dataset (not FB15k-237) contains both <span class="arithmatex">\( r \)</span> and its inverse <span class="arithmatex">\( r^{-1} \)</span> in the training set. Models trained on FB15k can trivially achieve high test performance on inverse-relation queries by learning <span class="arithmatex">\( f(h, r^{-1}, t) = f(t, r, h) \)</span> — a useless shortcut. FB15k-237 was specifically constructed to remove such inverse-relation pairs. Always use FB15k-237 (or WN18RR) for benchmarking; original FB15k and WN18 results are no longer informative.</p>
+<hr>
+<h2 id="1215-exercises">12.15 Exercises<a class="headerlink" href="#1215-exercises" title="Permanent link">¶</a></h2>
+<p><strong>Remember</strong></p>
+<ol>
+<li>
+<p>Define a knowledge graph triple <span class="arithmatex">\( (h, r, t) \)</span> and give three concrete examples from different domains (biology, geography, and history). For each, identify whether the relation is symmetric, antisymmetric, an inversion pair, or compositional.</p>
+</li>
+<li>
+<p>State the TransE scoring function and the constraint applied to entity embeddings during training. What geometric interpretation does this scoring function carry?</p>
+</li>
+</ol>
+<p><strong>Understand</strong></p>
+<ol>
+<li>
+<p>Prove that TransE cannot model symmetric relations: show that simultaneously requiring <span class="arithmatex">\( \mathbf{h} + \mathbf{r} \approx \mathbf{t} \)</span> and <span class="arithmatex">\( \mathbf{t} + \mathbf{r} \approx \mathbf{h} \)</span> for non-identical entities implies <span class="arithmatex">\( \mathbf{r} \approx \mathbf{0} \)</span>. Explain why a zero relation vector makes training degenerate.</p>
+</li>
+<li>
+<p>DistMult's scoring function <span class="arithmatex">\( f(h, r, t) = \sum_i h_i r_i t_i \)</span> is symmetric in <span class="arithmatex">\( h \)</span> and <span class="arithmatex">\( t \)</span>. The DistMult authors argue that this is not always a limitation because many real KG relations are approximately symmetric. Evaluate this argument: on which type of KG would DistMult be a reasonable choice despite its symmetry, and on which type would it definitively fail?</p>
+</li>
+</ol>
+<p><strong>Apply</strong></p>
+<ol>
+<li>
+<p>For a KG with 10,000 entities and 100 relations, compute the number of trainable parameters for TransE, TransR (with relation-space dimension k = 50, entity dimension d = 100), DistMult, ComplEx, and RotatE. Which model has the highest parameter-to-performance ratio based on the benchmark table in §12.12?</p>
+</li>
+<li>
+<p>Implement a DistMult scoring function in PyTorch (without using PyKEEN) that takes integer indices for head, relation, and tail, and returns a batch of scores. Verify that your implementation produces equal scores for <span class="arithmatex">\( (h, r, t) \)</span> and <span class="arithmatex">\( (t, r, h) \)</span> on a small example.</p>
+</li>
+</ol>
+<p><strong>Analyze</strong></p>
+<ol>
+<li>
+<p>The FB15k-237 benchmark filters inverse relations from the training set. Explain why this filtering matters for fairly evaluating the composition relation pattern. Construct a concrete example: given a training triple <span class="arithmatex">\( (h, r_1, e) \)</span> and a test query <span class="arithmatex">\( (e, r_2, ?) \)</span>, show how the presence of <span class="arithmatex">\( r_1^{-1} \)</span> in the training set would allow a model to answer the test query trivially.</p>
+</li>
+<li>
+<p>RotatE uses unit-modulus complex relation vectors <span class="arithmatex">\( r_i = e^{i\theta_i} \)</span>. An alternative design would allow relation vectors of arbitrary modulus in complex space. Analyze what relation patterns this would enable or disable — in particular, could unconstrained complex multiplication model patterns that RotatE cannot?</p>
+</li>
+</ol>
+<p><strong>Evaluate</strong></p>
+<ol>
+<li>
+<p>A research paper proposes a new KG embedding model called "ScaleE" that represents relations as element-wise <em>scaling</em> of entity embeddings: <span class="arithmatex">\( f(h, r, t) = -\|\mathbf{r} \odot \mathbf{h} - \mathbf{t}\|_2 \)</span> where <span class="arithmatex">\( \mathbf{r} \in \mathbb{R}^d_{&gt;0} \)</span>. Using the relation pattern framework, evaluate which patterns ScaleE can and cannot represent. Then predict its expected MRR on FB15k-237 relative to TransE and RotatE, and justify your prediction.</p>
+</li>
+<li>
+<p>Compare the computational costs of training TransE vs. TransR at equivalent embedding dimensions. TransR's projection matrices are argued to improve 1-to-N relation performance. Evaluate whether this performance gain (approximately +2.6 MRR points on FB15k-237 per the benchmark table) justifies the additional parameter cost for a KG with 10,000 entities and 1,000 relation types at embedding dimension d = 200, k = 50.</p>
+</li>
+</ol>
+<p><strong>Create</strong></p>
+<ol>
+<li>
+<p>Design a new KG embedding model that combines RotatE's rotational relations with an additive translation component: <span class="arithmatex">\( f(h, r_{\text{rot}}, r_{\text{trans}}, t) = -\|\mathbf{h} \circ \mathbf{r}_{\text{rot}} + \mathbf{r}_{\text{trans}} - \mathbf{t}\|_2 \)</span>. Analyze which relation patterns this combined model can represent. Does it strictly subsume RotatE? Propose a training regime and predict how it would perform on FB15k-237 relative to RotatE.</p>
+</li>
+<li>
+<p>Wikidata contains temporal triples of the form <span class="arithmatex">\( (h, r, t, [t_\text{start}, t_\text{end}]) \)</span> — a triple is only valid during a time interval. Propose how to extend TransE or RotatE to handle temporal KGs: define a scoring function <span class="arithmatex">\( f(h, r, t, \tau) \)</span> where <span class="arithmatex">\( \tau \)</span> is a query timestamp, specify what geometric role time should play (e.g., time-dependent rotation, time-gated attention over temporal embeddings), and discuss which relation patterns from the static setting are preserved, modified, or broken by the temporal extension.</p>
+</li>
+</ol>
+<hr>
+<h2 id="1216-further-reading">12.16 Further Reading<a class="headerlink" href="#1216-further-reading" title="Permanent link">¶</a></h2>
+<p><strong>Bordes, A., et al. (2013). Translating Embeddings for Modeling Multi-relational Data.</strong> <em>NeurIPS 2013.</em> The original TransE paper that introduced the translational paradigm for KG embeddings. Despite its simplicity — and despite subsequent models outperforming it on all standard benchmarks — TransE remains the most widely cited KG embedding paper and serves as the standard baseline for comparison. The paper's core geometric intuition (relation = translation vector from head to tail) has influenced every subsequent translational and rotational model. <a href="https://papers.nips.cc/paper/2013/hash/1cecc7a77928ca8133fa24680a88d2f9-Abstract.html">NeurIPS Proceedings</a></p>
+<p><strong>Yang, B., et al. (2015). Embedding Entities and Relations for Learning and Inference in Knowledge Bases.</strong> <em>ICLR 2015.</em> Introduced DistMult and provided the first systematic comparison between translational and bilinear KG embedding models. The paper's insight that bilinear models can capture symmetry while translational models cannot foreshadowed the full relation pattern analysis in RotatE. Also demonstrated that both model families can be applied to large-scale reasoning tasks beyond triple completion. <a href="https://arxiv.org/abs/1412.6575">arXiv:1412.6575</a></p>
+<p><strong>Trouillon, T., et al. (2016). Complex Embeddings for Simple Link Prediction.</strong> <em>ICML 2016.</em> Introduced ComplEx, demonstrating that a simple extension from real to complex embeddings resolves DistMult's inability to model antisymmetric relations. The mathematical analysis — showing that the Hermitian dot product can represent all relations that any bilinear model can represent — remains one of the most elegant theoretical results in KG embedding. <a href="https://arxiv.org/abs/1606.06357">arXiv:1606.06357</a></p>
+<p><strong>Sun, Z., et al. (2019). RotatE: Knowledge Graph Embedding by Relational Rotation in Complex Space.</strong> <em>ICLR 2019.</em> Introduced RotatE and, more importantly, the relation pattern analysis framework that provides a principled basis for comparing all KG embedding methods. The paper proves that RotatE can model all four patterns (symmetry, antisymmetry, inversion, composition) and that no simpler model covers all four simultaneously. The self-adversarial negative sampling strategy introduced here has been widely adopted in subsequent work. <a href="https://arxiv.org/abs/1902.10197">arXiv:1902.10197</a></p>
+<p><strong>Lin, Y., et al. (2015). Learning Entity and Relation Embeddings for Knowledge Graph Completion.</strong> <em>AAAI 2015.</em> Introduced TransR, addressing TransE's 1-to-N limitation via relation-specific projection matrices. While TransR is no longer state-of-the-art, the projection paradigm it introduced — separating entity space from relation space — influenced later models including TransD, TranSparse, and the entity-type-aware embeddings in TypeDM. <a href="https://ojs.aaai.org/index.php/AAAI/article/view/9491">AAAI Proceedings</a></p>
+<p><strong>Ali, M., et al. (2021). PyKEEN 1.0: A Python Library for Training and Evaluating Knowledge Graph Embeddings.</strong> <em>Journal of Machine Learning Research.</em> The definitive reference for the PyKEEN library, which implements 40+ KG embedding models with standardized training, filtered evaluation, and hyperparameter optimization. The paper documents important implementation details (filtered evaluation, model-specific negative sampling, reproducible seeding) that are necessary for fair comparison across models. <a href="https://jmlr.org/papers/v22/20-825.html">JMLR</a></p>
+<p><strong>Toutanova, K., &amp; Chen, D. (2015). Observed versus Latent Features for Knowledge Base and Text Inference.</strong> <em>Proceedings of the 3rd Workshop on Continuous Vector Space Models and their Compositionality.</em> Introduced FB15k-237, the current standard benchmark, by removing inverse relations from the original Freebase FB15k dataset. Essential context for understanding why FB15k-237 is preferred over the original FB15k and what the benchmark actually measures. <a href="https://aclanthology.org/W15-4007/">ACL Anthology</a></p>
+<p><strong>Ji, S., et al. (2021). A Survey on Knowledge Graphs: Representation, Acquisition, and Applications.</strong> <em>IEEE Transactions on Neural Networks and Learning Systems.</em> A comprehensive survey covering KG construction, embedding methods, and downstream applications including question answering, recommender systems, and biomedical reasoning. Provides coverage of models beyond the geometric embedding families in this chapter, including semantic matching models (SME, NTN), neural network KGE models, and graph neural network-based approaches. <a href="https://arxiv.org/abs/2002.00388">arXiv:2002.00388</a></p>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Chapter 12 Complete — You've Embedded the World's Knowledge</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating Chapter 12 completion">
+You've now seen how to compress the structured knowledge of millions of entities into dense geometric embeddings — and why the geometry must be chosen carefully to match the logical structure of the relations you're modeling. The key principles: translation handles composition but fails at symmetry; bilinear scoring handles symmetry but not antisymmetry; complex rotations cover all four patterns at no extra parameter cost. Chapter 13 pushes further: rather than completing individual triples, it tackles multi-hop reasoning chains — answering questions that require traversing several relation steps through the knowledge graph.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../11-graph-transformers/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

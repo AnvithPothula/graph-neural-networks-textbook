@@ -1,0 +1,10 @@
+{
+  "title": "Graph Neural Networks and Machine Learning with Graphs",
+  "description": "A comprehensive intelligent textbook covering Graph Neural Networks from graph theory fundamentals through frontier topics including Graph Transformers, Knowledge Graph Foundation Models, and LLM+GNN integration.",
+  "creator": "Anvith Pothula",
+  "date": "2026-05-28",
+  "version": "1.0",
+  "format": "Learning Graph JSON v1.0",
+  "schema": "https://raw.githubusercontent.com/dmccreary/learning-graphs/refs/heads/main/src/schema/learning-graph-schema.json",
+  "license": "CC BY-NC-SA 4.0 DEED"
+}

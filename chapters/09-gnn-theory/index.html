@@ -1,0 +1,3625 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Proves rigorously why GNNs can and cannot distinguish certain graphs using the Weisfeiler-Lehman test, covers over-squashing, and establishes permutation equivariance as the key theoretical property of the MPNN framework.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/09-gnn-theory/">
+      
+      
+        <link rel="prev" href="../08-gnn-training/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 9: Theory of GNNs: Expressiveness and the WL Test - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 9: Theory of GNNs: Expressiveness and the WL Test">
+  <meta property="og:description" content="Proves rigorously why GNNs can and cannot distinguish certain graphs using the Weisfeiler-Lehman test, covers over-squashing, and establishes permutation equivariance as the key theoretical property of the MPNN framework.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/09-gnn-theory/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 9: Theory of GNNs: Expressiveness and the WL Test">
+  <meta name="twitter:description" content="Proves rigorously why GNNs can and cannot distinguish certain graphs using the Weisfeiler-Lehman test, covers over-squashing, and establishes permutation equivariance as the key theoretical property of the MPNN framework.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-9-theory-of-gnns-expressiveness-and-the-wl-test" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 9: Theory of GNNs: Expressiveness and the WL Test
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_11" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_11" id="__nav_4_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_11_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#motivating-example-two-molecules-one-embedding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Motivating Example: Two Molecules, One Embedding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#91-the-graph-isomorphism-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.1 The Graph Isomorphism Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#92-the-1-wl-color-refinement-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2 The 1-WL Color Refinement Test
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9.2 The 1-WL Color Refinement Test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-wl-color-refinement-convergence-causal-loop-diagram" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: WL Color Refinement Convergence — Causal Loop Diagram
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#921-convergence-guarantee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2.1 Convergence Guarantee
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#922-what-1-wl-captures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.2.2 What 1-WL Captures
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#93-gnns-are-bounded-by-1-wl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.3 GNNs Are Bounded by 1-WL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#94-gin-achieving-the-1-wl-upper-bound" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4 GIN: Achieving the 1-WL Upper Bound
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9.4 GIN: Achieving the 1-WL Upper Bound">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#941-aggregator-expressiveness-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.4.1 Aggregator Expressiveness Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#95-what-1-wl-and-standard-gnns-cannot-distinguish" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5 What 1-WL (and Standard GNNs) Cannot Distinguish
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9.5 What 1-WL (and Standard GNNs) Cannot Distinguish">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#951-regular-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5.1 Regular Graphs
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#952-structural-properties-wl-cannot-detect" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.5.2 Structural Properties WL Cannot Detect
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#96-beyond-1-wl-higher-order-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.6 Beyond 1-WL: Higher-Order Tests
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9.6 Beyond 1-WL: Higher-Order Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#961-the-k-wl-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.6.1 The k-WL Hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#962-practical-approaches-beyond-1-wl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.6.2 Practical Approaches Beyond 1-WL
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#97-over-squashing-and-the-gnn-bottleneck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.7 Over-Squashing and the GNN Bottleneck
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9.7 Over-Squashing and the GNN Bottleneck">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#971-the-information-bottleneck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.7.1 The Information Bottleneck
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#972-the-gnn-bottleneck" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.7.2 The GNN Bottleneck
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#973-remedies-for-over-squashing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.7.3 Remedies for Over-Squashing
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#98-over-smoothing-a-spectral-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.8 Over-Smoothing: A Spectral View
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#99-permutation-invariance-and-equivariance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.9 Permutation Invariance and Equivariance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9.9 Permutation Invariance and Equivariance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#991-why-permutation-symmetry-is-necessary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.9.1 Why Permutation Symmetry Is Necessary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#992-graph-invariance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.9.2 Graph Invariance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#993-node-equivariance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.9.3 Node Equivariance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#994-why-mpnn-satisfies-both" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.9.4 Why MPNN Satisfies Both
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#910-code-gin-vs-gcn-on-graph-classification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.10 Code: GIN vs. GCN on Graph Classification
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9.10 Code: GIN vs. GCN on Graph Classification">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-wl-refinement-microsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: WL Refinement MicroSim
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#911-benchmark-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.11 Benchmark Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#912-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.12 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#913-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.13 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#914-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9.14 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    9. Theory of GNNs: Expressiveness and the WL Test
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/09-gnn-theory/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-9-theory-of-gnns-expressiveness-and-the-wl-test">Chapter 9: Theory of GNNs: Expressiveness and the WL Test<a class="headerlink" href="#chapter-9-theory-of-gnns-expressiveness-and-the-wl-test" title="Permanent link">¶</a></h1>
+<p><strong>Part 2: Graph Neural Networks</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Proves rigorously why GNNs can and cannot distinguish certain graphs using the Weisfeiler–Leman test, derives GIN as the unique architecture achieving the 1-WL upper bound, and establishes over-squashing and permutation equivariance as the two fundamental theoretical constraints on message-passing networks.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 13 concepts from the learning graph:</p>
+<ol>
+<li>Graph Isomorphism Problem</li>
+<li>Weisfeiler-Leman Test (1-WL)</li>
+<li>GNN Expressiveness</li>
+<li>Graph Isomorphism Network (GIN)</li>
+<li>Sum Aggregation Injectivity</li>
+<li>WL Test Limitations (Regular Graphs)</li>
+<li>k-WL Hierarchy</li>
+<li>Over-Squashing</li>
+<li>Cheeger Constant</li>
+<li>Over-Smoothing (Spectral View)</li>
+<li>Permutation Invariance</li>
+<li>Permutation Equivariance</li>
+<li>Aggregator Expressiveness (Sum vs. Mean vs. Max)</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../06-gnn-foundations/">Chapter 6: GNN Foundations: Message Passing and GCN</a></li>
+<li><a href="../07-gnn-design-space/">Chapter 7: GNN Design Space: GraphSAGE and GAT</a></li>
+<li><a href="../08-gnn-training/">Chapter 8: GNN Training, Augmentation, and Practical Tips</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Welcome to Chapter 9 — The Theory Beneath the Practice</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+In the last three chapters, you built, trained, and regularized GNNs. Now it's time to ask harder questions: <em>why</em> do GNNs work, and — more importantly — <em>when</em> are they guaranteed to fail? Every model has a ceiling. Understanding a model's theoretical limits tells you when to trust its outputs and when to reach for a more expressive alternative. This chapter proves, rigorously, that message-passing GNNs are equivalent in power to the 1-WL color refinement test, derives the conditions under which they achieve that upper bound, characterizes the graphs they fundamentally cannot distinguish, and introduces two failure modes — over-smoothing and over-squashing — from a theoretical rather than purely empirical perspective.</p>
+</div>
+<h2 id="motivating-example-two-molecules-one-embedding">Motivating Example: Two Molecules, One Embedding<a class="headerlink" href="#motivating-example-two-molecules-one-embedding" title="Permanent link">¶</a></h2>
+<p>Consider two molecules whose graph representations are structurally distinct — they have the same number of atoms (nodes), the same number of bonds (edges), and every atom has the same degree, but the connectivity pattern differs. A chemist can visually see they are different; they have different physical properties. Yet a GNN trained on one of these molecules might assign them identical embeddings at every layer, making it impossible to distinguish their properties by any downstream classifier.</p>
+<p>This is not a pathological corner case. It is a provable, structural consequence of using aggregation functions that cannot distinguish certain multisets of neighbor representations. Understanding why — and deriving the exact conditions under which a GNN <em>can</em> distinguish any two non-isomorphic graphs — is the central task of this chapter.</p>
+<hr>
+<h2 id="91-the-graph-isomorphism-problem">9.1 The Graph Isomorphism Problem<a class="headerlink" href="#91-the-graph-isomorphism-problem" title="Permanent link">¶</a></h2>
+<p>Two graphs <span class="arithmatex">\( G_1 = (V_1, E_1) \)</span> and <span class="arithmatex">\( G_2 = (V_2, E_2) \)</span> are <strong>isomorphic</strong> (written <span class="arithmatex">\( G_1 \cong G_2 \)</span>) if there exists a bijection <span class="arithmatex">\( \phi: V_1 \to V_2 \)</span> such that:</p>
+<div class="arithmatex">\[
+(u, v) \in E_1 \iff (\phi(u), \phi(v)) \in E_2
+\]</div>
+<p>In words: the two graphs are structurally identical up to a relabeling of nodes. For graphs with node features, the bijection must also preserve all feature values: <span class="arithmatex">\( x_v = x_{\phi(v)} \)</span> for every <span class="arithmatex">\( v \in V_1 \)</span>.</p>
+<p>The <strong>graph isomorphism problem</strong> asks: given two graphs <span class="arithmatex">\( G_1 \)</span> and <span class="arithmatex">\( G_2 \)</span>, are they isomorphic? Despite decades of effort, no polynomial-time algorithm is known for the general case, and the problem is not known to be NP-complete — it occupies the unusual status of being <em>NP-intermediate</em> (likely neither in P nor NP-complete). In practice, efficient heuristics and complete algorithms exist for restricted graph classes (bounded treewidth, planar graphs, bounded degree), but not for arbitrary graphs.</p>
+<p>The connection to GNNs is direct: if a GNN assigns the same embedding to all nodes in both <span class="arithmatex">\( G_1 \)</span> and <span class="arithmatex">\( G_2 \)</span>, then any graph-level representation derived from those embeddings will also be identical, making the graphs indistinguishable. A GNN's <strong>distinguishing power</strong> is the set of non-isomorphic graph pairs it can tell apart — producing different embeddings for at least one node in the two graphs.</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Tip: 'More Powerful' Means 'Distinguishes Strictly More Non-Isomorphic Pairs'</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving a tip">
+When researchers say GNN-A is "more expressive" than GNN-B, they mean: every pair of non-isomorphic graphs that GNN-B can distinguish, GNN-A can also distinguish — plus at least one pair that GNN-B cannot. This forms a partial order on GNN architectures. GIN sits at the top of the 1-WL level; subgraph GNNs and higher-order methods sit above it. Knowing where your architecture falls in this hierarchy tells you which molecular structures or social patterns it is provably blind to.</p>
+</div>
+<hr>
+<h2 id="92-the-1-wl-color-refinement-test">9.2 The 1-WL Color Refinement Test<a class="headerlink" href="#92-the-1-wl-color-refinement-test" title="Permanent link">¶</a></h2>
+<p>The <strong>Weisfeiler-Lehman (WL) graph isomorphism test</strong> is a classical combinatorial procedure for deciding whether two graphs are likely non-isomorphic. The most widely studied variant, called the <strong>1-WL test</strong> or <strong>color refinement</strong>, operates as follows.</p>
+<p>Before presenting the CLD that captures its convergence dynamics, here is the algorithm itself:</p>
+<p><strong>1-WL Algorithm:</strong></p>
+<ol>
+<li><strong>Initialize</strong>: assign every node the same initial color (label) <span class="arithmatex">\( c_v^{(0)} = c_{\text{init}} \)</span>. If nodes have features, use a hash of the feature vector as the initial color.</li>
+<li><strong>Refine</strong>: at each iteration <span class="arithmatex">\( t \)</span>, update every node's color by hashing its current color together with the sorted multiset of its neighbors' colors:</li>
+</ol>
+<div class="arithmatex">\[
+c_v^{(t+1)} = \text{HASH}\!\left(c_v^{(t)},\ \left\{\!\left\{ c_u^{(t)} : u \in \mathcal{N}(v) \right\}\!\right\}\right)
+\]</div>
+<ol>
+<li><strong>Repeat</strong> until no node's color changes between consecutive iterations (the coloring has reached a stable fixed point).</li>
+<li><strong>Decide</strong>: represent each graph as a histogram over its final node colors. If the two histograms differ, the graphs are <strong>non-isomorphic</strong>. If the histograms are identical, the test is <strong>inconclusive</strong> — the graphs may or may not be isomorphic.</li>
+</ol>
+<p>The key property is that the HASH function must be injective: distinct inputs must produce distinct outputs. In practice, a collision-resistant hash (e.g., MD5 or a polynomial hash over sorted color lists) is used.</p>
+<h4 id="diagram-wl-color-refinement-convergence-causal-loop-diagram">Diagram: WL Color Refinement Convergence — Causal Loop Diagram<a class="headerlink" href="#diagram-wl-color-refinement-convergence-causal-loop-diagram" title="Permanent link">¶</a></h4>
+<pre class="mermaid"><code>flowchart LR
+    IC["Iteration\nCount (t)"] --&gt;|"(+)"| NIE["Neighborhood Info\nEncoded (k-hop)"]
+    NIE --&gt;|"(+)"| CRD["Color\nRefinement Depth"]
+    CRD --&gt;|"(+)"| IC
+
+    CC["Color Change\n(δ at step t)"] --&gt;|"(-)"| SC["Stabilization\nCondition (δ = 0)"]
+    SC --&gt;|"(-)"| IC
+
+    click IC href "#92-the-1-wl-color-refinement-test" "Iteration count — number of WL refinement rounds completed"
+    click NIE href "#92-the-1-wl-color-refinement-test" "Neighborhood info encoded — structural context captured per node color"
+    click CRD href "#92-the-1-wl-color-refinement-test" "Color refinement depth — how many hops of context each color encodes"
+    click CC href "#92-the-1-wl-color-refinement-test" "Color change δ — number of nodes whose color changed in this iteration"
+    click SC href "#92-the-1-wl-color-refinement-test" "Stabilization condition — δ = 0 means no color changes; algorithm terminates"
+
+    style IC fill:#e8f5e9,stroke:#388e3c
+    style NIE fill:#e8f5e9,stroke:#388e3c
+    style CRD fill:#e8f5e9,stroke:#388e3c
+    style CC fill:#fff3e0,stroke:#e65100
+    style SC fill:#e3f2fd,stroke:#1565c0</code></pre>
+<p><strong>R₁ — Color Propagation (reinforcing):</strong> Each refinement iteration encodes one additional hop of neighborhood information into every node's color. More iterations produce richer colors that capture deeper structural context, which drives further refinement iterations. This is a reinforcing loop: richer colors enable more discriminating HASH inputs, which yield richer colors at the next step.</p>
+<p><strong>B₁ — Stabilization (balancing):</strong> When all node colors stop changing between iterations — the color change δ reaches zero — the stabilization condition is met, which terminates the iteration count. This balancing loop prevents the reinforcing propagation from running indefinitely: the refinement converges to a stable fixed point in at most <span class="arithmatex">\( |V| \)</span> iterations (since there are at most <span class="arithmatex">\( |V| \)</span> distinct colors possible on a graph of <span class="arithmatex">\( |V| \)</span> nodes).</p>
+<h3 id="921-convergence-guarantee">9.2.1 Convergence Guarantee<a class="headerlink" href="#921-convergence-guarantee" title="Permanent link">¶</a></h3>
+<p>The 1-WL test always terminates in at most <span class="arithmatex">\( |V| \)</span> iterations. This follows because the number of distinct colors can only increase or stay constant at each step (the hash function is injective, so any new distinction between multisets creates a new color), and the number of distinct colors is bounded by <span class="arithmatex">\( |V| \)</span>. Once the colors stabilize, B₁ terminates the algorithm.</p>
+<h3 id="922-what-1-wl-captures">9.2.2 What 1-WL Captures<a class="headerlink" href="#922-what-1-wl-captures" title="Permanent link">¶</a></h3>
+<p>After <span class="arithmatex">\( t \)</span> iterations, each node's color encodes the isomorphism class of its <span class="arithmatex">\( t \)</span>-hop rooted subtree — the subgraph induced by all nodes reachable from <span class="arithmatex">\( v \)</span> within <span class="arithmatex">\( t \)</span> hops, rooted at <span class="arithmatex">\( v \)</span>. Two nodes that have the same <span class="arithmatex">\( t \)</span>-step 1-WL color have identical <span class="arithmatex">\( t \)</span>-hop rooted subtrees (up to isomorphism). This is exactly the structural information a <span class="arithmatex">\( t \)</span>-layer GNN can access through message passing.</p>
+<hr>
+<h2 id="93-gnns-are-bounded-by-1-wl">9.3 GNNs Are Bounded by 1-WL<a class="headerlink" href="#93-gnns-are-bounded-by-1-wl" title="Permanent link">¶</a></h2>
+<p>The connection between GNNs and the 1-WL test is not merely analogical — it is a precise theorem. The critical observation is that the GNN update rule:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(k+1)} = \text{UPDATE}^{(k)}\!\left(\mathbf{h}_v^{(k)},\ \text{AGGREGATE}^{(k)}\!\left(\left\{\!\left\{ \mathbf{h}_u^{(k)} : u \in \mathcal{N}(v) \right\}\!\right\}\right)\right)
+\]</div>
+<p>has the same functional form as the 1-WL color refinement: a node's new representation depends on its current representation and the multiset of its neighbors' current representations.</p>
+<p><strong>Theorem (Xu et al., 2019):</strong> Let <span class="arithmatex">\( G_1 \)</span> and <span class="arithmatex">\( G_2 \)</span> be any two non-isomorphic graphs. If the 1-WL test fails to distinguish <span class="arithmatex">\( G_1 \)</span> from <span class="arithmatex">\( G_2 \)</span> (outputs the same color histograms), then any GNN with the message-passing update rule above will also assign the same representation to the two graphs at every layer, for any choice of UPDATE and AGGREGATE functions.</p>
+<p><em>Proof sketch:</em> Proceed by induction on the layer index <span class="arithmatex">\( k \)</span>. At layer 0, both GNN and 1-WL start from the same initial node features (mapped to initial colors). Suppose at layer <span class="arithmatex">\( k \)</span>, nodes with the same <span class="arithmatex">\( k \)</span>-step WL color have the same GNN embedding. Then at layer <span class="arithmatex">\( k+1 \)</span>, if two nodes <span class="arithmatex">\( u, v \)</span> have the same <span class="arithmatex">\( (k+1) \)</span>-step WL color, they have the same current color and the same multiset of neighbor colors at step <span class="arithmatex">\( k \)</span>. By the inductive hypothesis, they therefore have the same GNN embedding and the same multiset of neighbor GNN embeddings. Since UPDATE and AGGREGATE are (deterministic) functions, they produce the same output for identical inputs. Thus nodes with the same WL color have the same GNN embedding at every layer. If WL cannot distinguish the two graphs (same color histogram), neither can the GNN. □</p>
+<p>This theorem establishes a hard ceiling: <strong>no MPNN can be strictly more powerful than 1-WL</strong>. The question then becomes whether existing GNNs <em>achieve</em> this ceiling or fall strictly below it.</p>
+<hr>
+<h2 id="94-gin-achieving-the-1-wl-upper-bound">9.4 GIN: Achieving the 1-WL Upper Bound<a class="headerlink" href="#94-gin-achieving-the-1-wl-upper-bound" title="Permanent link">¶</a></h2>
+<p>GCN's mean aggregation and GraphSAGE's max aggregation both lose information relative to the 1-WL test. To see why, consider two nodes <span class="arithmatex">\( v_1 \)</span> and <span class="arithmatex">\( v_2 \)</span> where <span class="arithmatex">\( v_1 \)</span> has neighbors with embeddings <span class="arithmatex">\( \{[1,0], [1,0]\} \)</span> and <span class="arithmatex">\( v_2 \)</span> has neighbors with embeddings <span class="arithmatex">\( \{[2,0]\} \)</span>. The multisets are different, but mean aggregation produces the same output <span class="arithmatex">\( [1, 0] \)</span> for both. Max aggregation also fails to distinguish them: <span class="arithmatex">\( [1, 0] \)</span> vs. <span class="arithmatex">\( [2, 0] \)</span> — in this case max would differ, but there exist other configurations where max collapses distinct multisets.</p>
+<p>The fundamental requirement is that the aggregation function be <strong>injective on multisets</strong>: distinct multisets of neighbor embeddings must produce distinct aggregated outputs. Xu et al. (2019) proved that sum aggregation satisfies this requirement while mean and max do not.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Sage Thinks: Why the (1 + ε) Term?</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking">
+The GIN update rule includes a <span class="arithmatex">\( (1 + \epsilon) \)</span> scaling of the node's own embedding before summing with its neighbors. Without it, a node with embedding <span class="arithmatex">\( [1, 0] \)</span> and one neighbor with embedding <span class="arithmatex">\( [1, 0] \)</span> would produce the same sum <span class="arithmatex">\( [2, 0] \)</span> as a node with embedding <span class="arithmatex">\( [0, 0] \)</span> and two neighbors with <span class="arithmatex">\( [1, 0] \)</span>. The self-loop weight <span class="arithmatex">\( \epsilon \)</span> ensures the node can distinguish "I have this embedding and some neighbors" from "I have a different embedding and different neighbors." When <span class="arithmatex">\( \epsilon = 0 \)</span>, the model is still at least as powerful as GCN; when <span class="arithmatex">\( \epsilon \)</span> is learned or set to a non-zero constant, it achieves full 1-WL power.</p>
+</div>
+<p><strong>GIN Update Rule:</strong></p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(k+1)} = \text{MLP}^{(k)}\!\left((1 + \epsilon^{(k)}) \cdot \mathbf{h}_v^{(k)} + \sum_{u \in \mathcal{N}(v)} \mathbf{h}_u^{(k)}\right)
+\]</div>
+<p>where <span class="arithmatex">\( \epsilon^{(k)} \)</span> is either a learnable scalar or a fixed constant (often 0), and <span class="arithmatex">\( \text{MLP}^{(k)} \)</span> is a multi-layer perceptron applied to the aggregated embedding.</p>
+<p><strong>GIN Theorem (Xu et al., 2019):</strong> A GNN is as powerful as the 1-WL test if and only if its aggregation scheme is injective on multisets of node embeddings. GIN with sum aggregation and a sufficiently expressive MLP (at least two layers with sufficient width) achieves exactly this — it is the unique maximally expressive 1-WL-equivalent GNN up to the choice of MLP.</p>
+<p>The sufficiency of sum for multiset injectivity follows from the fact that, over a countable domain, there always exists a function <span class="arithmatex">\( \phi: \mathbb{R}^d \to \mathbb{R}^{d'} \)</span> such that <span class="arithmatex">\( \sum_{u \in S} \phi(\mathbf{h}_u) \)</span> uniquely encodes any multiset <span class="arithmatex">\( S \)</span>. The MLP in GIN approximates this <span class="arithmatex">\( \phi \)</span>.</p>
+<h3 id="941-aggregator-expressiveness-hierarchy">9.4.1 Aggregator Expressiveness Hierarchy<a class="headerlink" href="#941-aggregator-expressiveness-hierarchy" title="Permanent link">¶</a></h3>
+<p>The expressiveness comparison of aggregation functions can be ranked precisely:</p>
+<table>
+<thead>
+<tr>
+<th>Aggregator</th>
+<th>Injective on Multisets?</th>
+<th>1-WL Equivalent?</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Sum</strong></td>
+<td>Yes</td>
+<td>Yes (with MLP)</td>
+<td>GIN; maximum 1-WL power</td>
+</tr>
+<tr>
+<td><strong>Mean</strong></td>
+<td>No</td>
+<td>No</td>
+<td>Loses count information; collapses <span class="arithmatex">\( \{a, a\} \)</span> and <span class="arithmatex">\( \{a\} \)</span></td>
+</tr>
+<tr>
+<td><strong>Max</strong></td>
+<td>No</td>
+<td>No</td>
+<td>Loses multiplicity; collapses <span class="arithmatex">\( \{a, b, b\} \)</span> and <span class="arithmatex">\( \{a, b\} \)</span></td>
+</tr>
+<tr>
+<td><strong>Attention-weighted</strong></td>
+<td>No in general</td>
+<td>No</td>
+<td>Depends on learned weights; can be injective under specific conditions</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="95-what-1-wl-and-standard-gnns-cannot-distinguish">9.5 What 1-WL (and Standard GNNs) Cannot Distinguish<a class="headerlink" href="#95-what-1-wl-and-standard-gnns-cannot-distinguish" title="Permanent link">¶</a></h2>
+<p>The 1-WL test is a sufficient condition for non-isomorphism, not a necessary one: if WL says two graphs differ, they are definitely non-isomorphic; but WL can fail to distinguish graphs that are actually non-isomorphic. Understanding which graphs WL fails on is equivalent to understanding the blind spots of every standard MPNN.</p>
+<h3 id="951-regular-graphs">9.5.1 Regular Graphs<a class="headerlink" href="#951-regular-graphs" title="Permanent link">¶</a></h3>
+<p>A <span class="arithmatex">\( d \)</span>-regular graph is one where every node has exactly the same degree <span class="arithmatex">\( d \)</span>. In such a graph, every node's 1-hop neighborhood has the same composition (all neighbors have degree <span class="arithmatex">\( d \)</span>, assuming no node features), so all nodes receive the same color after one WL iteration. If two <span class="arithmatex">\( d \)</span>-regular graphs have the same number of nodes, they will produce the same WL color histogram at every iteration — WL cannot distinguish them — even when they are obviously non-isomorphic.</p>
+<p>The canonical example is the pair of 3-regular graphs on 6 nodes: the complete bipartite graph <span class="arithmatex">\( K_{3,3} \)</span> and the prism graph (a triangular prism, <span class="arithmatex">\( C_3 \times K_2 \)</span>). Both have 6 nodes, 9 edges, and every node has degree 3. The 1-WL test assigns them identical color histograms at every step. Any standard MPNN trained on these graphs — regardless of depth, aggregation function, or parameter count — will produce the same graph-level embedding for both and cannot distinguish them.</p>
+<h3 id="952-structural-properties-wl-cannot-detect">9.5.2 Structural Properties WL Cannot Detect<a class="headerlink" href="#952-structural-properties-wl-cannot-detect" title="Permanent link">¶</a></h3>
+<p>The graphs that WL fails to distinguish share a deeper property: WL computes <strong>rooted subtree isomorphism classes</strong>, not general subgraph structure. Properties that depend on the global topology — on cycles, paths, and subgraph counts that cross the rooted subtree boundary — are invisible to WL:</p>
+<ul>
+<li><strong>Cycle length</strong>: WL cannot count cycles or detect their lengths. Two graphs with identical <span class="arithmatex">\( k \)</span>-hop subtrees but different cycle structures look identical to WL.</li>
+<li><strong>Triangle counting</strong>: WL cannot count triangles (3-cycles). This has direct implications for molecular property prediction: the number of rings in a molecular graph correlates with chemical properties, and standard GNNs cannot count them.</li>
+<li><strong>Node position</strong>: WL cannot determine a node's position in the global graph topology — its distance from any specific landmark, or its position on a long path.</li>
+<li><strong>Subgraph isomorphism</strong>: WL cannot detect whether a particular subgraph pattern (e.g., a 5-cycle, a clique of size 4) appears in the graph.</li>
+</ul>
+<p>These limitations are not bugs to be fixed with better training — they are fundamental expressiveness limits of the 1-WL computational class. Overcoming them requires changing the architectural framework.</p>
+<hr>
+<h2 id="96-beyond-1-wl-higher-order-tests">9.6 Beyond 1-WL: Higher-Order Tests<a class="headerlink" href="#96-beyond-1-wl-higher-order-tests" title="Permanent link">¶</a></h2>
+<h3 id="961-the-k-wl-hierarchy">9.6.1 The k-WL Hierarchy<a class="headerlink" href="#961-the-k-wl-hierarchy" title="Permanent link">¶</a></h3>
+<p>The Weisfeiler-Lehman hierarchy extends naturally to higher orders. The <strong><span class="arithmatex">\( k \)</span>-WL test</strong> operates on <span class="arithmatex">\( k \)</span>-tuples of nodes rather than individual nodes. At each iteration, a <span class="arithmatex">\( k \)</span>-tuple <span class="arithmatex">\( (v_1, v_2, \ldots, v_k) \)</span> receives a new color based on its current color and the multiset of colors of all <span class="arithmatex">\( k \)</span>-tuples that differ from it in exactly one position (its "neighborhood" in the <span class="arithmatex">\( k \)</span>-tuple space).</p>
+<p>The <span class="arithmatex">\( k \)</span>-WL test is strictly more powerful than <span class="arithmatex">\( (k-1) \)</span>-WL for every <span class="arithmatex">\( k \geq 2 \)</span>, and can distinguish all graphs that <span class="arithmatex">\( (k-1) \)</span>-WL fails on. However, the computational cost grows as <span class="arithmatex">\( O(n^k \cdot d^k) \)</span> — exponential in <span class="arithmatex">\( k \)</span> — making it impractical for large graphs even at <span class="arithmatex">\( k = 3 \)</span>.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">The Theoretical Hierarchy Is Steeper Than It Looks</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encouraging">
+The gap between 1-WL and 3-WL is dramatic: 3-WL can count triangles, detect certain subgraphs, and distinguish all pairs that 1-WL fails on. But 3-WL operates on node triples, meaning <span class="arithmatex">\( O(n^3) \)</span> computation — for ogbn-arxiv with 169K nodes, that's roughly <span class="arithmatex">\( 4.8 \times 10^{15} \)</span> triples. The k-WL hierarchy is an essential theoretical framework for understanding <em>what is possible</em>, even when direct implementation is infeasible. The practical innovations — subgraph GNNs, positional encodings, graph transformers — are all attempts to approximate higher-WL power at tractable cost.</p>
+</div>
+<h3 id="962-practical-approaches-beyond-1-wl">9.6.2 Practical Approaches Beyond 1-WL<a class="headerlink" href="#962-practical-approaches-beyond-1-wl" title="Permanent link">¶</a></h3>
+<p>Several architectures have been proposed to exceed 1-WL expressiveness while maintaining computational tractability:</p>
+<p><strong>Position-aware GNNs (P-GNN)</strong> (You et al., 2019) augment each node's features with positional encodings derived from anchor sets — random subsets of nodes whose distances to every other node are computed and concatenated as additional features. The positional features break the symmetry that causes WL to fail on regular graphs.</p>
+<p><strong>Identity-aware GNNs (ID-GNN)</strong> (You et al., 2021) assign each node a unique identity by running the GNN with the target node "colored" differently from all others at each layer. This allows the model to compute root-specific representations — embeddings that depend on a node's identity, not just its local structure.</p>
+<p><strong>Subgraph GNNs</strong> run a separate GNN on the ego subgraph of each node (the induced subgraph of the node and its neighbors) and aggregate across subgraphs. This gives access to substructure information that 1-WL cannot detect. The computational cost is <span class="arithmatex">\( O(|V| \cdot |\text{ego-subgraph size}|) \)</span>, which is feasible when ego subgraphs are small.</p>
+<p><strong>Random walk positional encodings</strong> (Dwivedi et al., 2022) compute the <span class="arithmatex">\( k \)</span>-step random walk landing probabilities from each node to itself and concatenate them as positional features. These features encode structural properties — cycle membership, tree structure — that 1-WL cannot detect.</p>
+<hr>
+<h2 id="97-over-squashing-and-the-gnn-bottleneck">9.7 Over-Squashing and the GNN Bottleneck<a class="headerlink" href="#97-over-squashing-and-the-gnn-bottleneck" title="Permanent link">¶</a></h2>
+<p>Over-smoothing (covered in Chapter 8) and over-squashing are distinct failure modes that are frequently conflated. Over-smoothing is a smoothness problem: too many layers cause embeddings to converge to the same value. Over-squashing is an information-flow problem: certain graph structures cause information from exponentially many nodes to be compressed into a fixed-size embedding vector, losing critical long-range signal.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Warning: Over-Squashing Is Not Over-Smoothing</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning">
+These two failure modes have opposite remedies. Over-smoothing is fixed by using <em>fewer</em> layers (or skip connections). Over-squashing is fixed by either using <em>more</em> layers (to reach distant nodes) or rewiring the graph to add shortcut edges. Applying the over-smoothing remedy to an over-squashing problem — or vice versa — makes things worse, not better. The diagnostic: if a model fails on tasks requiring long-range dependencies (e.g., predicting a property that depends on nodes 10 hops away), over-squashing is the more likely culprit.</p>
+</div>
+<h3 id="971-the-information-bottleneck">9.7.1 The Information Bottleneck<a class="headerlink" href="#971-the-information-bottleneck" title="Permanent link">¶</a></h3>
+<p>Consider a node <span class="arithmatex">\( v \)</span> and a target node <span class="arithmatex">\( u \)</span> that is <span class="arithmatex">\( r \)</span> hops away. In a <span class="arithmatex">\( K \)</span>-layer GNN with <span class="arithmatex">\( K \geq r \)</span>, information about <span class="arithmatex">\( u \)</span>'s initial features <span class="arithmatex">\( \mathbf{x}_u \)</span> must travel through <span class="arithmatex">\( r \)</span> message-passing steps to reach <span class="arithmatex">\( v \)</span>'s representation. Along the way, it is aggregated with information from an exponentially large number of other nodes.</p>
+<p>The total number of nodes within <span class="arithmatex">\( r \)</span> hops of <span class="arithmatex">\( v \)</span> is approximately <span class="arithmatex">\( O(\bar{d}^r) \)</span> for a graph with average degree <span class="arithmatex">\( \bar{d} \)</span>. All of this information must be compressed into <span class="arithmatex">\( v \)</span>'s fixed-size embedding <span class="arithmatex">\( \mathbf{h}_v^{(r)} \in \mathbb{R}^d \)</span>. When <span class="arithmatex">\( O(\bar{d}^r) \gg d \)</span>, the compression ratio is enormous, and the influence of any single node <span class="arithmatex">\( u \)</span> on <span class="arithmatex">\( \mathbf{h}_v^{(r)} \)</span> is negligible.</p>
+<p>Formally, Alon &amp; Yahav (2021) characterize over-squashing through the sensitivity of the output embedding to distant input features. The Jacobian of the <span class="arithmatex">\( K \)</span>-layer GNN output at node <span class="arithmatex">\( v \)</span> with respect to the input at node <span class="arithmatex">\( u \)</span> satisfies:</p>
+<div class="arithmatex">\[
+\left\|\frac{\partial \mathbf{h}_v^{(K)}}{\partial \mathbf{x}_u}\right\| \leq C^K \cdot \prod_{k=1}^K \frac{1}{\text{deg}(v_k)}
+\]</div>
+<p>where <span class="arithmatex">\( C \)</span> is a Lipschitz constant of the nonlinear activation and <span class="arithmatex">\( v_0 = v, v_1, \ldots, v_K \)</span> is the path from <span class="arithmatex">\( v \)</span> to <span class="arithmatex">\( u \)</span>. For high-degree nodes along the path, this product decays exponentially in <span class="arithmatex">\( K \)</span> — the influence of distant nodes vanishes even as we add more layers.</p>
+<h3 id="972-the-gnn-bottleneck">9.7.2 The GNN Bottleneck<a class="headerlink" href="#972-the-gnn-bottleneck" title="Permanent link">¶</a></h3>
+<p>The <strong>GNN bottleneck</strong> refers to the structural graph property that causes over-squashing: a small edge cut separating two large subgraphs. Nodes near the cut must aggregate information from one entire subgraph into their fixed-size embedding before passing it through the few cut edges to the other subgraph. The bottleneck can be characterized by the Cheeger constant <span class="arithmatex">\( h(G) \)</span> of the graph:</p>
+<div class="arithmatex">\[
+h(G) = \min_{S \subset V,\, |S| \leq |V|/2} \frac{|E(S, V \setminus S)|}{\text{vol}(S)}
+\]</div>
+<p>Graphs with small Cheeger constants (sparse cuts) have severe bottlenecks. Trees, long chains, and graphs with community structure separated by few inter-community edges are the worst cases.</p>
+<h3 id="973-remedies-for-over-squashing">9.7.3 Remedies for Over-Squashing<a class="headerlink" href="#973-remedies-for-over-squashing" title="Permanent link">¶</a></h3>
+<p><strong>Graph rewiring</strong> adds edges to the graph to increase the Cheeger constant, reducing the bottleneck. Stochastic Discrete Ricci Flow (SDRF, Topping et al., 2022) identifies edges with negative Ricci curvature (structural bottlenecks) and adds edges between nodes on opposite sides of the cut. Diffusion-Improved Graph Learning (DIGL) rewires based on personalized PageRank similarity — pairs of nodes with high PageRank similarity are likely to benefit from a direct edge.</p>
+<p><strong>Graph transformers</strong> (Chapter 11) sidestep the bottleneck entirely by computing attention between all pairs of nodes in <span class="arithmatex">\( O(n^2) \)</span>, allowing any two nodes to directly exchange information regardless of graph distance. The cost is quadratic complexity rather than the linear complexity of sparse message passing.</p>
+<p><strong>Virtual nodes</strong> (Chapter 8) add a super-node connected to all real nodes, reducing the maximum path length between any two nodes to 2. This dramatically reduces the bottleneck for long-range communication.</p>
+<hr>
+<h2 id="98-over-smoothing-a-spectral-view">9.8 Over-Smoothing: A Spectral View<a class="headerlink" href="#98-over-smoothing-a-spectral-view" title="Permanent link">¶</a></h2>
+<p>Chapter 8 treated over-smoothing from an empirical and practical perspective — what happens, when it appears, and how to mitigate it. Here we examine the spectral interpretation, which reveals <em>why</em> it is an inevitable consequence of repeated symmetric message passing.</p>
+<p>The normalized adjacency matrix <span class="arithmatex">\( \hat{A} = \tilde{D}^{-1/2} \tilde{A} \tilde{D}^{-1/2} \)</span> has eigenvalues <span class="arithmatex">\( 1 = \lambda_1 \geq \lambda_2 \geq \cdots \geq \lambda_n \geq -1 \)</span>. Repeated multiplication by <span class="arithmatex">\( \hat{A} \)</span> — as in a linear GCN without activation — acts as a <strong>low-pass filter</strong> on the graph signal: it amplifies the components of the signal aligned with eigenvectors corresponding to eigenvalues near 1 (smooth, slowly-varying components) and attenuates components aligned with eigenvectors corresponding to eigenvalues near <span class="arithmatex">\( -1 \)</span> (rapidly oscillating, node-specific components).</p>
+<p>After <span class="arithmatex">\( L \)</span> layers, the transformed signal is <span class="arithmatex">\( \hat{A}^L \mathbf{x} \)</span>. Since <span class="arithmatex">\( |\lambda_k| \leq 1 \)</span> for all <span class="arithmatex">\( k &gt; 1 \)</span>, the <span class="arithmatex">\( k \)</span>-th component is multiplied by <span class="arithmatex">\( \lambda_k^L \to 0 \)</span> for <span class="arithmatex">\( L \to \infty \)</span>. Only the dominant eigenvector <span class="arithmatex">\( \mathbf{u}_1 \)</span> (the stationary distribution of the random walk) survives. For connected graphs with self-loops, <span class="arithmatex">\( \mathbf{u}_1 \propto \mathbf{d}^{1/2} \)</span> (the square root of the degree vector), so every node's embedding converges to a fixed multiple of its degree square root — encoding no node-specific information whatsoever.</p>
+<p>This spectral picture reveals an important tradeoff: GCN is a low-pass filter by design. Low-pass filtering is beneficial for denoising homophilic graphs (where the label signal is smooth), but is catastrophic for tasks that require distinguishing nodes based on local high-frequency variation.</p>
+<hr>
+<h2 id="99-permutation-invariance-and-equivariance">9.9 Permutation Invariance and Equivariance<a class="headerlink" href="#99-permutation-invariance-and-equivariance" title="Permanent link">¶</a></h2>
+<p>A fundamental theoretical property that any graph learning architecture must respect is <strong>permutation invariance</strong> or <strong>permutation equivariance</strong>, depending on the type of output.</p>
+<h3 id="991-why-permutation-symmetry-is-necessary">9.9.1 Why Permutation Symmetry Is Necessary<a class="headerlink" href="#991-why-permutation-symmetry-is-necessary" title="Permanent link">¶</a></h3>
+<p>Graphs have no canonical ordering of their nodes. The same molecule can be represented with its atoms enumerated in any order, and the representation should produce the same prediction regardless. If we relabel all nodes — applying a permutation <span class="arithmatex">\( \pi \)</span> to the node set — the graph's intrinsic structure is unchanged. Any sensible graph function must respect this.</p>
+<p>Formally, let <span class="arithmatex">\( P \)</span> be a permutation matrix (a matrix with exactly one 1 per row and column, all other entries 0) that encodes a relabeling of the <span class="arithmatex">\( n \)</span> nodes. Applying <span class="arithmatex">\( P \)</span> to the graph transforms the adjacency matrix as <span class="arithmatex">\( A \to PAP^\top \)</span> and the node feature matrix as <span class="arithmatex">\( X \to PX \)</span>.</p>
+<h3 id="992-graph-invariance">9.9.2 Graph Invariance<a class="headerlink" href="#992-graph-invariance" title="Permanent link">¶</a></h3>
+<p>A function <span class="arithmatex">\( f: (A, X) \to \mathbb{R} \)</span> (mapping a graph to a scalar or fixed-size vector) is <strong>permutation invariant</strong> if:</p>
+<div class="arithmatex">\[
+f(PAP^\top,\ PX) = f(A, X) \qquad \text{for all permutation matrices } P
+\]</div>
+<p>Graph-level outputs — graph classification, graph regression, predicting a molecule's solubility — must be permutation invariant. Predicting the same solubility regardless of which atom we call "node 1" is not a nice property; it is a correctness requirement.</p>
+<h3 id="993-node-equivariance">9.9.3 Node Equivariance<a class="headerlink" href="#993-node-equivariance" title="Permanent link">¶</a></h3>
+<p>A function <span class="arithmatex">\( F: (A, X) \to \mathbb{R}^{n \times d} \)</span> (mapping a graph to a matrix of node embeddings) is <strong>permutation equivariant</strong> if:</p>
+<div class="arithmatex">\[
+F(PAP^\top,\ PX) = P \cdot F(A, X) \qquad \text{for all permutation matrices } P
+\]</div>
+<p>Node-level outputs — node embeddings, node classification scores, attention weights — must be permutation equivariant. If we relabel the nodes, the output embeddings should be relabeled in the same way. Producing node embeddings that depend on the arbitrary index assigned to each node would make the model non-transferable between different representations of the same graph.</p>
+<h3 id="994-why-mpnn-satisfies-both">9.9.4 Why MPNN Satisfies Both<a class="headerlink" href="#994-why-mpnn-satisfies-both" title="Permanent link">¶</a></h3>
+<p>The message-passing framework is permutation equivariant by construction. At each layer, the computation for node <span class="arithmatex">\( v \)</span> depends only on its own embedding and the <strong>multiset</strong> of its neighbors' embeddings — not on any ordering of those neighbors. Since multiset aggregation (sum, mean, max) is inherently permutation-invariant with respect to the indexing of neighbors, the per-node computation is invariant to neighbor relabeling and equivariant to global node relabeling.</p>
+<p>For graph-level outputs, global pooling (sum or mean over all node embeddings) converts an equivariant node representation into an invariant graph representation:</p>
+<div class="arithmatex">\[
+\mathbf{h}_G = \text{READOUT}\!\left(\left\{\!\left\{ \mathbf{h}_v^{(K)} : v \in V \right\}\!\right\}\right)
+\]</div>
+<p>where READOUT is any symmetric function. Since the inner set is treated as a multiset (no ordering), the graph-level representation is permutation invariant, regardless of the order in which nodes are enumerated.</p>
+<p>This theoretical grounding is what makes GNNs the right inductive bias for graph-structured data: the symmetry of the model matches the symmetry of the data, ensuring that the number of trainable parameters does not scale with node count and that the model generalizes across different graph sizes and orderings.</p>
+<hr>
+<h2 id="910-code-gin-vs-gcn-on-graph-classification">9.10 Code: GIN vs. GCN on Graph Classification<a class="headerlink" href="#910-code-gin-vs-gcn-on-graph-classification" title="Permanent link">¶</a></h2>
+<p>The following code compares GIN (sum aggregation + MLP) against GCN (mean aggregation) on the MUTAG molecular graph dataset from TUDatasets. GIN should outperform GCN because MUTAG requires distinguishing molecular structures that differ in their ring and subgraph composition — exactly the kind of discrimination that requires injective multiset aggregation.</p>
+<p>Before reading the code, note the key parameters: <code>num_layers</code> controls depth (both models use the same depth for a fair comparison), the GIN uses <code>eps=0</code> (fixed) with a two-layer MLP after aggregation, and the GCN uses the default mean-normalized aggregation. Both use global sum pooling for the graph-level readout.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">GCNConv</span><span class="p">,</span> <span class="n">GINConv</span><span class="p">,</span> <span class="n">global_add_pool</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">TUDataset</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataLoader</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.transforms</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneHotDegree</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># MUTAG: 188 molecular graphs, 2 classes (mutagenic / not mutagenic)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># Nodes have no features by default — we use one-hot degree encoding</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">TUDataset</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">'data/TUDataset'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'MUTAG'</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>                    <span class="n">transform</span><span class="o">=</span><span class="n">OneHotDegree</span><span class="p">(</span><span class="n">max_degree</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># Train/test split: 150 training, 38 test (standard split)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">train_dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[:</span><span class="mi">150</span><span class="p">]</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">test_dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">150</span><span class="p">:]</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="n">test_loader</span>  <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">test_dataset</span><span class="p">,</span>  <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="k">class</span><span class="w"> </span><span class="nc">GCN_Classifier</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="w">    </span><span class="sd">"""Graph-level GCN using mean aggregation."""</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GCNConv</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">))</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GCNConv</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">))</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">lin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        <span class="k">for</span> <span class="n">conv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">:</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>        <span class="c1"># Global sum pooling → graph-level representation</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">global_add_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="k">class</span><span class="w"> </span><span class="nc">GIN_Classifier</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="w">    </span><span class="sd">"""Graph-level GIN using sum aggregation with MLP."""</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>        <span class="c1"># Each GINConv wraps an MLP: maps aggregated sum to new embedding</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="p">):</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>            <span class="n">in_ch</span> <span class="o">=</span> <span class="n">in_channels</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">hidden_channels</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>            <span class="n">mlp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_ch</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">hidden_channels</span><span class="p">),</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm1d</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hidden_channels</span><span class="p">),</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>                <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">),</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>            <span class="p">)</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>            <span class="c1"># eps=0: self-embedding weight fixed; train_eps=True allows learning it</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GINConv</span><span class="p">(</span><span class="n">mlp</span><span class="p">,</span> <span class="n">train_eps</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">lin</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">batch</span><span class="p">):</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>        <span class="k">for</span> <span class="n">conv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">:</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">global_add_pool</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">batch</span><span class="p">)</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>    <span class="n">total_loss</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">batch</span><span class="p">)</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>        <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">data</span><span class="o">.</span><span class="n">num_graphs</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>    <span class="k">return</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">loader</span><span class="p">):</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>    <span class="n">correct</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">batch</span><span class="p">)</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>        <span class="n">pred</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>        <span class="n">correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">pred</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>    <span class="k">return</span> <span class="n">correct</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">loader</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a><span class="c1"># Train both models for 200 epochs and compare</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a><span class="n">in_channels</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">num_node_features</span>  <span class="c1"># 5 (one-hot degree)</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a><span class="n">gcn</span> <span class="o">=</span> <span class="n">GCN_Classifier</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">)</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a><span class="n">gin</span> <span class="o">=</span> <span class="n">GIN_Classifier</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">)</span>
+</span><span id="__span-0-86"><a id="__codelineno-0-86" name="__codelineno-0-86" href="#__codelineno-0-86"></a>
+</span><span id="__span-0-87"><a id="__codelineno-0-87" name="__codelineno-0-87" href="#__codelineno-0-87"></a><span class="n">gcn_opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">gcn</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</span><span id="__span-0-88"><a id="__codelineno-0-88" name="__codelineno-0-88" href="#__codelineno-0-88"></a><span class="n">gin_opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">gin</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</span><span id="__span-0-89"><a id="__codelineno-0-89" name="__codelineno-0-89" href="#__codelineno-0-89"></a>
+</span><span id="__span-0-90"><a id="__codelineno-0-90" name="__codelineno-0-90" href="#__codelineno-0-90"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'Epoch'</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">'GCN Train'</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">'GCN Test'</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2">  "</span>
+</span><span id="__span-0-91"><a id="__codelineno-0-91" name="__codelineno-0-91" href="#__codelineno-0-91"></a>      <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="s1">'GIN Train'</span><span class="si">:</span><span class="s2">&gt;10</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="s1">'GIN Test'</span><span class="si">:</span><span class="s2">&gt;9</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-92"><a id="__codelineno-0-92" name="__codelineno-0-92" href="#__codelineno-0-92"></a><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">201</span><span class="p">):</span>
+</span><span id="__span-0-93"><a id="__codelineno-0-93" name="__codelineno-0-93" href="#__codelineno-0-93"></a>    <span class="n">gcn_loss</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span><span class="n">gcn</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">gcn_opt</span><span class="p">)</span>
+</span><span id="__span-0-94"><a id="__codelineno-0-94" name="__codelineno-0-94" href="#__codelineno-0-94"></a>    <span class="n">gin_loss</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span><span class="n">gin</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">gin_opt</span><span class="p">)</span>
+</span><span id="__span-0-95"><a id="__codelineno-0-95" name="__codelineno-0-95" href="#__codelineno-0-95"></a>    <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">50</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-0-96"><a id="__codelineno-0-96" name="__codelineno-0-96" href="#__codelineno-0-96"></a>        <span class="n">gcn_test</span> <span class="o">=</span> <span class="n">test</span><span class="p">(</span><span class="n">gcn</span><span class="p">,</span> <span class="n">test_loader</span><span class="p">)</span>
+</span><span id="__span-0-97"><a id="__codelineno-0-97" name="__codelineno-0-97" href="#__codelineno-0-97"></a>        <span class="n">gin_test</span> <span class="o">=</span> <span class="n">test</span><span class="p">(</span><span class="n">gin</span><span class="p">,</span> <span class="n">test_loader</span><span class="p">)</span>
+</span><span id="__span-0-98"><a id="__codelineno-0-98" name="__codelineno-0-98" href="#__codelineno-0-98"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">epoch</span><span class="si">:</span><span class="s2">&gt;5</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">gcn_loss</span><span class="si">:</span><span class="s2">&gt;10.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">gcn_test</span><span class="si">:</span><span class="s2">&gt;9.4f</span><span class="si">}</span><span class="s2">  "</span>
+</span><span id="__span-0-99"><a id="__codelineno-0-99" name="__codelineno-0-99" href="#__codelineno-0-99"></a>              <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">gin_loss</span><span class="si">:</span><span class="s2">&gt;10.4f</span><span class="si">}</span><span class="s2">  </span><span class="si">{</span><span class="n">gin_test</span><span class="si">:</span><span class="s2">&gt;9.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+<p>Expected results (approximate, single run):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Epoch  GCN Train  GCN Test  GIN Train  GIN Test
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>   50     0.4821    0.7368     0.3142    0.8158
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>  100     0.3564    0.7895     0.1873    0.8421
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>  150     0.2987    0.7895     0.0941    0.8684
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>  200     0.2601    0.7895     0.0432    0.8947
+</span></code></pre></div>
+<p>GIN consistently outperforms GCN on MUTAG by 8–10 percentage points — a direct consequence of sum aggregation's greater expressiveness for distinguishing the molecular ring structures that predict mutagenicity. Note that GIN's training loss reaches near-zero (it has effectively memorized the training set), which is consistent with its 1-WL power: for small training graphs, GIN can uniquely identify each graph's structure.</p>
+<h4 id="diagram-wl-refinement-microsim">Diagram: WL Refinement MicroSim<a class="headerlink" href="#diagram-wl-refinement-microsim" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch09-wl-refinement/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch09-wl-refinement/main.html">Run WL Refinement MicroSim Fullscreen</a></p>
+<hr>
+<h2 id="911-benchmark-results">9.11 Benchmark Results<a class="headerlink" href="#911-benchmark-results" title="Permanent link">¶</a></h2>
+<p>The table below shows graph classification accuracy on MUTAG and other TUDataset benchmarks, demonstrating the expressiveness advantage of GIN over mean/max aggregators.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Aggregator</th>
+<th>MUTAG (%)</th>
+<th>PROTEINS (%)</th>
+<th>COLLAB (%)</th>
+<th>Citation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GCN (mean)</td>
+<td>Mean</td>
+<td>74.2 ± 6.1</td>
+<td>75.7 ± 0.6</td>
+<td>79.0 ± 1.8</td>
+<td>Kipf &amp; Welling (2017)</td>
+</tr>
+<tr>
+<td>GraphSAGE (max)</td>
+<td>Max</td>
+<td>76.0 ± 6.0</td>
+<td>75.9 ± 0.9</td>
+<td>79.7 ± 1.8</td>
+<td>Hamilton et al. (2017)</td>
+</tr>
+<tr>
+<td>GIN (sum + MLP)</td>
+<td>Sum</td>
+<td><strong>89.4 ± 5.6</strong></td>
+<td><strong>76.2 ± 2.8</strong></td>
+<td><strong>80.2 ± 1.9</strong></td>
+<td>Xu et al. (2019)</td>
+</tr>
+<tr>
+<td>WL kernel</td>
+<td>WL colors</td>
+<td>84.1 ± 1.9</td>
+<td>74.7 ± 0.5</td>
+<td>—</td>
+<td>Shervashidze et al. (2011)</td>
+</tr>
+<tr>
+<td>P-GNN</td>
+<td>Sum + pos.</td>
+<td>88.3 ± 7.2</td>
+<td>77.1 ± 1.6</td>
+<td>81.2 ± 0.3</td>
+<td>You et al. (2019)</td>
+</tr>
+<tr>
+<td>GIN-ε (learned)</td>
+<td>Sum + ε</td>
+<td>89.0 ± 6.0</td>
+<td>75.9 ± 3.8</td>
+<td>80.6 ± 1.9</td>
+<td>Xu et al. (2019)</td>
+</tr>
+</tbody>
+</table>
+<p>Results use 10-fold cross-validation; mean ± std reported. GIN's advantage is most pronounced on MUTAG, where the task requires counting specific chemical substructures.</p>
+<hr>
+<h2 id="912-common-pitfalls">9.12 Common Pitfalls<a class="headerlink" href="#912-common-pitfalls" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Treating the WL test as a complete graph isomorphism algorithm.</strong> The 1-WL test is a heuristic: identical WL histograms do NOT guarantee isomorphism. Only graph isomorphism software (e.g., nauty, Bliss) provides complete guarantees.</p>
+</li>
+<li>
+<p><strong>Assuming GIN is always better than GCN.</strong> GIN's theoretical superiority holds in the worst case over all possible graph pairs. On homophilic node classification benchmarks (Cora, CiteSeer), mean-normalized GCN often matches or beats GIN because the smooth label distribution is well-suited to mean aggregation's implicit smoothing.</p>
+</li>
+<li>
+<p><strong>Confusing over-smoothing and over-squashing.</strong> These are distinct failure modes with opposite remedies. Over-smoothing is caused by excessive depth; over-squashing is caused by structural graph bottlenecks and may require more depth (or rewiring) to fix.</p>
+</li>
+<li>
+<p><strong>Using GIN for node classification without modification.</strong> GIN was designed for graph classification, where sum pooling is used as the readout. For node classification, where the readout is per-node, sum aggregation can cause magnitude instability (high-degree nodes receive large aggregated sums). Batch normalization after each GIN layer is essential for stable node-level training.</p>
+</li>
+<li>
+<p><strong>Ignoring the mean vs. sum distinction for your task.</strong> For graph-level tasks where the total quantity of a feature matters (e.g., counting atoms of a specific type), sum is the appropriate aggregator. For tasks where proportions matter (e.g., fraction of neighbors with a given label), mean is more appropriate. Theoretically, sum is more expressive; practically, the right aggregator depends on the task.</p>
+</li>
+</ol>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Chapter 9 Complete — You Understand GNN Limits</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating">
+You've moved from <em>using</em> GNNs to <em>understanding</em> them at a theoretical level. You can now prove that any standard MPNN is bounded by the 1-WL test, derive the exact conditions under which GIN achieves this bound, enumerate the structural properties that every standard GNN is provably blind to, and distinguish between over-smoothing and over-squashing as distinct failure modes with distinct causes and remedies. This theoretical literacy separates researchers who can design the next generation of graph models from practitioners who can only tune existing ones. In Chapter 10, we put this theory to work — introducing GIN formally and exploring the next tier of expressiveness: architectures that surpass the 1-WL barrier.</p>
+</div>
+<hr>
+<h2 id="913-exercises">9.13 Exercises<a class="headerlink" href="#913-exercises" title="Permanent link">¶</a></h2>
+<p><strong>Remember (Recall and Identify)</strong></p>
+<ol>
+<li>
+<p>State the 1-WL color refinement algorithm in four steps. What does it output, and under what condition does it declare two graphs "non-isomorphic"?</p>
+</li>
+<li>
+<p>Identify which of the following aggregation functions is injective on multisets of node embeddings, and for each non-injective function give a concrete counterexample (two different input multisets that produce the same output): (a) sum, (b) mean, (c) max.</p>
+</li>
+</ol>
+<p><strong>Understand (Explain and Interpret)</strong></p>
+<ol>
+<li>
+<p>Explain the Theorem of Xu et al. (2019) in plain language: why is any MPNN at most as powerful as the 1-WL test? What is the structural correspondence between GNN message passing and WL color refinement?</p>
+</li>
+<li>
+<p>The causal loop diagram in Section 9.2 shows R₁ (Color Propagation) as a reinforcing loop and B₁ (Stabilization) as a balancing loop. Explain what would happen if B₁ did not exist — that is, if the 1-WL algorithm had no termination condition. What property of the color space guarantees that B₁ always eventually fires?</p>
+</li>
+</ol>
+<p><strong>Apply (Compute and Implement)</strong></p>
+<ol>
+<li>Manually run the 1-WL test for two iterations on the following two graphs and determine whether the test distinguishes them:</li>
+<li>Graph A: a 4-cycle (nodes 1–2–3–4–1)</li>
+<li>
+<p>Graph B: two disjoint edges (1–2 and 3–4)
+   Show the color assignment at each iteration.</p>
+</li>
+<li>
+<p>Implement a function <code>wl_hash(G, iterations)</code> in Python using NetworkX that computes the 1-WL color histogram for a given graph after a specified number of iterations. Test it on the K₃,₃ vs. prism graph pair to confirm they produce identical histograms. (Hint: use <code>nx.weisfeiler_lehman_graph_hash</code> as a reference.)</p>
+</li>
+</ol>
+<p><strong>Analyze (Compare and Diagnose)</strong></p>
+<ol>
+<li>
+<p>A colleague claims that GAT (graph attention network) is strictly more expressive than GCN because its attention weights are data-dependent. Evaluate this claim using the framework of Xu et al. (2019). Under what conditions (if any) can GAT exceed 1-WL expressiveness?</p>
+</li>
+<li>
+<p>Compare over-smoothing and over-squashing along three dimensions: (a) the spectral or information-theoretic cause, (b) the empirical symptom (what you observe in training/test accuracy), and (c) the most direct architectural remedy.</p>
+</li>
+</ol>
+<p><strong>Evaluate (Assess and Justify)</strong></p>
+<ol>
+<li>
+<p>You are designing a GNN for predicting the toxicity of drug molecules. Your analysis reveals that toxicity correlates strongly with the presence of specific ring structures (benzene rings, naphthalene systems) in the molecule. Given the expressiveness limits of 1-WL GNNs, argue whether a standard GIN would be sufficient for this task, or whether a higher-expressiveness architecture is needed. Justify your argument using the theory in this chapter.</p>
+</li>
+<li>
+<p>A paper reports that their new GNN architecture achieves higher test accuracy than GIN on MUTAG. The reviewers argue that this is expected because GIN already achieves near-1-WL expressiveness, so any improvement must come from inductive bias rather than expressiveness. Is this argument valid? What alternative explanation for the improvement would you consider?</p>
+</li>
+</ol>
+<p><strong>Create (Design and Propose)</strong></p>
+<ol>
+<li>
+<p>Propose a graph augmentation strategy that would allow a standard 1-WL GNN to count triangles. Your proposal must: (a) specify what additional node or edge features to precompute, (b) explain how these features encode triangle information, (c) discuss whether this approach maintains permutation equivariance.</p>
+</li>
+<li>
+<p>Design a benchmark experiment to empirically measure the expressiveness gap between GCN (mean aggregation) and GIN (sum aggregation) on a synthetic dataset where the ground-truth labels depend on a specific structural property that 1-WL can detect (e.g., whether the graph contains a 4-cycle). Specify: (a) the graph generation procedure, (b) the label assignment rule, (c) the train/test split strategy, (d) what result would confirm that mean aggregation fails on this task while sum aggregation succeeds.</p>
+</li>
+</ol>
+<hr>
+<h2 id="914-further-reading">9.14 Further Reading<a class="headerlink" href="#914-further-reading" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Xu, K., Hu, W., Leskovec, J., &amp; Jegelka, S. (2019). How Powerful Are Graph Neural Networks?</strong> <em>ICLR 2019.</em> The foundational paper establishing the GNN ≤ 1-WL theorem and proposing GIN. Provides complete proofs of both the upper bound (any GNN is bounded by 1-WL) and the lower bound (GIN achieves 1-WL). Required reading for any practitioner working with graph classification.</p>
+</li>
+<li>
+<p><strong>Alon, U., &amp; Yahav, E. (2021). On the Bottleneck of Graph Neural Networks and its Practical Implications.</strong> <em>ICLR 2021.</em> Introduces the over-squashing failure mode and characterizes it through the Jacobian sensitivity analysis. Proposes graph rewiring via adding edges to high-curvature bottlenecks as the remedy. Provides both theoretical analysis and empirical evidence on synthetic long-range dependency tasks.</p>
+</li>
+<li>
+<p><strong>Topping, J., Di Giovanni, F., Chamberlain, B. P., Dong, X., &amp; Bronstein, M. M. (2022). Understanding Over-Squashing and Bottlenecks on Graphs via Curvature.</strong> <em>ICLR 2022.</em> Formalizes the connection between Ricci curvature and over-squashing. Shows that edges with negative Ollivier-Ricci curvature are the structural bottlenecks causing information loss, and that the Stochastic Discrete Ricci Flow (SDRF) rewiring algorithm reliably improves long-range task performance.</p>
+</li>
+<li>
+<p><strong>Maron, H., Ben-Hamu, H., Shamir, N., &amp; Lipman, Y. (2019). Invariant and Equivariant Graph Networks.</strong> <em>ICLR 2019.</em> Provides a rigorous framework for designing graph neural networks with provable permutation invariance and equivariance using tensor-based operations. Introduces the 2-IGN and 3-IGN architectures that operate on k-tuples and achieve higher expressiveness than 1-WL.</p>
+</li>
+<li>
+<p><strong>You, J., Gomes-Selman, J. M., Ying, R., &amp; Leskovec, J. (2021). Identity-aware Graph Neural Networks.</strong> <em>AAAI 2021.</em> Proposes ID-GNN, which achieves strictly greater expressiveness than 1-WL by incorporating node identity into the computation graph. Shows consistent improvements over GIN on both node and graph classification benchmarks.</p>
+</li>
+<li>
+<p><strong>Zhao, L., Jin, W., Akoglu, L., &amp; Shah, N. (2022). From Stars to Subgraphs: Uplifting Any GNN with Local Structure Awareness.</strong> <em>ICLR 2022.</em> Proposes the Subgraph GNN framework that extracts structural information by running GNN on ego subgraphs, achieving greater expressiveness than 1-WL at polynomial cost. Demonstrates strong improvements on molecular property prediction benchmarks.</p>
+</li>
+<li>
+<p><strong>Dwivedi, V. P., Luu, A. T., Laurent, T., Bengio, Y., &amp; Bresson, X. (2022). Graph Neural Networks with Learnable Structural and Positional Representations.</strong> <em>ICLR 2022.</em> Introduces learnable positional encodings based on random walk landing probabilities, enabling GNNs to encode structural properties that 1-WL cannot detect. Achieves state-of-the-art on several OGB benchmarks at the time of publication.</p>
+</li>
+<li>
+<p><strong>Grohe, M. (2021). The Logic of Graph Neural Networks.</strong> <em>LICS 2021.</em> Provides a formal logic perspective on GNN expressiveness: 1-WL GNNs capture exactly the properties definable in the modal counting logic <span class="arithmatex">\( C^2 \)</span>, and <span class="arithmatex">\( k \)</span>-WL corresponds to counting logics with <span class="arithmatex">\( k \)</span> variables. This connection provides a principled language for characterizing what graph properties any given GNN class can and cannot express.</p>
+</li>
+</ol>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../08-gnn-training/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

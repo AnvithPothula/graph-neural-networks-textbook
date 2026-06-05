@@ -1,0 +1,3338 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Modularity, Louvain, BigCLAM, and graph-based fraud detection — the algorithmic toolkit for discovering hidden structure in real-world networks.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/18-community-structure/">
+      
+      
+        <link rel="prev" href="../17-relational-deep-learning/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 18: Community Structure in Networks - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 18: Community Structure in Networks">
+  <meta property="og:description" content="Modularity, Louvain, BigCLAM, and graph-based fraud detection — the algorithmic toolkit for discovering hidden structure in real-world networks.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/18-community-structure/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 18: Community Structure in Networks">
+  <meta name="twitter:description" content="Modularity, Louvain, BigCLAM, and graph-based fraud detection — the algorithmic toolkit for discovering hidden structure in real-world networks.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-18-community-structure-in-networks" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 18: Community Structure in Networks
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_20" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_20" id="__nav_4_20_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_20_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_20">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    18. Community Structure in Networks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#181-the-hidden-architecture-of-real-networks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.1 The Hidden Architecture of Real Networks
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#182-social-network-analysis-and-the-sociology-of-communities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.2 Social Network Analysis and the Sociology of Communities
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#183-defining-community-what-are-we-looking-for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.3 Defining Community: What Are We Looking For?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#184-modularity-a-quality-function-for-community-partitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.4 Modularity: A Quality Function for Community Partitions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#185-divisive-hierarchical-clustering-the-girvan-newman-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.5 Divisive Hierarchical Clustering: The Girvan-Newman Algorithm
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="18.5 Divisive Hierarchical Clustering: The Girvan-Newman Algorithm">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-girvan-newman-step-by-step-on-the-karate-club-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Girvan-Newman Step-by-Step on the Karate Club Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#186-the-louvain-algorithm-greedy-modularity-optimization-at-scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.6 The Louvain Algorithm: Greedy Modularity Optimization at Scale
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="18.6 The Louvain Algorithm: Greedy Modularity Optimization at Scale">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-louvain-two-phase-iteration-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Louvain Two-Phase Iteration Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#187-overlapping-communities-beyond-disjoint-partitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.7 Overlapping Communities: Beyond Disjoint Partitions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#188-bigclam-community-affiliation-graph-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.8 BigCLAM: Community Affiliation Graph Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#189-community-structure-in-fraud-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.9 Community Structure in Fraud Detection
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1810-common-pitfalls-in-community-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.10 Common Pitfalls in Community Detection
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1811-key-takeaways" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.11 Key Takeaways
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1812-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.12 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1813-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        18.13 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    18. Community Structure in Networks
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/18-community-structure/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-18-community-structure-in-networks">Chapter 18: Community Structure in Networks<a class="headerlink" href="#chapter-18-community-structure-in-networks" title="Permanent link">¶</a></h1>
+<p><strong>Part 4: Graphs in the Wild</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Studies the structural organization of real networks through community detection algorithms — Louvain, spectral clustering, BigCLAM — and their applications to social and fraud networks.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 8 concepts from the learning graph:</p>
+<ol>
+<li>Community Detection</li>
+<li>Modularity (Network)</li>
+<li>Louvain Algorithm</li>
+<li>Girvan-Newman Algorithm</li>
+<li>Overlapping Community</li>
+<li>BigCLAM Model</li>
+<li>Social Network Analysis</li>
+<li>Fraud Detection (Graph)</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../01-intro-to-graphs/">Chapter 1: Introduction to Graphs and Networks</a></li>
+<li><a href="../02-graph-properties-and-features/">Chapter 2: Graph Properties and Traditional ML Features</a></li>
+<li><a href="../03-link-analysis-pagerank/">Chapter 3: Link Analysis and PageRank</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Welcome to Chapter 18</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waves hello at the chapter opening">
+Networks rarely evolve as featureless clouds of randomly wired nodes. Real systems — social platforms, biological interaction networks, citation graphs, financial transaction networks — tend to organize into <strong>communities</strong>: dense clusters of internally connected nodes that are sparsely linked to the rest of the graph. This chapter develops the algorithmic machinery for finding those clusters and explains why the problem is far subtler than it first appears. By the end, you will have moved from intuition to a precise quality function, from a principled-but-slow hierarchical algorithm to a fast greedy alternative that scales to millions of nodes, and from the assumption of disjoint partitions to models where every node can participate in multiple overlapping communities simultaneously.</p>
+</div>
+<h2 id="181-the-hidden-architecture-of-real-networks">18.1 The Hidden Architecture of Real Networks<a class="headerlink" href="#181-the-hidden-architecture-of-real-networks" title="Permanent link">¶</a></h2>
+<p>In 1977, anthropologist Wayne Zachary published a study of a university karate club that had recently split into two factions following a dispute between its instructor and its administrator. The network Zachary collected — 34 members, 78 edges encoding observed social interactions — has since become one of the most studied graphs in network science, not because karate is particularly important but because its ground-truth community structure is unambiguously known: the club fractured along almost exactly the lines predicted by its internal density patterns. Every major community detection algorithm is benchmarked on it to this day.</p>
+<p>The Karate Club graph is a pedagogical convenience, but the phenomenon it illustrates is universal. Protein-protein interaction networks cluster into functional modules whose members participate in the same biochemical pathway. Web pages cluster into topical communities where internal hyperlinks outnumber external ones by orders of magnitude. Academic citation networks cluster into research communities whose members preferentially cite each other. Financial transaction networks cluster into trading groups — and some of those groups are fraud rings.</p>
+<p>The central hypothesis of community detection is that the edge distribution in a real network is not uniform at random; it is systematically biased toward within-group connections. Detecting communities means recovering that bias from the observed graph structure alone, without access to node labels or domain annotations. This is an unsupervised structural inference problem, and as we will see, it is considerably more difficult than it appears.</p>
+<h2 id="182-social-network-analysis-and-the-sociology-of-communities">18.2 Social Network Analysis and the Sociology of Communities<a class="headerlink" href="#182-social-network-analysis-and-the-sociology-of-communities" title="Permanent link">¶</a></h2>
+<p>Community detection is not a recent invention of machine learning. Its intellectual roots lie in sociometry — the quantitative study of social relationships — which dates to the 1930s work of Jacob Moreno, who developed the sociogram as a visualization of interpersonal ties. By the 1970s, sociologists were already asking whether a network's observable friendship structure reveals latent social groups, and the computational tools they developed for this purpose — hierarchical clustering, blockmodeling, and spectral methods — remain foundational.</p>
+<p>The sociological intuition is captured in Mark Granovetter's seminal 1973 observation that strong ties (frequent, intimate contacts) tend to cluster locally, while weak ties (infrequent, casual contacts) serve as bridges between otherwise disconnected communities. This <strong>strength of weak ties</strong> hypothesis explains why communities have dense internal edges (strong ties accumulate locally) and sparse cross-community edges (bridges are structurally fragile). It also explains why removing high-betweenness edges — the bridges — is a principled way to divide a network into communities, which is precisely what the Girvan-Newman algorithm does.</p>
+<p>Modern social network analysis (SNA) adds a richer vocabulary to this picture. A <strong>clique</strong> is a maximal complete subgraph — every member is directly connected to every other. A <strong>k-core</strong> is the maximal subgraph in which every node has at least k internal neighbors, a useful relaxation of the clique concept that handles the sparsity of real networks. A <strong>structural hole</strong> is a position in the network that bridges two communities, occupied by a node with high betweenness centrality. Communities themselves are sometimes defined modularly — as groups whose internal edge density substantially exceeds what a random graph with the same degree sequence would produce — and this modularity-based definition gives rise to the most widely used community quality metric.</p>
+<h2 id="183-defining-community-what-are-we-looking-for">18.3 Defining Community: What Are We Looking For?<a class="headerlink" href="#183-defining-community-what-are-we-looking-for" title="Permanent link">¶</a></h2>
+<p>Before we can detect communities algorithmically, we must commit to a precise definition of what a community is. This is harder than it sounds: the term is used in at least four distinct senses in the literature, and different definitions lead to different algorithms and different results on the same graph.</p>
+<p>The four major definitional paradigms are as follows. First, a <strong>partition-based</strong> community is a disjoint subset of nodes such that internal edge density is high relative to external edge density — the intuition that nodes in a community know each other better than they know outsiders. Second, a <strong>clique-based</strong> definition requires near-completeness: every node connects to some minimum fraction of its community's other nodes. Third, a <strong>spectral</strong> definition treats communities as the leading eigenvectors of the graph Laplacian or related matrices, corresponding to low-frequency structural modes. Fourth, a <strong>generative</strong> definition specifies a probabilistic model for how edges arise given community memberships, then recovers communities by fitting the model to the observed graph.</p>
+<p>Each paradigm has operational implications:</p>
+<ul>
+<li>Partition-based definitions admit efficient greedy algorithms (Louvain) but assume disjoint communities.</li>
+<li>Clique-based definitions find dense substructures but scale poorly.</li>
+<li>Spectral definitions have clean theoretical guarantees but require solving eigenproblems.</li>
+<li>Generative definitions accommodate overlapping memberships and model uncertainty, but optimization is non-convex.</li>
+</ul>
+<p>Throughout this chapter we will work primarily with the partition-based and generative paradigms, because they produce the algorithms most widely deployed in practice.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">What Makes a Good Community?</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage looking thoughtful">
+Here's a subtlety that catches students off guard: you can always find communities in a graph if you're willing to call any subset a community. The hard part is finding communities that are <strong>meaningfully denser internally than a random baseline would predict</strong>. Modularity operationalizes this by comparing your partition's edge density to the expected density under a random null model. Without the null model, you have no way to distinguish a real community from a cluster that happens to be dense purely by chance.</p>
+</div>
+<h2 id="184-modularity-a-quality-function-for-community-partitions">18.4 Modularity: A Quality Function for Community Partitions<a class="headerlink" href="#184-modularity-a-quality-function-for-community-partitions" title="Permanent link">¶</a></h2>
+<p>The most influential community quality measure in network science is <strong>modularity</strong>, introduced by Mark Newman and Michelle Girvan in 2004. Modularity <span class="arithmatex">\( Q \)</span> quantifies how much better a given partition of a graph's nodes is, in terms of internal edge density, compared to what we would expect if edges were placed randomly while preserving each node's degree.</p>
+<p>To derive modularity, we need a null model — a random graph that has the same degree sequence as our real graph but otherwise connects edges uniformly at random. For a network with <span class="arithmatex">\( m \)</span> edges, the expected number of edges between nodes <span class="arithmatex">\( i \)</span> and <span class="arithmatex">\( j \)</span> in this null model (the <strong>configuration model</strong>) is:</p>
+<div class="arithmatex">\[
+\mathbb{E}[A_{ij}] = \frac{k_i k_j}{2m}
+\]</div>
+<p>where <span class="arithmatex">\( k_i \)</span> and <span class="arithmatex">\( k_j \)</span> are the degrees of nodes <span class="arithmatex">\( i \)</span> and <span class="arithmatex">\( j \)</span> respectively. The configuration model preserves degree heterogeneity — high-degree nodes are expected to connect to many others — so if a partition puts two high-degree nodes in the same community, it deserves credit for that edge only if the edge exists more than the null model would predict.</p>
+<p>Modularity for a partition <span class="arithmatex">\( \mathcal{C} = \{C_1, C_2, \ldots, C_k\} \)</span> is:</p>
+<div class="arithmatex">\[
+Q = \frac{1}{2m} \sum_{i,j} \left[ A_{ij} - \frac{k_i k_j}{2m} \right] \delta(c_i, c_j)
+\]</div>
+<p>Here <span class="arithmatex">\( A_{ij} \)</span> is the adjacency matrix (1 if edge exists, 0 otherwise), <span class="arithmatex">\( c_i \)</span> is the community label of node <span class="arithmatex">\( i \)</span>, and <span class="arithmatex">\( \delta(c_i, c_j) = 1 \)</span> if nodes <span class="arithmatex">\( i \)</span> and <span class="arithmatex">\( j \)</span> belong to the same community and 0 otherwise. The sum accumulates the excess edge density — actual edges minus expected edges — over all pairs of same-community nodes, normalized by <span class="arithmatex">\( 2m \)</span>.</p>
+<p>Modularity ranges from approximately <span class="arithmatex">\( -0.5 \)</span> (worst possible structure, anti-communities) to <span class="arithmatex">\( 1 \)</span> (perfect community structure, never achieved in practice). Values above <span class="arithmatex">\( 0.3 \)</span> are conventionally interpreted as evidence of meaningful community structure. The Karate Club graph, with its two ground-truth factions, achieves a modularity of approximately <span class="arithmatex">\( 0.37 \)</span> under the correct partition.</p>
+<p>The following table summarizes what different modularity ranges imply about network structure:</p>
+<table>
+<thead>
+<tr>
+<th>Q Range</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q &lt; 0</td>
+<td>Anti-community structure (edges avoid same-community pairs)</td>
+</tr>
+<tr>
+<td>0 ≤ Q &lt; 0.3</td>
+<td>Weak or no meaningful community structure</td>
+</tr>
+<tr>
+<td>0.3 ≤ Q &lt; 0.7</td>
+<td>Moderate to strong community structure</td>
+</tr>
+<tr>
+<td>Q ≥ 0.7</td>
+<td>Very strong community structure (rare in real networks)</td>
+</tr>
+</tbody>
+</table>
+<p>Modularity maximization is NP-hard in general — there are exponentially many partitions to evaluate — so practical algorithms use greedy or approximation strategies to find high-modularity partitions without exhaustive search.</p>
+<h2 id="185-divisive-hierarchical-clustering-the-girvan-newman-algorithm">18.5 Divisive Hierarchical Clustering: The Girvan-Newman Algorithm<a class="headerlink" href="#185-divisive-hierarchical-clustering-the-girvan-newman-algorithm" title="Permanent link">¶</a></h2>
+<p>The Girvan-Newman algorithm, introduced in 2002 and predating the formalization of modularity, offers a conceptually elegant approach to community detection grounded in the sociology of bridges: communities are separated by edges that carry high traffic between them, so removing the most trafficked bridges exposes the community structure underneath.</p>
+<p>The key concept underlying Girvan-Newman is <strong>edge betweenness centrality</strong>: for an edge <span class="arithmatex">\( (u, v) \)</span>, its betweenness is the number of shortest paths between all pairs of nodes in the graph that pass through that edge. Formally:</p>
+<div class="arithmatex">\[
+B(u, v) = \sum_{s \neq t} \frac{\sigma(s, t \mid u, v)}{\sigma(s, t)}
+\]</div>
+<p>where <span class="arithmatex">\( \sigma(s, t) \)</span> is the total number of shortest paths from <span class="arithmatex">\( s \)</span> to <span class="arithmatex">\( t \)</span>, and <span class="arithmatex">\( \sigma(s, t \mid u, v) \)</span> is the number of those paths that traverse edge <span class="arithmatex">\( (u, v) \)</span>. Bridge edges — those connecting two communities — lie on nearly every shortest path that crosses community boundaries, so they accumulate enormous betweenness scores.</p>
+<p>The Girvan-Newman procedure is iterative and divisive:</p>
+<ol>
+<li>Compute edge betweenness for every edge in the current graph.</li>
+<li>Remove the edge with the highest betweenness.</li>
+<li>Recompute edge betweenness for all remaining edges (the removal changes shortest paths).</li>
+<li>Repeat until the graph decomposes into isolated nodes.</li>
+</ol>
+<p>Each removal potentially splits a connected component into two, producing a hierarchical <strong>dendrogram</strong> — a tree of successive splits. To select the final partition, one typically cuts the dendrogram at the level that maximizes modularity.</p>
+<p>Applied to the Karate Club graph, Girvan-Newman correctly identifies the two ground-truth factions: the edge with the highest betweenness is the one connecting the instructor's cluster to the administrator's cluster, and its removal produces the historically observed split.</p>
+<p>The critical limitation of Girvan-Newman is computational: computing exact edge betweenness requires <span class="arithmatex">\( O(mn) \)</span> time using Brandes' algorithm, and this computation must be repeated after every edge removal. For a graph with <span class="arithmatex">\( m \)</span> edges, the full algorithm runs in <span class="arithmatex">\( O(m^2 n) \)</span> time — feasible for networks with a few thousand nodes, but completely impractical for graphs with millions. Modern social and biological networks require a faster approach.</p>
+<h4 id="diagram-girvan-newman-step-by-step-on-the-karate-club-graph">Diagram: Girvan-Newman Step-by-Step on the Karate Club Graph<a class="headerlink" href="#diagram-girvan-newman-step-by-step-on-the-karate-club-graph" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch18-girvan-newman/main.html" width="100%" height="512px" scrolling="no"></iframe>
+<p><a href="../../sims/ch18-girvan-newman/main.html">Run Girvan-Newman Step-by-Step on the Karate Club Graph Fullscreen</a></p>
+<h2 id="186-the-louvain-algorithm-greedy-modularity-optimization-at-scale">18.6 The Louvain Algorithm: Greedy Modularity Optimization at Scale<a class="headerlink" href="#186-the-louvain-algorithm-greedy-modularity-optimization-at-scale" title="Permanent link">¶</a></h2>
+<p>The Louvain algorithm, introduced by Blondel et al. (2008), is by far the most widely deployed community detection algorithm in practice. It directly maximizes modularity using a greedy two-phase strategy that scales to networks with hundreds of millions of nodes. Understanding why Louvain is both efficient and effective requires understanding the key insight that makes it possible: the modularity gain from moving a single node between communities can be computed in <span class="arithmatex">\( O(k_i) \)</span> time, where <span class="arithmatex">\( k_i \)</span> is the node's degree.</p>
+<p>To derive this incremental update, suppose we want to move node <span class="arithmatex">\( i \)</span> from its current community <span class="arithmatex">\( C_{\text{old}} \)</span> to a neighboring community <span class="arithmatex">\( C_{\text{new}} \)</span>. The change in modularity <span class="arithmatex">\( \Delta Q \)</span> is:</p>
+<div class="arithmatex">\[
+\Delta Q = \left[ \frac{\Sigma_{\text{in}} + 2k_{i,\text{in}}}{2m} - \left(\frac{\Sigma_{\text{tot}} + k_i}{2m}\right)^2 \right] - \left[ \frac{\Sigma_{\text{in}}}{2m} - \left(\frac{\Sigma_{\text{tot}}}{2m}\right)^2 - \left(\frac{k_i}{2m}\right)^2 \right]
+\]</div>
+<p>where <span class="arithmatex">\( \Sigma_{\text{in}} \)</span> is the sum of weights of edges internal to <span class="arithmatex">\( C_{\text{new}} \)</span>, <span class="arithmatex">\( k_{i,\text{in}} \)</span> is the sum of weights of edges connecting <span class="arithmatex">\( i \)</span> to nodes in <span class="arithmatex">\( C_{\text{new}} \)</span>, <span class="arithmatex">\( \Sigma_{\text{tot}} \)</span> is the sum of degrees of all nodes in <span class="arithmatex">\( C_{\text{new}} \)</span>, and <span class="arithmatex">\( m \)</span> is the total edge weight in the graph. This formula can be evaluated with only local information — the degrees and community assignments of node <span class="arithmatex">\( i \)</span>'s immediate neighbors.</p>
+<p>The Louvain algorithm alternates between two phases, repeating the two-phase cycle until no further modularity improvement is possible:</p>
+<p><strong>Phase 1 — Local Optimization.</strong> Initially assign every node to its own singleton community. For each node <span class="arithmatex">\( i \)</span> in random order, compute <span class="arithmatex">\( \Delta Q \)</span> for moving <span class="arithmatex">\( i \)</span> into each of its neighbors' communities. Move <span class="arithmatex">\( i \)</span> to the community that yields the largest positive <span class="arithmatex">\( \Delta Q \)</span>; if no move improves modularity, leave <span class="arithmatex">\( i \)</span> in its current community. Repeat this pass over all nodes until no node changes community.</p>
+<p><strong>Phase 2 — Graph Compression.</strong> Construct a new "super-graph" where each discovered community becomes a single super-node. The weight of an edge between two super-nodes equals the total weight of all edges between their constituent nodes. Self-loops on each super-node encode the total internal edge weight of the original community.</p>
+<p>After compression, the algorithm returns to Phase 1 on the super-graph. Each iteration of this two-phase cycle is called a <strong>pass</strong>. The algorithm terminates when a complete pass produces no improvement, typically in <span class="arithmatex">\( O(\log n) \)</span> passes.</p>
+<p>The time complexity of Louvain is nearly linear: <span class="arithmatex">\( O(m) \)</span> per pass, with <span class="arithmatex">\( O(\log n) \)</span> passes giving total complexity <span class="arithmatex">\( O(m \log n) \)</span>. This is fast enough to process graphs with hundreds of millions of edges in minutes on a single machine.</p>
+<p>The following Python code demonstrates Louvain community detection on the Karate Club graph using the <code>python-louvain</code> package:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">community</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">community_louvain</span>  <span class="c1"># pip install python-louvain</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.cm</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cm</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Load the Karate Club graph</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># Run Louvain — returns dict {node_id: community_id}</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># resolution parameter controls community granularity (default 1.0)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">partition</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">resolution</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># Compute modularity of the discovered partition</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="n">modularity</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">modularity</span><span class="p">(</span><span class="n">partition</span><span class="p">,</span> <span class="n">G</span><span class="p">)</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Number of communities: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Modularity Q: </span><span class="si">{</span><span class="n">modularity</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="c1"># Visualize: color nodes by community</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">pos</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">cmap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="s1">'tab10'</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">partition</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">node_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">cmap</span><span class="p">(</span><span class="n">partition</span><span class="p">[</span><span class="n">node</span><span class="p">])</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()]</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="n">node_colors</span><span class="p">,</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>                 <span class="n">node_size</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">with_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>                 <span class="n">font_size</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">edge_color</span><span class="o">=</span><span class="s1">'gray'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Louvain Communities (Q = </span><span class="si">{</span><span class="n">modularity</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">'off'</span><span class="p">)</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</span></code></pre></div>
+<p>The <code>resolution</code> parameter <span class="arithmatex">\( \gamma \)</span> generalizes the null model: modularity becomes <span class="arithmatex">\( Q = \frac{1}{2m} \sum_{i,j} \left[ A_{ij} - \gamma \frac{k_i k_j}{2m} \right] \delta(c_i, c_j) \)</span>. Increasing <span class="arithmatex">\( \gamma \)</span> above 1.0 favors smaller, more refined communities; decreasing it below 1.0 encourages larger, coarser ones. This parameter is critical for applications because "the right scale" for communities is domain-dependent.</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">The Louvain Resolution Limit</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage offering a helpful tip">
+Louvain has a known <strong>resolution limit</strong>: it cannot reliably detect communities smaller than approximately <span class="arithmatex">\( \sqrt{m} \)</span> edges. In a network with 10 million edges, communities with fewer than ~3,162 edges may be merged with neighbors even when they have perfect internal structure. This is not a bug in the implementation — it is a fundamental property of the modularity function itself, proven by Fortunato and Barthélemy (2007). If you need to detect small communities in a large network, use the <code>resolution</code> parameter to zoom in, or switch to algorithms that optimize local criteria such as conductance instead.</p>
+</div>
+<h4 id="diagram-louvain-two-phase-iteration-explorer">Diagram: Louvain Two-Phase Iteration Explorer<a class="headerlink" href="#diagram-louvain-two-phase-iteration-explorer" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch18-louvain-explorer/main.html" width="100%" height="502px" scrolling="no"></iframe>
+<p><a href="../../sims/ch18-louvain-explorer/main.html">Run Louvain Two-Phase Iteration Explorer Fullscreen</a></p>
+<h2 id="187-overlapping-communities-beyond-disjoint-partitions">18.7 Overlapping Communities: Beyond Disjoint Partitions<a class="headerlink" href="#187-overlapping-communities-beyond-disjoint-partitions" title="Permanent link">¶</a></h2>
+<p>Both Girvan-Newman and Louvain treat communities as a <strong>partition</strong> of the node set: every node belongs to exactly one community, and communities are mutually exclusive. This is a strong assumption that is violated in virtually every real social network. A person may simultaneously be a member of a family, a professional organization, a neighborhood association, and a recreational club — and their friendships reflect all four memberships simultaneously.</p>
+<p>The <strong>overlapping community</strong> model relaxes the partition assumption by allowing each node to participate in multiple communities with varying degrees of membership. This richer representation requires a different mathematical formulation. Instead of a discrete community label <span class="arithmatex">\( c_i \in \{1, 2, \ldots, K\} \)</span> for each node, the overlapping model assigns each node <span class="arithmatex">\( u \)</span> a <strong>membership strength vector</strong> <span class="arithmatex">\( \mathbf{F}_u \in \mathbb{R}_{\geq 0}^K \)</span>, where <span class="arithmatex">\( F_{u,c} \)</span> quantifies how strongly node <span class="arithmatex">\( u \)</span> participates in community <span class="arithmatex">\( c \)</span>. A node with <span class="arithmatex">\( \mathbf{F}_u = [0.8, 0.0, 0.2] \)</span> primarily belongs to community 1 and weakly to community 3.</p>
+<p>The challenge for overlapping community detection is that we must simultaneously determine the number of communities <span class="arithmatex">\( K \)</span>, the membership vectors <span class="arithmatex">\( \{\mathbf{F}_u\}_{u \in V} \)</span>, and some way to relate membership vectors to the observed edges. The BigCLAM model provides a principled generative answer to this challenge.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">Overlapping Communities Are Harder — Here's Why That Matters</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage looking encouraging">
+If the overlapping community model seems more complex than the partition model — it is. The search space is continuous and high-dimensional, the optimization is non-convex, and selecting the number of communities <span class="arithmatex">\( K \)</span> requires model selection. But the added complexity is worth confronting, because partition-based methods systematically misclassify nodes that sit at the intersection of multiple communities, labeling them as "noise" or misattributing them to a single group. In fraud detection, financial regulation, and epidemiology, those boundary nodes are often the most important ones to identify correctly.</p>
+</div>
+<h2 id="188-bigclam-community-affiliation-graph-model">18.8 BigCLAM: Community Affiliation Graph Model<a class="headerlink" href="#188-bigclam-community-affiliation-graph-model" title="Permanent link">¶</a></h2>
+<p>BigCLAM (Yang and Leskovec, 2013) — short for <strong>Cluster Affiliation Model for Big Networks</strong> — formalizes overlapping communities through a generative probabilistic model. The model specifies how edges arise given community memberships, then recovers memberships by fitting the model to the observed graph via maximum likelihood estimation.</p>
+<p><strong>The generative model.</strong> Given <span class="arithmatex">\( K \)</span> communities and membership strengths <span class="arithmatex">\( \mathbf{F}_u \in \mathbb{R}_{\geq 0}^K \)</span> for each node <span class="arithmatex">\( u \)</span>, the probability that an edge exists between nodes <span class="arithmatex">\( u \)</span> and <span class="arithmatex">\( v \)</span> is:</p>
+<div class="arithmatex">\[
+P(A_{uv} = 1 \mid \mathbf{F}) = 1 - \exp\!\left(-\mathbf{F}_u \cdot \mathbf{F}_v\right)
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{F}_u \cdot \mathbf{F}_v = \sum_{c=1}^K F_{u,c} \cdot F_{v,c} \)</span> is the dot product of their membership vectors. The intuition is elegant: two nodes are likely to be connected if they share strong memberships in the same communities. If their dot product is large, the exponent <span class="arithmatex">\( \exp(-\mathbf{F}_u \cdot \mathbf{F}_v) \)</span> is small, so <span class="arithmatex">\( P(A_{uv} = 1) \)</span> approaches 1. If their dot product is zero (they share no community), the edge probability approaches <span class="arithmatex">\( 1 - \exp(0) = 0 \)</span>.</p>
+<p>The model is non-negative: all entries of <span class="arithmatex">\( \mathbf{F}_u \)</span> are constrained to <span class="arithmatex">\( F_{u,c} \geq 0 \)</span>. This makes BigCLAM a form of <strong>non-negative matrix factorization</strong> applied to graph adjacency matrices, with the edge-probability function providing the link between the latent factor matrix and the observed binary adjacency.</p>
+<p><strong>Fitting the model.</strong> Given the observed adjacency <span class="arithmatex">\( A \)</span>, we seek the membership matrix <span class="arithmatex">\( F \in \mathbb{R}_{\geq 0}^{n \times K} \)</span> that maximizes the log-likelihood:</p>
+<div class="arithmatex">\[
+\ell(F) = \sum_{(u,v) \in E} \log\!\left(1 - e^{-\mathbf{F}_u \cdot \mathbf{F}_v}\right) - \sum_{(u,v) \notin E} \mathbf{F}_u \cdot \mathbf{F}_v
+\]</div>
+<p>The first sum rewards high membership overlap for observed edges; the second penalizes overlap between non-adjacent node pairs. This log-likelihood is maximized using coordinate ascent: iterating over each node <span class="arithmatex">\( u \)</span> and optimizing <span class="arithmatex">\( \mathbf{F}_u \)</span> while holding all other membership vectors fixed. The gradient with respect to <span class="arithmatex">\( F_{u,c} \)</span> is:</p>
+<div class="arithmatex">\[
+\frac{\partial \ell}{\partial F_{u,c}} = \sum_{v \in \mathcal{N}(u)} \frac{F_{v,c} e^{-\mathbf{F}_u \cdot \mathbf{F}_v}}{1 - e^{-\mathbf{F}_u \cdot \mathbf{F}_v}} - \sum_{v \notin \mathcal{N}(u)} F_{v,c}
+\]</div>
+<p>The second term — a sum over all non-neighbors — is expensive to compute exactly for large graphs, but BigCLAM approximates it efficiently using degree-based summaries.</p>
+<p><strong>Selecting K.</strong> The number of communities <span class="arithmatex">\( K \)</span> is a hyperparameter. In practice, one typically runs BigCLAM for a range of <span class="arithmatex">\( K \)</span> values and selects the value that maximizes a held-out link prediction score or the model's likelihood adjusted for complexity (e.g., BIC or MDL criteria).</p>
+<p>The following code demonstrates BigCLAM-style NMF community detection using the SNAP Python library on the Karate Club graph:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">NMF</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c1"># Load graph and construct adjacency matrix</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">n</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">A</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_numpy_array</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>  <span class="c1"># shape: (n, n)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># Number of communities to find</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">K</span> <span class="o">=</span> <span class="mi">3</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="c1"># NMF approximates A ≈ W @ H (both non-negative)</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1"># W[u, c] ≈ F_u,c (membership strength of node u in community c)</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="c1"># We set W == H (symmetric: nodes are both "source" and "target")</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="n">nmf</span> <span class="o">=</span> <span class="n">NMF</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">K</span><span class="p">,</span> <span class="n">init</span><span class="o">=</span><span class="s1">'random'</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>          <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s1">'mu'</span><span class="p">,</span>  <span class="c1"># multiplicative updates</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>          <span class="n">beta_loss</span><span class="o">=</span><span class="s1">'frobenius'</span><span class="p">)</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="c1"># F: membership matrix of shape (n, K)</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="c1"># Note: true BigCLAM uses the specific log-likelihood above;</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="c1"># this NMF approximates it for pedagogical clarity.</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="n">F</span> <span class="o">=</span> <span class="n">nmf</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>  <span class="c1"># shape: (n, K)</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a><span class="c1"># Assign each node to its dominant community</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="n">community_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="c1"># Identify overlapping nodes (those with significant membership in &gt;1 community)</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">F</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># 30% of max membership</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="n">overlapping</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">F</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">[</span><span class="n">u</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">]</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Overlapping nodes (members of ≥2 communities): </span><span class="si">{</span><span class="n">overlapping</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="c1"># Display membership matrix</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="n">membership_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">"C</span><span class="si">{</span><span class="n">c</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">K</span><span class="p">)])</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="n">membership_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"Node"</span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a><span class="nb">print</span><span class="p">(</span><span class="n">membership_df</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</span></code></pre></div>
+<p>The key parameters are: <code>n_components</code> (= K, the number of communities), <code>init</code> (initialization strategy — <code>'random'</code> is standard; <code>'nndsvd'</code> is more deterministic), <code>max_iter</code> (maximum coordinate-descent iterations), and <code>beta_loss</code> (<code>'frobenius'</code> minimizes squared reconstruction error; <code>'kullback-leibler'</code> is appropriate for count data).</p>
+<p>The following table compares disjoint (Louvain) and overlapping (BigCLAM) community detection on common benchmark tasks:</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Louvain (Disjoint)</th>
+<th>BigCLAM (Overlapping)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Membership model</td>
+<td>Hard partition</td>
+<td>Soft membership vector</td>
+</tr>
+<tr>
+<td>Optimization</td>
+<td>Greedy ΔQ</td>
+<td>Coordinate ascent on log-likelihood</td>
+</tr>
+<tr>
+<td>Scalability</td>
+<td>Excellent (near-linear)</td>
+<td>Good (linear in edges)</td>
+</tr>
+<tr>
+<td>Handles bridge nodes</td>
+<td>No — assigns to one community</td>
+<td>Yes — continuous membership</td>
+</tr>
+<tr>
+<td>Requires specifying K</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>Ground-truth comparison</td>
+<td>NMI, ARI</td>
+<td>F1 over community sets</td>
+</tr>
+<tr>
+<td>Typical use case</td>
+<td>Social clustering, graph partitioning</td>
+<td>Author-topic networks, protein functions</td>
+</tr>
+</tbody>
+</table>
+<h2 id="189-community-structure-in-fraud-detection">18.9 Community Structure in Fraud Detection<a class="headerlink" href="#189-community-structure-in-fraud-detection" title="Permanent link">¶</a></h2>
+<p>The same structural properties that make communities detectable — high internal edge density, sparse cross-community connections, coordinated behavioral patterns — also make communities a powerful signal for identifying fraud. Financial fraud, social media manipulation, insurance fraud, and identity theft all tend to produce characteristic community signatures that differ from legitimate behavior.</p>
+<p><strong>Fraud rings in financial networks.</strong> Consider a transaction network where nodes are bank accounts and directed edges encode money transfers. A legitimate customer's transaction graph is typically sparse: a few edges to employers (payroll), utility companies (bills), and retailers (purchases). A money laundering ring, by contrast, generates a dense clique-like structure — the ring repeatedly cycles funds through its members to obscure the money's origin. This cyclic, high-density internal structure makes the fraud ring highly detectable as a community with an anomalously high modularity contribution.</p>
+<p><strong>Account compromise clusters.</strong> In social networks, compromised accounts that are used for coordinated spam campaigns share behavioral patterns: they post at similar times, interact with the same target accounts, and follow each other for mutual amplification. This coordination manifests as a tightly connected community in the follower graph or the interaction graph. Community detection identifies these clusters even when individual accounts appear legitimate in isolation.</p>
+<p><strong>The adversarial challenge.</strong> Sophisticated fraud actors are aware that community detection is a common tool, and they deliberately introduce noise to evade it. A fraud ring might add a small number of edges to legitimate-looking nodes to reduce its apparent internal density, or distribute its members across multiple detected communities. This creates an arms race between community detection algorithms and adversarial graph manipulation. Robust fraud detection therefore combines community structure with node-level features, temporal patterns, and anomaly scores.</p>
+<p>The following pipeline demonstrates graph-based fraud detection using community structure as a feature:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">community</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">community_louvain</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_transaction_graph</span><span class="p">(</span><span class="n">transactions_df</span><span class="p">):</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="sd">    Build a directed weighted graph from transaction records.</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="sd">    Each row of transactions_df: {sender, receiver, amount, timestamp}</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="sd">    Edge weight = total transaction volume between account pairs.</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="sd">    """</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">transactions_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>        <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">'sender'</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">'receiver'</span><span class="p">]</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>        <span class="n">w</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">'amount'</span><span class="p">]</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>        <span class="k">if</span> <span class="n">G</span><span class="o">.</span><span class="n">has_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>            <span class="n">G</span><span class="p">[</span><span class="n">u</span><span class="p">][</span><span class="n">v</span><span class="p">][</span><span class="s1">'weight'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">w</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>            <span class="n">G</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">w</span><span class="p">)</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="k">return</span> <span class="n">G</span>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a><span class="k">def</span><span class="w"> </span><span class="nf">extract_community_features</span><span class="p">(</span><span class="n">G</span><span class="p">):</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a><span class="sd">    Extract per-node community-based features for fraud classification.</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a><span class="sd">    These features capture structural anomalies at the community level.</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a><span class="sd">    """</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>    <span class="n">G_undirected</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">to_undirected</span><span class="p">()</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>    <span class="n">partition</span> <span class="o">=</span> <span class="n">community_louvain</span><span class="o">.</span><span class="n">best_partition</span><span class="p">(</span><span class="n">G_undirected</span><span class="p">)</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>    <span class="c1"># Group nodes by community</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>    <span class="n">communities</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>    <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">comm_id</span> <span class="ow">in</span> <span class="n">partition</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>        <span class="n">communities</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">comm_id</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>    <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a>    <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a>        <span class="n">comm_id</span> <span class="o">=</span> <span class="n">partition</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a>        <span class="n">comm_members</span> <span class="o">=</span> <span class="n">communities</span><span class="p">[</span><span class="n">comm_id</span><span class="p">]</span>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>        <span class="n">comm_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">comm_members</span><span class="p">)</span>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>        <span class="c1"># Internal degree: edges to same community</span>
+</span><span id="__span-2-42"><a id="__codelineno-2-42" name="__codelineno-2-42" href="#__codelineno-2-42"></a>        <span class="n">internal_degree</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">nbr</span> <span class="ow">in</span> <span class="n">G_undirected</span><span class="o">.</span><span class="n">neighbors</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</span><span id="__span-2-43"><a id="__codelineno-2-43" name="__codelineno-2-43" href="#__codelineno-2-43"></a>                              <span class="k">if</span> <span class="n">partition</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nbr</span><span class="p">)</span> <span class="o">==</span> <span class="n">comm_id</span><span class="p">)</span>
+</span><span id="__span-2-44"><a id="__codelineno-2-44" name="__codelineno-2-44" href="#__codelineno-2-44"></a>        <span class="n">total_degree</span> <span class="o">=</span> <span class="n">G_undirected</span><span class="o">.</span><span class="n">degree</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+</span><span id="__span-2-45"><a id="__codelineno-2-45" name="__codelineno-2-45" href="#__codelineno-2-45"></a>
+</span><span id="__span-2-46"><a id="__codelineno-2-46" name="__codelineno-2-46" href="#__codelineno-2-46"></a>        <span class="c1"># Internal edge fraction (embeddedness)</span>
+</span><span id="__span-2-47"><a id="__codelineno-2-47" name="__codelineno-2-47" href="#__codelineno-2-47"></a>        <span class="n">embeddedness</span> <span class="o">=</span> <span class="n">internal_degree</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">total_degree</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-2-48"><a id="__codelineno-2-48" name="__codelineno-2-48" href="#__codelineno-2-48"></a>
+</span><span id="__span-2-49"><a id="__codelineno-2-49" name="__codelineno-2-49" href="#__codelineno-2-49"></a>        <span class="c1"># Community internal density</span>
+</span><span id="__span-2-50"><a id="__codelineno-2-50" name="__codelineno-2-50" href="#__codelineno-2-50"></a>        <span class="n">subgraph</span> <span class="o">=</span> <span class="n">G_undirected</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">comm_members</span><span class="p">)</span>
+</span><span id="__span-2-51"><a id="__codelineno-2-51" name="__codelineno-2-51" href="#__codelineno-2-51"></a>        <span class="n">n_internal_edges</span> <span class="o">=</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span>
+</span><span id="__span-2-52"><a id="__codelineno-2-52" name="__codelineno-2-52" href="#__codelineno-2-52"></a>        <span class="n">max_edges</span> <span class="o">=</span> <span class="n">comm_size</span> <span class="o">*</span> <span class="p">(</span><span class="n">comm_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+</span><span id="__span-2-53"><a id="__codelineno-2-53" name="__codelineno-2-53" href="#__codelineno-2-53"></a>        <span class="n">internal_density</span> <span class="o">=</span> <span class="n">n_internal_edges</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_edges</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-2-54"><a id="__codelineno-2-54" name="__codelineno-2-54" href="#__codelineno-2-54"></a>
+</span><span id="__span-2-55"><a id="__codelineno-2-55" name="__codelineno-2-55" href="#__codelineno-2-55"></a>        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+</span><span id="__span-2-56"><a id="__codelineno-2-56" name="__codelineno-2-56" href="#__codelineno-2-56"></a>            <span class="s1">'node'</span><span class="p">:</span> <span class="n">node</span><span class="p">,</span>
+</span><span id="__span-2-57"><a id="__codelineno-2-57" name="__codelineno-2-57" href="#__codelineno-2-57"></a>            <span class="s1">'community_id'</span><span class="p">:</span> <span class="n">comm_id</span><span class="p">,</span>
+</span><span id="__span-2-58"><a id="__codelineno-2-58" name="__codelineno-2-58" href="#__codelineno-2-58"></a>            <span class="s1">'community_size'</span><span class="p">:</span> <span class="n">comm_size</span><span class="p">,</span>
+</span><span id="__span-2-59"><a id="__codelineno-2-59" name="__codelineno-2-59" href="#__codelineno-2-59"></a>            <span class="s1">'embeddedness'</span><span class="p">:</span> <span class="n">embeddedness</span><span class="p">,</span>       <span class="c1"># high → likely belongs to ring</span>
+</span><span id="__span-2-60"><a id="__codelineno-2-60" name="__codelineno-2-60" href="#__codelineno-2-60"></a>            <span class="s1">'internal_density'</span><span class="p">:</span> <span class="n">internal_density</span><span class="p">,</span>  <span class="c1"># high → tight-knit cluster</span>
+</span><span id="__span-2-61"><a id="__codelineno-2-61" name="__codelineno-2-61" href="#__codelineno-2-61"></a>            <span class="s1">'degree'</span><span class="p">:</span> <span class="n">total_degree</span><span class="p">,</span>
+</span><span id="__span-2-62"><a id="__codelineno-2-62" name="__codelineno-2-62" href="#__codelineno-2-62"></a>        <span class="p">})</span>
+</span><span id="__span-2-63"><a id="__codelineno-2-63" name="__codelineno-2-63" href="#__codelineno-2-63"></a>
+</span><span id="__span-2-64"><a id="__codelineno-2-64" name="__codelineno-2-64" href="#__codelineno-2-64"></a>    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+</span></code></pre></div>
+<p>The <code>embeddedness</code> feature — the fraction of a node's edges that stay within its community — is a particularly strong fraud signal. Legitimate accounts have moderate embeddedness, reflecting a mix of local and external connections. Fraud ring members have embeddedness approaching 1.0, because nearly all their edges go to ring confederates.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Community Labels Are Not Ground Truth</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning about a common mistake">
+A common mistake in applied fraud detection is treating detected community labels as reliable ground truth for flagging accounts as fraudulent. They are not. Community detection is unsupervised — it finds the densest internal structure, regardless of whether that structure corresponds to fraud. Legitimate communities — trading desks, family networks, corporate suppliers — can look structurally identical to fraud rings. Always combine community features with domain-specific signals and validate with labeled data before using community membership as an input to any enforcement action.</p>
+</div>
+<h2 id="1810-common-pitfalls-in-community-detection">18.10 Common Pitfalls in Community Detection<a class="headerlink" href="#1810-common-pitfalls-in-community-detection" title="Permanent link">¶</a></h2>
+<p><strong>The resolution limit.</strong> As noted in §18.6, modularity optimization suffers from a fundamental resolution limit: communities smaller than <span class="arithmatex">\( \sqrt{m} \)</span> edges may be merged into larger groups even when perfectly well-defined. This is not a numerical artifact — it is an inherent property of the global modularity function, which must balance local density improvements against the global null model. Multi-resolution methods (varying <span class="arithmatex">\( \gamma \)</span> in the generalized modularity) or locally-defined criteria (conductance, internal edge density) can partially circumvent this limitation.</p>
+<p><strong>Degeneracy of the modularity landscape.</strong> Real networks typically have not one but an exponentially large number of partitions with modularity values within a small <span class="arithmatex">\( \epsilon \)</span> of the maximum. This means that Louvain (and other modularity-maximizing methods) is not converging to a unique answer — it is sampling from a degenerate landscape. Different random initializations, different orderings of the greedy node passes, or different tie-breaking rules can produce qualitatively different partitions with nearly identical Q values. If you run Louvain five times on the same graph with different seeds and get five very different community assignments, the graph's community structure may be genuinely ambiguous, not a bug.</p>
+<p><strong>Choosing K in BigCLAM.</strong> There is no universally agreed-upon criterion for selecting the number of communities <span class="arithmatex">\( K \)</span> in overlapping models. BIC, MDL, cross-validated link prediction, and domain knowledge all give different answers. Treat K as a hyperparameter to sweep over, and report sensitivity to K in any published analysis.</p>
+<p><strong>Comparing community assignments.</strong> When evaluating a detected partition against ground truth, the choice of metric matters enormously. Normalized Mutual Information (NMI) rewards overlap in cluster assignments but is sensitive to the number of communities. Adjusted Rand Index (ARI) accounts for chance agreement but assumes disjoint partitions. F1 over community sets is appropriate for overlapping communities but requires defining what counts as a "match." These metrics are not interchangeable, and papers that cherry-pick metrics to show favorable results are common.</p>
+<h2 id="1811-key-takeaways">18.11 Key Takeaways<a class="headerlink" href="#1811-key-takeaways" title="Permanent link">¶</a></h2>
+<p>Community detection transforms the question "which nodes are connected?" into the deeper question "what groups do those connections reveal?" We covered eight interconnected concepts in this chapter:</p>
+<ul>
+<li><strong>Social network analysis</strong> provides the sociological vocabulary — strong and weak ties, structural holes, centrality — that motivates the computational problem.</li>
+<li><strong>Community detection</strong> is the task of finding groups of nodes with dense internal and sparse external connections, operationalized through a chosen quality criterion.</li>
+<li><strong>Modularity</strong> quantifies community quality by comparing observed internal edge density to the configuration model null; values above 0.3 signal meaningful structure.</li>
+<li><strong>Girvan-Newman</strong> is a principled divisive algorithm based on iterative removal of high-betweenness bridge edges, producing a dendrogram whose optimal cut maximizes Q; it is exact but scales as <span class="arithmatex">\( O(m^2 n) \)</span>.</li>
+<li><strong>Louvain</strong> greedily maximizes modularity using local <span class="arithmatex">\( \Delta Q \)</span> updates and graph compression, scaling nearly linearly to massive networks; its resolution limit prevents detection of very small communities.</li>
+<li><strong>Overlapping communities</strong> abandon the partition assumption, allowing each node to belong to multiple communities with continuous membership strengths.</li>
+<li><strong>BigCLAM</strong> operationalizes overlapping communities through a generative model — <span class="arithmatex">\( P(\text{edge}) = 1 - \exp(-\mathbf{F}_u \cdot \mathbf{F}_v) \)</span> — optimized via coordinate ascent on the log-likelihood.</li>
+<li><strong>Fraud detection</strong> exploits the fact that fraud rings produce anomalously dense, high-embeddedness communities; community features (embeddedness, internal density, community size) are powerful inputs to fraud classifiers.</li>
+</ul>
+<h2 id="1812-further-reading">18.12 Further Reading<a class="headerlink" href="#1812-further-reading" title="Permanent link">¶</a></h2>
+<p>The literature on community detection is vast. The following five works provide a solid foundation spanning theory, algorithms, and applications.</p>
+<p><strong>Foundational algorithms:</strong></p>
+<ul>
+<li>
+<p>Blondel, V. D., Guillaume, J.-L., Lambiotte, R., &amp; Lefebvre, E. (2008). <strong>Fast unfolding of communities in large networks.</strong> <em>Journal of Statistical Mechanics: Theory and Experiment</em>, 2008(10), P10008. <a href="https://arxiv.org/abs/0803.0476">arXiv:0803.0476</a>. The original Louvain paper — concise, well-written, and directly implementable.</p>
+</li>
+<li>
+<p>Yang, J., &amp; Leskovec, J. (2013). <strong>Overlapping community detection at scale: A non-negative matrix factorization approach (BigCLAM).</strong> <em>WSDM '13</em>. <a href="https://dl.acm.org/doi/10.1145/2433396.2433471">ACM DL</a>. The BigCLAM paper with the full derivation of the coordinate-ascent update and experiments on large-scale social networks.</p>
+</li>
+</ul>
+<p><strong>Surveys:</strong></p>
+<ul>
+<li>Fortunato, S. (2010). <strong>Community detection in graphs.</strong> <em>Physics Reports</em>, 486(3–5), 75–174. <a href="https://doi.org/10.1016/j.physrep.2009.11.002">doi:10.1016/j.physrep.2009.11.002</a>. Comprehensive 100-page survey covering spectral methods, modularity, NMF, and planted partition models; the standard reference.</li>
+</ul>
+<p><strong>Theoretical limits:</strong></p>
+<ul>
+<li>Fortunato, S., &amp; Barthélemy, M. (2007). <strong>Resolution limit in community detection.</strong> <em>PNAS</em>, 104(1), 36–41. Proves that modularity maximization cannot detect communities smaller than <span class="arithmatex">\( \sqrt{m} \)</span> edges, regardless of how dense those communities are.</li>
+</ul>
+<p><strong>Applications:</strong></p>
+<ul>
+<li>Akoglu, L., Tong, H., &amp; Koutra, D. (2015). <strong>Graph-based anomaly detection and description: A survey.</strong> <em>Data Mining and Knowledge Discovery</em>, 29(3), 626–688. Covers community-structure-based fraud detection, anomaly scoring, and adversarial graph manipulation in depth.</li>
+</ul>
+<h2 id="1813-exercises">18.13 Exercises<a class="headerlink" href="#1813-exercises" title="Permanent link">¶</a></h2>
+<p>The following twelve exercises span all six Bloom's taxonomy levels.</p>
+<p><strong>Remember (Level 1)</strong></p>
+<ol>
+<li>
+<p>State the modularity formula <span class="arithmatex">\( Q \)</span> and identify the role of each term. What does the configuration model null <span class="arithmatex">\( \frac{k_i k_j}{2m} \)</span> represent, and why is it subtracted from <span class="arithmatex">\( A_{ij} \)</span>?</p>
+</li>
+<li>
+<p>List the two phases of the Louvain algorithm in order. What does each phase accomplish, and what stops the algorithm from running indefinitely?</p>
+</li>
+</ol>
+<p><strong>Understand (Level 2)</strong></p>
+<ol>
+<li>
+<p>Explain why Girvan-Newman removes edges with high betweenness centrality rather than edges with low weight. What property of bridge edges makes betweenness centrality a reliable criterion?</p>
+</li>
+<li>
+<p>In BigCLAM, why is the edge probability modeled as <span class="arithmatex">\( P(\text{edge}) = 1 - \exp(-\mathbf{F}_u \cdot \mathbf{F}_v) \)</span> rather than simply <span class="arithmatex">\( \mathbf{F}_u \cdot \mathbf{F}_v \)</span>? What mathematical property does the exponential form guarantee that the linear form does not?</p>
+</li>
+</ol>
+<p><strong>Apply (Level 3)</strong></p>
+<ol>
+<li>
+<p>Run Louvain with three different random seeds on the Karate Club graph. Report the modularity Q and the number of communities for each run. Are the partitions identical? Discuss what disagreements among runs imply about the network's community structure.</p>
+</li>
+<li>
+<p>Implement the <span class="arithmatex">\( \Delta Q \)</span> formula for moving a single node from one community to another (§18.6). Verify your implementation by checking that moving node 0 in the Karate Club graph to its correct ground-truth community increases Q compared to a random singleton initialization.</p>
+</li>
+</ol>
+<p><strong>Analyze (Level 4)</strong></p>
+<ol>
+<li>
+<p>Apply Louvain to the Karate Club graph with resolution parameters <span class="arithmatex">\( \gamma \in \{0.5, 1.0, 2.0\} \)</span>. Plot the number of communities found versus <span class="arithmatex">\( \gamma \)</span>. At which value of <span class="arithmatex">\( \gamma \)</span> does the algorithm best recover the two ground-truth factions? Explain the direction of the effect.</p>
+</li>
+<li>
+<p>Compute the embeddedness of every node in the Karate Club graph under the two-community ground-truth partition. Which five nodes have the lowest embeddedness (i.e., the highest fraction of cross-community edges)? What structural role do these nodes likely play?</p>
+</li>
+</ol>
+<p><strong>Evaluate (Level 5)</strong></p>
+<ol>
+<li>
+<p>Girvan-Newman and Louvain both attempt to find high-modularity partitions, but via very different mechanisms. For a social network with 10,000 nodes and 50,000 edges, which algorithm would you use in a production fraud detection pipeline, and why? Quantify the computational cost of each approach for this scale.</p>
+</li>
+<li>
+<p>A colleague argues that a detected community with internal density 0.95 and modularity contribution 0.08 is strong evidence of a fraud ring. Identify at least three reasons why this conclusion might be premature, and describe what additional evidence you would collect before flagging the community.</p>
+</li>
+</ol>
+<p><strong>Create (Level 6)</strong></p>
+<ol>
+<li>
+<p>Design a community detection evaluation pipeline for a network where ground-truth community labels are partially available for 20% of nodes. Specify: (a) how you would use the labeled subset to calibrate algorithm hyperparameters, (b) which metrics you would compute on the labeled and unlabeled subsets separately, and (c) how you would handle the case where detected communities span both labeled and unlabeled nodes.</p>
+</li>
+<li>
+<p>Propose a modification to BigCLAM that incorporates node features <span class="arithmatex">\( \mathbf{x}_u \in \mathbb{R}^d \)</span> into the membership vector computation. Specifically, define a parameterized function <span class="arithmatex">\( \mathbf{F}_u = f_\theta(\mathbf{x}_u) \)</span> and write out the modified edge probability and log-likelihood. Discuss: does this modification turn BigCLAM into a supervised model, an unsupervised model, or something in between?</p>
+</li>
+</ol>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Chapter 18 Complete!</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating the end of the chapter">
+You have now traversed the full arc of community detection — from the sociological intuition of strong and weak ties, through the modularity quality function and the algorithms that optimize it, to overlapping memberships and adversarial applications in fraud detection. The Karate Club graph's two factions, which Zachary observed by hand in 1977, turn out to be discoverable by every algorithm in this chapter: Girvan-Newman finds the bridge edge that separated them, Louvain assigns each node to its correct faction, and BigCLAM places the boundary-spanning members in both communities simultaneously. Real networks are rarely this clean — but understanding why they sometimes are, and why they often are not, is the foundation for everything that comes next.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../17-relational-deep-learning/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

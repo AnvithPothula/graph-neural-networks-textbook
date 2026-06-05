@@ -1,0 +1,3504 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Develops shallow node embedding methods — DeepWalk, node2vec, and matrix factorization — as the encoder-decoder framework that unifies graph representation learning before the GNN era.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/04-node-embeddings/">
+      
+      
+        <link rel="prev" href="../03-link-analysis-pagerank/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 4: Node Embeddings: DeepWalk and node2vec - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 4: Node Embeddings: DeepWalk and node2vec">
+  <meta property="og:description" content="Develops shallow node embedding methods — DeepWalk, node2vec, and matrix factorization — as the encoder-decoder framework that unifies graph representation learning before the GNN era.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/04-node-embeddings/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 4: Node Embeddings: DeepWalk and node2vec">
+  <meta name="twitter:description" content="Develops shallow node embedding methods — DeepWalk, node2vec, and matrix factorization — as the encoder-decoder framework that unifies graph representation learning before the GNN era.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-4-node-embeddings-deepwalk-and-node2vec" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 4: Node Embeddings: DeepWalk and node2vec
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_6" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_6" id="__nav_4_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#41-the-recommendation-problem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 The Recommendation Problem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#42-the-encoder-decoder-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 The Encoder-Decoder Framework
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#43-random-walk-similarity-intuition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Random Walk Similarity: Intuition
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#44-deepwalk-from-walks-to-embeddings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4 DeepWalk: From Walks to Embeddings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.4 DeepWalk: From Walks to Embeddings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#441-stage-1-random-walk-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4.1 Stage 1: Random Walk Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#442-stage-2-skip-gram-objective" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4.2 Stage 2: Skip-Gram Objective
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#443-stage-3-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.4.3 Stage 3: Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#45-negative-sampling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.5 Negative Sampling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#46-node2vec-controlling-the-exploration-exploitation-trade-off" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6 node2vec: Controlling the Exploration-Exploitation Trade-Off
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.6 node2vec: Controlling the Exploration-Exploitation Trade-Off">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#461-the-biased-random-walk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6.1 The Biased Random Walk
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#462-bfs-vs-dfs-exploration-and-network-phenomena" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.6.2 BFS vs. DFS Exploration and Network Phenomena
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#47-matrix-factorization-the-algebraic-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.7 Matrix Factorization: The Algebraic View
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#48-line-large-scale-information-network-embedding" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.8 LINE: Large-scale Information Network Embedding
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#49-code-node2vec-on-the-karate-club-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.9 Code: node2vec on the Karate Club Graph
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#410-transductive-vs-inductive-learning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.10 Transductive vs. Inductive Learning
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#411-homophily-and-structural-equivalence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.11 Homophily and Structural Equivalence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#412-empirical-results" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.12 Empirical Results
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#413-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.13 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#414-microsim-biased-random-walk-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.14 MicroSim: Biased Random Walk Explorer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.14 MicroSim: Biased Random Walk Explorer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-node2vec-biased-random-walk-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: node2vec Biased Random Walk Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#415-chapter-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.15 Chapter Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#416-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.16 Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4.16 Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analyze
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#417-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.17 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    4. Node Embeddings: DeepWalk and node2vec
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/04-node-embeddings/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-4-node-embeddings-deepwalk-and-node2vec">Chapter 4: Node Embeddings: DeepWalk and node2vec<a class="headerlink" href="#chapter-4-node-embeddings-deepwalk-and-node2vec" title="Permanent link">¶</a></h1>
+<p><strong>Part 1: Classical Graph Analysis</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Develops shallow node embedding methods — DeepWalk, node2vec, and matrix factorization — as the encoder-decoder framework that unifies graph representation learning before the GNN era.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 17 concepts from the learning graph:</p>
+<ol>
+<li>Node Embedding</li>
+<li>Embedding Space</li>
+<li>Encoder-Decoder Framework</li>
+<li>Shallow Embedding</li>
+<li>Matrix Factorization (Graph)</li>
+<li>DeepWalk</li>
+<li>node2vec</li>
+<li>Biased Random Walk</li>
+<li>BFS Strategy (node2vec)</li>
+<li>DFS Strategy (node2vec)</li>
+<li>Skip-Gram Model</li>
+<li>Negative Sampling</li>
+<li>LINE Embedding</li>
+<li>Transductive Learning</li>
+<li>Inductive Learning</li>
+<li>Structural Equivalence</li>
+<li>Homophily</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../02-graph-properties-and-features/">Chapter 2: Graph Properties and Traditional ML Features</a></li>
+<li><a href="../03-link-analysis-pagerank/">Chapter 3: Link Analysis and PageRank</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">From Rankings to Representations</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage welcomes students to Chapter 4">
+PageRank gave us a single scalar per node — a ranking, not a representation. But most graph ML tasks require more than a ranking: they require a <em>geometry</em>, a space where similar nodes cluster together and dissimilar nodes sit apart, so that a classifier or link predictor can draw decision boundaries with ordinary linear algebra. In this chapter we build that geometry from scratch, using random walks to define "similarity" and the skip-gram objective to learn vectors that preserve it. The methods here — DeepWalk, node2vec, and their matrix-factorization cousins — are the direct precursors to the GNN architectures in Part 2. Understanding them precisely is what makes GNNs feel like an inevitable next step rather than an arbitrary design choice.</p>
+</div>
+<h2 id="41-the-recommendation-problem">4.1 The Recommendation Problem<a class="headerlink" href="#41-the-recommendation-problem" title="Permanent link">¶</a></h2>
+<p>Imagine a music streaming platform with 50 million users and 30 million tracks. Each user has listened to dozens or hundreds of songs; each song has been played by thousands or millions of users. The platform wants to recommend songs that a given user is likely to enjoy but has not yet heard. The interaction data is naturally a <strong>bipartite graph</strong>: users on one side, tracks on the other, with an edge whenever a user played a track.</p>
+<p>The naive approach — represent each user and each track as a one-hot vector and measure similarity by co-occurrence counts — produces a similarity matrix of dimensions <span class="arithmatex">\(50 \times 10^6 \times 30 \times 10^6\)</span>, which is approximately <span class="arithmatex">\(10^{15}\)</span> entries. Storing or computing this matrix is physically impossible. What is needed is a <strong>low-dimensional representation</strong>: a dense vector <span class="arithmatex">\(\mathbf{z}_v \in \mathbb{R}^d\)</span> (typically <span class="arithmatex">\(d = 64\)</span> to <span class="arithmatex">\(d = 256\)</span>) for every user and every track such that users with similar listening histories have nearby vectors, and tracks with similar audiences have nearby vectors. Once these vectors exist, the recommendation problem reduces to a fast nearest-neighbor search in <span class="arithmatex">\(\mathbb{R}^d\)</span> — an operation that runs in milliseconds on modern hardware.</p>
+<p>This is the <strong>node embedding</strong> problem: given a graph <span class="arithmatex">\(G = (V, E)\)</span>, learn a function <span class="arithmatex">\(\text{ENC}: V \to \mathbb{R}^d\)</span> such that structural similarity in <span class="arithmatex">\(G\)</span> is preserved as geometric proximity in the <strong>embedding space</strong> <span class="arithmatex">\(\mathbb{R}^d\)</span>. The definition of "structural similarity" — and the method for learning <span class="arithmatex">\(\text{ENC}\)</span> from it — is what distinguishes the different embedding algorithms in this chapter.</p>
+<h2 id="42-the-encoder-decoder-framework">4.2 The Encoder-Decoder Framework<a class="headerlink" href="#42-the-encoder-decoder-framework" title="Permanent link">¶</a></h2>
+<p>Before examining specific algorithms, it is valuable to establish the unifying framework within which all node embedding methods can be understood. The <strong>encoder-decoder framework</strong> decomposes the node embedding problem into two components.</p>
+<p>The <strong>encoder</strong> is the function that maps nodes to embedding vectors:</p>
+<div class="arithmatex">\[
+\text{ENC}: V \to \mathbb{R}^d, \quad \text{ENC}(v) = \mathbf{z}_v
+\]</div>
+<p>For the simplest class of methods — <strong>shallow embeddings</strong> — the encoder is nothing more than a lookup table: a matrix <span class="arithmatex">\(\mathbf{Z} \in \mathbb{R}^{|V| \times d}\)</span> where row <span class="arithmatex">\(v\)</span> is the embedding vector <span class="arithmatex">\(\mathbf{z}_v\)</span>. There are no parameters shared across nodes; each node has its own dedicated <span class="arithmatex">\(d\)</span>-dimensional vector. The total parameter count is <span class="arithmatex">\(O(|V| \cdot d)\)</span>, which grows linearly with the number of nodes.</p>
+<p>The <strong>decoder</strong> reconstructs an estimate of pairwise similarity from embedding vectors:</p>
+<div class="arithmatex">\[
+\text{DEC}: \mathbb{R}^d \times \mathbb{R}^d \to \mathbb{R}, \quad \text{DEC}(\mathbf{z}_u, \mathbf{z}_v) \approx \text{sim}_G(u, v)
+\]</div>
+<p>The most common decoder is the <strong>dot product</strong> <span class="arithmatex">\(\text{DEC}(\mathbf{z}_u, \mathbf{z}_v) = \mathbf{z}_u^\top \mathbf{z}_v\)</span>, which approximates some notion of node similarity. The precise definition of <span class="arithmatex">\(\text{sim}_G(u, v)\)</span> — what "similar" means in the original graph — is the key design choice that separates one embedding algorithm from another.</p>
+<p>The <strong>training objective</strong> minimizes the reconstruction error:</p>
+<div class="arithmatex">\[
+\min_{\mathbf{Z}} \sum_{(u, v) \in \mathcal{D}} \ell\bigl(\text{DEC}(\mathbf{z}_u, \mathbf{z}_v),\ \text{sim}_G(u, v)\bigr)
+\]</div>
+<p>where <span class="arithmatex">\(\mathcal{D}\)</span> is a training set of node pairs and <span class="arithmatex">\(\ell\)</span> is a loss function. The following table organizes the key design choices across the methods in this chapter:</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Similarity <span class="arithmatex">\(\text{sim}_G(u,v)\)</span></th>
+<th>Decoder</th>
+<th>Loss</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Matrix Factorization</td>
+<td><span class="arithmatex">\(A_{uv}\)</span> (adjacency)</td>
+<td><span class="arithmatex">\(\mathbf{z}_u^\top\mathbf{z}_v\)</span></td>
+<td>Squared reconstruction</td>
+</tr>
+<tr>
+<td>DeepWalk</td>
+<td><span class="arithmatex">\(P(v \mid u)\)</span> via random walk</td>
+<td><span class="arithmatex">\(\sigma(\mathbf{z}_u^\top\mathbf{z}_v)\)</span></td>
+<td>Binary cross-entropy</td>
+</tr>
+<tr>
+<td>node2vec</td>
+<td>Biased walk probability</td>
+<td><span class="arithmatex">\(\sigma(\mathbf{z}_u^\top\mathbf{z}_v)\)</span></td>
+<td>Binary cross-entropy</td>
+</tr>
+<tr>
+<td>LINE (1st order)</td>
+<td><span class="arithmatex">\(A_{uv}\)</span> (direct edge weight)</td>
+<td><span class="arithmatex">\(\sigma(\mathbf{z}_u^\top\mathbf{z}_v)\)</span></td>
+<td>KL divergence</td>
+</tr>
+<tr>
+<td>LINE (2nd order)</td>
+<td><span class="arithmatex">\(P(v \mid u)\)</span> via 1-hop neighbors</td>
+<td><span class="arithmatex">\(\sigma(\mathbf{z}_u^\top\mathbf{z}_v)\)</span></td>
+<td>KL divergence</td>
+</tr>
+</tbody>
+</table>
+<h2 id="43-random-walk-similarity-intuition">4.3 Random Walk Similarity: Intuition<a class="headerlink" href="#43-random-walk-similarity-intuition" title="Permanent link">¶</a></h2>
+<p>The core challenge in defining node similarity for general graphs is that the adjacency matrix entry <span class="arithmatex">\(A_{uv}\)</span> is binary and local — it only tells us whether two nodes are directly connected, not whether they occupy similar positions in the graph. Two nodes that share no edges but sit in structurally similar regions of the graph (e.g., two department heads in different corporate hierarchies) deserve similar embeddings, but their adjacency entry is zero.</p>
+<p><strong>Random walk similarity</strong> provides a richer notion of proximity: <span class="arithmatex">\(\text{sim}_G(u, v)\)</span> is defined as the probability that a random walk starting at <span class="arithmatex">\(u\)</span> visits <span class="arithmatex">\(v\)</span> within a finite number of steps. This definition has several appealing properties:</p>
+<ul>
+<li>It is <strong>non-local</strong>: it aggregates information from multi-hop paths, not just direct edges.</li>
+<li>It is <strong>stochastic</strong>: by averaging over many short walks, it is robust to individual edge noise.</li>
+<li>It <strong>interpolates</strong> between local and global similarity as the walk length increases.</li>
+<li>It is <strong>computationally tractable</strong>: short random walks on sparse graphs are <span class="arithmatex">\(O(|V| \cdot L)\)</span> to generate, where <span class="arithmatex">\(L\)</span> is the walk length.</li>
+</ul>
+<p>The idea of using co-occurrence statistics from text corpora — popularized by the Word2Vec skip-gram model — transfers directly to graphs if we treat random walks as "sentences" and nodes as "words." The frequency with which node <span class="arithmatex">\(v\)</span> appears in a window around node <span class="arithmatex">\(u\)</span> across many walks encodes their graph proximity.</p>
+<h2 id="44-deepwalk-from-walks-to-embeddings">4.4 DeepWalk: From Walks to Embeddings<a class="headerlink" href="#44-deepwalk-from-walks-to-embeddings" title="Permanent link">¶</a></h2>
+<p><strong>DeepWalk</strong> (Perozzi, Al-Rfou &amp; Skiena, 2014) was the first method to apply the skip-gram framework to graphs, treating the graph as if it were a corpus of documents. The algorithm has three stages.</p>
+<h3 id="441-stage-1-random-walk-generation">4.4.1 Stage 1: Random Walk Generation<a class="headerlink" href="#441-stage-1-random-walk-generation" title="Permanent link">¶</a></h3>
+<p>For each node <span class="arithmatex">\(u \in V\)</span>, generate <span class="arithmatex">\(r\)</span> random walks of fixed length <span class="arithmatex">\(L\)</span>, starting from <span class="arithmatex">\(u\)</span>. Each walk is an unbiased random walk: at each step, move to a uniformly random out-neighbor of the current node. With <span class="arithmatex">\(r = 10\)</span> and <span class="arithmatex">\(L = 80\)</span> (the DeepWalk defaults), this produces a corpus of <span class="arithmatex">\(r \cdot |V|\)</span> "sentences," each of length <span class="arithmatex">\(L\)</span>.</p>
+<h3 id="442-stage-2-skip-gram-objective">4.4.2 Stage 2: Skip-Gram Objective<a class="headerlink" href="#442-stage-2-skip-gram-objective" title="Permanent link">¶</a></h3>
+<p>The <strong>skip-gram model</strong> defines a probabilistic language model over the walk corpus. Given a center node <span class="arithmatex">\(u\)</span> in a walk, the model predicts the probability of observing each context node <span class="arithmatex">\(v\)</span> within a window of size <span class="arithmatex">\(w\)</span> around <span class="arithmatex">\(u\)</span>:</p>
+<div class="arithmatex">\[
+\Pr(v \mid \mathbf{z}_u) = \frac{\exp(\mathbf{z}_u^\top \mathbf{z}_v)}{\sum_{n \in V} \exp(\mathbf{z}_u^\top \mathbf{z}_n)}
+\]</div>
+<p>The training objective maximizes the total log-probability over all center-context pairs across all walks:</p>
+<div class="arithmatex">\[
+\max_{\mathbf{Z}} \sum_{u \in V} \sum_{v \in N_R(u)} \log \Pr(v \mid \mathbf{z}_u)
+\]</div>
+<p>where <span class="arithmatex">\(N_R(u)\)</span> is the multiset of context nodes appearing near <span class="arithmatex">\(u\)</span> across all walks. Equivalently, we minimize the negative log-likelihood:</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{DeepWalk}} = -\sum_{u \in V} \sum_{v \in N_R(u)} \log \Pr(v \mid \mathbf{z}_u)
+\]</div>
+<h3 id="443-stage-3-optimization">4.4.3 Stage 3: Optimization<a class="headerlink" href="#443-stage-3-optimization" title="Permanent link">¶</a></h3>
+<p>Computing the softmax denominator <span class="arithmatex">\(\sum_{n \in V} \exp(\mathbf{z}_u^\top \mathbf{z}_n)\)</span> requires a dot product with every node in <span class="arithmatex">\(V\)</span>, making each gradient step <span class="arithmatex">\(O(|V|)\)</span> — prohibitively expensive for large graphs. The standard solution is <strong>negative sampling</strong>, which we examine next.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Why the Softmax Denominator Is the Bottleneck</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage explains the skip-gram softmax bottleneck">
+The denominator <span class="arithmatex">\(\sum_{n \in V} \exp(\mathbf{z}_u^\top \mathbf{z}_n)\)</span> is called the <strong>partition function</strong> — it normalizes the distribution over all <span class="arithmatex">\(|V|\)</span> nodes. For a graph with 1 million nodes and <span class="arithmatex">\(d = 128\)</span>, computing this sum requires <span class="arithmatex">\(10^6\)</span> dot products of 128-dimensional vectors per training step. With millions of training steps, this is <span class="arithmatex">\(O(10^{14})\)</span> FLOPs — intractable. Negative sampling replaces the partition function with a binary classification problem over a small number of "negative" samples, reducing the cost per step from <span class="arithmatex">\(O(|V|)\)</span> to <span class="arithmatex">\(O(K)\)</span> where <span class="arithmatex">\(K \approx 5\text{–}20\)</span>. This approximation is the same trick that made Word2Vec scale to billion-word corpora, and it works equally well for graphs.</p>
+</div>
+<h2 id="45-negative-sampling">4.5 Negative Sampling<a class="headerlink" href="#45-negative-sampling" title="Permanent link">¶</a></h2>
+<p><strong>Negative sampling</strong> reformulates the skip-gram objective as a binary classification problem. Instead of predicting the correct context node from all <span class="arithmatex">\(|V|\)</span> nodes, we train a binary classifier to distinguish true context pairs <span class="arithmatex">\((u, v)\)</span> (positive examples) from randomly sampled noise pairs <span class="arithmatex">\((u, v_k)\)</span> (negative examples), where <span class="arithmatex">\(v_k\)</span> is sampled from a noise distribution <span class="arithmatex">\(P_n\)</span> (typically the unigram distribution raised to the 3/4 power, <span class="arithmatex">\(P_n(v) \propto d_v^{3/4}\)</span>).</p>
+<p>The negative sampling loss for a positive pair <span class="arithmatex">\((u, v)\)</span> with <span class="arithmatex">\(K\)</span> negative samples is:</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{NS}}(u, v) = -\log \sigma(\mathbf{z}_u^\top \mathbf{z}_v) - \sum_{k=1}^{K} \log \sigma(-\mathbf{z}_u^\top \mathbf{z}_{v_k})
+\]</div>
+<p>where <span class="arithmatex">\(\sigma(x) = 1/(1 + e^{-x})\)</span> is the sigmoid function. The first term pushes <span class="arithmatex">\(\mathbf{z}_u\)</span> and <span class="arithmatex">\(\mathbf{z}_v\)</span> to have a large positive dot product (high similarity). The second term pushes <span class="arithmatex">\(\mathbf{z}_u\)</span> and each negative sample <span class="arithmatex">\(\mathbf{z}_{v_k}\)</span> to have a large <em>negative</em> dot product (low similarity). With <span class="arithmatex">\(K = 5\)</span>, this reduces each gradient step from <span class="arithmatex">\(O(|V|)\)</span> to <span class="arithmatex">\(O(K) = O(5)\)</span> — a <span class="arithmatex">\(10^5\times\)</span> speedup for a million-node graph.</p>
+<p>The total DeepWalk loss with negative sampling is:</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{DeepWalk}} = \sum_{u \in V} \sum_{v \in N_R(u)} \left[ -\log \sigma(\mathbf{z}_u^\top \mathbf{z}_v) - K \cdot \mathbb{E}_{v_k \sim P_n}\bigl[\log \sigma(-\mathbf{z}_u^\top \mathbf{z}_{v_k})\bigr] \right]
+\]</div>
+<p>This is minimized with stochastic gradient descent or Adam, treating <span class="arithmatex">\(\mathbf{Z}\)</span> as the parameter matrix to be optimized. Each mini-batch consists of a set of (center, context, negatives) tuples drawn from the walk corpus.</p>
+<h2 id="46-node2vec-controlling-the-exploration-exploitation-trade-off">4.6 node2vec: Controlling the Exploration-Exploitation Trade-Off<a class="headerlink" href="#46-node2vec-controlling-the-exploration-exploitation-trade-off" title="Permanent link">¶</a></h2>
+<p>DeepWalk's random walks are <strong>unbiased</strong>: at each step, the next node is chosen uniformly at random from the current node's neighbors. This produces walks that mix local and global exploration in proportions determined entirely by the graph's structure. <strong>node2vec</strong> (Grover &amp; Leskovec, 2016) introduces two hyperparameters that give the practitioner precise control over the exploration behavior.</p>
+<h3 id="461-the-biased-random-walk">4.6.1 The Biased Random Walk<a class="headerlink" href="#461-the-biased-random-walk" title="Permanent link">¶</a></h3>
+<p>node2vec defines a <strong>second-order biased random walk</strong>: the transition probability from the current node <span class="arithmatex">\(t\)</span> to the next node <span class="arithmatex">\(x\)</span> depends not only on the edge weight <span class="arithmatex">\(w(t, x)\)</span> but also on the distance from the <em>previous</em> node <span class="arithmatex">\(s_{\text{prev}}\)</span> to <span class="arithmatex">\(x\)</span>. Concretely, if the walk just moved from <span class="arithmatex">\(s_{\text{prev}}\)</span> to <span class="arithmatex">\(t\)</span>, the (unnormalized) transition weight to neighbor <span class="arithmatex">\(x\)</span> of <span class="arithmatex">\(t\)</span> is:</p>
+<div class="arithmatex">\[
+\pi(t, x) = \alpha(s_{\text{prev}}, x) \cdot w(t, x), \quad \alpha(s_{\text{prev}}, x) = \begin{cases} \frac{1}{p} &amp; \text{if } d(s_{\text{prev}}, x) = 0 \quad (\text{return to previous node}) \\ 1 &amp; \text{if } d(s_{\text{prev}}, x) = 1 \quad (\text{neighbor of both } s_{\text{prev}} \text{ and } t) \\ \frac{1}{q} &amp; \text{if } d(s_{\text{prev}}, x) = 2 \quad (\text{farther from } s_{\text{prev}}) \end{cases}
+\]</div>
+<p>where <span class="arithmatex">\(d(s_{\text{prev}}, x)\)</span> is the shortest-path distance from the previous node <span class="arithmatex">\(s_{\text{prev}}\)</span> to the candidate next node <span class="arithmatex">\(x\)</span>, and <span class="arithmatex">\(p, q &gt; 0\)</span> are the two hyperparameters. These transition weights are normalized to produce a proper probability distribution over neighbors.</p>
+<h3 id="462-bfs-vs-dfs-exploration-and-network-phenomena">4.6.2 BFS vs. DFS Exploration and Network Phenomena<a class="headerlink" href="#462-bfs-vs-dfs-exploration-and-network-phenomena" title="Permanent link">¶</a></h3>
+<p>The hyperparameters <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span> control two complementary exploration strategies whose choice determines what kind of graph structure the embeddings capture.</p>
+<p>The <strong>return parameter <span class="arithmatex">\(p\)</span></strong> governs the probability of immediately backtracking to the previous node. A small <span class="arithmatex">\(p\)</span> makes the walk likely to return, creating a <strong>BFS-like</strong> (breadth-first search) exploration that stays local and samples nodes within a tight neighborhood of the starting node. BFS exploration leads embeddings to capture <strong>homophily</strong> — the tendency for connected nodes to share similar labels. In a social network, nodes connected by edges tend to belong to the same community; BFS walks stay within communities, so nodes from the same community become co-context and hence proximate in the embedding space.</p>
+<p>The <strong>in-out parameter <span class="arithmatex">\(q\)</span></strong> controls the tendency to explore outward versus staying local. A small <span class="arithmatex">\(q\)</span> makes the walk likely to keep moving away from the start, creating a <strong>DFS-like</strong> (depth-first search) exploration that traverses the graph at increasing distances. DFS exploration leads embeddings to capture <strong>structural equivalence</strong> — the tendency for nodes that occupy analogous roles in the graph's topology (e.g., all hub nodes, or all peripheral leaf nodes) to have similar embeddings, even if they are far apart in the graph. Two department heads in different organizational subgraphs may never appear in the same short random walk under BFS, but DFS walks that traverse the global hierarchy will co-sample them frequently, driving their embeddings together.</p>
+<p>The following table summarizes the behavioral regimes:</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(p\)</span> value</th>
+<th><span class="arithmatex">\(q\)</span> value</th>
+<th>Walk behavior</th>
+<th>Captured phenomenon</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Small</td>
+<td>Large</td>
+<td>BFS-like, local</td>
+<td>Homophily (community membership)</td>
+</tr>
+<tr>
+<td>Large</td>
+<td>Small</td>
+<td>DFS-like, global</td>
+<td>Structural equivalence (role similarity)</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>Unbiased</td>
+<td>Mixed (same as DeepWalk)</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Start with p=1, q=1 and Tune From There</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage gives practical advice on tuning p and q">
+The parameters <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span> are not universally optimal — the right values depend on the downstream task and the graph's structure. A practical starting protocol: (1) run node2vec with <span class="arithmatex">\(p=q=1\)</span> (DeepWalk baseline); (2) visualize the 2D t-SNE projection of embeddings colored by ground-truth labels — if community boundaries are unclear, try <span class="arithmatex">\(p=0.5, q=2\)</span> (more BFS) for community detection tasks, or <span class="arithmatex">\(p=2, q=0.5\)</span> (more DFS) for role-based tasks like classifying node types in a heterogeneous network; (3) validate on a held-out set of link prediction or node classification labels. Grid search over <span class="arithmatex">\(\{0.25, 0.5, 1, 2, 4\}\)</span> for both parameters covers the relevant behavioral range in 25 experiments — entirely tractable.</p>
+</div>
+<h2 id="47-matrix-factorization-the-algebraic-view">4.7 Matrix Factorization: The Algebraic View<a class="headerlink" href="#47-matrix-factorization-the-algebraic-view" title="Permanent link">¶</a></h2>
+<p>The random walk approaches define similarity implicitly through walk co-occurrence statistics. An older tradition defines similarity explicitly through the adjacency matrix and factorizes it directly. This <strong>matrix factorization</strong> perspective reveals that DeepWalk and node2vec are, in a precise sense, implicitly factorizing a particular graph matrix.</p>
+<p>The simplest matrix factorization approach for node embeddings factorizes the adjacency matrix:</p>
+<div class="arithmatex">\[
+\mathbf{A} \approx \mathbf{Z}_s \mathbf{Z}_t^\top
+\]</div>
+<p>where <span class="arithmatex">\(\mathbf{Z}_s \in \mathbb{R}^{|V| \times d}\)</span> is the source embedding matrix and <span class="arithmatex">\(\mathbf{Z}_t \in \mathbb{R}^{|V| \times d}\)</span> is the target embedding matrix (these can be tied, <span class="arithmatex">\(\mathbf{Z}_s = \mathbf{Z}_t = \mathbf{Z}\)</span>, for symmetric graphs). This is precisely the low-rank approximation from Chapter 0's SVD discussion: if <span class="arithmatex">\(\mathbf{A} = \mathbf{U}\boldsymbol{\Sigma}\mathbf{V}^\top\)</span>, the optimal rank-<span class="arithmatex">\(d\)</span> approximation sets <span class="arithmatex">\(\mathbf{Z}_s = \mathbf{U}_d\sqrt{\boldsymbol{\Sigma}_d}\)</span> and <span class="arithmatex">\(\mathbf{Z}_t = \mathbf{V}_d\sqrt{\boldsymbol{\Sigma}_d}\)</span>, where the subscript <span class="arithmatex">\(d\)</span> denotes retaining only the top-<span class="arithmatex">\(d\)</span> singular vectors.</p>
+<p>A key theoretical result (Qiu et al., 2018) shows that <strong>DeepWalk implicitly factorizes the matrix</strong>:</p>
+<div class="arithmatex">\[
+\log \left( \frac{\text{vol}(G)}{r} \sum_{t=1}^{r} \left(\mathbf{D}^{-1}\mathbf{A}\right)^t \mathbf{D}^{-1} \right) - \log b
+\]</div>
+<p>where <span class="arithmatex">\(\text{vol}(G) = \sum_v d_v\)</span> is the graph volume, <span class="arithmatex">\(r\)</span> is the walk length, and <span class="arithmatex">\(b\)</span> is the number of negative samples. This is a shifted, log-transformed average of powers of the transition matrix — a quantity that captures walk-based similarity at all lengths simultaneously. node2vec implicitly factorizes a related matrix determined by the biased walk's transition probabilities.</p>
+<p>The matrix factorization perspective has practical implications: if the graph is small enough that SVD is tractable (<span class="arithmatex">\(|V| \lesssim 10^5\)</span>), direct factorization of the adjacency or transition matrix is a competitive alternative to random walk methods, with no hyperparameters to tune.</p>
+<h2 id="48-line-large-scale-information-network-embedding">4.8 LINE: Large-scale Information Network Embedding<a class="headerlink" href="#48-line-large-scale-information-network-embedding" title="Permanent link">¶</a></h2>
+<p><strong>LINE</strong> (Tang et al., 2015) addresses the scalability limitations of matrix factorization by replacing SVD with a carefully designed pairwise objective. LINE trains two separate embedding models:</p>
+<p><strong>First-order proximity</strong> models direct connections. For each edge <span class="arithmatex">\((u, v)\)</span> with weight <span class="arithmatex">\(w_{uv}\)</span>, LINE minimizes the KL divergence between the empirical edge-weight distribution and the model's pairwise similarity:</p>
+<div class="arithmatex">\[
+\mathcal{L}_1 = -\sum_{(u,v) \in E} w_{uv} \log \sigma(\mathbf{z}_u^\top \mathbf{z}_v)
+\]</div>
+<p>This objective pushes adjacent nodes toward similar embeddings proportional to their edge weight.</p>
+<p><strong>Second-order proximity</strong> models shared neighborhoods. For each node <span class="arithmatex">\(u\)</span>, LINE treats the edges from <span class="arithmatex">\(u\)</span> to its neighbors as a probability distribution over context nodes <span class="arithmatex">\(P_u(v) = w_{uv} / \sum_{v'} w_{uv'}\)</span>, and trains a second model to predict this distribution from <span class="arithmatex">\(u\)</span>'s embedding. The second-order objective is:</p>
+<div class="arithmatex">\[
+\mathcal{L}_2 = -\sum_{(u,v) \in E} w_{uv} \log \Pr(v \mid u), \quad \Pr(v \mid u) = \frac{\exp(\mathbf{z}_v^\top \mathbf{z}_u')}{\sum_{n \in V} \exp(\mathbf{z}_n^\top \mathbf{z}_u')}
+\]</div>
+<p>where <span class="arithmatex">\(\mathbf{z}_u'\)</span> is a separate "context embedding" for node <span class="arithmatex">\(u\)</span> when it appears as a source. The second-order model captures a notion of structural similarity based on shared neighbors — two nodes that link to the same set of nodes will have similar embeddings, even if they are not directly connected.</p>
+<p>The final LINE embedding concatenates the first-order and second-order embeddings: <span class="arithmatex">\(\mathbf{z}_v^{\text{LINE}} = [\mathbf{z}_v^{(1)} \| \mathbf{z}_v^{(2)}] \in \mathbb{R}^{2d}\)</span>. Negative sampling is used in both objectives for scalability.</p>
+<h2 id="49-code-node2vec-on-the-karate-club-graph">4.9 Code: node2vec on the Karate Club Graph<a class="headerlink" href="#49-code-node2vec-on-the-karate-club-graph" title="Permanent link">¶</a></h2>
+<p>The following code trains node2vec embeddings on the Zachary Karate Club graph and visualizes the resulting 2D embedding space. Before examining the code: <code>dimensions</code> controls the embedding dimension <span class="arithmatex">\(d\)</span>; <code>walk_length</code> sets the walk length <span class="arithmatex">\(L\)</span>; <code>num_walks</code> controls <span class="arithmatex">\(r\)</span> (walks per node); <code>p</code> and <code>q</code> are the node2vec hyperparameters; <code>window</code> is the skip-gram context window size <span class="arithmatex">\(w\)</span>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">node2vec</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node2Vec</span>  <span class="c1"># pip install node2vec</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Load the Karate Club graph</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1"># Get the true faction labels (0 = Mr. Hi's group, 1 = John A.'s group)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="p">:</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">node</span><span class="p">][</span><span class="s1">'club'</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()}</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># 'Mr. Hi' -&gt; 0, 'Officer' -&gt; 1</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">color_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Mr. Hi'</span><span class="p">:</span> <span class="s1">'steelblue'</span><span class="p">,</span> <span class="s1">'Officer'</span><span class="p">:</span> <span class="s1">'crimson'</span><span class="p">}</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># ── Train node2vec ─────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># p=1, q=1: unbiased walk (equivalent to DeepWalk)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="n">node2vec</span> <span class="o">=</span> <span class="n">Node2Vec</span><span class="p">(</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="n">G</span><span class="p">,</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">dimensions</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>      <span class="c1"># embedding dimension d</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">walk_length</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>     <span class="c1"># walk length L</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">num_walks</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>      <span class="c1"># walks per node r</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                <span class="c1"># return parameter</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n">q</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>                <span class="c1"># in-out parameter</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>    <span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>          <span class="c1"># parallel walk generation</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="p">)</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a><span class="n">model</span> <span class="o">=</span> <span class="n">node2vec</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>          <span class="c1"># skip-gram context window w</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n">min_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="n">batch_words</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a><span class="p">)</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="c1"># ── Retrieve embeddings ────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="n">embeddings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">)]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()])</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="n">node_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">())</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="c1"># ── 2D projection via PCA ──────────────────────────────────────────────────────</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="c1"># PCA is faster and more deterministic than t-SNE for 34 nodes</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a><span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="n">emb_2d</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">embeddings</span><span class="p">)</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="c1"># ── Visualize ──────────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a><span class="c1"># Plot 1: 2D embedding space</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a><span class="n">ax</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a><span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">node_ids</span><span class="p">,</span> <span class="n">emb_2d</span><span class="p">):</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>    <span class="n">club</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>    <span class="n">color</span> <span class="o">=</span> <span class="n">color_map</span><span class="p">[</span><span class="n">club</span><span class="p">]</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>    <span class="n">ax</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">va</span><span class="o">=</span><span class="s1">'center'</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">'white'</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s1">'bold'</span><span class="p">)</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"node2vec Embeddings — Karate Club (p=1, q=1)"</span><span class="p">)</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a><span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"PC1"</span><span class="p">);</span> <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"PC2"</span><span class="p">)</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="kn">import</span> <span class="n">Patch</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a><span class="n">legend_elements</span> <span class="o">=</span> <span class="p">[</span><span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">'steelblue'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Mr. Hi's faction"</span><span class="p">),</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>                   <span class="n">Patch</span><span class="p">(</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">'crimson'</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"John A.'s faction"</span><span class="p">)]</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">handles</span><span class="o">=</span><span class="n">legend_elements</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">'best'</span><span class="p">)</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="c1"># Plot 2: compare p/q settings</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">p_val</span><span class="p">,</span> <span class="n">q_val</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">"BFS (p=0.25, q=4)"</span><span class="p">),</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a>                                            <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="s2">"DFS (p=4, q=0.25)"</span><span class="p">)]):</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>    <span class="n">nv2</span> <span class="o">=</span> <span class="n">Node2Vec</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">walk_length</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">num_walks</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>                   <span class="n">p</span><span class="o">=</span><span class="n">p_val</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="n">q_val</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>    <span class="n">m2</span> <span class="o">=</span> <span class="n">nv2</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">min_count</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>    <span class="n">e2d</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">m2</span><span class="o">.</span><span class="n">wv</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">()])</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>    <span class="p">)</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>    <span class="n">ax2</span> <span class="o">=</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># reuse axes for brevity</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>    <span class="c1"># (In practice: generate separate subplots for BFS vs DFS comparison)</span>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a><span class="c1"># ── Node similarity ────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a><span class="c1"># Most similar nodes to the instructor (node 0) and president (node 33)</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"Most similar to node 0 (instructor):"</span><span class="p">)</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a><span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">most_similar</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">topn</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Node </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">: cosine similarity </span><span class="si">{</span><span class="n">sim</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a><span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Most similar to node 33 (president):"</span><span class="p">)</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a><span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">sim</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">wv</span><span class="o">.</span><span class="n">most_similar</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="mi">33</span><span class="p">),</span> <span class="n">topn</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  Node </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">: cosine similarity </span><span class="si">{</span><span class="n">sim</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+<p>With <span class="arithmatex">\(p=q=1\)</span> (DeepWalk mode), the 2D PCA projection cleanly separates the two Karate Club factions in embedding space — the instructor's group (nodes 0–8, 10–14) clusters in one region and the president's group (nodes 15–33) in another, mirroring the social partition that emerged after the club split. This result requires no node labels during training; the structure of the walk co-occurrence statistics is sufficient to recover the community partition.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Shallow Embeddings Are Transductive — They Cannot Generalize</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warns about the transductive limitation">
+The most consequential limitation of DeepWalk, node2vec, and LINE is that they are <strong>transductive</strong>: the embedding <span class="arithmatex">\(\mathbf{z}_v\)</span> is a learned parameter specific to node <span class="arithmatex">\(v\)</span> at training time. If a new node joins the graph after training, there is no way to compute its embedding without retraining the entire model. In contrast, an <strong>inductive</strong> method — such as GraphSAGE, which we study in Chapter 7 — learns an <em>aggregation function</em> that can be applied to any node's neighborhood at inference time, including nodes not seen during training. For static, fixed graphs (like the Karate Club), transductive methods are perfectly valid. For growing graphs — social networks, citation networks, recommendation systems with new users and items — transductive methods require retraining as the graph changes, which can be prohibitively expensive. This limitation is the primary theoretical motivation for Graph Neural Networks.</p>
+</div>
+<h2 id="410-transductive-vs-inductive-learning">4.10 Transductive vs. Inductive Learning<a class="headerlink" href="#410-transductive-vs-inductive-learning" title="Permanent link">¶</a></h2>
+<p>The distinction between transductive and inductive learning is a fundamental division in graph ML that warrants careful definition.</p>
+<p>A <strong>transductive</strong> learning method assumes that all nodes whose embeddings are needed are known at training time. The training process directly optimizes an embedding vector for each node in the fixed graph. At inference time, the method can only produce predictions for nodes it has seen during training — it has no mechanism to generalize to new nodes. All shallow embedding methods (DeepWalk, node2vec, LINE, matrix factorization) are transductive.</p>
+<p>An <strong>inductive</strong> learning method learns a <em>function</em> (the encoder) rather than a table of vectors. The function takes a node's features and its local neighborhood structure as input and outputs an embedding. At inference time, the function can be applied to any node — including nodes added to the graph after training — by aggregating their neighborhood information through the learned function. Graph Neural Networks are the canonical inductive graph representation learning framework.</p>
+<p>The trade-off is not one-sided: transductive methods are simpler, require no node features (they learn from graph structure alone), and often achieve lower link prediction error on fixed graphs because they optimize directly over the test nodes. Inductive methods generalize to new nodes and scale better as graphs grow, but require node feature vectors as input and have higher model complexity.</p>
+<h2 id="411-homophily-and-structural-equivalence">4.11 Homophily and Structural Equivalence<a class="headerlink" href="#411-homophily-and-structural-equivalence" title="Permanent link">¶</a></h2>
+<p>Two distinct phenomena drive node similarity in real-world graphs, and they produce different expectations about what "good" embeddings should look like.</p>
+<p><strong>Homophily</strong> is the tendency for nodes with similar attributes (labels, behaviors, community membership) to be directly connected. "Birds of a feather flock together." In a social network, people with similar political views tend to follow each other; in a citation network, papers from the same research area tend to cite each other. Homophilic structure implies that spatially proximate nodes (reachable by short walks) have similar properties, and BFS-like exploration (small <span class="arithmatex">\(p\)</span>, large <span class="arithmatex">\(q\)</span> in node2vec) captures this by prioritizing co-occurrence among close neighbors.</p>
+<p><strong>Structural equivalence</strong> is the tendency for nodes occupying analogous structural roles — regardless of their position in the graph — to have similar properties. Two hub nodes in different communities are structurally equivalent even if they are far apart; two leaf nodes hanging off different clusters are structurally equivalent. DFS-like exploration (large <span class="arithmatex">\(p\)</span>, small <span class="arithmatex">\(q\)</span>) captures structural equivalence because long-range walks traverse the global topology and co-sample structurally similar nodes from different parts of the graph.</p>
+<p>Most real-world prediction tasks exhibit primarily one phenomenon or the other. Community detection and label propagation tasks (predicting which community a node belongs to) benefit from homophily-based embeddings. Role classification tasks (predicting whether a node is a hub, a bridge, or a leaf) benefit from structural equivalence-based embeddings. When the dominant phenomenon is unknown a priori, training both and ensembling is a reasonable heuristic.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">The Theory Here Is Rich — Even If the Algorithm Is Simple</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encourages students through the theoretical depth">
+The matrix factorization unification of DeepWalk, node2vec, and LINE can feel overwhelming — these algorithms were developed independently and their algebraic equivalences are non-obvious. The key insight to hold onto is simple: <em>all of these methods are ultimately learning to put nearby-in-graph nodes nearby in vector space, with "nearby" defined by whatever walk statistics the algorithm samples.</em> The theoretical unification matters because it tells you that tuning the walk hyperparameters is equivalent to choosing which graph matrix you're factorizing — a concrete way to reason about what information the embeddings do and don't capture.</p>
+</div>
+<h2 id="412-empirical-results">4.12 Empirical Results<a class="headerlink" href="#412-empirical-results" title="Permanent link">¶</a></h2>
+<p>The table below benchmarks node embedding methods against several baseline approaches on standard graph learning tasks. All numbers are from published evaluations; "Karate Club" results use 10 labeled nodes for training and 24 for testing.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Karate Club (Acc.)</th>
+<th>Cora Node Class. (Acc.)</th>
+<th>ogbl-collab (AUC)</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Raw features (no graph)</td>
+<td>72%</td>
+<td>74.1%</td>
+<td>—</td>
+<td>No graph structure used</td>
+</tr>
+<tr>
+<td>DeepWalk</td>
+<td>91%</td>
+<td>77.3%</td>
+<td>0.591</td>
+<td>Walk length 80, 10 walks/node</td>
+</tr>
+<tr>
+<td>node2vec (<span class="arithmatex">\(p=1, q=0.5\)</span>)</td>
+<td><strong>93%</strong></td>
+<td>78.6%</td>
+<td>0.617</td>
+<td>DFS-biased</td>
+</tr>
+<tr>
+<td>LINE (1st+2nd order)</td>
+<td>88%</td>
+<td>76.4%</td>
+<td>0.583</td>
+<td>Combined first and second order</td>
+</tr>
+<tr>
+<td>GCN (2-layer)</td>
+<td>89%</td>
+<td>81.5%</td>
+<td>0.443</td>
+<td>Supervised; 2025-era baseline</td>
+</tr>
+<tr>
+<td>GraphSAGE (inductive)</td>
+<td>92%</td>
+<td>78.4%</td>
+<td>0.486</td>
+<td>Uses node features</td>
+</tr>
+</tbody>
+</table>
+<p><em>Sources: Grover &amp; Leskovec (2016), Perozzi et al. (2014), Kipf &amp; Welling (2017), Hu et al. (2020). Karate Club accuracy is averaged over 5 random seeds with a 10/24 train/test split. Note: node2vec slightly outperforms GCN on Karate Club because the graph is small and the supervised signal is weak; on larger datasets with richer features, GCNs dominate.</em></p>
+<p><strong>Key observation:</strong> On node classification, supervised GCNs outperform unsupervised shallow embeddings as the dataset size grows, because GCNs use node features as input and learn task-specific representations. On link prediction, shallow embeddings remain highly competitive because they are optimized directly for reconstructing the graph structure — which is exactly what link prediction evaluates. This task-dependence motivates the hybrid architectures in later chapters that combine structural pretraining with task-specific fine-tuning.</p>
+<h2 id="413-common-pitfalls">4.13 Common Pitfalls<a class="headerlink" href="#413-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>1. Using node IDs as features in a downstream model without realizing they are meaningless to the model.</strong> Node embeddings from shallow methods are stored as rows in a matrix indexed by node ID. If you pass node IDs as categorical features to a downstream model rather than the actual embedding vectors, the model will learn completely arbitrary representations with no graph structure. Always look up <code>Z[node_id]</code> explicitly.</p>
+<p><strong>2. Ignoring the walk length / walk count trade-off.</strong> Increasing walk length <span class="arithmatex">\(L\)</span> and the number of walks <span class="arithmatex">\(r\)</span> both increase the quality of the co-occurrence statistics, but at different computational costs. Walk length primarily increases the range of captured similarities (longer walks reach more distant nodes); increasing walk count reduces variance in the co-occurrence estimates. For most graphs, <span class="arithmatex">\(L = 80, r = 10\)</span> (DeepWalk defaults) are good starting points; reducing <span class="arithmatex">\(r\)</span> is preferable to reducing <span class="arithmatex">\(L\)</span> if compute is limited.</p>
+<p><strong>3. Treating structural equivalence and homophily as binary options.</strong> In practice, most real graphs exhibit a mixture of both phenomena. Rather than choosing a single <span class="arithmatex">\((p, q)\)</span> setting, consider training multiple node2vec models with different settings and concatenating their embeddings — this provides richer representations that capture both local and global structural signals without committing to one interpretation.</p>
+<p><strong>4. Comparing shallow embeddings trained with different random seeds without averaging.</strong> The skip-gram objective has many local optima — two runs of DeepWalk on the same graph can produce embeddings that are isometries of each other (rotated/reflected versions) but are not numerically aligned. When comparing embedding methods, always average results over multiple seeds and report standard deviations.</p>
+<p><strong>5. Applying node2vec to a directed graph without confirming that walk transitions are correctly implemented.</strong> The biased walk's neighborhood distance function <span class="arithmatex">\(d(s_{\text{prev}}, x)\)</span> assumes an undirected graph for the cases <span class="arithmatex">\(d = 0, 1, 2\)</span>. For directed graphs, the return to the previous node (case <span class="arithmatex">\(d = 0\)</span>) is clear, but the distinction between cases <span class="arithmatex">\(d = 1\)</span> and <span class="arithmatex">\(d = 2\)</span> must be defined based on directed reachability in the appropriate direction. Most implementations default to undirected neighborhood computation; verify this matches your graph's semantics.</p>
+<h2 id="414-microsim-biased-random-walk-explorer">4.14 MicroSim: Biased Random Walk Explorer<a class="headerlink" href="#414-microsim-biased-random-walk-explorer" title="Permanent link">¶</a></h2>
+<p>The following interactive simulation lets you control the node2vec <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span> parameters and watch the walk trajectory evolve in real time, building direct intuition for how walk bias determines what neighborhood structure is captured.</p>
+<h4 id="diagram-node2vec-biased-random-walk-explorer">Diagram: node2vec Biased Random Walk Explorer<a class="headerlink" href="#diagram-node2vec-biased-random-walk-explorer" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch04-node2vec-walk/main.html" width="100%" height="562px" scrolling="no"></iframe>
+<p><a href="../../sims/ch04-node2vec-walk/main.html">Run node2vec Biased Random Walk Explorer Fullscreen</a></p>
+<h2 id="415-chapter-summary">4.15 Chapter Summary<a class="headerlink" href="#415-chapter-summary" title="Permanent link">¶</a></h2>
+<p>This chapter developed the encoder-decoder framework for node embeddings, unified the major shallow embedding methods within it, and established the key distinctions that motivate GNNs.</p>
+<p>The central conceptual arc:</p>
+<ol>
+<li><strong>Encoder-decoder framework:</strong> All node embedding methods learn <span class="arithmatex">\(\mathbf{z}_v = \text{ENC}(v)\)</span> such that <span class="arithmatex">\(\text{DEC}(\mathbf{z}_u, \mathbf{z}_v) \approx \text{sim}_G(u, v)\)</span>. The choice of similarity definition and decoder architecture distinguishes the methods.</li>
+<li><strong>DeepWalk:</strong> Defines similarity as random walk co-occurrence probability; trains skip-gram with negative sampling on walk-generated "sentences."</li>
+<li><strong>node2vec:</strong> Introduces biased walks via parameters <span class="arithmatex">\(p\)</span> (return) and <span class="arithmatex">\(q\)</span> (in-out), controlling the balance between BFS exploration (homophily) and DFS exploration (structural equivalence).</li>
+<li><strong>Matrix factorization:</strong> DeepWalk implicitly factorizes the log-transformed average of powers of the transition matrix. Direct SVD factorization of the adjacency is a simpler alternative for small graphs.</li>
+<li><strong>LINE:</strong> Explicitly separates first-order (direct edge) and second-order (shared neighborhood) proximity into two embedding models that are combined at test time.</li>
+<li><strong>Transductive limitation:</strong> Shallow embeddings are fixed lookup tables — they cannot generalize to new nodes. This is the primary motivation for inductive GNN methods.</li>
+</ol>
+<p><strong>Key equations:</strong></p>
+<div class="arithmatex">\[ \mathbf{z}_v = \mathbf{Z} \cdot \mathbf{e}_v \quad \text{(shallow encoder: row lookup)} \]</div>
+<div class="arithmatex">\[ \mathcal{L}_{\text{NS}} = -\log \sigma(\mathbf{z}_u^\top \mathbf{z}_v) - \sum_{k=1}^{K} \log \sigma(-\mathbf{z}_u^\top \mathbf{z}_{v_k}) \quad \text{(negative sampling)} \]</div>
+<div class="arithmatex">\[ \pi_{\text{node2vec}}(t, x) \propto \alpha(s_{\text{prev}}, x) = \begin{cases} 1/p &amp; d(s_{\text{prev}}, x) = 0 \\ 1 &amp; d(s_{\text{prev}}, x) = 1 \\ 1/q &amp; d(s_{\text{prev}}, x) = 2 \end{cases} \]</div>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">You've Learned to Map Graphs into Space</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrates chapter completion">
+You now understand how to take a graph — a purely combinatorial object — and embed it into a continuous vector space where the geometry reflects structure. This is a profound transformation. Machine learning algorithms that could never directly operate on a graph (SVMs, logistic regression, k-NN) suddenly become applicable once nodes have vector representations. And you understand why those representations are limited: they require retraining for new nodes, they ignore node features, and they cannot share structural parameters across the graph. These exact limitations are what Graph Neural Networks — the subject of Part 2 — are designed to overcome. Your neighbors have insights too, and in Chapter 5 we'll see how to propagate labels through those neighborhoods directly, without training embeddings at all.</p>
+</div>
+<hr>
+<h2 id="416-exercises">4.16 Exercises<a class="headerlink" href="#416-exercises" title="Permanent link">¶</a></h2>
+<h3 id="remember">Remember<a class="headerlink" href="#remember" title="Permanent link">¶</a></h3>
+<p><strong>R1.</strong> Write the encoder-decoder framework equations for node embedding: define <span class="arithmatex">\(\text{ENC}(v)\)</span>, <span class="arithmatex">\(\text{DEC}(\mathbf{z}_u, \mathbf{z}_v)\)</span>, and the training objective. For shallow embeddings specifically, what is the explicit form of <span class="arithmatex">\(\text{ENC}(v)\)</span>?</p>
+<p><strong>R2.</strong> State the three stages of DeepWalk: walk generation, skip-gram objective, and optimization. For each stage, name the key hyperparameter that controls it (walk length/count, window size, number of negative samples) and give a typical default value.</p>
+<h3 id="understand">Understand<a class="headerlink" href="#understand" title="Permanent link">¶</a></h3>
+<p><strong>U1.</strong> Explain, in plain language, why random walk co-occurrence is a better measure of node similarity for embedding purposes than the raw adjacency matrix entry <span class="arithmatex">\(A_{uv}\)</span>. Your explanation should describe at least two specific cases where <span class="arithmatex">\(A_{uv} = 0\)</span> but the random walk similarity is high, and justify why the resulting embedding should reflect this proximity.</p>
+<p><strong>U2.</strong> Explain the role of the parameters <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span> in node2vec by describing what happens to the walk's neighborhood exploration when (a) <span class="arithmatex">\(p \to 0\)</span>, (b) <span class="arithmatex">\(q \to 0\)</span>, (c) <span class="arithmatex">\(p = q = 1\)</span>. For each case, state what type of node similarity (homophily or structural equivalence) the resulting embeddings will predominantly capture.</p>
+<h3 id="apply">Apply<a class="headerlink" href="#apply" title="Permanent link">¶</a></h3>
+<p><strong>A1.</strong> Using the node2vec library (or a manual implementation), train three sets of embeddings on the Karate Club graph with parameter settings: (i) <span class="arithmatex">\(p=1, q=1\)</span>, (ii) <span class="arithmatex">\(p=0.25, q=4\)</span>, (iii) <span class="arithmatex">\(p=4, q=0.25\)</span>. Project each embedding to 2D using PCA and color nodes by faction. Report which setting produces the clearest faction separation and explain why in terms of the walk bias.</p>
+<p><strong>A2.</strong> Implement the negative sampling loss <span class="arithmatex">\(\mathcal{L}_{\text{NS}}\)</span> from scratch in PyTorch for a small toy graph (a cycle of 6 nodes). Initialize embedding vectors randomly, run 500 gradient descent steps with Adam (<span class="arithmatex">\(\eta = 0.01\)</span>), and visualize the final 2D embeddings. Verify that adjacent nodes in the cycle have higher dot-product similarity than non-adjacent nodes.</p>
+<h3 id="analyze">Analyze<a class="headerlink" href="#analyze" title="Permanent link">¶</a></h3>
+<p><strong>An1.</strong> The theoretical result of Qiu et al. (2018) shows that DeepWalk implicitly factorizes the matrix <span class="arithmatex">\(\log\!\left(\frac{\text{vol}(G)}{r}\sum_{t=1}^{r}(\mathbf{D}^{-1}\mathbf{A})^t\mathbf{D}^{-1}\right) - \log b\)</span>. Analyze what this matrix captures: (a) what does <span class="arithmatex">\((\mathbf{D}^{-1}\mathbf{A})^t\)</span> represent for <span class="arithmatex">\(t = 1, 2, 3\)</span>? (b) how does the log transform affect the similarity captured? (c) how does increasing the walk length <span class="arithmatex">\(r\)</span> change the matrix being factorized, and what does this imply for the type of similarity encoded in the embeddings?</p>
+<p><strong>An2.</strong> Compare the computational complexity of DeepWalk, node2vec, and direct adjacency matrix factorization (via SVD) for a graph with <span class="arithmatex">\(n\)</span> nodes, <span class="arithmatex">\(m\)</span> edges, embedding dimension <span class="arithmatex">\(d\)</span>, walk length <span class="arithmatex">\(L\)</span>, <span class="arithmatex">\(r\)</span> walks per node, and <span class="arithmatex">\(K\)</span> negative samples per positive pair. For each method, express the total training cost in big-O notation and identify the bottleneck operation. At what graph size does direct SVD become computationally infeasible compared to walk-based methods?</p>
+<h3 id="evaluate">Evaluate<a class="headerlink" href="#evaluate" title="Permanent link">¶</a></h3>
+<p><strong>E1.</strong> A practitioner is building a recommendation system for a platform with 5 million users and 2 million items, with 200 million interactions. The graph grows by 10,000 new users and 100,000 new interactions per day. Evaluate whether DeepWalk, node2vec, or a GNN-based approach is most appropriate, considering: (a) computational cost of initial training and daily retraining, (b) ability to handle new users without full retraining, (c) ability to incorporate user/item features (age, genre preferences, etc.). Justify your recommendation with specific quantitative arguments.</p>
+<p><strong>E2.</strong> The benchmark table in this chapter shows that node2vec (unsupervised) achieves higher Karate Club accuracy than GCN (supervised). Evaluate two explanations: (1) the Karate Club graph is too small for supervised GCN to outperform unsupervised embeddings, or (2) node2vec captures graph structure more effectively than GCN for this specific graph. Design an experiment that would definitively distinguish between these explanations — describe what results would support each hypothesis and what data you would use.</p>
+<h3 id="create">Create<a class="headerlink" href="#create" title="Permanent link">¶</a></h3>
+<p><strong>C1.</strong> Design a <strong>role2vec</strong> variant of node2vec tailored for discovering structurally equivalent nodes. Your design should: (a) replace the walk-based co-occurrence statistic with a co-occurrence measure based on structural similarity (e.g., nodes with identical graphlet degree vectors should co-occur frequently); (b) specify the modified objective function; (c) describe how to implement this efficiently without exhaustive graphlet counting; (d) identify two applications where role-based embeddings would outperform homophily-based embeddings.</p>
+<p><strong>C2.</strong> Build a complete node embedding pipeline for link prediction on the Karate Club graph. Your pipeline should: (a) train node2vec embeddings; (b) for each candidate edge <span class="arithmatex">\((u, v)\)</span>, construct a feature vector as <span class="arithmatex">\([\mathbf{z}_u \odot \mathbf{z}_v, \mathbf{z}_u + \mathbf{z}_v, |\mathbf{z}_u - \mathbf{z}_v|]\)</span> (Hadamard product, element-wise sum, absolute difference); (c) train a logistic regression classifier on a random 80/20 train/test split of existing edges, with an equal number of randomly sampled non-edges as negatives; (d) report AUC-ROC and compare against the common-neighbors and Jaccard heuristics from Chapter 2.</p>
+<hr>
+<h2 id="417-further-reading">4.17 Further Reading<a class="headerlink" href="#417-further-reading" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Perozzi, B., Al-Rfou, R., &amp; Skiena, S. (2014). DeepWalk: Online learning of social representations.</strong> <em>KDD 2014.</em> The original DeepWalk paper. Sections 3 and 4 are essential: the random walk corpus construction and the skip-gram objective with hierarchical softmax. The connection to word embedding via the "power law of vertex co-occurrence" is insightful and often overlooked.</p>
+</li>
+<li>
+<p><strong>Grover, A., &amp; Leskovec, J. (2016). node2vec: Scalable feature learning for networks.</strong> <em>KDD 2016.</em> Introduces the biased random walk and analyzes the trade-off between homophily and structural equivalence with concrete empirical examples on the Les Misérables character network. The ablation study in Section 5.2 quantifies the effect of <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span> systematically.</p>
+</li>
+<li>
+<p><strong>Qiu, J., Dong, Y., Ma, H., Li, J., Wang, K., &amp; Tang, J. (2018). Network embedding as matrix factorization: Unifying DeepWalk, LINE, PTE, and node2vec.</strong> <em>WSDM 2018.</em> Proves that DeepWalk, LINE, and PTE all implicitly factorize specific graph matrices. The unification is elegant and practically valuable: it explains why these methods capture different aspects of graph structure and what to expect when you change their hyperparameters.</p>
+</li>
+<li>
+<p><strong>Tang, J., Qu, M., Wang, M., Zhang, M., Yan, J., &amp; Mei, Q. (2015). LINE: Large-scale information network embedding.</strong> <em>WWW 2015.</em> Introduces the first-order and second-order proximity objectives and demonstrates scalability to graphs with billions of edges. The distinction between first-order (direct neighbors) and second-order (shared neighbors) proximity is a recurring theme in GNN neighborhood aggregation.</p>
+</li>
+<li>
+<p><strong>Hamilton, W.L. (2020). Graph Representation Learning (book), Chapter 3.</strong> <em>Free PDF online.</em> The most rigorous treatment of the encoder-decoder framework. Section 3.2 formalizes the framework algebraically; Section 3.3 surveys shallow embedding methods; Section 3.4 covers limitations and the transition to GNNs. This chapter is the direct precursor to the GNN chapters in this textbook.</p>
+</li>
+<li>
+<p><strong>Mikolov, T., Chen, K., Corrado, G., &amp; Dean, J. (2013). Efficient estimation of word representations in vector space.</strong> <em>arXiv:1301.3781.</em> The Word2Vec paper that DeepWalk directly adapts. Understanding the skip-gram model in its original text context helps distinguish what is specific to graphs (the walk-based corpus generation) from what is general (the skip-gram and negative sampling optimization). Sections 3.1 and 3.3 are the most directly relevant.</p>
+</li>
+<li>
+<p><strong>Ying, R., He, R., Chen, K., Eksombatchai, P., Hamilton, W.L., &amp; Leskovec, J. (2018). Graph convolutional neural networks for web-scale recommender systems (PinSage).</strong> <em>KDD 2018.</em> Demonstrates node embedding at production scale: 3 billion nodes, 18 billion edges, using a GNN-based approach that overcomes the transductive limitation of shallow methods. Reading this paper immediately after DeepWalk/node2vec crystallizes exactly why inductive GNN-based methods are needed for growing graphs.</p>
+</li>
+</ol>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../03-link-analysis-pagerank/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

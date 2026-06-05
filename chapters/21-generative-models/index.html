@@ -1,0 +1,3308 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Deep generative models for graphs — GraphRNN, GCPN, VGAE, and DiGress — applied to molecular generation and drug discovery.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/21-generative-models/">
+      
+      
+        <link rel="prev" href="../20-scaling-gnns/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 21: Deep Generative Models for Graphs - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 21: Deep Generative Models for Graphs">
+  <meta property="og:description" content="Deep generative models for graphs — GraphRNN, GCPN, VGAE, and DiGress — applied to molecular generation and drug discovery.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/21-generative-models/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 21: Deep Generative Models for Graphs">
+  <meta name="twitter:description" content="Deep generative models for graphs — GraphRNN, GCPN, VGAE, and DiGress — applied to molecular generation and drug discovery.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-21-deep-generative-models-for-graphs" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 21: Deep Generative Models for Graphs
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_23" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_23" id="__nav_4_23_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_23_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_23">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    21. Deep Generative Models for Graphs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#211-the-problem-designing-molecules-as-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21.1 The Problem: Designing Molecules as Graphs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#212-formalizing-graph-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21.2 Formalizing Graph Generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#213-graphrnn-sequential-graph-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21.3 GraphRNN: Sequential Graph Generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#214-gcpn-reinforcement-learning-for-goal-directed-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21.4 GCPN: Reinforcement Learning for Goal-Directed Generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#215-vgae-latent-space-representations-for-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21.5 VGAE: Latent Space Representations for Graphs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#216-digress-discrete-diffusion-for-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21.6 DiGress: Discrete Diffusion for Graphs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#217-evaluating-graph-generative-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21.7 Evaluating Graph Generative Models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#218-the-drug-discovery-pipeline-with-gnns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21.8 The Drug Discovery Pipeline with GNNs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="21.8 The Drug Discovery Pipeline with GNNs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-drug-discovery-gnn-pipeline" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Drug Discovery GNN Pipeline
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#219-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21.9 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2110-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21.10 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2111-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        21.11 Exercises
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    21. Deep Generative Models for Graphs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/21-generative-models/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-21-deep-generative-models-for-graphs">Chapter 21: Deep Generative Models for Graphs<a class="headerlink" href="#chapter-21-deep-generative-models-for-graphs" title="Permanent link">¶</a></h1>
+<p><strong>Part 5: Scalability and Generation</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Covers deep generative models for graphs — GraphRNN, GCPN, VGAE, and DiGress — with particular focus on molecular graph generation for drug discovery applications.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 11 concepts from the learning graph:</p>
+<ol>
+<li>Drug-Drug Interaction</li>
+<li>Protein-Protein Interaction</li>
+<li>Molecular Graph</li>
+<li>Drug Discovery with GNNs</li>
+<li>Graph Generative Model</li>
+<li>GraphRNN</li>
+<li>GCPN</li>
+<li>Molecule Generation</li>
+<li>Variational Autoencoder (VGAE)</li>
+<li>DiGress</li>
+<li>Graph Generation Metrics</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../06-gnn-foundations/">Chapter 6: GNN Foundations: Message Passing and GCN</a></li>
+<li><a href="../07-gnn-design-space/">Chapter 7: GNN Design Space: GraphSAGE and GAT</a></li>
+<li><a href="../20-scaling-gnns/">Chapter 20: Scaling GNNs to Billion-Node Graphs</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Generating Something New</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waves hello">
+Every chapter so far has been about <em>analyzing</em> graphs that already exist — classifying their nodes, predicting their links, detecting their communities. This chapter asks a fundamentally different question: can we <em>generate</em> new graphs that have never been seen before, yet are valid, useful, and structurally coherent? The most compelling application is molecule design — a new molecule is a graph, and generating better molecules is one of the most consequential applications of GNNs in existence. We will build up four distinct generative paradigms: autoregressive sequence models, reinforcement learning, variational autoencoders, and diffusion models. Each makes a different bet about what structure to impose on the generation process, and understanding those bets is the core of this chapter.</p>
+</div>
+<h2 id="211-the-problem-designing-molecules-as-graphs">21.1 The Problem: Designing Molecules as Graphs<a class="headerlink" href="#211-the-problem-designing-molecules-as-graphs" title="Permanent link">¶</a></h2>
+<p>Drug discovery is one of the most expensive scientific endeavors in history. Bringing a single new drug from initial compound to regulatory approval takes a median of 12 years and costs approximately $2.6 billion — and the failure rate at clinical trials exceeds 90%. The central bottleneck is finding the right molecule: a compound with high biological activity against a target protein, low toxicity, good pharmacokinetics, and synthetic accessibility. The chemical space of drug-like molecules is estimated at <span class="arithmatex">\( 10^{60} \)</span> compounds, far beyond the capacity of any experimental screening program.</p>
+<p>A molecule is naturally represented as a <strong>molecular graph</strong>: atoms correspond to nodes annotated with element type (carbon, nitrogen, oxygen, …), and bonds correspond to edges annotated with bond type (single, double, triple, aromatic). This graph structure captures the covalent bonding topology that determines a molecule's three-dimensional shape and chemical behavior. The same representation extends naturally to two important network types that GNNs are applied to in the broader drug discovery pipeline.</p>
+<p>A <strong>drug-drug interaction (DDI)</strong> network models how different drugs influence each other's pharmacological effects when co-administered. Nodes represent drugs; edges represent known interactions (synergistic, antagonistic, or side-effect-inducing). Predicting new DDI edges from known network topology enables safety screening before clinical trials — a link prediction task on a graph where the nodes themselves are molecules.</p>
+<p>A <strong>protein-protein interaction (PPI)</strong> network maps the physical and functional contacts between proteins in a biological cell. Nodes represent proteins; edges represent experimentally confirmed interactions. GNN-based node classification on PPI networks predicts which proteins are involved in specific disease pathways, guiding the selection of drug targets. The PPI graph for a single human cell type contains roughly 20,000 nodes and several hundred thousand edges.</p>
+<p>The unifying goal across all three representations — molecular graphs, DDI networks, and PPI networks — is to learn distributions over graph space so that new, biologically valid structures can be sampled, evaluated, and refined. This is the <strong>graph generation problem</strong>.</p>
+<h2 id="212-formalizing-graph-generation">21.2 Formalizing Graph Generation<a class="headerlink" href="#212-formalizing-graph-generation" title="Permanent link">¶</a></h2>
+<p>Before examining specific architectures, it is worth being precise about what it means to "generate" a graph. Let <span class="arithmatex">\( \mathcal{G} = \{G_1, G_2, \ldots, G_n\} \)</span> be a set of observed graphs — for example, all known drug molecules in a database. The goal is to learn a probability distribution <span class="arithmatex">\( p_\theta(G) \)</span> over graphs such that:</p>
+<div class="arithmatex">\[
+\text{(1) } G \sim p_\theta(G) \text{ resembles graphs in } \mathcal{G}; \quad
+\text{(2) } G \sim p_\theta(G) \text{ is novel (not in } \mathcal{G}\text{)}
+\]</div>
+<p>Additionally, for <strong>conditional generation</strong>, we want <span class="arithmatex">\( p_\theta(G \mid y) \)</span> where <span class="arithmatex">\( y \)</span> encodes a target property (e.g., "bioactive against EGFR kinase with QED <span class="arithmatex">\( &gt; 0.8 \)</span>"). Conditioning converts unconditional sampling into goal-directed design.</p>
+<p>Graph generation is substantially harder than image or text generation for three structural reasons, which we define here before examining how each model addresses them:</p>
+<ul>
+<li><strong>Discrete structure.</strong> Node and edge types are categorical, not continuous. Gradient-based optimization cannot move smoothly through discrete choices; models must define stochastic categorical decisions or embed discrete choices in continuous latent spaces.</li>
+<li><strong>Variable size.</strong> A text sentence has a fixed length or a sequence terminator; a graph has no natural length. Generative models must simultaneously decide the number of nodes and which pairs to connect.</li>
+<li><strong>Permutation invariance.</strong> The same molecular graph can be represented by <span class="arithmatex">\( n! \)</span> different orderings of its atoms. A generative model must produce the same distribution <span class="arithmatex">\( p_\theta(G) \)</span> regardless of which ordering is used — or it must commit to a canonical ordering and accept that the model's implicit prior is over orderings, not graphs.</li>
+</ul>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Permutation Invariance is Genuinely Hard</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinks carefully">
+The permutation invariance problem is worth sitting with. When you train a model to generate the adjacency matrix of aspirin, the "correct" output is not a single matrix — it is 21! ≈ 10^19 different matrices, all equally valid representations of the same molecule. A naive MLE approach that treats one particular atom ordering as the ground truth is training on one out of 10^19 equivalent representations and penalizing all the others. The practical responses — BFS ordering (GraphRNN), SMILES linearization, or permutation-invariant diffusion (DiGress) — are each engineering different compromises with this fundamental symmetry.</p>
+</div>
+<h2 id="213-graphrnn-sequential-graph-generation">21.3 GraphRNN: Sequential Graph Generation<a class="headerlink" href="#213-graphrnn-sequential-graph-generation" title="Permanent link">¶</a></h2>
+<p><strong>GraphRNN</strong> (You et al., 2018) addresses the permutation problem by committing to a canonical ordering: nodes are added in breadth-first search (BFS) order from a random starting node. Under BFS ordering, when node <span class="arithmatex">\( v_t \)</span> is added at step <span class="arithmatex">\( t \)</span>, it can only connect to nodes <span class="arithmatex">\( v_1, \ldots, v_{t-1} \)</span> that were added before it. This converts the graph generation problem into a sequence generation problem: at each step, generate a new node and a binary sequence indicating which previous nodes to connect to.</p>
+<p>GraphRNN implements this with two recurrent neural networks operating at different granularities. The <strong>graph-level RNN</strong> maintains a hidden state <span class="arithmatex">\( h_t \)</span> that summarizes the graph generated so far, and at each step produces a context vector used to initialize the edge-level RNN. The <strong>edge-level RNN</strong> then generates a binary sequence <span class="arithmatex">\( (e_{t,t-1}, e_{t,t-2}, \ldots, e_{t,1}) \)</span> — one bit per previous node — indicating which edges to add from the new node <span class="arithmatex">\( v_t \)</span>. Together:</p>
+<div class="arithmatex">\[
+h_t = \text{GRU}^{\text{graph}}(h_{t-1}, \text{SOS}), \qquad
+(e_{t,j})_{j=1}^{t-1} = \text{GRU}^{\text{edge}}\!\left(h_t\right)
+\]</div>
+<p>where SOS is a start-of-sequence token and <span class="arithmatex">\( \text{GRU}^{\text{edge}} \)</span> outputs one Bernoulli logit per step. The BFS ordering is critical for tractability: under BFS, each new node connects only to nodes in its BFS subtree, so the edge sequence has length at most equal to the BFS bandwidth rather than <span class="arithmatex">\( t-1 \)</span> for large graphs.</p>
+<p>Training uses <strong>teacher forcing</strong> (standard in sequence models): at each step, the true graph state — not the model's sample — is fed as input to the GRU. This stabilizes training but introduces a train-inference mismatch: at inference, the model samples its own outputs autoregressively and may drift from the training distribution. Generation terminates when the graph-level RNN emits an end-of-sequence token.</p>
+<p>The following code illustrates the core of a simplified GraphRNN implementation. Note the key architecture choices before reading: <code>hidden_dim</code> is the GRU state size shared between both RNNs; <code>max_prev_node</code> is the BFS bandwidth (maximum lookaback window); and <code>node_embedding_dim</code> is the size of the node context vector passed from the graph-level to the edge-level GRU.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">class</span><span class="w"> </span><span class="nc">GraphLevelGRU</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="w">    </span><span class="sd">"""Graph-level RNN: one step per node; outputs context for edge generation."""</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">):</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">gru</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span><span class="n">input_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">output_linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">output_dim</span><span class="p">)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">):</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>        <span class="c1"># x: (batch, 1, input_dim) — edge sequence embedding from previous step</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="c1"># h: (1, batch, hidden_dim) — graph-level hidden state</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="n">out</span><span class="p">,</span> <span class="n">h_new</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gru</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_linear</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>  <span class="c1"># (batch, output_dim)</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>        <span class="k">return</span> <span class="n">context</span><span class="p">,</span> <span class="n">h_new</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="k">class</span><span class="w"> </span><span class="nc">EdgeLevelGRU</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="w">    </span><span class="sd">"""Edge-level RNN: generates binary edge decisions for one new node."""</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">max_prev_node</span><span class="p">):</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">gru_cell</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRUCell</span><span class="p">(</span><span class="n">context_dim</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">)</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">output_linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">max_prev_node</span> <span class="o">=</span> <span class="n">max_prev_node</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">target_edges</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>        <span class="c1"># context: (batch, context_dim) — from graph-level GRU</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>        <span class="c1"># target_edges: (batch, max_prev_node) — teacher-forcing targets (None at inference)</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>        <span class="n">batch</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>        <span class="n">h</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gru_cell</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>        <span class="n">edge_logits</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>        <span class="c1"># Start token: 0 (no previous edge)</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>        <span class="n">token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>        <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_prev_node</span><span class="p">):</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>            <span class="n">inp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">context</span><span class="p">,</span> <span class="n">token</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>            <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gru_cell</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>            <span class="n">logit</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_linear</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>  <span class="c1"># (batch, 1)</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>            <span class="n">edge_logits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">logit</span><span class="p">)</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>            <span class="k">if</span> <span class="n">target_edges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>                <span class="c1"># Teacher forcing: use ground truth edge as next input</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>                <span class="n">token</span> <span class="o">=</span> <span class="n">target_edges</span><span class="p">[:,</span> <span class="n">step</span><span class="p">:</span><span class="n">step</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a>            <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>                <span class="c1"># Autoregressive sampling</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>                <span class="n">token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">bernoulli</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">logit</span><span class="p">))</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">edge_logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (batch, max_prev_node)</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a><span class="k">def</span><span class="w"> </span><span class="nf">graphrnn_loss</span><span class="p">(</span><span class="n">edge_logits</span><span class="p">,</span> <span class="n">edge_targets</span><span class="p">):</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a><span class="w">    </span><span class="sd">"""Binary cross-entropy per edge position, averaged over valid positions."""</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>    <span class="c1"># edge_logits, edge_targets: (batch, max_prev_node)</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>    <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">binary_cross_entropy_with_logits</span><span class="p">(</span><span class="n">edge_logits</span><span class="p">,</span> <span class="n">edge_targets</span><span class="o">.</span><span class="n">float</span><span class="p">())</span>
+</span></code></pre></div>
+<p>GraphRNN's main limitation is its <strong>lack of global structural awareness</strong>. Because the graph-level GRU is a fixed-size vector, it struggles to track long-range topological constraints — for example, ensuring that a molecule's ring system closes correctly 10 nodes after the ring was started. For small molecules (≤ 40 atoms), GraphRNN achieves validity rates above 95%; for larger drug-like molecules, validity drops substantially.</p>
+<h2 id="214-gcpn-reinforcement-learning-for-goal-directed-generation">21.4 GCPN: Reinforcement Learning for Goal-Directed Generation<a class="headerlink" href="#214-gcpn-reinforcement-learning-for-goal-directed-generation" title="Permanent link">¶</a></h2>
+<p>GraphRNN optimizes the likelihood of training graphs but does not directly optimize for molecular properties. <strong>Graph Convolutional Policy Network (GCPN, You et al., 2018)</strong> reframes molecule generation as a <strong>reinforcement learning</strong> problem where the agent is rewarded for generating molecules with desired biochemical properties.</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">RL Lets You Optimize Properties You Can't Backpropagate Through</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage gives a tip">
+Many molecular property predictors — docking simulators, QED calculators, retrosynthetic feasibility checkers — are not differentiable. You cannot simply backpropagate through them. Reinforcement learning sidesteps this: the model generates a complete molecule, evaluates it externally, and receives a scalar reward. The policy gradient (REINFORCE or PPO) then updates the GNN policy to generate higher-reward molecules. This is why GCPN is so powerful for goal-directed design: it can optimize any computable property, not just properties with accessible gradients.</p>
+</div>
+<p>The GCPN formulation defines four components:</p>
+<ul>
+<li><strong>State <span class="arithmatex">\( s_t \)</span></strong>: the partial molecular graph built so far, represented as a GCN embedding of all atoms and bonds present at step <span class="arithmatex">\( t \)</span>.</li>
+<li><strong>Action <span class="arithmatex">\( a_t \)</span></strong>: either (i) add a new atom of type <span class="arithmatex">\( z \in \{\mathrm{C}, \mathrm{N}, \mathrm{O}, \mathrm{F}, \ldots\} \)</span> connected to atom <span class="arithmatex">\( u \)</span> in the current graph, or (ii) add a bond between two existing atoms <span class="arithmatex">\( (u, v) \)</span>, or (iii) terminate generation.</li>
+<li><strong>Policy <span class="arithmatex">\( \pi_\theta(a_t \mid s_t) \)</span></strong>: a GCN-based policy network that reads the current molecular graph and outputs a distribution over actions. The GCN embeds all atoms; a softmax over pairs of node embeddings selects which atoms to connect.</li>
+<li><strong>Reward <span class="arithmatex">\( r(G) \)</span></strong>: a multi-component reward evaluating the final molecule on: (a) drug-likeness (QED score, 0–1), (b) synthetic accessibility (SA score, penalizes hard-to-synthesize structures), (c) a target property like predicted binding affinity, and (d) validity penalties for violating valence rules.</li>
+</ul>
+<p>The reward function combines these components. For a generated molecule <span class="arithmatex">\( G \)</span>:</p>
+<div class="arithmatex">\[
+r(G) = \lambda_1 \cdot \text{QED}(G) - \lambda_2 \cdot \text{SA}(G) + \lambda_3 \cdot f_{\text{target}}(G) + \lambda_4 \cdot \mathbf{1}[\text{valid}(G)]
+\]</div>
+<p>where <span class="arithmatex">\( \lambda_1, \ldots, \lambda_4 \)</span> are tunable weights balancing the trade-offs between drug-likeness, synthesizability, target activity, and chemical validity. GCPN also applies a <strong>validity mask</strong> that forces the action distribution to zero for chemically impossible actions (e.g., adding a fifth bond to a carbon), avoiding wasted exploration on invalid chemistry.</p>
+<p>The following code sketches the GCPN policy network and the core RL training loop. The <code>MolecularGCN</code> component embeds the current graph state; <code>PolicyHead</code> computes action logits over atom-pair choices.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">GCNConv</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="k">class</span><span class="w"> </span><span class="nc">MolecularGCN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="sd">"""GCN encoder for the current partial molecule graph."""</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_feature_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GCNConv</span><span class="p">(</span><span class="n">atom_feature_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">))</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>            <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GCNConv</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">))</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GCNConv</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">))</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">):</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>        <span class="k">for</span> <span class="n">conv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>            <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">](</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>  <span class="c1"># (num_atoms, embed_dim)</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="k">class</span><span class="w"> </span><span class="nc">PolicyHead</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">    </span><span class="sd">"""Computes action logits: score every (source_atom, target_atom) pair."""</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">,</span> <span class="n">num_atom_types</span><span class="p">):</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>        <span class="c1"># Score for connecting existing atoms or adding a new atom</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">bond_score</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Bilinear</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">atom_type_head</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">num_atom_types</span><span class="p">)</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_embeddings</span><span class="p">,</span> <span class="n">graph_embedding</span><span class="p">):</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a>        <span class="c1"># Bond action: score all (i, j) pairs in current graph</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a>        <span class="n">n</span> <span class="o">=</span> <span class="n">node_embeddings</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>        <span class="n">src</span> <span class="o">=</span> <span class="n">node_embeddings</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a>        <span class="n">tgt</span> <span class="o">=</span> <span class="n">node_embeddings</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a>        <span class="n">bond_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_score</span><span class="p">(</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a>            <span class="n">src</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">src</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>            <span class="n">tgt</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">tgt</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a>        <span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a>        <span class="c1"># Atom type action: which element to add next</span>
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a>        <span class="n">atom_logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atom_type_head</span><span class="p">(</span><span class="n">graph_embedding</span><span class="p">)</span>
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>        <span class="k">return</span> <span class="n">bond_logits</span><span class="p">,</span> <span class="n">atom_logits</span>
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a>
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a>
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="k">def</span><span class="w"> </span><span class="nf">reinforce_loss</span><span class="p">(</span><span class="n">log_probs</span><span class="p">,</span> <span class="n">rewards</span><span class="p">,</span> <span class="n">baseline</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a><span class="w">    </span><span class="sd">"""Policy gradient loss with optional baseline for variance reduction."""</span>
+</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a>    <span class="c1"># log_probs: list of log P(action) per step</span>
+</span><span id="__span-1-47"><a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a>    <span class="c1"># rewards: scalar reward for the completed episode</span>
+</span><span id="__span-1-48"><a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a>    <span class="n">advantages</span> <span class="o">=</span> <span class="n">rewards</span> <span class="o">-</span> <span class="n">baseline</span>
+</span><span id="__span-1-49"><a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a>    <span class="k">return</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">log_probs</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">advantages</span>
+</span></code></pre></div>
+<p>In practice, GCPN trains with <strong>proximal policy optimization (PPO)</strong> rather than vanilla REINFORCE to improve stability, and initializes from a policy pre-trained with imitation learning on known molecules to avoid starting from random chemistry. GCPN has been applied to generate inhibitors for the EGFR kinase target and to optimize solubility and drug-likeness (QED) simultaneously, achieving property distributions substantially better than random sampling from chemical space.</p>
+<h2 id="215-vgae-latent-space-representations-for-graphs">21.5 VGAE: Latent Space Representations for Graphs<a class="headerlink" href="#215-vgae-latent-space-representations-for-graphs" title="Permanent link">¶</a></h2>
+<p>Both GraphRNN and GCPN are <strong>autoregressive</strong>: they construct graphs one element at a time in sequence. A complementary approach is to learn a <strong>latent space</strong> over entire graphs: encode a graph into a continuous vector, perform optimization or interpolation in that vector space, then decode a new graph from any point in the space. This is the <strong>Variational Graph Autoencoder (VGAE)</strong> paradigm (Kipf &amp; Welling, 2016).</p>
+<p>VGAE follows the standard variational autoencoder (VAE) framework adapted for graphs. The encoder is a GCN that produces a distribution over latent codes rather than a point estimate. For each node <span class="arithmatex">\( v \)</span>, it outputs a mean vector <span class="arithmatex">\( \mu_v \in \mathbb{R}^d \)</span> and a log-variance vector <span class="arithmatex">\( \log \sigma^2_v \in \mathbb{R}^d \)</span>. Latent codes are sampled using the reparameterization trick:</p>
+<div class="arithmatex">\[
+z_v = \mu_v + \epsilon \odot \sigma_v, \quad \epsilon \sim \mathcal{N}(0, I_d)
+\]</div>
+<p>The decoder is a simple inner product: the probability of edge <span class="arithmatex">\( (u, v) \)</span> is the sigmoid of the dot product between their latent codes:</p>
+<div class="arithmatex">\[
+\hat{A}_{uv} = \sigma(z_u^\top z_v)
+\]</div>
+<p>The model is trained to maximize the Evidence Lower Bound (ELBO):</p>
+<div class="arithmatex">\[
+\mathcal{L}_{\text{ELBO}} = \mathbb{E}_{q(Z|A,X)}\!\left[\log p(A \mid Z)\right] - \text{KL}\!\left(q(Z \mid A, X) \;\|\; p(Z)\right)
+\]</div>
+<p>where the first term rewards accurate edge reconstruction and the second term keeps the posterior <span class="arithmatex">\( q(Z \mid A, X) \)</span> close to the standard normal prior <span class="arithmatex">\( p(Z) = \mathcal{N}(0, I) \)</span>.</p>
+<p>The following code implements VGAE using PyTorch Geometric's built-in VGAE module. The key parameters are: <code>GCNEncoder</code> produces node-level mean and log-variance; <code>out_channels</code> is the latent dimension <span class="arithmatex">\( d \)</span>; and <code>recon_loss</code> computes the reconstruction term of the ELBO using negative sampling for efficiency.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">VGAE</span><span class="p">,</span> <span class="n">GCNConv</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">class</span><span class="w"> </span><span class="nc">GCNEncoder</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span><span class="sd">"""Two-layer GCN producing per-node mean and log-variance for the latent code."""</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">):</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv_shared</span> <span class="o">=</span> <span class="n">GCNConv</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">out_channels</span><span class="p">)</span>  <span class="c1"># shared first layer</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv_mu</span> <span class="o">=</span> <span class="n">GCNConv</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>       <span class="c1"># mean head</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv_logstd</span> <span class="o">=</span> <span class="n">GCNConv</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>   <span class="c1"># log-variance head</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">):</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_shared</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span><span class="o">.</span><span class="n">relu</span><span class="p">()</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_mu</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv_logstd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a><span class="c1"># VGAE wraps the encoder and provides the reparameterization trick + inner-product decoder</span>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="n">model</span> <span class="o">=</span> <span class="n">VGAE</span><span class="p">(</span><span class="n">GCNEncoder</span><span class="p">(</span><span class="n">in_channels</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">num_node_features</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="mi">16</span><span class="p">))</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a><span class="k">def</span><span class="w"> </span><span class="nf">train_vgae</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>    <span class="c1"># Encode: sample z via reparameterization</span>
+</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>    <span class="n">z</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">train_pos_edge_index</span><span class="p">)</span>
+</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>    <span class="c1"># Reconstruction loss: -log p(A|Z) approximated via positive + negative edges</span>
+</span><span id="__span-2-27"><a id="__codelineno-2-27" name="__codelineno-2-27" href="#__codelineno-2-27"></a>    <span class="c1"># recon_loss uses negative sampling: compares sampled negative edges against positive ones</span>
+</span><span id="__span-2-28"><a id="__codelineno-2-28" name="__codelineno-2-28" href="#__codelineno-2-28"></a>    <span class="n">recon_loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">recon_loss</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">train_pos_edge_index</span><span class="p">)</span>
+</span><span id="__span-2-29"><a id="__codelineno-2-29" name="__codelineno-2-29" href="#__codelineno-2-29"></a>    <span class="c1"># KL divergence: keeps posterior q(Z|A,X) close to N(0,I)</span>
+</span><span id="__span-2-30"><a id="__codelineno-2-30" name="__codelineno-2-30" href="#__codelineno-2-30"></a>    <span class="n">kl_loss</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">data</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">)</span> <span class="o">*</span> <span class="n">model</span><span class="o">.</span><span class="n">kl_loss</span><span class="p">()</span>
+</span><span id="__span-2-31"><a id="__codelineno-2-31" name="__codelineno-2-31" href="#__codelineno-2-31"></a>    <span class="n">loss</span> <span class="o">=</span> <span class="n">recon_loss</span> <span class="o">+</span> <span class="n">kl_loss</span>
+</span><span id="__span-2-32"><a id="__codelineno-2-32" name="__codelineno-2-32" href="#__codelineno-2-32"></a>    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-2-33"><a id="__codelineno-2-33" name="__codelineno-2-33" href="#__codelineno-2-33"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-2-34"><a id="__codelineno-2-34" name="__codelineno-2-34" href="#__codelineno-2-34"></a>    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+</span><span id="__span-2-35"><a id="__codelineno-2-35" name="__codelineno-2-35" href="#__codelineno-2-35"></a>
+</span><span id="__span-2-36"><a id="__codelineno-2-36" name="__codelineno-2-36" href="#__codelineno-2-36"></a><span class="c1"># At inference: decode by predicting edge probabilities between node pairs</span>
+</span><span id="__span-2-37"><a id="__codelineno-2-37" name="__codelineno-2-37" href="#__codelineno-2-37"></a><span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
+</span><span id="__span-2-38"><a id="__codelineno-2-38" name="__codelineno-2-38" href="#__codelineno-2-38"></a><span class="k">def</span><span class="w"> </span><span class="nf">predict_links</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+</span><span id="__span-2-39"><a id="__codelineno-2-39" name="__codelineno-2-39" href="#__codelineno-2-39"></a>    <span class="n">z</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>
+</span><span id="__span-2-40"><a id="__codelineno-2-40" name="__codelineno-2-40" href="#__codelineno-2-40"></a>    <span class="c1"># predict_links_probabilities returns sigmoid(z_u @ z_v) for all node pairs</span>
+</span><span id="__span-2-41"><a id="__codelineno-2-41" name="__codelineno-2-41" href="#__codelineno-2-41"></a>    <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span><span class="p">)</span>
+</span></code></pre></div>
+<p>VGAE has an important dual interpretation: in addition to graph generation (sample <span class="arithmatex">\( z \sim \mathcal{N}(0, I) \)</span>, decode to adjacency), it is a state-of-the-art <strong>link prediction</strong> method. The inner-product decoder directly produces edge probabilities, and VGAE node embeddings trained on the ELBO objective consistently outperform transductive methods on citation and social network link prediction benchmarks. VGAE's primary limitation is scalability: the decoder computes <span class="arithmatex">\( O(n^2) \)</span> edge probabilities, making it impractical for graphs with more than a few thousand nodes.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">VGAE Bridges Generation and Prediction</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage offers encouragement">
+VGAE is one of those models that feels like it is doing two different things but is actually doing one coherent thing very well: learning a continuous embedding of graphs in which proximity in latent space corresponds to structural similarity. The fact that this same embedding produces both good link predictions and plausible sampled graphs is not a coincidence — it is evidence that the ELBO objective has successfully compressed the graph's topology into the latent code. The latent space interpolation experiment (morphing one molecule into another by linear interpolation of their latent codes) is one of the most visually compelling demonstrations of this.</p>
+</div>
+<h2 id="216-digress-discrete-diffusion-for-graphs">21.6 DiGress: Discrete Diffusion for Graphs<a class="headerlink" href="#216-digress-discrete-diffusion-for-graphs" title="Permanent link">¶</a></h2>
+<p>The most recent and best-performing graph generation paradigm applies <strong>diffusion models</strong> — previously dominant in image generation — to the discrete domain of graphs. <strong>DiGress</strong> (Vignac et al., 2022) defines a discrete diffusion process directly over node types and edge types, circumventing the need for a sequential autoregressive factorization or an inner-product decoder.</p>
+<p>Diffusion models operate in two phases: a <strong>forward process</strong> that gradually corrupts a real data point into pure noise, and a <strong>reverse process</strong> (learned) that denoises a noisy sample back toward the data distribution. For images, both processes operate in continuous space using Gaussian perturbations. For molecular graphs, node types and edge types are categorical, so DiGress uses <strong>discrete Markov noise</strong>: at each noise step <span class="arithmatex">\( t \)</span>, a random subset of nodes change their atom type and a random subset of edges change their bond type (or are added/deleted), following a transition matrix <span class="arithmatex">\( Q_t \)</span> designed so that the marginal distribution at maximum noise is uniform over all atom/bond types.</p>
+<p>The forward process defines, for a graph <span class="arithmatex">\( G_0 = (A_0, X_0) \)</span> with adjacency <span class="arithmatex">\( A_0 \)</span> and node features <span class="arithmatex">\( X_0 \)</span>:</p>
+<div class="arithmatex">\[
+q(G_t \mid G_{t-1}) = \prod_{v} q(x_v^{(t)} \mid x_v^{(t-1)}) \prod_{(u,v)} q(a_{uv}^{(t)} \mid a_{uv}^{(t-1)})
+\]</div>
+<p>where each marginal is a Markov transition over the finite set of node types or edge types respectively. The transition matrix <span class="arithmatex">\( Q_t \)</span> is designed to interpolate between the data distribution (at <span class="arithmatex">\( t = 0 \)</span>) and a uniform categorical distribution (at <span class="arithmatex">\( t = T \)</span>), analogously to how Gaussian diffusion interpolates toward <span class="arithmatex">\( \mathcal{N}(0, I) \)</span>.</p>
+<p>The <strong>reverse process</strong> learns to predict <span class="arithmatex">\( G_0 \)</span> from <span class="arithmatex">\( G_t \)</span>: given a noisy graph at time <span class="arithmatex">\( t \)</span>, a neural network <span class="arithmatex">\( f_\theta(G_t, t) \)</span> predicts the clean graph <span class="arithmatex">\( \hat{G}_0 \)</span>. DiGress uses an <strong>equivariant graph transformer</strong> as the denoiser backbone — a transformer architecture with node-pair attention that is invariant to permutations of the node ordering. This is the key design choice that distinguishes DiGress from simpler baselines: because the denoiser is permutation-equivariant, the model learns a distribution <span class="arithmatex">\( p_\theta(G) \)</span> that is truly permutation-invariant, resolving the symmetry problem without committing to a canonical ordering.</p>
+<p>Training minimizes a cross-entropy loss between the predicted clean node/edge types and the true ones:</p>
+<div class="arithmatex">\[
+\mathcal{L} = \mathbb{E}_{t, G_0, G_t}\!\left[-\log p_\theta(G_0 \mid G_t, t)\right]
+\]</div>
+<p>where the expectation is over noise levels <span class="arithmatex">\( t \sim \text{Uniform}(1, T) \)</span>, training graphs <span class="arithmatex">\( G_0 \)</span>, and noisy samples <span class="arithmatex">\( G_t \sim q(G_t \mid G_0) \)</span>. At inference, generation starts from a fully noisy graph <span class="arithmatex">\( G_T \sim \text{Uniform} \)</span> and iteratively applies the reverse process for <span class="arithmatex">\( T \)</span> steps.</p>
+<p>DiGress is not trivial to implement from scratch; the following code sketches the key forward-process noise application using the marginal transition matrix, which is the most instructive component for understanding the discrete diffusion framework.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">marginal_transition</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">Q_bar_t</span><span class="p">):</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="sd">    Apply cumulative noise transition to clean node features.</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="sd">    x_0: (batch, num_nodes) — integer node type indices</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="sd">    Q_bar_t: (num_node_types, num_node_types) — cumulative transition matrix at time t</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="sd">             Q_bar_t[i,j] = P(x_t = j | x_0 = i)</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="sd">    Returns: x_t sampled from q(x_t | x_0)</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="sd">    """</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">num_node_types</span> <span class="o">=</span> <span class="n">Q_bar_t</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="c1"># One-hot encode x_0</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">x_0_onehot</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">num_node_types</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>  <span class="c1"># (batch, n, K)</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>    <span class="c1"># Transition probabilities: (batch, n, K) @ (K, K) -&gt; (batch, n, K)</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>    <span class="n">probs</span> <span class="o">=</span> <span class="n">x_0_onehot</span> <span class="o">@</span> <span class="n">Q_bar_t</span>  <span class="c1"># q(x_t | x_0) as a distribution</span>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="c1"># Sample from the categorical distribution</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>    <span class="n">x_t</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">probs</span><span class="o">=</span><span class="n">probs</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>    <span class="k">return</span> <span class="n">x_t</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_linear_noise_schedule</span><span class="p">(</span><span class="n">num_steps</span><span class="p">,</span> <span class="n">num_node_types</span><span class="p">,</span> <span class="n">noise_fraction</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a><span class="sd">    Linear noise schedule: Q_t interpolates between identity and uniform distribution.</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a><span class="sd">    At t=0: no noise (Q=I). At t=T: uniform over all types.</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a><span class="sd">    """</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>    <span class="n">Q_bars</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>        <span class="n">alpha_t</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">noise_fraction</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="n">num_steps</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>        <span class="c1"># Q_bar_t = alpha_t * I + (1 - alpha_t) * (1/K) * 11^T</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>        <span class="n">uniform</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">num_node_types</span><span class="p">,</span> <span class="n">num_node_types</span><span class="p">)</span> <span class="o">/</span> <span class="n">num_node_types</span>
+</span><span id="__span-3-32"><a id="__codelineno-3-32" name="__codelineno-3-32" href="#__codelineno-3-32"></a>        <span class="n">identity</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">num_node_types</span><span class="p">)</span>
+</span><span id="__span-3-33"><a id="__codelineno-3-33" name="__codelineno-3-33" href="#__codelineno-3-33"></a>        <span class="n">Q_bar</span> <span class="o">=</span> <span class="n">alpha_t</span> <span class="o">*</span> <span class="n">identity</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">alpha_t</span><span class="p">)</span> <span class="o">*</span> <span class="n">uniform</span>
+</span><span id="__span-3-34"><a id="__codelineno-3-34" name="__codelineno-3-34" href="#__codelineno-3-34"></a>        <span class="n">Q_bars</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Q_bar</span><span class="p">)</span>
+</span><span id="__span-3-35"><a id="__codelineno-3-35" name="__codelineno-3-35" href="#__codelineno-3-35"></a>    <span class="k">return</span> <span class="n">Q_bars</span>  <span class="c1"># list of T transition matrices</span>
+</span></code></pre></div>
+<p>DiGress achieves state-of-the-art performance on standard molecular generation benchmarks, including QM9 (small organic molecules) and ZINC250k (drug-like molecules), significantly outperforming GraphRNN, GCPN, and VGAE on both validity and distributional fidelity metrics.</p>
+<h2 id="217-evaluating-graph-generative-models">21.7 Evaluating Graph Generative Models<a class="headerlink" href="#217-evaluating-graph-generative-models" title="Permanent link">¶</a></h2>
+<p>With four distinct generation paradigms in hand, we now need tools to compare them rigorously. Graph generation evaluation is multi-dimensional: a model that generates valid molecules but only reproduces training set molecules is useless for drug discovery; a model that generates novel molecules that are all chemically invalid is equally useless. The standard evaluation suite for molecular generation covers the following metrics, which we define before examining the benchmark results.</p>
+<p><strong>Validity</strong> measures the fraction of generated molecules that obey chemical valence rules (e.g., carbon has at most 4 bonds, nitrogen at most 3). Validity is computed by parsing each generated graph with the RDKit cheminformatics library. A model that generates random adjacency matrices achieves near-0% validity; GraphRNN achieves ≥ 95% on small molecule datasets by design (the sequential construction adds bonds one at a time with validity masking).</p>
+<p><strong>Uniqueness</strong> measures the fraction of valid generated molecules that are structurally distinct from each other. A degenerate model that generates only the most common training molecule (aspirin, say) achieves 0% uniqueness. Uniqueness is computed by canonicalizing each molecule to a SMILES string and checking for duplicates.</p>
+<p><strong>Novelty</strong> measures the fraction of valid, unique generated molecules that do not appear in the training set. A model that memorizes training data achieves 0% novelty. Novelty is the key metric for drug discovery: a model that regenerates known molecules adds no scientific value.</p>
+<p><strong>Fréchet ChemNet Distance (FCD)</strong> measures the distributional fidelity of the generated molecule set relative to the reference set. FCD embeds each molecule through ChemNet (a chemistry-aware neural network) and computes the Fréchet distance between the Gaussian fit to the generated distribution and the Gaussian fit to the reference distribution — analogously to the Fréchet Inception Distance (FID) used for image generation. Lower FCD indicates closer alignment with the reference chemical property distribution.</p>
+<p><strong>Graph statistics</strong> provide a model-agnostic check of structural fidelity: degree distribution, clustering coefficient, and orbit counts of generated graphs are compared to those of the training set using maximum mean discrepancy (MMD) or Jensen-Shannon divergence. These statistics are especially important for non-molecular graph generation tasks (e.g., generating social networks or citation graphs) where domain-specific chemical validity metrics do not apply.</p>
+<p>The following table summarizes how the four model families compare across these dimensions, drawing on the evaluations fully described above.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th style="text-align: center;">Validity</th>
+<th style="text-align: center;">Uniqueness</th>
+<th style="text-align: center;">Novelty</th>
+<th style="text-align: center;">FCD ↓</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GraphRNN</td>
+<td style="text-align: center;">97.6%</td>
+<td style="text-align: center;">99.9%</td>
+<td style="text-align: center;">99.7%</td>
+<td style="text-align: center;">2.91</td>
+<td>Sequential; slow on large molecules</td>
+</tr>
+<tr>
+<td>GCPN</td>
+<td style="text-align: center;">99.0%</td>
+<td style="text-align: center;">99.9%</td>
+<td style="text-align: center;">99.7%</td>
+<td style="text-align: center;">0.44</td>
+<td>RL-optimized; goal-directed capable</td>
+</tr>
+<tr>
+<td>VGAE</td>
+<td style="text-align: center;">81.4%</td>
+<td style="text-align: center;">99.3%</td>
+<td style="text-align: center;">99.4%</td>
+<td style="text-align: center;">5.62</td>
+<td>Scalability-limited; fast training</td>
+</tr>
+<tr>
+<td>DiGress</td>
+<td style="text-align: center;"><strong>99.0%</strong></td>
+<td style="text-align: center;"><strong>99.8%</strong></td>
+<td style="text-align: center;"><strong>99.8%</strong></td>
+<td style="text-align: center;"><strong>0.05</strong></td>
+<td>Permutation-invariant; SOTA distribution</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition mascot-warning">
+<p class="admonition-title">High Validity Alone Does Not Mean Good Generation</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warns about overinterpreting validity">
+GraphRNN's 97.6% validity looks nearly as good as GCPN's 99.0% — but the FCD scores (2.91 vs. 0.44) tell a very different story about chemical property diversity. A model can achieve near-perfect validity by defaulting to structurally simple molecules that trivially satisfy valence rules but have no drug-like properties. Always report all four metrics together; validity alone is a necessary but far from sufficient condition for useful molecular generation. DiGress's FCD of 0.05 means its generated distribution is essentially indistinguishable from the training distribution in chemical property space — a much stronger claim than validity alone.</p>
+</div>
+<h2 id="218-the-drug-discovery-pipeline-with-gnns">21.8 The Drug Discovery Pipeline with GNNs<a class="headerlink" href="#218-the-drug-discovery-pipeline-with-gnns" title="Permanent link">¶</a></h2>
+<p>We close the chapter by connecting generative models to the full drug discovery pipeline, where DDI and PPI networks play roles alongside molecular graph generation. A production GNN-based drug discovery system typically has three stages:</p>
+<ul>
+<li><strong>Stage 1 — Target identification.</strong> PPI network analysis with GNN node classification identifies which proteins are implicated in a disease pathway. Nodes with high centrality in the disease-associated subgraph are prioritized as drug targets.</li>
+<li><strong>Stage 2 — Hit generation.</strong> A generative model (GCPN or DiGress) generates candidate molecules conditioned on predicted binding affinity to the identified target. GNN property predictors (trained on existing drug databases) score each candidate for ADMET properties (absorption, distribution, metabolism, excretion, toxicity).</li>
+<li><strong>Stage 3 — Safety screening.</strong> The DDI network is queried to check whether any high-scoring candidate molecule has predicted strong interactions with existing drugs already prescribed for the target patient population. GNN-based DDI edge prediction (link prediction on the DDI graph) flags potentially dangerous combinations before clinical testing.</li>
+</ul>
+<p>This pipeline integrates four of the chapter's core concepts: molecular graphs (the representation), graph generative models (Stage 2), PPI networks (Stage 1), and DDI networks (Stage 3). The key insight is that GNNs serve different architectural roles in each stage — discriminative (property prediction, link prediction) in Stages 1 and 3, generative in Stage 2 — but the underlying graph neural network machinery is shared.</p>
+<h4 id="diagram-drug-discovery-gnn-pipeline">Diagram: Drug Discovery GNN Pipeline<a class="headerlink" href="#diagram-drug-discovery-gnn-pipeline" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch21-drug-discovery-pipeline/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch21-drug-discovery-pipeline/main.html">Run Drug Discovery GNN Pipeline Fullscreen</a></p>
+<h2 id="219-common-pitfalls">21.9 Common Pitfalls<a class="headerlink" href="#219-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>Optimizing validity at the expense of novelty.</strong> Applying an aggressive chemical validity mask during generation (GCPN-style) trivially produces high-validity molecules — but validity masking can also suppress chemical diversity by forcing the policy toward safe, predictable bond choices. Monitor novelty and FCD alongside validity; if novelty drops below 90%, the model may be collapsing toward a small set of "safe" scaffolds.</p>
+<p><strong>Training VGAE on unbalanced positive/negative edges.</strong> The inner-product decoder outputs sigmoid probabilities for all <span class="arithmatex">\( O(n^2) \)</span> node pairs, but real molecular graphs are sparse — typically fewer than 0.1% of pairs are bonded. Without negative sampling or positive-class upweighting in the reconstruction loss, the decoder learns to predict 0 for all pairs (trivially low binary cross-entropy on an imbalanced dataset). Always use balanced positive/negative sampling or focal loss when training VGAE.</p>
+<p><strong>Comparing model families without controlling for training data.</strong> GraphRNN, GCPN, VGAE, and DiGress have been evaluated on different subsets and splits of molecular databases in the original papers. FCD, validity, and novelty scores are not directly comparable across papers unless the exact same training/test split and reference set are used. When reproducing results or comparing methods, always use a standardized benchmark (GuacaMol or MOSES) with fixed splits.</p>
+<p><strong>Using SMILES-based generation metrics on graph-based models.</strong> Some evaluation pipelines convert generated graphs to SMILES strings and use SMILES-based metrics (e.g., SMILES uniqueness by string comparison). This can undercount duplicates: two different SMILES strings may represent the same molecule under canonical form. Always canonicalize SMILES through RDKit before computing uniqueness and novelty.</p>
+<h2 id="2110-further-reading">21.10 Further Reading<a class="headerlink" href="#2110-further-reading" title="Permanent link">¶</a></h2>
+<ul>
+<li>
+<p><strong>You et al. (2018) — GraphRNN: Generating Realistic Graphs with Deep Auto-regressive Models.</strong> The original sequential graph generation paper; Section 3.3 on BFS ordering is the key technical contribution. <a href="https://arxiv.org/abs/1802.08773">arXiv:1802.08773</a></p>
+</li>
+<li>
+<p><strong>You et al. (2018) — Graph Convolutional Policy Network for Goal-Directed Molecular Graph Generation.</strong> The RL formulation for goal-directed generation; the reward function design and the chemistry validity mask are the most reusable engineering contributions. <a href="https://arxiv.org/abs/1806.02473">arXiv:1806.02473</a></p>
+</li>
+<li>
+<p><strong>Kipf &amp; Welling (2016) — Variational Graph Auto-Encoders.</strong> Short paper (4 pages) that introduces VGAE; notable for how much it achieves with a simple inner-product decoder. The link prediction results on Cora and Citeseer set the standard for subsequent work. <a href="https://arxiv.org/abs/1611.07308">arXiv:1611.07308</a></p>
+</li>
+<li>
+<p><strong>Vignac et al. (2022) — DiGress: Discrete Denoising Diffusion for Graphs with Transformers.</strong> The equivariant transformer denoiser and the discrete Markov noise process are the technical core; Appendix B provides full transition matrix derivations. <a href="https://arxiv.org/abs/2209.14734">arXiv:2209.14734</a></p>
+</li>
+<li>
+<p><strong>Brown et al. (2019) — GuacaMol: Benchmarking Models for de Novo Molecular Design.</strong> The standardized evaluation benchmark for molecular generation; defines the validity, uniqueness, novelty, and FCD metrics used in §21.7 and provides the reference dataset and evaluation code. <a href="https://arxiv.org/abs/1811.09621">arXiv:1811.09621</a></p>
+</li>
+<li>
+<p><strong>Polykovskiy et al. (2020) — Molecular Sets (MOSES): A Benchmarking Platform for Molecular Generation Models.</strong> An alternative standardized benchmark with the MOSES dataset (1.9M drug-like molecules) and additional metrics (internal diversity, scaffold similarity). <a href="https://arxiv.org/abs/1811.12823">arXiv:1811.12823</a></p>
+</li>
+<li>
+<p><strong>Gaudelet et al. (2021) — Utilizing Graph Machine Learning within Drug Discovery and Development.</strong> A comprehensive survey of GNN applications across the full drug discovery pipeline (target identification, hit generation, lead optimization, ADMET prediction); useful for understanding where each generation paradigm fits in practice. <a href="https://arxiv.org/abs/2012.05716">arXiv:2012.05716</a></p>
+</li>
+</ul>
+<h2 id="2111-exercises">21.11 Exercises<a class="headerlink" href="#2111-exercises" title="Permanent link">¶</a></h2>
+<p><strong>Remembering</strong></p>
+<ol>
+<li>
+<p>Define the three fundamental challenges of graph generation (discrete structure, variable size, permutation invariance) and explain why each makes graph generation harder than image generation.</p>
+</li>
+<li>
+<p>List the four evaluation metrics for molecular graph generation described in §21.7. For each metric, state whether higher or lower values are better and what a degenerate model that generates only single-atom graphs would score.</p>
+</li>
+</ol>
+<p><strong>Understanding</strong></p>
+<ol>
+<li>
+<p>GraphRNN uses BFS node ordering to reduce sequence length. Explain why BFS ordering limits the edge sequence length and what would go wrong if nodes were ordered randomly instead of by BFS.</p>
+</li>
+<li>
+<p>VGAE decodes edge probabilities using an inner product <span class="arithmatex">\( \hat{A}_{uv} = \sigma(z_u^\top z_v) \)</span>. Explain what geometric property of the latent space this decoder assumes, and describe one class of molecular graphs (in terms of their topology) for which this decoder would consistently fail to reconstruct edges accurately.</p>
+</li>
+</ol>
+<p><strong>Applying</strong></p>
+<ol>
+<li>
+<p>Modify the GCPN reward function <span class="arithmatex">\( r(G) \)</span> from §21.4 to additionally penalize molecules with molecular weight above 500 Da (Lipinski's Rule of Five) and reward molecules with hydrogen bond donors <span class="arithmatex">\( \leq 5 \)</span>. Write the updated reward expression with appropriate <span class="arithmatex">\( \lambda \)</span> weights.</p>
+</li>
+<li>
+<p>Using the <code>build_linear_noise_schedule</code> function from §21.6, compute the transition matrix <span class="arithmatex">\( Q_{\bar{t}} \)</span> for <span class="arithmatex">\( t = T/2 \)</span> with <span class="arithmatex">\( T = 1000 \)</span> steps, <code>num_node_types = 6</code>, and <code>noise_fraction = 0.1</code>. What fraction of the diagonal entries are greater than 0.9 at <span class="arithmatex">\( t = T/2 \)</span>?</p>
+</li>
+</ol>
+<p><strong>Analyzing</strong></p>
+<ol>
+<li>
+<p>Compare GraphRNN and DiGress on the permutation invariance problem. GraphRNN commits to BFS ordering; DiGress uses a permutation-equivariant transformer. Describe one concrete failure mode for GraphRNN that arises from BFS-ordering bias, and explain how DiGress's equivariant backbone avoids this failure.</p>
+</li>
+<li>
+<p>VGAE achieves 81.4% validity on molecular generation benchmarks, substantially below GraphRNN (97.6%) and GCPN (99.0%). Analyze why the inner-product decoder, while elegant for link prediction, systematically produces invalid molecules at a higher rate than sequential generative models.</p>
+</li>
+</ol>
+<p><strong>Evaluating</strong></p>
+<ol>
+<li>
+<p>A pharmaceutical company has two requirements: (a) generated molecules must have ≥ 99% validity, and (b) the chemical property distribution of generated molecules must closely match known drug-like compounds (low FCD). Based on the benchmark table in §21.7, which model best satisfies both requirements? Justify your choice and identify any remaining limitation of that model for production drug discovery.</p>
+</li>
+<li>
+<p>DiGress achieves the best FCD (0.05) among all models but requires <span class="arithmatex">\( T = 1000 \)</span> denoising steps at inference, each involving a full graph transformer forward pass. A researcher proposes using <span class="arithmatex">\( T = 50 \)</span> steps to speed up inference. Predict the effect on each of the four evaluation metrics (validity, uniqueness, novelty, FCD) and justify your prediction based on how discrete diffusion works.</p>
+</li>
+</ol>
+<p><strong>Creating</strong></p>
+<ol>
+<li>
+<p>Design a <strong>conditional DiGress</strong> model for targeted drug generation. Your design must: (a) specify how the target protein's binding pocket (represented as a 3D point cloud) is encoded and injected as conditioning signal into the graph transformer denoiser, (b) describe the modified training objective that conditions generation on the protein context, and (c) propose an evaluation protocol that measures whether generated molecules actually bind to the specified protein target.</p>
+</li>
+<li>
+<p>Propose a hybrid generative model that combines GCPN's RL reward optimization with DiGress's permutation-invariant diffusion backbone. Concretely: (a) describe how you would define the RL action space for a diffusion-based model (hint: the "action" is a choice of denoising trajectory), (b) design a reward function that guides the diffusion reverse process toward high-QED molecules, and (c) identify the main technical challenge in backpropagating through the discrete sampling steps and propose one approach to address it.</p>
+</li>
+</ol>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Graphs That Have Never Existed Before</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrates">
+You have now seen four ways to build machines that create novel graphs: GraphRNN's sequential storytelling, GCPN's reward-driven chemistry, VGAE's continuous latent compression, and DiGress's diffusion-based denoising. Each is a different answer to the same deep question — what structure should we impose on the generation process? — and the drug discovery pipeline shows how discriminative GNNs (for PPI and DDI analysis) and generative GNNs (for molecule design) combine into something far more powerful than either alone. The field moves fast here; by the time you read this, there will be new architectures that outperform DiGress. But the fundamental tradeoffs — sequential vs. latent, discrete vs. continuous, goal-directed vs. unconditional — will still be the right frame for evaluating them.</p>
+</div>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../20-scaling-gnns/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

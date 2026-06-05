@@ -1,0 +1,3665 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Derives the Graph Convolutional Network from spectral graph theory, introduces the message passing neural network framework, and establishes the spatial vs. spectral view of graph convolutions.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/06-gnn-foundations/">
+      
+      
+        <link rel="prev" href="../05-label-propagation/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 6: GNN Foundations: Message Passing and GCN - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 6: GNN Foundations: Message Passing and GCN">
+  <meta property="og:description" content="Derives the Graph Convolutional Network from spectral graph theory, introduces the message passing neural network framework, and establishes the spatial vs. spectral view of graph convolutions.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/06-gnn-foundations/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 6: GNN Foundations: Message Passing and GCN">
+  <meta name="twitter:description" content="Derives the Graph Convolutional Network from spectral graph theory, introduces the message passing neural network framework, and establishes the spatial vs. spectral view of graph convolutions.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-6-gnn-foundations-message-passing-and-gcn" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 6: GNN Foundations: Message Passing and GCN
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../05-label-propagation/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_8" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_8" id="__nav_4_8_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_8_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#61-why-shallow-embeddings-arent-enough" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Why Shallow Embeddings Aren't Enough
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#62-the-core-idea-neighborhood-aggregation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 The Core Idea: Neighborhood Aggregation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#63-the-message-passing-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 The Message Passing Framework
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.3 The Message Passing Framework">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#631-the-three-aggregation-functions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3.1 The Three Aggregation Functions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#632-causal-loop-diagram-gnn-message-passing-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3.2 Causal Loop Diagram: GNN Message Passing Dynamics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.3.2 Causal Loop Diagram: GNN Message Passing Dynamics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-gnn-message-passing-feedback-dynamics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: GNN Message Passing Feedback Dynamics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#64-k-hop-neighborhoods-and-the-receptive-field" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 K-Hop Neighborhoods and the Receptive Field
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#65-layer-depth-and-the-over-smoothing-horizon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Layer Depth and the Over-Smoothing Horizon
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#66-the-graph-convolutional-network" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 The Graph Convolutional Network
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#67-spectral-graph-theory-the-mathematical-foundation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7 Spectral Graph Theory: The Mathematical Foundation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.7 Spectral Graph Theory: The Mathematical Foundation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#671-the-graph-laplacian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7.1 The Graph Laplacian
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#672-the-normalized-graph-laplacian" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7.2 The Normalized Graph Laplacian
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#673-the-spectral-domain-of-a-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7.3 The Spectral Domain of a Graph
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#674-chebyshev-polynomial-convolution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7.4 Chebyshev Polynomial Convolution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#675-from-chebyshev-to-gcn-a-first-order-approximation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.7.5 From Chebyshev to GCN: A First-Order Approximation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#68-spectral-clustering-and-normalized-cut" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.8 Spectral Clustering and Normalized Cut
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.8 Spectral Clustering and Normalized Cut">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-spectral-vs-spatial-gnn-explorer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Spectral vs. Spatial GNN Explorer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#69-spatial-vs-spectral-a-unifying-view" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.9 Spatial vs. Spectral: A Unifying View
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#610-pytorch-geometric-and-dgl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.10 PyTorch Geometric and DGL
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#611-code-gcn-from-scratch-then-with-pyg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.11 Code: GCN from Scratch, Then with PyG
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.11 Code: GCN from Scratch, Then with PyG">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-gcn-message-passing-visualizer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: GCN Message Passing Visualizer
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#612-benchmark-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.12 Benchmark Comparison
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#613-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.13 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#614-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.14 Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.14 Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analyze
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#615-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.15 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    6. GNN Foundations: Message Passing and GCN
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/06-gnn-foundations/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-6-gnn-foundations-message-passing-and-gcn">Chapter 6: GNN Foundations: Message Passing and GCN<a class="headerlink" href="#chapter-6-gnn-foundations-message-passing-and-gcn" title="Permanent link">¶</a></h1>
+<p><strong>Part 2: Graph Neural Networks</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Derives the Graph Convolutional Network from spectral graph theory, introduces the message passing neural network framework, and establishes the spatial vs. spectral view of graph convolutions.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 23 concepts from the learning graph:</p>
+<ol>
+<li>Graph Neural Network (GNN)</li>
+<li>Message Passing Neural Net</li>
+<li>Message Function</li>
+<li>Aggregation Function</li>
+<li>Update Function</li>
+<li>Graph Convolutional Network</li>
+<li>Sum Aggregation</li>
+<li>Mean Aggregation</li>
+<li>Max Aggregation</li>
+<li>Neighborhood Aggregation</li>
+<li>K-Hop Neighborhood</li>
+<li>Receptive Field (GNN)</li>
+<li>Layer Depth (GNN)</li>
+<li>Spectral Graph Convolution</li>
+<li>Chebyshev Polynomial Conv</li>
+<li>Graph Laplacian</li>
+<li>Normalized Graph Laplacian</li>
+<li>Spectral Domain (Graph)</li>
+<li>Spatial Domain (Graph)</li>
+<li>Spectral Clustering</li>
+<li>Normalized Cut</li>
+<li>PyTorch Geometric (PyG)</li>
+<li>DGL</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../00-math-prerequisites/">Chapter 0: Math and Programming Prerequisites</a></li>
+<li><a href="../01-intro-to-graphs/">Chapter 1: Introduction to Graphs and Networks</a></li>
+<li><a href="../02-graph-properties-and-features/">Chapter 2: Graph Properties and Traditional ML Features</a></li>
+<li><a href="../03-link-analysis-pagerank/">Chapter 3: Link Analysis and PageRank</a></li>
+<li><a href="../04-node-embeddings/">Chapter 4: Node Embeddings: DeepWalk and node2vec</a></li>
+<li><a href="../05-label-propagation/">Chapter 5: Label Propagation and Semi-Supervised Learning</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Aggregating Knowledge — Welcome to Part 2</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+Welcome to Part 2 — the part of the textbook I have been waiting for. The first five chapters built an arsenal of classical tools: degree distributions, random walks, PageRank, label propagation. All of them aggregated information from a node's neighbors in some form. This chapter makes that aggregation <strong>learnable</strong>: instead of fixing a hand-designed rule for how neighbor information combines, we parameterize it with neural network weights and train those weights end-to-end on downstream tasks. The result is the Graph Neural Network — a framework so general that it subsumes nearly every method in this book as a special case. Your neighbors have insights too, and now we are going to learn exactly how much to listen to each of them.</p>
+</div>
+<hr>
+<h2 id="61-why-shallow-embeddings-arent-enough">6.1 Why Shallow Embeddings Aren't Enough<a class="headerlink" href="#61-why-shallow-embeddings-arent-enough" title="Permanent link">¶</a></h2>
+<p>The node embedding methods of Chapter 4 — DeepWalk and node2vec — share a fundamental architectural limitation: they are <strong>transductive</strong>. Each node receives a dedicated embedding vector that is trained on a fixed graph; when a new node arrives (a newly registered user, a newly published paper), the model must be retrained from scratch to produce an embedding for it. More importantly, these methods are <strong>feature-blind</strong>: they exploit only the graph's topology and have no mechanism for incorporating node attributes such as user profiles, paper abstracts, or molecular bond descriptors.</p>
+<p>What we need is a function <span class="arithmatex">\( f : (\mathbf{A}, \mathbf{X}) \to \mathbf{Z} \)</span> that takes both the adjacency matrix <span class="arithmatex">\( \mathbf{A} \)</span> and a node feature matrix <span class="arithmatex">\( \mathbf{X} \in \mathbb{R}^{|V| \times d} \)</span> as input and produces node embeddings <span class="arithmatex">\( \mathbf{Z} \in \mathbb{R}^{|V| \times d'} \)</span> as output, where this function <strong>generalizes inductively</strong> — a node unseen during training can receive an embedding by running <span class="arithmatex">\( f \)</span> forward on its local neighborhood. Graph Neural Networks provide exactly such a function.</p>
+<p>Consider the problem of predicting the toxicity of drug molecules, where each molecule is a graph — atoms as nodes, bonds as edges — and each atom has features such as atomic number, charge, and hybridization state. No two drugs have the same molecular graph, so any transductive method trained on one molecule cannot transfer to another. A GNN, by contrast, learns a shared aggregation function that operates on any graph's local structure and can generalize across the entire chemical space.</p>
+<hr>
+<h2 id="62-the-core-idea-neighborhood-aggregation">6.2 The Core Idea: Neighborhood Aggregation<a class="headerlink" href="#62-the-core-idea-neighborhood-aggregation" title="Permanent link">¶</a></h2>
+<p>Before formalizing the equations, the intuition is worth dwelling on. Imagine you are a node in a social network trying to characterize yourself. Your direct acquaintances (1-hop neighbors) tell you something about your immediate social circle. Their acquaintances (2-hop neighbors) tell you about the broader community you are embedded in. A Graph Neural Network formalizes this intuition into a computational procedure: at each layer <span class="arithmatex">\( k \)</span>, every node collects information from its immediate neighbors, combines that information with its own current representation, and produces a new, richer representation. After <span class="arithmatex">\( K \)</span> layers, each node's representation encodes its entire <span class="arithmatex">\( K \)</span>-hop neighborhood — the local subgraph structure that is uniquely characteristic of that node's position in the graph.</p>
+<p>This procedure is called <strong>neighborhood aggregation</strong>, and it is the defining operation of GNNs. Three design questions determine what a specific GNN architecture does:</p>
+<ul>
+<li><strong>What information does each node send to its neighbors?</strong> (the message function)</li>
+<li><strong>How are the arriving messages combined?</strong> (the aggregation function)</li>
+<li><strong>How is the combined message merged with the node's current state?</strong> (the update function)</li>
+</ul>
+<p>Different choices for these three components yield different GNN architectures — GCN, GraphSAGE, GAT, GIN — all of which are instances of the same underlying framework.</p>
+<hr>
+<h2 id="63-the-message-passing-framework">6.3 The Message Passing Framework<a class="headerlink" href="#63-the-message-passing-framework" title="Permanent link">¶</a></h2>
+<p>The <strong>Message Passing Neural Network</strong> (MPNN) framework, introduced by Gilmer et al. (2017) to unify molecular property prediction models, provides the canonical formalism for GNNs. A single layer of an MPNN operates in two phases: a message-passing phase and an update phase.</p>
+<p><strong>Message phase:</strong> each directed edge <span class="arithmatex">\( (u, v) \)</span> generates a message from node <span class="arithmatex">\( u \)</span> to node <span class="arithmatex">\( v \)</span> using a learned <strong>message function</strong> <span class="arithmatex">\( \phi^{(k)} \)</span>:</p>
+<div class="arithmatex">\[
+\mathbf{m}_{u \to v}^{(k)} = \phi^{(k)}\!\left(\mathbf{h}_u^{(k-1)},\, \mathbf{h}_v^{(k-1)},\, \mathbf{e}_{uv}\right)
+\]</div>
+<p>where <span class="arithmatex">\( \mathbf{h}_v^{(k-1)} \)</span> is node <span class="arithmatex">\( v \)</span>'s representation at the previous layer, and <span class="arithmatex">\( \mathbf{e}_{uv} \)</span> is an optional edge feature vector. The simplest message function is <span class="arithmatex">\( \phi^{(k)}(\mathbf{h}_u, \mathbf{h}_v, \mathbf{e}) = \mathbf{h}_u \)</span>, which passes the source node's representation directly without any transformation.</p>
+<p><strong>Aggregation phase:</strong> the messages arriving at node <span class="arithmatex">\( v \)</span> from all its neighbors are combined by an <strong>aggregation function</strong> <span class="arithmatex">\( \bigoplus^{(k)} \)</span>:</p>
+<div class="arithmatex">\[
+\mathbf{a}_v^{(k)} = \bigoplus_{u \in \mathcal{N}(v)} \mathbf{m}_{u \to v}^{(k)}
+\]</div>
+<p><strong>Update phase:</strong> the aggregated message <span class="arithmatex">\( \mathbf{a}_v^{(k)} \)</span> is merged with node <span class="arithmatex">\( v \)</span>'s own previous-layer representation by an <strong>update function</strong> <span class="arithmatex">\( \gamma^{(k)} \)</span>:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(k)} = \gamma^{(k)}\!\left(\mathbf{h}_v^{(k-1)},\, \mathbf{a}_v^{(k)}\right)
+\]</div>
+<p>Written as a single expression, the layer update is:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(k)} = \text{UPDATE}^{(k)}\!\left(\mathbf{h}_v^{(k-1)},\; \text{AGGREGATE}^{(k)}\!\left(\left\{\phi^{(k)}(\mathbf{h}_u^{(k-1)}, \mathbf{h}_v^{(k-1)}, \mathbf{e}_{uv}) : u \in \mathcal{N}(v)\right\}\right)\right)
+\]</div>
+<p>with initialization <span class="arithmatex">\( \mathbf{h}_v^{(0)} = \mathbf{x}_v \)</span> (the node's input feature vector).</p>
+<h3 id="631-the-three-aggregation-functions">6.3.1 The Three Aggregation Functions<a class="headerlink" href="#631-the-three-aggregation-functions" title="Permanent link">¶</a></h3>
+<p>The choice of aggregation function <span class="arithmatex">\( \bigoplus \)</span> has profound consequences for a GNN's expressive power and inductive bias. Three aggregation functions are in widespread use, each with distinct properties that we will now define before comparing them.</p>
+<p><strong>Sum aggregation</strong> computes the element-wise sum of all incoming messages:</p>
+<div class="arithmatex">\[
+\mathbf{a}_v^{(k)} = \sum_{u \in \mathcal{N}(v)} \mathbf{m}_{u \to v}^{(k)}
+\]</div>
+<p>Sum aggregation is <strong>injective</strong> on multisets: two nodes with different multisets of neighbor representations will (in principle) receive different aggregated values. This makes sum aggregation maximally expressive — a point we will revisit in depth in Chapter 9 (GNN Theory).</p>
+<p><strong>Mean aggregation</strong> normalizes the sum by the node's degree:</p>
+<div class="arithmatex">\[
+\mathbf{a}_v^{(k)} = \frac{1}{|\mathcal{N}(v)|} \sum_{u \in \mathcal{N}(v)} \mathbf{m}_{u \to v}^{(k)}
+\]</div>
+<p>Mean aggregation is <strong>degree-invariant</strong>: a hub node with 1,000 neighbors and an ordinary node with 10 neighbors will produce comparable aggregated magnitudes, because the sum is normalized. This prevents high-degree nodes from dominating the optimization landscape and makes mean aggregation more numerically stable in practice.</p>
+<p><strong>Max aggregation</strong> takes the element-wise maximum across all incoming messages:</p>
+<div class="arithmatex">\[
+\mathbf{a}_v^{(k)}\![j] = \max_{u \in \mathcal{N}(v)} \mathbf{m}_{u \to v}^{(k)}\![j], \quad \forall j
+\]</div>
+<p>Max aggregation is <strong>set-size-invariant</strong> and captures the most salient feature in the neighborhood — useful when the neighborhood's defining characteristic is the presence of a particular feature in at least one neighbor, rather than the average or total quantity across all neighbors.</p>
+<p>The following table summarizes these three aggregation types, which we have now fully defined.</p>
+<table>
+<thead>
+<tr>
+<th>Aggregation</th>
+<th>Formula</th>
+<th>Degree sensitivity</th>
+<th>Expressiveness</th>
+<th>Best when</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sum</td>
+<td><span class="arithmatex">\( \sum_{u} \mathbf{m}_u \)</span></td>
+<td>High (grows with degree)</td>
+<td>Maximally expressive</td>
+<td>Neighborhood size is informative</td>
+</tr>
+<tr>
+<td>Mean</td>
+<td><span class="arithmatex">\( \frac{1}{\|N(v)\|} \sum_{u} \mathbf{m}_u \)</span></td>
+<td>None (normalized)</td>
+<td>Can conflate distinct multisets</td>
+<td>Stability / hub-heavy graphs</td>
+</tr>
+<tr>
+<td>Max</td>
+<td><span class="arithmatex">\( \max_u \mathbf{m}_u \)</span></td>
+<td>None</td>
+<td>Detects presence, not quantity</td>
+<td>Outlier features matter</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h3 id="632-causal-loop-diagram-gnn-message-passing-dynamics">6.3.2 Causal Loop Diagram: GNN Message Passing Dynamics<a class="headerlink" href="#632-causal-loop-diagram-gnn-message-passing-dynamics" title="Permanent link">¶</a></h3>
+<p>Before examining how depth interacts with this loop, it is worth pausing to understand the feedback structure inherent in multi-layer message passing. Two loops operate simultaneously — one reinforcing, one balancing — and their interplay determines how GNNs behave as depth increases.</p>
+<h4 id="diagram-gnn-message-passing-feedback-dynamics">Diagram: GNN Message Passing Feedback Dynamics<a class="headerlink" href="#diagram-gnn-message-passing-feedback-dynamics" title="Permanent link">¶</a></h4>
+<pre class="mermaid"><code>flowchart LR
+    HK["Node Embedding\n(layer k)"]
+    HK1["Neighbor Embeddings\n(layer k-1)"]
+    MSG["AGGREGATE\n(combined message)"]
+    RF["K-Hop Receptive\nField Coverage"]
+    DL["Layer Depth\nLimit L"]
+    SM["Over-Smoothing\nRisk"]
+
+    HK1 --&gt;|"(+) neighbor states\nflow into aggregation"| MSG
+    MSG --&gt;|"(+) update enriches\nnode embedding"| HK
+    HK --&gt;|"(+) becomes next\nlayer's neighbors"| HK1
+    HK1 --&gt;|"(+) each layer\nexpands reach"| RF
+    DL --&gt;|"(−) caps at\nL layers"| RF
+    RF --&gt;|"(+) richer context\nreturned to node"| HK
+    HK --&gt;|"(+) deeper layers\nincrease similarity"| SM
+    SM --&gt;|"(−) reduces node\ndiscriminability"| HK
+
+    click HK href "#the-message-passing-framework" "Jump to message passing definition"
+    click HK1 href "#the-message-passing-framework" "Jump to message passing definition"
+    click MSG href "#the-three-aggregation-functions" "Jump to aggregation functions"
+    click RF href "#k-hop-neighborhoods-and-the-receptive-field" "Jump to receptive field"
+    click DL href "#layer-depth-and-the-over-smoothing-horizon" "Jump to layer depth"
+    click SM href "#layer-depth-and-the-over-smoothing-horizon" "Jump to over-smoothing"
+
+    style HK fill:#e8f5e9,stroke:#388e3c
+    style HK1 fill:#e8f5e9,stroke:#388e3c
+    style MSG fill:#e8f5e9,stroke:#388e3c
+    style RF fill:#e8f5e9,stroke:#388e3c
+    style DL fill:#e3f2fd,stroke:#1565c0
+    style SM fill:#fff3e0,stroke:#e65100</code></pre>
+<p><strong>R loop (Representation Enrichment):</strong> Node embedding (layer k) → neighbor embeddings (layer k-1) → AGGREGATE → enriched node embedding (layer k). Each layer's embedding feeds into the next layer's neighbor messages, which aggregate back into a richer representation. The loop is <strong>reinforcing</strong>: adding more layers gives each node access to progressively larger neighborhoods, compounding the information available at every step.</p>
+<p><strong>B loop (Depth Ceiling):</strong> the Layer Depth Limit <span class="arithmatex">\( L \)</span> imposes a hard cap on how many times the reinforcing loop can fire — after <span class="arithmatex">\( L \)</span> iterations, the receptive field stops expanding. This is a structural balancing loop, not a dynamic one: it does not push back against the R loop within a fixed-depth GNN, but it does prevent unbounded depth from being the default.</p>
+<p><strong>B loop (Over-Smoothing):</strong> a second balancing loop emerges as depth grows large — node representations become increasingly similar because every node is averaging information from its entire connected component. This suppresses node discriminability and acts as a negative feedback on the practical benefit of adding more layers.</p>
+<h2 id="64-k-hop-neighborhoods-and-the-receptive-field">6.4 K-Hop Neighborhoods and the Receptive Field<a class="headerlink" href="#64-k-hop-neighborhoods-and-the-receptive-field" title="Permanent link">¶</a></h2>
+<p>Before discussing depth in more detail, two terms need precise definitions. The <strong>k-hop neighborhood</strong> of node <span class="arithmatex">\( v \)</span>, written <span class="arithmatex">\( \mathcal{N}^k(v) \)</span>, is the set of all nodes reachable from <span class="arithmatex">\( v \)</span> in exactly <span class="arithmatex">\( k \)</span> steps (or, in the inclusive version, in at most <span class="arithmatex">\( k \)</span> steps). The <strong>receptive field</strong> of a node <span class="arithmatex">\( v \)</span> in a <span class="arithmatex">\( K \)</span>-layer GNN is the set of nodes whose features influence <span class="arithmatex">\( v \)</span>'s final representation: this is precisely <span class="arithmatex">\( \mathcal{N}^K(v) \)</span> in the inclusive sense.</p>
+<p>The computation graph of node <span class="arithmatex">\( v \)</span> in a <span class="arithmatex">\( K \)</span>-layer GNN is a tree rooted at <span class="arithmatex">\( v \)</span>, where the children of each node <span class="arithmatex">\( u \)</span> at depth <span class="arithmatex">\( d \)</span> are its neighbors in the original graph. Critically, this computation tree is <strong>unique to each root node</strong> — different nodes have different trees even though they share the same GNN weights. This is the key architectural insight: a GNN does not apply a single global computation; it applies a shared function locally around each node's own neighborhood structure.</p>
+<p>The size of the receptive field grows as <span class="arithmatex">\( O(\bar{d}^K) \)</span>, where <span class="arithmatex">\( \bar{d} \)</span> is the average degree. On typical social or citation networks with <span class="arithmatex">\( \bar{d} \approx 10 \)</span>, even <span class="arithmatex">\( K = 3 \)</span> layers gives a receptive field of about 1,000 nodes — and at <span class="arithmatex">\( K = 6 \)</span>, it covers nearly the entire graph on most real networks (because the average path length in many real networks is 4–6 hops). This is both a strength and a liability, as we discuss next.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">The Computation Graph Insight</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking">
+Here is the observation that took some researchers by surprise when GNNs were first analyzed theoretically: despite sharing weights across all nodes, a GNN computes a <strong>different function</strong> for each node. Node A's 2-hop computation tree is a different graph from node B's 2-hop computation tree — they just both use the same neural network weights to process their respective trees. This means the GNN weight-sharing is analogous to weight-sharing in a CNN across spatial positions: the same filter is applied everywhere, but the input to that filter is spatially local and position-dependent. The consequence is that GNNs are fundamentally local algorithms — a node's representation is only influenced by nodes within <span class="arithmatex">\( K \)</span> hops, no matter how many layers you stack.</p>
+</div>
+<hr>
+<h2 id="65-layer-depth-and-the-over-smoothing-horizon">6.5 Layer Depth and the Over-Smoothing Horizon<a class="headerlink" href="#65-layer-depth-and-the-over-smoothing-horizon" title="Permanent link">¶</a></h2>
+<p><strong>Layer depth</strong> (the number of GNN layers <span class="arithmatex">\( K \)</span>) is one of the most consequential hyperparameters in GNN design, and its behavior is non-intuitive. Naively, more layers seem better: each additional layer expands the receptive field by one hop, giving every node access to a richer context. In practice, GNNs with more than 3–4 layers almost universally perform worse than shallower counterparts on node classification benchmarks.</p>
+<p>The reason is <strong>over-smoothing</strong>: as <span class="arithmatex">\( K \)</span> increases, every node's representation converges toward the same global stationary distribution — the Personalized PageRank vector for the graph. Formally, the iterative aggregation <span class="arithmatex">\( H^{(k+1)} = \tilde{A} H^{(k)} \)</span> (without the linear transform) converges as <span class="arithmatex">\( k \to \infty \)</span> to a matrix where every row is proportional to the degree vector, making node representations identical up to degree scaling and eliminating all discriminative signal.</p>
+<p>With a finite depth <span class="arithmatex">\( K \)</span>, over-smoothing is less catastrophic but still measurable: the mutual information between a node's representation and its original features decreases monotonically with depth. The practical implication is that most state-of-the-art GNN architectures use <span class="arithmatex">\( K \in \{2, 3\} \)</span> layers for node classification and introduce explicit mechanisms — residual connections, jumping knowledge, or APPNP-style decoupled propagation — to achieve larger effective receptive fields without the over-smoothing penalty.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">Deeper Is Not Always Better</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning">
+If you come from a computer vision background, your intuition says "add more layers." On graphs, that intuition is dangerous. Every paper reporting GNN results includes a depth-ablation table — always look at it. If accuracy peaks at <span class="arithmatex">\( K = 2 \)</span> and falls at <span class="arithmatex">\( K = 3 \)</span>, the graph has a short diameter and over-smoothing is the binding constraint. If accuracy still climbs at <span class="arithmatex">\( K = 5 \)</span>, the graph has long-range dependencies (e.g., molecules where bond paths matter over 5+ steps). Do not assume depth from a prior work will transfer to your graph.</p>
+</div>
+<hr>
+<h2 id="66-the-graph-convolutional-network">6.6 The Graph Convolutional Network<a class="headerlink" href="#66-the-graph-convolutional-network" title="Permanent link">¶</a></h2>
+<p>The <strong>Graph Convolutional Network</strong> (GCN), introduced by Kipf and Welling (2017), is the foundational GNN architecture and remains the most widely used baseline. Its layer update rule is:</p>
+<div class="arithmatex">\[
+H^{(k+1)} = \sigma\!\left(\tilde{D}^{-1/2}\, \tilde{A}\, \tilde{D}^{-1/2}\, H^{(k)}\, W^{(k)}\right)
+\]</div>
+<p>where:</p>
+<ul>
+<li><span class="arithmatex">\( \tilde{A} = A + I \)</span> is the adjacency matrix with self-loops added (so each node also aggregates its own features)</li>
+<li><span class="arithmatex">\( \tilde{D} \)</span> is the degree matrix of <span class="arithmatex">\( \tilde{A} \)</span> (diagonal, <span class="arithmatex">\( \tilde{D}_{ii} = \sum_j \tilde{A}_{ij} \)</span>)</li>
+<li><span class="arithmatex">\( W^{(k)} \in \mathbb{R}^{d^{(k)} \times d^{(k+1)}} \)</span> is a learnable weight matrix for layer <span class="arithmatex">\( k \)</span></li>
+<li><span class="arithmatex">\( \sigma \)</span> is a non-linearity (typically ReLU for intermediate layers, softmax for the output layer on multi-class tasks)</li>
+</ul>
+<p>For a single node <span class="arithmatex">\( v \)</span>, the GCN update is:</p>
+<div class="arithmatex">\[
+\mathbf{h}_v^{(k+1)} = \sigma\!\left(W^{(k)} \cdot \sum_{u \in \mathcal{N}(v) \cup \{v\}} \frac{1}{\sqrt{\tilde{d}_v \tilde{d}_u}}\, \mathbf{h}_u^{(k)}\right)
+\]</div>
+<p>where <span class="arithmatex">\( \tilde{d}_v = \tilde{D}_{vv} \)</span> is the degree of node <span class="arithmatex">\( v \)</span> in <span class="arithmatex">\( \tilde{A} \)</span>. This is a <strong>mean aggregation with symmetric degree normalization</strong>: each neighbor's contribution is down-weighted by both the neighbor's own degree and the receiving node's degree, preventing high-degree nodes from disproportionately influencing their neighbors.</p>
+<p>In the MPNN framework terms: the message function is <span class="arithmatex">\( \phi(h_u, h_v, e_{uv}) = \frac{1}{\sqrt{\tilde{d}_u \tilde{d}_v}} h_u \)</span> (scaled source representation), the aggregation is sum, and the update function applies the linear transform <span class="arithmatex">\( W^{(k)} \)</span> followed by the nonlinearity.</p>
+<hr>
+<h2 id="67-spectral-graph-theory-the-mathematical-foundation">6.7 Spectral Graph Theory: The Mathematical Foundation<a class="headerlink" href="#67-spectral-graph-theory-the-mathematical-foundation" title="Permanent link">¶</a></h2>
+<p>The GCN formula did not appear by intuition — it was derived from spectral graph theory. Understanding this derivation reveals why the specific normalization <span class="arithmatex">\( \tilde{D}^{-1/2} \tilde{A} \tilde{D}^{-1/2} \)</span> appears and what it means mathematically.</p>
+<h3 id="671-the-graph-laplacian">6.7.1 The Graph Laplacian<a class="headerlink" href="#671-the-graph-laplacian" title="Permanent link">¶</a></h3>
+<p>The <strong>Graph Laplacian</strong> is the matrix <span class="arithmatex">\( L = D - A \)</span>, where <span class="arithmatex">\( D \)</span> is the degree matrix and <span class="arithmatex">\( A \)</span> is the adjacency matrix. The Laplacian is positive semi-definite and encodes the graph's differential structure: for any vector <span class="arithmatex">\( \mathbf{f} \in \mathbb{R}^{|V|} \)</span>,</p>
+<div class="arithmatex">\[
+\mathbf{f}^T L \mathbf{f} = \sum_{(u,v) \in E} (f_u - f_v)^2
+\]</div>
+<p>This quadratic form measures the <strong>total variation</strong> of the signal <span class="arithmatex">\( \mathbf{f} \)</span> across the graph — how much adjacent nodes differ in their values. Minimizing <span class="arithmatex">\( \mathbf{f}^T L \mathbf{f} \)</span> subject to constraints forces <span class="arithmatex">\( \mathbf{f} \)</span> to be smooth across edges, which is precisely the objective of label propagation from Chapter 5.</p>
+<h3 id="672-the-normalized-graph-laplacian">6.7.2 The Normalized Graph Laplacian<a class="headerlink" href="#672-the-normalized-graph-laplacian" title="Permanent link">¶</a></h3>
+<p>The <strong>normalized (symmetric) Graph Laplacian</strong> is:</p>
+<div class="arithmatex">\[
+L_{\text{sym}} = D^{-1/2} L D^{-1/2} = I - D^{-1/2} A D^{-1/2}
+\]</div>
+<p>Its eigenvalues <span class="arithmatex">\( 0 = \lambda_0 \leq \lambda_1 \leq \cdots \leq \lambda_{n-1} \leq 2 \)</span> are bounded in <span class="arithmatex">\( [0, 2] \)</span> regardless of graph size, which is critical for numerical stability of spectral methods. The smallest eigenvalue <span class="arithmatex">\( \lambda_0 = 0 \)</span> corresponds to the constant eigenvector (all ones), and the multiplicity of the zero eigenvalue equals the number of connected components.</p>
+<h3 id="673-the-spectral-domain-of-a-graph">6.7.3 The Spectral Domain of a Graph<a class="headerlink" href="#673-the-spectral-domain-of-a-graph" title="Permanent link">¶</a></h3>
+<p>In classical signal processing on <span class="arithmatex">\( \mathbb{R}^n \)</span>, the Fourier transform decomposes a signal into sinusoidal basis functions. On a graph, the analogue of sinusoidal basis functions is the <strong>eigenvectors of the normalized Laplacian</strong>. Given the eigen-decomposition <span class="arithmatex">\( L_{\text{sym}} = U \Lambda U^T \)</span> (where columns of <span class="arithmatex">\( U \)</span> are eigenvectors), the <strong>graph Fourier transform</strong> of a signal <span class="arithmatex">\( \mathbf{x} \)</span> is:</p>
+<div class="arithmatex">\[
+\hat{\mathbf{x}} = U^T \mathbf{x}
+\]</div>
+<p>and the <strong>graph spectral convolution</strong> of <span class="arithmatex">\( \mathbf{x} \)</span> with a filter <span class="arithmatex">\( g_\theta \)</span> (parameterized in the spectral domain) is:</p>
+<div class="arithmatex">\[
+\mathbf{x} *_G g_\theta = U\left(g_\theta(\Lambda)\, U^T \mathbf{x}\right)
+\]</div>
+<p>where <span class="arithmatex">\( g_\theta(\Lambda) \)</span> is a diagonal matrix applying the filter to each eigenvalue. This is the <strong>spectral domain</strong> view of graph convolution: define a filter in the eigenvalue space and transform back to the node space.</p>
+<p>The limitation is computational: computing <span class="arithmatex">\( U \)</span> requires full eigendecomposition of <span class="arithmatex">\( L \)</span>, which costs <span class="arithmatex">\( O(|V|^3) \)</span> — completely infeasible for million-node graphs. The Chebyshev polynomial approximation resolves this bottleneck.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">The Spectral Derivation Is Worth It</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encouraging">
+The next few paragraphs involve a moderately dense mathematical argument. If spectral graph theory is new to you, the steps may feel unmotivated on first read — but they are worth following carefully, because the final result (the GCN formula) emerges inevitably from a sequence of principled approximations. Each approximation makes a specific trade-off between expressiveness and computational efficiency, and understanding those trade-offs will give you intuition for why GCN behaves the way it does on different graph structures.</p>
+</div>
+<h3 id="674-chebyshev-polynomial-convolution">6.7.4 Chebyshev Polynomial Convolution<a class="headerlink" href="#674-chebyshev-polynomial-convolution" title="Permanent link">¶</a></h3>
+<p>To avoid the <span class="arithmatex">\( O(|V|^3) \)</span> eigendecomposition, Defferrard et al. (2016) proposed parameterizing the spectral filter using <strong>Chebyshev polynomials</strong> <span class="arithmatex">\( T_k \)</span>. Chebyshev polynomials are defined by the recurrence <span class="arithmatex">\( T_0(x) = 1 \)</span>, <span class="arithmatex">\( T_1(x) = x \)</span>, <span class="arithmatex">\( T_k(x) = 2x T_{k-1}(x) - T_{k-2}(x) \)</span>, and they form an orthogonal basis on <span class="arithmatex">\( [-1, 1] \)</span>. Since the normalized Laplacian's eigenvalues lie in <span class="arithmatex">\( [0, 2] \)</span>, scaling to <span class="arithmatex">\( \tilde{L} = 2L_{\text{sym}}/\lambda_{\max} - I \)</span> maps them to <span class="arithmatex">\( [-1, 1] \)</span>.</p>
+<p>The Chebyshev spectral convolution with order <span class="arithmatex">\( K \)</span> is:</p>
+<div class="arithmatex">\[
+\mathbf{x} *_G g_\theta = \sum_{k=0}^{K} \theta_k\, T_k(\tilde{L})\, \mathbf{x}
+\]</div>
+<p>This is efficient because <span class="arithmatex">\( T_k(\tilde{L}) \mathbf{x} \)</span> can be computed without ever forming <span class="arithmatex">\( U \)</span>: it requires only repeated sparse matrix-vector multiplications using <span class="arithmatex">\( \tilde{L} \)</span>, costing <span class="arithmatex">\( O(K \cdot |E|) \)</span> rather than <span class="arithmatex">\( O(|V|^3) \)</span>. The filter has exactly <span class="arithmatex">\( K+1 \)</span> learnable parameters <span class="arithmatex">\( \theta_0, \ldots, \theta_K \)</span>, and it is <strong><span class="arithmatex">\( K \)</span>-hop localized</strong> — the filter at node <span class="arithmatex">\( v \)</span> depends only on nodes within <span class="arithmatex">\( K \)</span> hops, because <span class="arithmatex">\( (T_k(\tilde{L}))_{uv} = 0 \)</span> whenever the graph distance between <span class="arithmatex">\( u \)</span> and <span class="arithmatex">\( v \)</span> exceeds <span class="arithmatex">\( k \)</span>.</p>
+<h3 id="675-from-chebyshev-to-gcn-a-first-order-approximation">6.7.5 From Chebyshev to GCN: A First-Order Approximation<a class="headerlink" href="#675-from-chebyshev-to-gcn-a-first-order-approximation" title="Permanent link">¶</a></h3>
+<p>Kipf and Welling (2017) showed that restricting to <span class="arithmatex">\( K = 1 \)</span> (a first-order Chebyshev polynomial filter) and making the approximation <span class="arithmatex">\( \lambda_{\max} \approx 2 \)</span> yields:</p>
+<div class="arithmatex">\[
+\mathbf{x} *_G g_\theta \approx \theta_0 \mathbf{x} + \theta_1 (L_{\text{sym}} - I)\, \mathbf{x} = \theta_0 \mathbf{x} - \theta_1 D^{-1/2} A D^{-1/2} \mathbf{x}
+\]</div>
+<p>Constraining to a single shared parameter <span class="arithmatex">\( \theta = \theta_0 = -\theta_1 \)</span> (to prevent overfitting in the low-label-rate setting):</p>
+<div class="arithmatex">\[
+\approx \theta\, (I + D^{-1/2} A D^{-1/2})\, \mathbf{x}
+\]</div>
+<p>The matrix <span class="arithmatex">\( I + D^{-1/2} A D^{-1/2} \)</span> has eigenvalues in <span class="arithmatex">\( [0, 2] \)</span>, which can cause numerical instability in deep networks. The <strong>renormalization trick</strong> substitutes <span class="arithmatex">\( \tilde{A} = A + I \)</span> and <span class="arithmatex">\( \tilde{D} \)</span> (the degree matrix of <span class="arithmatex">\( \tilde{A} \)</span>):</p>
+<div class="arithmatex">\[
+I + D^{-1/2} A D^{-1/2} \;\longrightarrow\; \tilde{D}^{-1/2} \tilde{A}\, \tilde{D}^{-1/2}
+\]</div>
+<p>Stacking this across <span class="arithmatex">\( C_{\text{in}} \)</span> input channels with a weight matrix <span class="arithmatex">\( W \in \mathbb{R}^{C_{\text{in}} \times C_{\text{out}}} \)</span> and adding a nonlinearity gives the GCN layer:</p>
+<div class="arithmatex">\[
+H^{(k+1)} = \sigma\!\left(\tilde{D}^{-1/2} \tilde{A}\, \tilde{D}^{-1/2}\, H^{(k)}\, W^{(k)}\right)
+\]</div>
+<p>The derivation reveals that GCN is not an arbitrary design choice but a principled, computationally efficient approximation to spectral graph convolution — specifically, a first-order localized filter with a renormalization trick for numerical stability.</p>
+<hr>
+<h2 id="68-spectral-clustering-and-normalized-cut">6.8 Spectral Clustering and Normalized Cut<a class="headerlink" href="#68-spectral-clustering-and-normalized-cut" title="Permanent link">¶</a></h2>
+<p>Spectral graph theory does not only motivate GCNs — it underlies the classical <strong>spectral clustering</strong> algorithm, which uses the Laplacian's eigenvectors to partition a graph into cohesive communities. Understanding spectral clustering clarifies the geometric meaning of the graph Laplacian and its eigenvectors.</p>
+<p>The <strong>Normalized Cut</strong> (NCut) objective formalizes the intuition that a good graph partition should minimize the number of edges crossing between clusters while keeping clusters roughly balanced in size. For a bipartition into sets <span class="arithmatex">\( A \)</span> and <span class="arithmatex">\( B = V \setminus A \)</span>:</p>
+<div class="arithmatex">\[
+\text{NCut}(A, B) = \frac{\text{cut}(A, B)}{\text{vol}(A)} + \frac{\text{cut}(A, B)}{\text{vol}(B)}
+\]</div>
+<p>where <span class="arithmatex">\( \text{cut}(A, B) = \sum_{u \in A, v \in B} w_{uv} \)</span> is the total weight of edges crossing the partition, and <span class="arithmatex">\( \text{vol}(A) = \sum_{u \in A} d_u \)</span> is the sum of degrees within <span class="arithmatex">\( A \)</span>. Dividing by volume rather than size ensures that the partition cannot be gamed by cutting off a single isolated node.</p>
+<p>Minimizing NCut over discrete cluster assignments is NP-hard. The key insight of spectral clustering is that the <strong>second smallest eigenvector</strong> <span class="arithmatex">\( \mathbf{u}_1 \)</span> of <span class="arithmatex">\( L_{\text{sym}} \)</span> (the Fiedler vector) provides a continuous relaxation: partitioning nodes by the sign of <span class="arithmatex">\( \mathbf{u}_1 \)</span> approximately minimizes NCut. For <span class="arithmatex">\( k \)</span> clusters, the algorithm uses the <span class="arithmatex">\( k \)</span> smallest eigenvectors of <span class="arithmatex">\( L_{\text{sym}} \)</span> as a <span class="arithmatex">\( k \)</span>-dimensional embedding, then applies k-means in that space.</p>
+<p>The spectral clustering algorithm thus operates in what we now recognize as the <strong>spectral domain</strong> of the graph: it decomposes the graph signal into eigenvector components and uses the low-frequency (small eigenvalue) components to identify cluster structure. The spatial domain (the actual graph topology) provides the input; the spectral domain (the Laplacian eigenstructure) provides the computational machinery.</p>
+<h4 id="diagram-spectral-vs-spatial-gnn-explorer">Diagram: Spectral vs. Spatial GNN Explorer<a class="headerlink" href="#diagram-spectral-vs-spatial-gnn-explorer" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch06-spectral-spatial-explorer/main.html" width="100%" height="532px" scrolling="no"></iframe>
+<p><a href="../../sims/ch06-spectral-spatial-explorer/main.html">Run Spectral vs. Spatial GNN Explorer Fullscreen</a></p>
+<hr>
+<h2 id="69-spatial-vs-spectral-a-unifying-view">6.9 Spatial vs. Spectral: A Unifying View<a class="headerlink" href="#69-spatial-vs-spectral-a-unifying-view" title="Permanent link">¶</a></h2>
+<p>The derivation above makes precise what practitioners observe intuitively: GCN and most modern GNNs operate in the <strong>spatial domain</strong> — they aggregate directly over neighborhoods — but their design can be motivated and analyzed using <strong>spectral domain</strong> reasoning. The spatial view gives computational efficiency (message passing is <span class="arithmatex">\( O(|E|) \)</span> per layer); the spectral view gives theoretical insight into what frequencies a GNN can represent and why certain depth regimes cause problems.</p>
+<p>The spatial domain contains all GNNs that can be expressed as <span class="arithmatex">\( h_v^{(k)} = f\!\left(h_v^{(k-1)}, \{h_u^{(k-1)} : u \in \mathcal{N}(v)\}\right) \)</span> for some function <span class="arithmatex">\( f \)</span>. This includes GCN, GraphSAGE, GAT, GIN, and virtually every other named architecture. The spectral domain provides a complementary lens: a GNN with <span class="arithmatex">\( K \)</span> layers and a mean aggregation is a <span class="arithmatex">\( K \)</span>-th order polynomial low-pass filter on the graph — it smooths signals over neighborhoods of radius <span class="arithmatex">\( K \)</span>, suppressing high-frequency variations (adjacent nodes that differ significantly) while preserving low-frequency structure (slowly varying community-level signals).</p>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Choosing Your Aggregation in Practice</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving a tip">
+Here is a decision heuristic that works in most practical settings. Start with <strong>mean aggregation</strong> (GCN-style) as your default: it is numerically stable, handles degree-heterogeneous graphs well, and achieves competitive performance on most benchmarks. Switch to <strong>sum aggregation</strong> if your task requires distinguishing neighborhood sizes (e.g., molecule property prediction where atom count matters). Switch to <strong>max aggregation</strong> if your task involves detecting the presence of specific features in the neighborhood (e.g., anomaly detection where one anomalous neighbor is all that matters). When in doubt: run a quick ablation with all three on a 10% validation split and let the data decide.</p>
+</div>
+<hr>
+<h2 id="610-pytorch-geometric-and-dgl">6.10 PyTorch Geometric and DGL<a class="headerlink" href="#610-pytorch-geometric-and-dgl" title="Permanent link">¶</a></h2>
+<p>Two dominant Python libraries implement GNN research and production pipelines. Understanding both is practically important because research codebases and industry systems may use either.</p>
+<p><strong>PyTorch Geometric (PyG)</strong>, maintained by the PyG team (Fey and Lenssen, 2019), implements GNNs as a collection of <code>MessagePassing</code> base classes with a well-defined interface. PyG's design mirrors the MPNN formalism directly: subclassing <code>MessagePassing</code> requires implementing a <code>message()</code> method (the message function <span class="arithmatex">\( \phi \)</span>) and optionally an <code>update()</code> method (the update function <span class="arithmatex">\( \gamma \)</span>). PyG handles the edge-parallel message dispatch and aggregation internally. Its dataset ecosystem includes Planetoid (Cora, Citeseer, Pubmed), OGB, TUDataset, and many others. PyG uses a <strong>COO (coordinate list) edge index</strong> format: <code>edge_index</code> is a <span class="arithmatex">\( 2 \times |E| \)</span> tensor where <code>edge_index[0]</code> contains source nodes and <code>edge_index[1]</code> contains destination nodes.</p>
+<p><strong>Deep Graph Library (DGL)</strong>, maintained by AWS and academic collaborators, provides a more explicit graph object abstraction: <code>DGLGraph</code> carries node/edge feature tensors directly. DGL's message-passing API uses <code>send_and_recv</code> or the higher-level <code>apply_edges</code> + <code>update_all</code> functions, which map cleanly onto the message and aggregation phases. DGL supports multiple backends (PyTorch, TensorFlow, MXNet) and emphasizes graph batching for heterogeneous-size graph classification tasks.</p>
+<p>The following table summarizes the key practical differences.</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>PyTorch Geometric (PyG)</th>
+<th>Deep Graph Library (DGL)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Graph representation</td>
+<td><code>edge_index</code> tensor (COO)</td>
+<td><code>DGLGraph</code> object</td>
+</tr>
+<tr>
+<td>Message passing API</td>
+<td><code>MessagePassing</code> subclass</td>
+<td><code>apply_edges</code> + <code>update_all</code></td>
+</tr>
+<tr>
+<td>Backend support</td>
+<td>PyTorch only</td>
+<td>PyTorch, TF, MXNet</td>
+</tr>
+<tr>
+<td>Heterogeneous graphs</td>
+<td><code>HeteroData</code></td>
+<td><code>HeteroGraph</code></td>
+</tr>
+<tr>
+<td>Dataset ecosystem</td>
+<td>Largest (Planetoid, OGB, …)</td>
+<td>Strong (OGB, TUDataset, …)</td>
+</tr>
+<tr>
+<td>Production readiness</td>
+<td>High</td>
+<td>High</td>
+</tr>
+</tbody>
+</table>
+<p>From Chapter 6 onward, all code examples in this textbook use PyTorch Geometric unless otherwise noted.</p>
+<hr>
+<h2 id="611-code-gcn-from-scratch-then-with-pyg">6.11 Code: GCN from Scratch, Then with PyG<a class="headerlink" href="#611-code-gcn-from-scratch-then-with-pyg" title="Permanent link">¶</a></h2>
+<p>The following two implementations — one manual, one using PyG — demonstrate the GCN layer on the Cora citation network (2,708 nodes, 5,429 edges, 7 classes, 1,433 features per node). Reading the manual implementation first makes PyG's abstraction transparent.</p>
+<p>Before reading the code, note the key parameters: <code>hidden_channels</code> (16 by default in the original GCN paper) controls the width of the hidden layer; <code>dropout</code> (0.5) regularizes between layers. The <code>GCNConv</code> layer in PyG handles the <span class="arithmatex">\( \tilde{D}^{-1/2} \tilde{A} \tilde{D}^{-1/2} \)</span> normalization and self-loop addition automatically.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.nn</span><span class="w"> </span><span class="kn">import</span> <span class="n">GCNConv</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">Planetoid</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">torch_geometric.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">add_self_loops</span><span class="p">,</span> <span class="n">degree</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="c1"># ── Load Cora dataset ────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">Planetoid</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="s1">'/tmp/Cora'</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'Cora'</span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">data</span> <span class="o">=</span> <span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="c1"># data.x:          [2708, 1433] node feature matrix</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="c1"># data.edge_index: [2, 5429]    COO edge index (undirected = each edge appears twice)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="c1"># data.y:          [2708]       node class labels (0–6)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># data.train_mask: [2708]       boolean mask — 140 training nodes</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="c1"># ── Manual GCN layer (for transparency) ────────────────────────────────────</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="k">def</span><span class="w"> </span><span class="nf">gcn_layer_manual</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="w">    </span><span class="sd">"""</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="sd">    x:          [N, d]    node features</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="sd">    edge_index: [2, E]    COO edge index</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="sd">    W:          [d, d']   learnable weight matrix</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="sd">    n:          int       number of nodes</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="sd">    """</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="c1"># Add self-loops to edge_index (Ã = A + I)</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">edge_index</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">self_loops</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">src</span><span class="p">,</span> <span class="n">self_loops</span><span class="p">])</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n">dst</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">dst</span><span class="p">,</span> <span class="n">self_loops</span><span class="p">])</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="c1"># Compute degree-normalized adjacency: D̃^{-1/2} Ã D̃^{-1/2}</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n">deg</span> <span class="o">=</span> <span class="n">degree</span><span class="p">(</span><span class="n">dst</span><span class="p">,</span> <span class="n">num_nodes</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>        <span class="c1"># D̃ (degree in Ã)</span>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n">deg_inv_sqrt</span> <span class="o">=</span> <span class="n">deg</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">)</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="n">norm</span> <span class="o">=</span> <span class="n">deg_inv_sqrt</span><span class="p">[</span><span class="n">src</span><span class="p">]</span> <span class="o">*</span> <span class="n">deg_inv_sqrt</span><span class="p">[</span><span class="n">dst</span><span class="p">]</span>  <span class="c1"># per-edge normalization</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    <span class="c1"># Aggregate: h_v = Σ_{u∈N(v)∪{v}} norm_{uv} * x_u</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>    <span class="n">h</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>    <span class="n">h</span><span class="o">.</span><span class="n">scatter_add_</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dst</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a>                   <span class="n">norm</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">src</span><span class="p">])</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>    <span class="c1"># Linear transform + ReLU</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a>    <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">h</span> <span class="o">@</span> <span class="n">W</span><span class="p">)</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a><span class="c1"># ── PyG GCN model ───────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="k">class</span><span class="w"> </span><span class="nc">GCN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a>    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">):</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46" href="#__codelineno-0-46"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47" href="#__codelineno-0-47"></a>        <span class="c1"># GCNConv handles self-loop addition and symmetric normalization</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48" href="#__codelineno-0-48"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv1</span> <span class="o">=</span> <span class="n">GCNConv</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">hidden_channels</span><span class="p">)</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49" href="#__codelineno-0-49"></a>        <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span> <span class="o">=</span> <span class="n">GCNConv</span><span class="p">(</span><span class="n">hidden_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">)</span>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50" href="#__codelineno-0-50"></a>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51" href="#__codelineno-0-51"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52" href="#__codelineno-0-52"></a>        <span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">edge_index</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53" href="#__codelineno-0-53"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conv1</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">))</span>   <span class="c1"># Layer 1: [N, 1433] → [N, 16]</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54" href="#__codelineno-0-54"></a>        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">)</span>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55" href="#__codelineno-0-55"></a>        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conv2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">edge_index</span><span class="p">)</span>            <span class="c1"># Layer 2: [N, 16] → [N, 7]</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56" href="#__codelineno-0-56"></a>        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">log_softmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57" href="#__codelineno-0-57"></a>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58" href="#__codelineno-0-58"></a><span class="c1"># ── Training loop ────────────────────────────────────────────────────────────</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59" href="#__codelineno-0-59"></a><span class="n">model</span> <span class="o">=</span> <span class="n">GCN</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_node_features</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">num_classes</span><span class="p">)</span>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60" href="#__codelineno-0-60"></a><span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">5e-4</span><span class="p">)</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61" href="#__codelineno-0-61"></a>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62" href="#__codelineno-0-62"></a><span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">():</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63" href="#__codelineno-0-63"></a>    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64" href="#__codelineno-0-64"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65" href="#__codelineno-0-65"></a>    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-66"><a id="__codelineno-0-66" name="__codelineno-0-66" href="#__codelineno-0-66"></a>    <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">nll_loss</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">train_mask</span><span class="p">],</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">train_mask</span><span class="p">])</span>
+</span><span id="__span-0-67"><a id="__codelineno-0-67" name="__codelineno-0-67" href="#__codelineno-0-67"></a>    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+</span><span id="__span-0-68"><a id="__codelineno-0-68" name="__codelineno-0-68" href="#__codelineno-0-68"></a>    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span id="__span-0-69"><a id="__codelineno-0-69" name="__codelineno-0-69" href="#__codelineno-0-69"></a>    <span class="k">return</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</span><span id="__span-0-70"><a id="__codelineno-0-70" name="__codelineno-0-70" href="#__codelineno-0-70"></a>
+</span><span id="__span-0-71"><a id="__codelineno-0-71" name="__codelineno-0-71" href="#__codelineno-0-71"></a><span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">():</span>
+</span><span id="__span-0-72"><a id="__codelineno-0-72" name="__codelineno-0-72" href="#__codelineno-0-72"></a>    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</span><span id="__span-0-73"><a id="__codelineno-0-73" name="__codelineno-0-73" href="#__codelineno-0-73"></a>    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span id="__span-0-74"><a id="__codelineno-0-74" name="__codelineno-0-74" href="#__codelineno-0-74"></a>    <span class="n">pred</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-75"><a id="__codelineno-0-75" name="__codelineno-0-75" href="#__codelineno-0-75"></a>    <span class="n">accs</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-0-76"><a id="__codelineno-0-76" name="__codelineno-0-76" href="#__codelineno-0-76"></a>    <span class="k">for</span> <span class="n">mask</span> <span class="ow">in</span> <span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">train_mask</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">val_mask</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">test_mask</span><span class="p">]:</span>
+</span><span id="__span-0-77"><a id="__codelineno-0-77" name="__codelineno-0-77" href="#__codelineno-0-77"></a>        <span class="n">accs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">pred</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">==</span> <span class="n">data</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">mask</span><span class="p">])</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</span><span id="__span-0-78"><a id="__codelineno-0-78" name="__codelineno-0-78" href="#__codelineno-0-78"></a>    <span class="k">return</span> <span class="n">accs</span>  <span class="c1"># [train_acc, val_acc, test_acc]</span>
+</span><span id="__span-0-79"><a id="__codelineno-0-79" name="__codelineno-0-79" href="#__codelineno-0-79"></a>
+</span><span id="__span-0-80"><a id="__codelineno-0-80" name="__codelineno-0-80" href="#__codelineno-0-80"></a><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">201</span><span class="p">):</span>
+</span><span id="__span-0-81"><a id="__codelineno-0-81" name="__codelineno-0-81" href="#__codelineno-0-81"></a>    <span class="n">loss</span> <span class="o">=</span> <span class="n">train</span><span class="p">()</span>
+</span><span id="__span-0-82"><a id="__codelineno-0-82" name="__codelineno-0-82" href="#__codelineno-0-82"></a>    <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">50</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-0-83"><a id="__codelineno-0-83" name="__codelineno-0-83" href="#__codelineno-0-83"></a>        <span class="n">tr</span><span class="p">,</span> <span class="n">va</span><span class="p">,</span> <span class="n">te</span> <span class="o">=</span> <span class="n">test</span><span class="p">()</span>
+</span><span id="__span-0-84"><a id="__codelineno-0-84" name="__codelineno-0-84" href="#__codelineno-0-84"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2"> | Loss: </span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | "</span>
+</span><span id="__span-0-85"><a id="__codelineno-0-85" name="__codelineno-0-85" href="#__codelineno-0-85"></a>              <span class="sa">f</span><span class="s2">"Train: </span><span class="si">{</span><span class="n">tr</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> | Val: </span><span class="si">{</span><span class="n">va</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> | Test: </span><span class="si">{</span><span class="n">te</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span></code></pre></div>
+<p>After 200 epochs, this two-layer GCN should achieve approximately 81% test accuracy on Cora — a result that is both impressive (using only 140 labeled nodes out of 2,708) and characteristic of GCN's behavior on homophilic citation networks.</p>
+<h4 id="diagram-gcn-message-passing-visualizer">Diagram: GCN Message Passing Visualizer<a class="headerlink" href="#diagram-gcn-message-passing-visualizer" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch06-gcn-message-passing/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch06-gcn-message-passing/main.html">Run GCN Message Passing Visualizer Fullscreen</a></p>
+<hr>
+<h2 id="612-benchmark-comparison">6.12 Benchmark Comparison<a class="headerlink" href="#612-benchmark-comparison" title="Permanent link">¶</a></h2>
+<p>The following table reports node classification accuracy on two standard benchmarks: Cora (homophilic citation network, 2,708 nodes, 7 classes, 140 labeled nodes) and ogbn-arxiv (OGB citation network, 169,343 nodes, 40 classes, ~90K labeled nodes, 2020 publications as test set).</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Cora Test Acc.</th>
+<th>ogbn-arxiv Test Acc.</th>
+<th>Parameters</th>
+<th>Depth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GCN (Kipf &amp; Welling 2017)</td>
+<td>81.5%</td>
+<td>71.7%</td>
+<td>~92K</td>
+<td>2</td>
+</tr>
+<tr>
+<td>GraphSAGE (Hamilton et al. 2017)</td>
+<td>82.0%</td>
+<td>71.5%</td>
+<td>~220K</td>
+<td>2</td>
+</tr>
+<tr>
+<td>GAT (Veličković et al. 2018)</td>
+<td>83.0%</td>
+<td>73.9%</td>
+<td>~365K</td>
+<td>2</td>
+</tr>
+<tr>
+<td>APPNP (Gasteiger et al. 2019)</td>
+<td>83.3%</td>
+<td>—</td>
+<td>~92K</td>
+<td>K=10 prop.</td>
+</tr>
+<tr>
+<td>GCN + C&amp;S (Huang et al. 2021)</td>
+<td>84.2%</td>
+<td>74.0%</td>
+<td>~92K</td>
+<td>2+post</td>
+</tr>
+<tr>
+<td>RevGNN (Li et al. 2021)</td>
+<td>—</td>
+<td>74.0%</td>
+<td>~1.8M</td>
+<td>112</td>
+</tr>
+</tbody>
+</table>
+<p>GCN achieves strong performance on Cora with only two layers, illustrating that deep GNNs are rarely necessary on citation networks whose diameter is small. On ogbn-arxiv, attention (GAT) and post-processing (C&amp;S) outperform base GCN, motivating the architectures explored in subsequent chapters.</p>
+<hr>
+<h2 id="613-common-pitfalls">6.13 Common Pitfalls<a class="headerlink" href="#613-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>1. Forgetting self-loops in GCN.</strong> The GCN formula uses <span class="arithmatex">\( \tilde{A} = A + I \)</span>, not bare <span class="arithmatex">\( A \)</span>. Without self-loops, the update function cannot incorporate the node's own previous representation — it would aggregate only from neighbors, which is an asymmetric design that the normalization assumes away. PyG's <code>GCNConv</code> adds self-loops by default; if implementing manually, never forget this step.</p>
+<p><strong>2. Applying GCN to a directed graph without symmetrization.</strong> The symmetric normalization <span class="arithmatex">\( \tilde{D}^{-1/2} \tilde{A} \tilde{D}^{-1/2} \)</span> assumes an undirected graph. On a directed graph, the degree counts are asymmetric and the formula is no longer a valid spectral approximation. Either symmetrize the adjacency before using GCN, or switch to a directed GNN architecture.</p>
+<p><strong>3. Stacking more than 3 GCN layers without residual connections.</strong> As discussed under over-smoothing, accuracy degrades rapidly beyond 3 layers on most node classification benchmarks. If your task requires long-range propagation, use APPNP (which decouples feature learning from propagation) or JK-Net (jumping knowledge) rather than simply adding more GCN layers.</p>
+<p><strong>4. Confusing the spectral and spatial views of the same operation.</strong> <span class="arithmatex">\( \tilde{D}^{-1/2} \tilde{A} \tilde{D}^{-1/2} H W \)</span> is simultaneously (a) a first-order Chebyshev polynomial spectral filter and (b) a spatially localized mean aggregation with symmetric normalization. These two descriptions are mathematically equivalent; the spatial view is computationally efficient, while the spectral view explains what signal frequencies the operation amplifies or suppresses.</p>
+<p><strong>5. Expecting PyG's <code>edge_index</code> to match your adjacency matrix's convention.</strong> PyG stores edges as <code>(source, destination)</code> pairs in the COO format, with the convention that messages flow from <code>edge_index[0]</code> (source) to <code>edge_index[1]</code> (destination). If your adjacency matrix represents <span class="arithmatex">\( A_{ij} = 1 \)</span> for an edge from <span class="arithmatex">\( j \)</span> to <span class="arithmatex">\( i \)</span> (column-source convention), you must transpose before passing to PyG. This mismatch is a common and subtle source of incorrect results.</p>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">You Just Built a GNN</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating">
+This chapter covered more ground than any other so far — 23 concepts, from the abstract MPNN framework down to the renormalization trick that makes GCN numerically stable, through spectral clustering and all the way to working PyG code. You now have everything you need to read the GCN paper itself (Kipf &amp; Welling 2017) and understand every equation in it. More importantly, you have the conceptual vocabulary for the chapters ahead: GraphSAGE, GAT, GIN, and Graph Transformers are all instances of the MPNN framework you just learned, differing only in their choice of message function, aggregation function, and update function. Connect the dots and the pattern emerges.</p>
+</div>
+<hr>
+<h2 id="614-exercises">6.14 Exercises<a class="headerlink" href="#614-exercises" title="Permanent link">¶</a></h2>
+<h3 id="remember">Remember<a class="headerlink" href="#remember" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>State the three components of the Message Passing Neural Network (MPNN) framework and write the general layer-update equation using the <code>UPDATE</code> and <code>AGGREGATE</code> notation. Define each term precisely.</p>
+</li>
+<li>
+<p>Define the <strong>Graph Laplacian</strong> <span class="arithmatex">\( L \)</span> and the <strong>normalized Graph Laplacian</strong> <span class="arithmatex">\( L_{\text{sym}} \)</span>, giving the matrix formula for each. What are the eigenvalue bounds of <span class="arithmatex">\( L_{\text{sym}} \)</span> for any graph, and what do the zero eigenvalues indicate about graph structure?</p>
+</li>
+</ol>
+<h3 id="understand">Understand<a class="headerlink" href="#understand" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>The GCN symmetric normalization <span class="arithmatex">\( \tilde{D}^{-1/2} \tilde{A}\, \tilde{D}^{-1/2} \)</span> can be interpreted as a weighted mean aggregation. Explain why this specific normalization (rather than row normalization <span class="arithmatex">\( \tilde{D}^{-1} \tilde{A} \)</span>) preserves the spectral approximation derived from the Chebyshev polynomial framework. What property of <span class="arithmatex">\( \tilde{D}^{-1/2} \tilde{A}\, \tilde{D}^{-1/2} \)</span> makes it preferable for spectral analysis?</p>
+</li>
+<li>
+<p>Sum aggregation is described as more expressive than mean aggregation because it is injective on multisets. Construct a concrete example: give two distinct neighborhoods (specific neighbor feature vectors) that produce the <strong>same</strong> output under mean aggregation but <strong>different</strong> outputs under sum aggregation. What property of the two neighborhoods makes them indistinguishable under mean?</p>
+</li>
+</ol>
+<h3 id="apply">Apply<a class="headerlink" href="#apply" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>A 3-node graph has adjacency <span class="arithmatex">\( A = \begin{pmatrix} 0&amp;1&amp;1\\1&amp;0&amp;0\\1&amp;0&amp;0 \end{pmatrix} \)</span> and node features <span class="arithmatex">\( H^{(0)} = \begin{pmatrix}1\\0\\0\end{pmatrix} \)</span> (a scalar feature per node). Compute <span class="arithmatex">\( H^{(1)} \)</span> using the GCN formula <span class="arithmatex">\( H^{(1)} = \tilde{D}^{-1/2} \tilde{A}\, \tilde{D}^{-1/2} H^{(0)} W \)</span> with <span class="arithmatex">\( W = 2 \)</span> (a scalar). Show all intermediate matrices.</p>
+</li>
+<li>
+<p>Implement a two-layer GCN from scratch in PyTorch (without using <code>GCNConv</code>) for a 4-node graph of your choice. Initialize <span class="arithmatex">\( W^{(1)} \)</span> and <span class="arithmatex">\( W^{(2)} \)</span> randomly, run a forward pass, and verify that the output dimensions are correct. Then implement the same network using <code>GCNConv</code> and confirm that the outputs match when the same weights are used.</p>
+</li>
+</ol>
+<h3 id="analyze">Analyze<a class="headerlink" href="#analyze" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>On a <strong>star graph</strong> with one hub (degree 100) and 100 leaves (degree 1), how does mean aggregation differ from sum aggregation for the hub node's representation after one GNN layer? Which aggregation is more stable numerically, and which better preserves structural information about the hub's centrality? Analyze the trade-off precisely.</p>
+</li>
+<li>
+<p>The receptive field of a <span class="arithmatex">\( K \)</span>-layer GNN grows as <span class="arithmatex">\( O(\bar{d}^K) \)</span>, where <span class="arithmatex">\( \bar{d} \)</span> is the average degree. On the ogbn-arxiv citation network (<span class="arithmatex">\( \bar{d} \approx 13.7 \)</span>), compute the approximate receptive field size for <span class="arithmatex">\( K = 1, 2, 3 \)</span>. At what depth does the receptive field cover the entire 169,343-node graph? What does this imply about over-smoothing at that depth?</p>
+</li>
+</ol>
+<h3 id="evaluate">Evaluate<a class="headerlink" href="#evaluate" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Evaluate the claim: "GCN is just a linear model followed by softmax — it cannot learn nonlinear functions over graph structure." Specifically, identify what makes a 2-layer GCN nonlinear (point to the formula), explain why the number of layers matters for expressiveness, and describe what a 1-layer GCN with a linear activation actually computes. Is the claim correct in any meaningful sense?</p>
+</li>
+<li>
+<p>Compare the spectral clustering approach (using the Fiedler vector of <span class="arithmatex">\( L_{\text{sym}} \)</span>) with GCN-based node classification on the task of partitioning the Karate Club graph. What information does GCN use that spectral clustering does not? Under what conditions would spectral clustering outperform GCN, and under what conditions would GCN outperform spectral clustering?</p>
+</li>
+</ol>
+<h3 id="create">Create<a class="headerlink" href="#create" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Design a <strong>directed GCN</strong> variant that extends the standard GCN formula to directed graphs. Specifically, define separate weight matrices for in-neighbors and out-neighbors, and write the modified layer equation. Justify your normalization choice, and explain what information your design captures that the standard (symmetrized) GCN cannot.</p>
+</li>
+<li>
+<p>Propose a <strong>multi-scale GCN</strong> architecture that computes node representations at multiple receptive field scales (<span class="arithmatex">\( K = 1, 2, 3 \)</span>) and combines them adaptively. Write the architecture formally (including the combination function), identify the trainable parameters beyond the standard GCN weights, and describe what downstream tasks you expect this architecture to outperform a standard single-scale GCN on. Justify your answer by reference to the over-smoothing analysis in this chapter.</p>
+</li>
+</ol>
+<hr>
+<h2 id="615-further-reading">6.15 Further Reading<a class="headerlink" href="#615-further-reading" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Kipf, T. N., &amp; Welling, M. (2017). Semi-supervised classification with graph convolutional networks.</strong> <em>International Conference on Learning Representations (ICLR 2017).</em> The foundational GCN paper. Read the spectral derivation (Section 2.1) alongside this chapter's treatment; the renormalization trick and first-order Chebyshev approximation are explained step-by-step.</p>
+</li>
+<li>
+<p><strong>Gilmer, J., Schütt, S. S., Riley, P. F., Vinyals, O., &amp; Dahl, G. E. (2017). Neural message passing for quantum chemistry.</strong> <em>Proceedings of ICML 2017.</em> Introduces the MPNN framework that unifies GCN, GG-NN, interaction networks, and molecular fingerprints into a single formalism. The framework in this chapter follows their notation directly.</p>
+</li>
+<li>
+<p><strong>Defferrard, M., Bresson, X., &amp; Vandergheynst, P. (2016). Convolutional neural networks on graphs with fast localized spectral filtering.</strong> <em>Advances in Neural Information Processing Systems (NeurIPS 29).</em> Introduces ChebConv — the Chebyshev polynomial spectral convolution that GCN's first-order approximation simplifies. Understanding ChebConv is necessary for any serious spectral GNN work.</p>
+</li>
+<li>
+<p><strong>Hamilton, W., Ying, R., &amp; Leskovec, J. (2017). Inductive representation learning on large graphs.</strong> <em>Advances in Neural Information Processing Systems (NeurIPS 30).</em> Introduces GraphSAGE, which generalizes GCN to inductive settings by learning a sampling-based aggregation function. The comparison between GCN's transductive training and GraphSAGE's inductive aggregation is essential for understanding when each applies.</p>
+</li>
+<li>
+<p><strong>Fey, M., &amp; Lenssen, J. E. (2019). Fast graph representation learning with PyTorch Geometric.</strong> <em>ICLR Workshop on Representation Learning on Graphs and Manifolds.</em> The PyTorch Geometric paper. The <code>MessagePassing</code> base class design and the COO edge index format are described here; reading this alongside the code examples in this chapter will make the API transparent.</p>
+</li>
+<li>
+<p><strong>Shi, J., &amp; Malik, J. (2000). Normalized cuts and image segmentation.</strong> <em>IEEE Transactions on Pattern Analysis and Machine Intelligence, 22(8).</em> The foundational Normalized Cut paper, originally in the computer vision context but directly applicable to graph partitioning. The spectral relaxation argument (Section III) is a masterpiece of applied linear algebra.</p>
+</li>
+<li>
+<p><strong>Nt, H., &amp; Maehara, T. (2019). Revisiting graph neural networks: All we have is low-pass filtering.</strong> <em>arXiv:1905.09550.</em> A rigorous analysis showing that GCN with ReLU activations is a polynomial low-pass filter and that over-smoothing is the inevitable consequence of high-order (deep) filtering. The spectral/spatial equivalence argument in this chapter builds on this work.</p>
+</li>
+<li>
+<p><strong>Bronstein, M. M., Bruna, J., Cohen, T., &amp; Veličković, P. (2021). Geometric deep learning: Grids, groups, graphs, geodesics, and gauges.</strong> <em>arXiv:2104.13478.</em> The comprehensive theoretical treatment of graph deep learning from first principles of symmetry and equivariance. Chapters 3–5 cover the spectral and spatial GNN derivations at graduate textbook depth.</p>
+</li>
+</ol>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../05-label-propagation/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

@@ -1,0 +1,3464 @@
+<!DOCTYPE html><html lang="en" class="no-js"><head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Graph-based semi-supervised learning through label propagation, belief propagation, and diffusion models including influence maximization and epidemic dynamics.">
+      
+      
+        <meta name="author" content="Anvith Pothula">
+      
+      
+        <link rel="canonical" href="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/05-label-propagation/">
+      
+      
+        <link rel="prev" href="../04-node-embeddings/references/">
+      
+      
+        <link rel="next" href="quiz/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Chapter 5: Label Propagation and Semi-Supervised Learning - Graph Neural Networks</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../css/extra.css">
+    
+      <link rel="stylesheet" href="../../css/mascot.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  <link href="../../assets/stylesheets/glightbox.min.css" rel="stylesheet"><script src="../../assets/javascripts/glightbox.min.js"></script><style id="glightbox-style">
+            html.glightbox-open { overflow: initial; height: 100%; }
+            .gslide-title { margin-top: 0px; user-select: text; }
+            .gslide-desc { color: #666; user-select: text; }
+            .gslide-image img { background: white; }
+            .gscrollbar-fixer { padding-right: 15px; }
+            .gdesc-inner { font-size: 0.75rem; }
+            body[data-md-color-scheme="slate"] .gdesc-inner { background: var(--md-default-bg-color); }
+            body[data-md-color-scheme="slate"] .gslide-title { color: var(--md-default-fg-color); }
+            body[data-md-color-scheme="slate"] .gslide-desc { color: var(--md-default-fg-color); }
+        </style>  <meta property="og:title" content="Chapter 5: Label Propagation and Semi-Supervised Learning">
+  <meta property="og:description" content="Graph-based semi-supervised learning through label propagation, belief propagation, and diffusion models including influence maximization and epidemic dynamics.">
+  <meta property="og:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/chapters/05-label-propagation/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Chapter 5: Label Propagation and Semi-Supervised Learning">
+  <meta name="twitter:description" content="Graph-based semi-supervised learning through label propagation, belief propagation, and diffusion models including influence maximization and epidemic dynamics.">
+  <meta name="twitter:image" content="https://AnvithPothula.github.io/graph-neural-networks-textbook/img/cover.png">
+</head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#chapter-5-label-propagation-and-semi-supervised-learning" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Graph Neural Networks" class="md-header__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"></path></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Graph Neural Networks
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Chapter 5: Label Propagation and Semi-Supervised Learning
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required="">
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"></path></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard="" data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"></path></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix="">
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Graph Neural Networks" class="md-nav__button md-logo" aria-label="Graph Neural Networks" data-md-component="logo">
+      
+  <img src="../../img/mascot/neutral.png" alt="logo">
+
+    </a>
+    Graph Neural Networks
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"></path></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub Repo
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix="">
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../about/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    About
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../course-description/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Course Description
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chapters
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Chapters
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../00-math-prerequisites/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    0. Math and Programming Prerequisites
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../01-intro-to-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1. Introduction to Graphs and Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../02-graph-properties-and-features/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2. Graph Properties and Traditional ML Features
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../03-link-analysis-pagerank/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3. Link Analysis and PageRank
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../04-node-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4. Node Embeddings: DeepWalk and node2vec
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" checked="">
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="./" class="md-nav__link md-nav__link--active">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link md-nav__link--active" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    5. Label Propagation and Semi-Supervised Learning
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix="">
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="quiz/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quiz
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="references/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    References
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../06-gnn-foundations/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    6. GNN Foundations: Message Passing and GCN
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../07-gnn-design-space/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    7. GNN Design Space: GraphSAGE and GAT
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../08-gnn-training/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    8. GNN Training, Augmentation, and Practical Tips
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../09-gnn-theory/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    9. Theory of GNNs: Expressiveness and the WL Test
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../10-powerful-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    10. Designing Powerful Encoders: GIN and Beyond
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../11-graph-transformers/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    11. Graph Transformers
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../12-knowledge-graph-embeddings/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    12. Knowledge Graph Embeddings
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../13-kg-reasoning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    13. Reasoning over Knowledge Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../14-kg-foundation-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    14. Knowledge Graph Foundation Models
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../15-heterogeneous-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    15. Heterogeneous Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../16-recommender-systems/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    16. GNNs for Recommender Systems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../17-relational-deep-learning/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    17. Relational Deep Learning
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../18-community-structure/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    18. Community Structure in Networks
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../19-subgraph-mining/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    19. Frequent Subgraph Mining
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../20-scaling-gnns/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    20. Scaling GNNs to Billion-Node Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../21-generative-models/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    21. Deep Generative Models for Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../22-temporal-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    22. Temporal and Dynamic Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../23-llm-gnn/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    23. LLMs and GNNs: Text-Attributed Graphs and Joint Training
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../24-advanced-gnn-topics/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    24. Advanced GNN Topics: In-Context Learning and Uncertainty
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../25-agents-and-graphs/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    25. Agents and Graphs
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../26-conclusion/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    26. Conclusion: The GNN Design Space and Open Problems
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../learning-graph/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Learning Graph
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    <li class="md-nav__item md-nav__item--pruned md-nav__item--nested">
+      
+        
+  
+  
+  
+    <a href="../../sims/" class="md-nav__link">
+      
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MicroSims
+  
+
+    
+  </span>
+  
+  
+
+      
+        <span class="md-nav__icon md-icon"></span>
+      
+    </a>
+  
+
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../glossary/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Glossary
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../license/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    License
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contact
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix="">
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concepts-covered" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concepts Covered
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#51-the-case-for-semi-supervised-learning-on-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.1 The Case for Semi-Supervised Learning on Graphs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#52-label-propagation-from-intuition-to-derivation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2 Label Propagation: From Intuition to Derivation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.2 Label Propagation: From Intuition to Derivation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#521-the-iterative-averaging-algorithm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.1 The Iterative Averaging Algorithm
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#522-matrix-formulation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.2 Matrix Formulation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#523-label-spreading-regularized-label-propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.2.3 Label Spreading: Regularized Label Propagation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#53-belief-propagation-probabilistic-message-passing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.3 Belief Propagation: Probabilistic Message Passing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#54-collective-classification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.4 Collective Classification
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#55-code-label-propagation-and-spreading-on-the-karate-club-graph" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.5 Code: Label Propagation and Spreading on the Karate Club Graph
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.5 Code: Label Propagation and Spreading on the Karate Club Graph">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-label-propagation-step-by-step-simulator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: Label Propagation Step-by-Step Simulator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#56-benchmark-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.6 Benchmark Comparison
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#57-information-diffusion-from-labels-to-influence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.7 Information Diffusion: From Labels to Influence
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#58-the-linear-threshold-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.8 The Linear Threshold Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#59-the-independent-cascade-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.9 The Independent Cascade Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#510-the-sir-epidemic-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.10 The SIR Epidemic Model
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.10 The SIR Epidemic Model">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#diagram-sir-epidemic-dynamics-on-network-structures" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Diagram: SIR Epidemic Dynamics on Network Structures
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5101-connection-to-influence-maximization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.10.1 Connection to Influence Maximization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#511-common-pitfalls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.11 Common Pitfalls
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#512-exercises" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.12 Exercises
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5.12 Exercises">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remember" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remember
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#understand" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Understand
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Apply
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#analyze" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Analyze
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#evaluate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Evaluate
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Create
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#513-further-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5.13 Further Reading
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="Navigation">
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Chapters
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="./" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    5. Label Propagation and Semi-Supervised Learning
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/AnvithPothula/graph-neural-networks-textbook/blob/main/docs/chapters/05-label-propagation/index.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"></path></svg>
+    </a>
+  
+  
+
+
+<h1 id="chapter-5-label-propagation-and-semi-supervised-learning">Chapter 5: Label Propagation and Semi-Supervised Learning<a class="headerlink" href="#chapter-5-label-propagation-and-semi-supervised-learning" title="Permanent link">¶</a></h1>
+<p><strong>Part 1: Classical Graph Analysis</strong></p>
+<h2 id="summary">Summary<a class="headerlink" href="#summary" title="Permanent link">¶</a></h2>
+<p>Covers graph-based semi-supervised learning through label propagation and belief propagation, including influence maximization models that connect graph diffusion to epidemic dynamics.</p>
+<h2 id="concepts-covered">Concepts Covered<a class="headerlink" href="#concepts-covered" title="Permanent link">¶</a></h2>
+<p>This chapter covers the following 6 concepts from the learning graph:</p>
+<ol>
+<li>Label Propagation</li>
+<li>Belief Propagation</li>
+<li>Influence Maximization</li>
+<li>Linear Threshold Model</li>
+<li>Independent Cascade Model</li>
+<li>SIR Epidemic Model</li>
+</ol>
+<h2 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">¶</a></h2>
+<p>This chapter builds on:</p>
+<ul>
+<li><a href="../01-intro-to-graphs/">Chapter 1: Introduction to Graphs and Networks</a></li>
+</ul>
+<hr>
+<div class="admonition mascot-welcome">
+<p class="admonition-title">Labels on the Move</p>
+<p><img src="../../img/mascot/welcome.png" class="mascot-admonition-img" alt="Sage waving welcome">
+Welcome to Chapter 5! The previous four chapters focused on how graph structure can be measured and embedded. This chapter asks a different question: once you have a partially labeled graph — a few nodes with known class membership and thousands without — how do you classify the rest? The answer is deceptively simple: trust your neighbors. Label propagation formalizes this intuition into a mathematically principled algorithm, and from there we will extend to probabilistic belief propagation and to models of how influence and disease spread through networks. By the end of this chapter, graph diffusion will feel like a single unified idea expressed in several languages.</p>
+</div>
+<hr>
+<h2 id="51-the-case-for-semi-supervised-learning-on-graphs">5.1 The Case for Semi-Supervised Learning on Graphs<a class="headerlink" href="#51-the-case-for-semi-supervised-learning-on-graphs" title="Permanent link">¶</a></h2>
+<p>Consider a financial fraud detection team that has manually verified 500 out of five million transaction accounts. Labeling all five million accounts would require thousands of analyst-hours and is simply not feasible. However, a transaction graph is already available: nodes are accounts, and edges connect accounts that sent money to each other. The team knows from experience that fraudulent accounts tend to transact with other fraudulent ones — a property called <strong>homophily</strong>, or the tendency of similar nodes to connect. Can the 500 verified labels propagate through the transaction graph to classify the remaining accounts?</p>
+<p>This is the central problem of <strong>semi-supervised node classification</strong>: given a graph <span class="arithmatex">\( G = (V, E) \)</span>, a small set of labeled nodes <span class="arithmatex">\( V_L \subset V \)</span> with known labels <span class="arithmatex">\( Y_L \in \mathbb{R}^{|V_L| \times C} \)</span> (where <span class="arithmatex">\( C \)</span> is the number of classes), and a large set of unlabeled nodes <span class="arithmatex">\( V_U = V \setminus V_L \)</span>, predict labels <span class="arithmatex">\( \hat{Y}_U \)</span> for the unlabeled nodes using both the graph structure and the known labels. The ratio <span class="arithmatex">\( |V_L| / |V| \)</span> is often well below 1%, making this problem genuinely semi-supervised rather than simply a matter of applying a standard classifier.</p>
+<p>The key assumption enabling this approach is <strong>homophily</strong>: nodes connected by edges are more likely to share the same label than nodes chosen at random. Homophily is empirically well-supported across social networks, citation networks, and biological interaction networks, though it is not universal — the chapter on GNN theory will revisit settings where it breaks down. For now, we treat it as given and ask how strongly to enforce it algorithmically.</p>
+<p>Three classical approaches address semi-supervised node classification within the graph: label propagation (spreading labels through averaging), belief propagation (spreading probabilistic messages in a factor-graph framework), and collective classification (iteratively applying a local classifier and a relational classifier until convergence). All three instantiate the same core idea — information should flow along edges — but differ in what information flows and how it is aggregated.</p>
+<hr>
+<h2 id="52-label-propagation-from-intuition-to-derivation">5.2 Label Propagation: From Intuition to Derivation<a class="headerlink" href="#52-label-propagation-from-intuition-to-derivation" title="Permanent link">¶</a></h2>
+<h3 id="521-the-iterative-averaging-algorithm">5.2.1 The Iterative Averaging Algorithm<a class="headerlink" href="#521-the-iterative-averaging-algorithm" title="Permanent link">¶</a></h3>
+<p>The simplest possible algorithm for semi-supervised classification on a graph is also, in a sense, the most principled: at each iteration, replace every unlabeled node's label estimate with the average of its neighbors' current estimates, while holding labeled nodes fixed at their ground-truth values.</p>
+<p>Formally, let <span class="arithmatex">\( f_v \in [0, 1] \)</span> denote a soft label for node <span class="arithmatex">\( v \)</span> (the probability of belonging to the positive class, for binary classification). Initialize:</p>
+<div class="arithmatex">\[
+f_v^{(0)} = y_v \text{ if } v \in V_L, \quad f_v^{(0)} = 0.5 \text{ if } v \in V_U
+\]</div>
+<p>At each iteration <span class="arithmatex">\( t \)</span>, update each unlabeled node:</p>
+<div class="arithmatex">\[
+f_v^{(t+1)} = \frac{1}{|N(v)|} \sum_{u \in N(v)} f_u^{(t)}, \quad \forall v \in V_U
+\]</div>
+<p>and keep labeled nodes fixed: <span class="arithmatex">\( f_v^{(t+1)} = y_v \)</span> for all <span class="arithmatex">\( v \in V_L \)</span>.</p>
+<p>Repeat until <span class="arithmatex">\( \| f^{(t+1)} - f^{(t)} \|_\infty &lt; \epsilon \)</span> for a small convergence threshold <span class="arithmatex">\( \epsilon \)</span>.</p>
+<p>To extend to multi-class classification with <span class="arithmatex">\( C \)</span> classes, replace the scalar <span class="arithmatex">\( f_v \)</span> with a probability vector <span class="arithmatex">\( \mathbf{f}_v \in \Delta^{C-1} \)</span> (the probability simplex), and average component-wise. The final predicted class for node <span class="arithmatex">\( v \)</span> is <span class="arithmatex">\( \arg\max_c f_v^{(c)} \)</span>.</p>
+<h3 id="522-matrix-formulation">5.2.2 Matrix Formulation<a class="headerlink" href="#522-matrix-formulation" title="Permanent link">¶</a></h3>
+<p>The averaging rule can be written compactly using the adjacency matrix <span class="arithmatex">\( A \)</span> and degree matrix <span class="arithmatex">\( D \)</span>. Partition the nodes into labeled (<span class="arithmatex">\( L \)</span>) and unlabeled (<span class="arithmatex">\( U \)</span>) sets, and write the normalized adjacency as <span class="arithmatex">\( \tilde{A} = D^{-1} A \)</span>. The update rule becomes:</p>
+<div class="arithmatex">\[
+F_U^{(t+1)} = \tilde{A}_{UU} F_U^{(t)} + \tilde{A}_{UL} Y_L
+\]</div>
+<p>where <span class="arithmatex">\( \tilde{A}_{UU} \)</span> is the submatrix of <span class="arithmatex">\( \tilde{A} \)</span> connecting unlabeled nodes to each other, <span class="arithmatex">\( \tilde{A}_{UL} \)</span> connects unlabeled to labeled nodes, and <span class="arithmatex">\( Y_L \)</span> is the matrix of known labels.</p>
+<p>At convergence, setting <span class="arithmatex">\( F_U^* = \tilde{A}_{UU} F_U^* + \tilde{A}_{UL} Y_L \)</span> and solving:</p>
+<div class="arithmatex">\[
+F_U^* = (I - \tilde{A}_{UU})^{-1} \tilde{A}_{UL} Y_L
+\]</div>
+<p>This closed-form solution reveals the algorithm's theoretical underpinning. The matrix <span class="arithmatex">\( (I - \tilde{A}_{UU})^{-1} \)</span> is the <strong>graph harmonic solution</strong>: the fixed point <span class="arithmatex">\( F_U^* \)</span> satisfies <span class="arithmatex">\( f_v^* = \frac{1}{|N(v)|} \sum_{u \in N(v)} f_u^* \)</span> for every unlabeled node, meaning the label at each unlabeled node equals the average of its neighbors. Functions satisfying this averaging property are called <strong>harmonic functions</strong> on the graph — they minimize the discrete Laplacian energy <span class="arithmatex">\( \sum_{(u,v) \in E} (f_u - f_v)^2 \)</span> subject to the boundary conditions imposed by the labeled nodes.</p>
+<div class="admonition mascot-thinking">
+<p class="admonition-title">Why Harmonic Functions?</p>
+<p><img src="../../img/mascot/thinking.png" class="mascot-admonition-img" alt="Sage thinking">
+The harmonic-function perspective connects label propagation to a beautiful piece of probability theory. The value <span class="arithmatex">\( f_v^* \)</span> can be interpreted as the probability that a random walk starting at <span class="arithmatex">\( v \)</span> first hits a labeled node with class <span class="arithmatex">\( +1 \)</span> (rather than class <span class="arithmatex">\( -1 \)</span>). Two unlabeled nodes that are strongly connected to the same labeled region will receive similar estimates; two nodes on opposite sides of a bottleneck edge may receive very different estimates even if they are graph-distance neighbors. This probabilistic interpretation makes the algorithm's behavior on sparse or weakly connected regions intuitive: without a nearby labeled node to anchor the random walk, predictions will be driven by the distant boundary conditions and will tend toward uncertain (0.5).</p>
+</div>
+<h3 id="523-label-spreading-regularized-label-propagation">5.2.3 Label Spreading: Regularized Label Propagation<a class="headerlink" href="#523-label-spreading-regularized-label-propagation" title="Permanent link">¶</a></h3>
+<p>A practical limitation of the pure label propagation algorithm is that labeled nodes are held fixed throughout — they can influence unlabeled nodes but cannot themselves be corrected by the global structure. This is overly rigid when labels contain noise. <strong>Label spreading</strong>, introduced by Zhou et al. (2004), relaxes this constraint through a regularization parameter <span class="arithmatex">\( \alpha \in (0, 1) \)</span>:</p>
+<div class="arithmatex">\[
+F^{(t+1)} = \alpha \tilde{S} F^{(t)} + (1 - \alpha) Y
+\]</div>
+<p>where <span class="arithmatex">\( \tilde{S} = D^{-1/2} A D^{-1/2} \)</span> is the symmetric normalized adjacency (the same matrix that appears in GCN aggregation), and <span class="arithmatex">\( Y \)</span> is the full label matrix (with zeros for unlabeled nodes). At convergence:</p>
+<div class="arithmatex">\[
+F^* = (1 - \alpha)(I - \alpha \tilde{S})^{-1} Y
+\]</div>
+<p>The parameter <span class="arithmatex">\( \alpha \)</span> controls the trade-off between <strong>graph consistency</strong> (label estimates should be smooth across connected nodes) and <strong>fitting fidelity</strong> (label estimates for labeled nodes should stay close to their observed values). When <span class="arithmatex">\( \alpha \to 0 \)</span>, the solution collapses to the original labels; when <span class="arithmatex">\( \alpha \to 1 \)</span>, the solution approaches pure graph smoothing.</p>
+<p>The following table summarizes the design decisions distinguishing the two variants. Before reading it, note that "boundary condition" refers to whether labeled nodes are treated as hard constraints or soft preferences, and "labeled node correction" refers to whether the algorithm can revise its estimate for a node that has a known label.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Label Propagation</th>
+<th>Label Spreading</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Labeled node treatment</td>
+<td>Hard boundary (fixed)</td>
+<td>Soft regularization (can shift)</td>
+</tr>
+<tr>
+<td>Normalized adjacency</td>
+<td>Row-normalized <span class="arithmatex">\( D^{-1}A \)</span></td>
+<td>Symmetric <span class="arithmatex">\( D^{-1/2}AD^{-1/2} \)</span></td>
+</tr>
+<tr>
+<td>Convergence guarantee</td>
+<td>Yes (spectral radius &lt; 1)</td>
+<td>Yes (for all <span class="arithmatex">\( \alpha \in (0,1) \)</span>)</td>
+</tr>
+<tr>
+<td>Tunable trade-off</td>
+<td>No</td>
+<td>Yes (via <span class="arithmatex">\( \alpha \)</span>)</td>
+</tr>
+<tr>
+<td>Robust to label noise</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition mascot-tip">
+<p class="admonition-title">Choosing Between the Two</p>
+<p><img src="../../img/mascot/tip.png" class="mascot-admonition-img" alt="Sage giving a tip">
+In practice: use label propagation when your labeled set is small and you are confident in its quality (the hard boundary prevents any label drift). Use label spreading when labels might be noisy or when you have enough labeled nodes that you can afford to let the graph structure gently override outlier labels. The scikit-learn parameter <code>alpha</code> in <code>LabelSpreading</code> corresponds to the graph influence weight — default is 0.2, meaning 80% label fidelity and 20% graph smoothing. A common diagnostic: if the algorithm is assigning very different labels to nodes you know are near each other, decrease <code>alpha</code>.</p>
+</div>
+<hr>
+<h2 id="53-belief-propagation-probabilistic-message-passing">5.3 Belief Propagation: Probabilistic Message Passing<a class="headerlink" href="#53-belief-propagation-probabilistic-message-passing" title="Permanent link">¶</a></h2>
+<p>Label propagation operates on soft labels (scalars or probability vectors), but it does not model the joint distribution over all node labels. <strong>Belief propagation</strong> (BP) is a more general probabilistic framework that represents the entire inference problem as a graphical model and computes marginal distributions through local message passing.</p>
+<p>In the context of node classification, construct a <strong>factor graph</strong> with the following components. Each node <span class="arithmatex">\( v \)</span> has a variable <span class="arithmatex">\( X_v \in \{1, \ldots, C\} \)</span> representing its class. Three types of factors encode our beliefs:</p>
+<ul>
+<li><strong>Prior potential</strong> <span class="arithmatex">\( \phi_v(X_v) \)</span>: the prior probability of node <span class="arithmatex">\( v \)</span> belonging to class <span class="arithmatex">\( X_v \)</span>, derived from node attributes or a local classifier</li>
+<li><strong>Edge potential</strong> <span class="arithmatex">\( \psi_{uv}(X_u, X_v) \)</span>: the joint compatibility of assigning classes <span class="arithmatex">\( X_u \)</span> and <span class="arithmatex">\( X_v \)</span> to adjacent nodes, encoding the homophily assumption (same-class pairs are more compatible)</li>
+<li><strong>Evidence</strong> <span class="arithmatex">\( e_v(X_v) \)</span>: likelihood factor encoding observed label (1.0 for the observed class, 0 otherwise, for labeled nodes; uniform for unlabeled nodes)</li>
+</ul>
+<p>The belief propagation algorithm iteratively computes messages between nodes. The message from node <span class="arithmatex">\( u \)</span> to node <span class="arithmatex">\( v \)</span> — representing <span class="arithmatex">\( u \)</span>'s estimate of the distribution over <span class="arithmatex">\( X_v \)</span> — is updated at each iteration as:</p>
+<div class="arithmatex">\[
+\mu_{u \to v}(X_v) \propto \sum_{X_u} \phi_u(X_u) \cdot \psi_{uv}(X_u, X_v) \cdot e_u(X_u) \cdot \prod_{w \in N(u) \setminus v} \mu_{w \to u}(X_u)
+\]</div>
+<p>After message passing converges, the belief (marginal distribution) at each node is computed by multiplying incoming messages with the local potential:</p>
+<div class="arithmatex">\[
+b_v(X_v) \propto \phi_v(X_v) \cdot e_v(X_v) \cdot \prod_{u \in N(v)} \mu_{u \to v}(X_v)
+\]</div>
+<p>The predicted class for node <span class="arithmatex">\( v \)</span> is <span class="arithmatex">\( \arg\max_{X_v} b_v(X_v) \)</span>.</p>
+<p>On <strong>tree-structured graphs</strong>, belief propagation computes exact marginals in a single forward-backward pass — this is a foundational result in probabilistic graphical model theory. On graphs with cycles, the algorithm is an approximation called <strong>loopy belief propagation</strong> (LBP); it runs iteratively until convergence (or for a fixed number of rounds) and often finds good solutions in practice, even though its marginals are no longer guaranteed to be exact.</p>
+<p>Belief propagation has found substantial practical deployment in fraud detection pipelines, where the edge potential matrix <span class="arithmatex">\( \psi_{uv} \)</span> is learned from historical data and encodes the empirical co-occurrence of fraud labels among connected accounts.</p>
+<div class="admonition mascot-warning">
+<p class="admonition-title">The Loopy BP Trap</p>
+<p><img src="../../img/mascot/warning.png" class="mascot-admonition-img" alt="Sage warning">
+On graphs with short cycles — particularly triangles — loopy belief propagation double-counts evidence. Information from node <span class="arithmatex">\( A \)</span> can reach node <span class="arithmatex">\( B \)</span> through multiple paths, and BP treats each path as independent, effectively amplifying <span class="arithmatex">\( A \)</span>'s influence beyond what is statistically justified. The result is overconfident marginals that underestimate uncertainty. In practice, two mitigations are widely used: (1) damping — update messages as a weighted average of the new and previous message, which slows convergence but reduces oscillation; and (2) scheduling — update messages in a specific node order rather than synchronously, which reduces positive feedback loops. For graphs where cycles are structurally unavoidable (social networks, citation networks), accept LBP as an approximation and validate predictions against held-out labels rather than trusting the reported confidences.</p>
+</div>
+<hr>
+<h2 id="54-collective-classification">5.4 Collective Classification<a class="headerlink" href="#54-collective-classification" title="Permanent link">¶</a></h2>
+<p>Label propagation and belief propagation both assume that nodes carry no features beyond their graph position and initial label. In many practical settings, nodes have rich attribute vectors — user profiles in a social network, abstract embeddings in a citation network, transaction amounts in a financial graph. <strong>Collective classification</strong> integrates local attribute-based prediction with relational label propagation through three interacting components:</p>
+<ol>
+<li>
+<p><strong>Local classifier:</strong> a standard machine-learning model (logistic regression, gradient-boosted tree) that predicts initial soft labels from node attributes, ignoring the graph structure entirely.</p>
+</li>
+<li>
+<p><strong>Relational classifier:</strong> a model that predicts a node's label from the label distribution among its neighbors — either the raw average (as in label propagation) or a learned function of neighbor label statistics.</p>
+</li>
+<li>
+<p><strong>Collective inference:</strong> an iterative procedure that alternates between applying the relational classifier to update label estimates and feeding those estimates back as input to the relational classifier. The iteration continues until label estimates stabilize.</p>
+</li>
+</ol>
+<p>The collective inference loop can be seen as a precursor to the GNN message-passing paradigm: it repeatedly propagates information from labeled regions outward through the graph, at each step refining estimates based on the updated neighborhood context. The key difference from GNNs is that collective classification uses fixed, hand-designed aggregation functions and is not trained end-to-end.</p>
+<p><strong>Modern connections:</strong> Graph Neural Networks can be understood as a learned, differentiable generalization of label propagation. In standard GCN aggregation, the operation <span class="arithmatex">\( H^{(l+1)} = \sigma(\tilde{D}^{-1/2} \tilde{A} \tilde{D}^{-1/2} H^{(l)} W^{(l)}) \)</span> applies a learned linear transformation before aggregating — the linear transformation makes the aggregation task-adaptive rather than fixed. Two architectures that make the label-propagation connection explicit are:</p>
+<ul>
+<li>
+<p><strong>APPNP</strong> (Gasteiger et al., 2019): separate prediction and propagation. First compute feature representations <span class="arithmatex">\( Z = f_\theta(X) \)</span> using a shallow MLP, then propagate <span class="arithmatex">\( H^{(t+1)} = (1-\alpha) \tilde{A} H^{(t)} + \alpha Z \)</span> for <span class="arithmatex">\( K \)</span> steps. This is precisely label spreading with learned initial labels, and allows decoupling the depth of feature extraction from the depth of propagation.</p>
+</li>
+<li>
+<p><strong>C&amp;S</strong> (Huang et al., 2021): use a simple model (MLP) to generate initial predictions, then post-process with two label propagation steps — first to "correct" error residuals, then to "smooth" predictions across the graph. C&amp;S achieves competitive accuracy on ogbn-arxiv with dramatically fewer parameters than deep GNNs.</p>
+</li>
+</ul>
+<hr>
+<h2 id="55-code-label-propagation-and-spreading-on-the-karate-club-graph">5.5 Code: Label Propagation and Spreading on the Karate Club Graph<a class="headerlink" href="#55-code-label-propagation-and-spreading-on-the-karate-club-graph" title="Permanent link">¶</a></h2>
+<p>The following code demonstrates label propagation and label spreading using scikit-learn's implementations on the Karate Club social network. The code computes predictions for the 32 unlabeled nodes given labels for only 2 seed nodes — the club administrator (node 0, class 0) and the instructor (node 33, class 1) — using the faction assignments as ground truth for evaluation.</p>
+<p>Before reading the code, note the key parameters: <code>gamma</code> in <code>LabelPropagation</code> is the kernel width (set to 20 for the precomputed graph kernel), and <code>alpha</code> in <code>LabelSpreading</code> is the graph influence weight (0.8 means 80% graph smoothing, 20% label fidelity).</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">networkx</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nx</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.semi_supervised</span><span class="w"> </span><span class="kn">import</span> <span class="n">LabelPropagation</span><span class="p">,</span> <span class="n">LabelSpreading</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Load the Karate Club graph and faction labels</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">G</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">karate_club_graph</span><span class="p">()</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">faction_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">data</span><span class="p">[</span><span class="s1">'club'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'Officer'</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">G</span><span class="o">.</span><span class="n">nodes</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>  <span class="c1"># 0 = Mr. Hi (instructor), 1 = Officer (admin)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">n</span> <span class="o">=</span> <span class="n">G</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># Build the adjacency matrix as a kernel for scikit-learn</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">A</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">to_numpy_array</span><span class="p">(</span><span class="n">G</span><span class="p">)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># Seed: label node 0 (class 0) and node 33 (class 1); all others are -1 (unknown)</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">y</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>   <span class="c1"># Instructor's faction</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="n">y</span><span class="p">[</span><span class="mi">33</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Administrator's faction</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a><span class="c1"># ---------- Label Propagation ----------</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="n">lp</span> <span class="o">=</span> <span class="n">LabelPropagation</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">'precomputed'</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="n">lp</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a><span class="n">lp_preds</span> <span class="o">=</span> <span class="n">lp</span><span class="o">.</span><span class="n">transduction_</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a><span class="c1"># ---------- Label Spreading ----------</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a><span class="n">ls</span> <span class="o">=</span> <span class="n">LabelSpreading</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s1">'precomputed'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="n">ls</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a><span class="n">ls_preds</span> <span class="o">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">transduction_</span>
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a><span class="c1"># Evaluate on all 34 nodes (we know the ground-truth for all)</span>
+</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a><span class="c1"># Unlabeled during training, but we evaluate on everything</span>
+</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a><span class="n">mask_unlabeled</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a><span class="n">lp_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">faction_labels</span><span class="p">[</span><span class="n">mask_unlabeled</span><span class="p">],</span> <span class="n">lp_preds</span><span class="p">[</span><span class="n">mask_unlabeled</span><span class="p">])</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a><span class="n">ls_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">faction_labels</span><span class="p">[</span><span class="n">mask_unlabeled</span><span class="p">],</span> <span class="n">ls_preds</span><span class="p">[</span><span class="n">mask_unlabeled</span><span class="p">])</span>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38" href="#__codelineno-0-38"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Label Propagation accuracy (32 unlabeled nodes): </span><span class="si">{</span><span class="n">lp_acc</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39" href="#__codelineno-0-39"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Label Spreading accuracy   (32 unlabeled nodes): </span><span class="si">{</span><span class="n">ls_acc</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40" href="#__codelineno-0-40"></a>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41" href="#__codelineno-0-41"></a><span class="c1"># Show the predicted vs actual partition</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42" href="#__codelineno-0-42"></a><span class="n">misclassified_lp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43" href="#__codelineno-0-43"></a>    <span class="p">(</span><span class="n">lp_preds</span><span class="p">[</span><span class="n">mask_unlabeled</span><span class="p">]</span> <span class="o">!=</span> <span class="n">faction_labels</span><span class="p">[</span><span class="n">mask_unlabeled</span><span class="p">])</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44" href="#__codelineno-0-44"></a><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45" href="#__codelineno-0-45"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Misclassified by LP: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">misclassified_lp</span><span class="p">)</span><span class="si">}</span><span class="s2"> nodes"</span><span class="p">)</span>
+</span></code></pre></div>
+<p>On the Karate Club graph, label propagation from just 2 seed nodes achieves around <strong>94%</strong> accuracy on the 32 unlabeled nodes — correctly recovering the historical split between the instructor's and administrator's factions almost entirely from graph structure alone. The three nodes that are occasionally misclassified (nodes 2, 8, and 28) are structurally ambiguous: they sit near the boundary between the two factions and have neighbors in both camps.</p>
+<h4 id="diagram-label-propagation-step-by-step-simulator">Diagram: Label Propagation Step-by-Step Simulator<a class="headerlink" href="#diagram-label-propagation-step-by-step-simulator" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch05-label-propagation-stepper/main.html" width="100%" height="522px" scrolling="no"></iframe>
+<p><a href="../../sims/ch05-label-propagation-stepper/main.html">Run Label Propagation Step-by-Step Simulator Fullscreen</a></p>
+<hr>
+<h2 id="56-benchmark-comparison">5.6 Benchmark Comparison<a class="headerlink" href="#56-benchmark-comparison" title="Permanent link">¶</a></h2>
+<p>The following table provides accuracy figures for the semi-supervised node classification approaches covered in this chapter, evaluated on two standard citation network benchmarks (Cora and CiteSeer) using the standard Planetoid splits (20 labeled nodes per class).</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Cora Acc.</th>
+<th>CiteSeer Acc.</th>
+<th>Labeled nodes per class</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Label Propagation (Zhu 2003)</td>
+<td>68.0%</td>
+<td>45.3%</td>
+<td>20</td>
+</tr>
+<tr>
+<td>Label Spreading (Zhou 2004)</td>
+<td>72.4%</td>
+<td>50.2%</td>
+<td>20</td>
+</tr>
+<tr>
+<td>GCN (Kipf &amp; Welling 2017)</td>
+<td>81.5%</td>
+<td>70.3%</td>
+<td>20</td>
+</tr>
+<tr>
+<td>APPNP (Gasteiger et al. 2019)</td>
+<td>83.3%</td>
+<td>71.8%</td>
+<td>20</td>
+</tr>
+<tr>
+<td>C&amp;S post-processing (Huang et al. 2021)</td>
+<td>84.2%</td>
+<td>73.4%</td>
+<td>20</td>
+</tr>
+</tbody>
+</table>
+<p>The performance gap between classical label propagation and modern GNN-based methods is substantial on citation networks, where node features (bag-of-words abstracts) carry significant discriminative signal that pure structural methods cannot exploit. However, label propagation remains highly competitive in the <strong>feature-free, few-label</strong> regime: on social networks without node attributes, label spreading often matches GCN performance at a fraction of the computational cost.</p>
+<hr>
+<h2 id="57-information-diffusion-from-labels-to-influence">5.7 Information Diffusion: From Labels to Influence<a class="headerlink" href="#57-information-diffusion-from-labels-to-influence" title="Permanent link">¶</a></h2>
+<p>The second half of this chapter shifts from label propagation — where we propagate known information through a static graph — to <strong>influence maximization</strong> and <strong>epidemic spreading</strong>, where we ask a more dynamic question: how does a behavior, idea, or disease spread through a network, and how can we best seed that spread?</p>
+<p>These two questions seem different, but they share the same mathematical skeleton as label propagation: information (or influence, or infection) originates at a seed set and diffuses outward along edges according to a propagation rule. The key difference is that spreading models are typically stochastic — each edge may or may not transmit — and we care about the final extent of the spread rather than the steady-state label at each node.</p>
+<div class="admonition mascot-encourage">
+<p class="admonition-title">Influence Maximization Is NP-Hard — and That's Okay</p>
+<p><img src="../../img/mascot/encouraging.png" class="mascot-admonition-img" alt="Sage encouraging">
+Finding the optimal seed set for influence maximization is NP-hard in general: no polynomial-time algorithm is known, and the problem is #P-hard to even approximate exactly. If that sounds discouraging, hold on. Kempe, Kleinberg, and Tardos (2003) proved that the influence function is <strong>monotone</strong> and <strong>submodular</strong> — meaning that adding any node to a larger seed set never increases influence more than adding it to a smaller one. Submodularity is the magic property that makes a simple greedy algorithm achieve a <span class="arithmatex">\( (1 - 1/e) \approx 63\% \)</span> approximation ratio relative to the true optimum. You trade 37% of the theoretical best for a polynomial-time algorithm with provable guarantees. In practice, greedy achieves much better than 63% on real networks.</p>
+</div>
+<hr>
+<h2 id="58-the-linear-threshold-model">5.8 The Linear Threshold Model<a class="headerlink" href="#58-the-linear-threshold-model" title="Permanent link">¶</a></h2>
+<p>The <strong>Linear Threshold Model</strong> (LTM), introduced in the network science literature by Granovetter (1978) and formalized for influence maximization by Kempe et al. (2003), models the spread of a behavior through a social network where individuals adopt once a sufficient fraction of their neighbors have already adopted.</p>
+<p>Formally, assign to each directed edge <span class="arithmatex">\( (u, v) \)</span> a weight <span class="arithmatex">\( w_{uv} \geq 0 \)</span> satisfying <span class="arithmatex">\( \sum_{u \in N^-(v)} w_{uv} \leq 1 \)</span>, where <span class="arithmatex">\( N^-(v) \)</span> is the set of in-neighbors of <span class="arithmatex">\( v \)</span>. Each node <span class="arithmatex">\( v \)</span> also has a threshold <span class="arithmatex">\( \theta_v \sim \text{Uniform}[0, 1] \)</span> drawn independently at the start of each diffusion simulation.</p>
+<p>The diffusion proceeds in discrete rounds:</p>
+<ol>
+<li><strong>Initialization:</strong> a seed set <span class="arithmatex">\( S \subseteq V \)</span> of initially active nodes is specified.</li>
+<li><strong>Propagation:</strong> at each round, node <span class="arithmatex">\( v \)</span> becomes active if the total weight of its already-active in-neighbors exceeds its threshold:
+[ \sum_{u \in N^-(v),\, u \text{ active}} w_{uv} \geq \theta_v ]</li>
+<li><strong>Termination:</strong> continue until no new nodes activate.</li>
+</ol>
+<p>The process is monotone: once a node is active, it remains so. The expected number of eventually active nodes given seed set <span class="arithmatex">\( S \)</span> is the <strong>influence function</strong> <span class="arithmatex">\( \sigma(S) \)</span>, which is the quantity we wish to maximize.</p>
+<p>The LTM captures <strong>complex contagion</strong>: adoption requires reinforcement from multiple neighbors, not just a single exposure. This makes it appropriate for modeling the spread of behaviors that require social proof — joining a new social platform, participating in a political movement, or adopting an expensive technology.</p>
+<hr>
+<h2 id="59-the-independent-cascade-model">5.9 The Independent Cascade Model<a class="headerlink" href="#59-the-independent-cascade-model" title="Permanent link">¶</a></h2>
+<p>Whereas the Linear Threshold Model focuses on accumulated threshold effects, the <strong>Independent Cascade Model</strong> (ICM) models single-exposure contagion: each active node independently attempts to activate each of its inactive neighbors in the round it first becomes active.</p>
+<p>Formally, assign to each directed edge <span class="arithmatex">\( (u, v) \)</span> a propagation probability <span class="arithmatex">\( p_{uv} \in [0, 1] \)</span>. The diffusion:</p>
+<ol>
+<li><strong>Initialization:</strong> seed set <span class="arithmatex">\( S \)</span> begins as active.</li>
+<li><strong>Propagation:</strong> when node <span class="arithmatex">\( u \)</span> first becomes active at round <span class="arithmatex">\( t \)</span>, it makes a single attempt to activate each inactive neighbor <span class="arithmatex">\( v \)</span>. The attempt succeeds with probability <span class="arithmatex">\( p_{uv} \)</span>, independently of all other attempts. If successful, <span class="arithmatex">\( v \)</span> becomes active at round <span class="arithmatex">\( t+1 \)</span>.</li>
+<li><strong>Termination:</strong> continue until no new activations occur.</li>
+</ol>
+<p>Each edge's activation is a Bernoulli trial, and activations across different edges are independent — hence the name. Because each node gets at most one activation attempt from each in-neighbor, the ICM also satisfies the submodularity condition, making greedy influence maximization applicable.</p>
+<p>The ICM and LTM produce qualitatively different spread patterns even on identical graphs. The ICM generates <strong>branching-process-like cascades</strong> with a long tail: small seeds often produce tiny cascades, but occasionally one seed becomes a global epidemic. The LTM tends to produce <strong>more predictable, threshold-driven</strong> activation fronts. For viral marketing, the ICM is typically more appropriate; for modeling technology adoption, the LTM better captures the social-proof dynamics.</p>
+<p>The following table summarizes the two models' key differences, which we have just established in prose above.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Linear Threshold Model</th>
+<th>Independent Cascade Model</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Activation rule</td>
+<td>Cumulative weight ≥ threshold</td>
+<td>Single Bernoulli trial per neighbor</td>
+</tr>
+<tr>
+<td>Contagion type</td>
+<td>Complex (multi-exposure)</td>
+<td>Simple (single-exposure)</td>
+</tr>
+<tr>
+<td>Parameters</td>
+<td>Edge weights, node thresholds</td>
+<td>Edge probabilities</td>
+</tr>
+<tr>
+<td>Application domain</td>
+<td>Technology adoption, social norms</td>
+<td>Viral content, disease spread</td>
+</tr>
+<tr>
+<td>Variance of spread</td>
+<td>Lower (threshold is deterministic given θ)</td>
+<td>Higher (Bernoulli variability per edge)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="510-the-sir-epidemic-model">5.10 The SIR Epidemic Model<a class="headerlink" href="#510-the-sir-epidemic-model" title="Permanent link">¶</a></h2>
+<p>The <strong>SIR model</strong> is the canonical compartmental epidemic model, providing the continuous-time analogue of the Independent Cascade Model. In the SIR framework, each node (individual) belongs to exactly one of three compartments:</p>
+<ul>
+<li><strong>Susceptible (S):</strong> not yet infected, but can be infected by contact with infectious individuals</li>
+<li><strong>Infectious (I):</strong> currently infected and capable of transmitting to susceptible neighbors</li>
+<li><strong>Recovered (R):</strong> previously infected, now immune and no longer transmitting</li>
+</ul>
+<p>The <strong>ordinary differential equations</strong> governing the population-level dynamics (assuming a well-mixed population, i.e., every individual contacts every other with equal probability) are:</p>
+<div class="arithmatex">\[
+\frac{dS}{dt} = -\beta S I, \quad \frac{dI}{dt} = \beta S I - \gamma I, \quad \frac{dR}{dt} = \gamma I
+\]</div>
+<p>where <span class="arithmatex">\( \beta \)</span> is the <strong>transmission rate</strong> (contacts per unit time × probability of transmission per contact) and <span class="arithmatex">\( \gamma \)</span> is the <strong>recovery rate</strong> (inverse of average infectious period). The key quantity governing epidemic behavior is the <strong>basic reproduction number</strong>:</p>
+<div class="arithmatex">\[
+R_0 = \frac{\beta}{\gamma}
+\]</div>
+<p>When <span class="arithmatex">\( R_0 &gt; 1 \)</span>, a small initial infection will grow to a large-scale epidemic before dying out. When <span class="arithmatex">\( R_0 &lt; 1 \)</span>, the infection dies out exponentially. At <span class="arithmatex">\( R_0 = 1 \)</span>, the system is at the critical threshold.</p>
+<p>The mean-field SIR equations assume homogeneous mixing, which is unrealistic for real contact networks where individuals have highly heterogeneous degree distributions. On a <strong>network-structured SIR model</strong>, each node <span class="arithmatex">\( v \)</span> is in state <span class="arithmatex">\( \{S, I, R\} \)</span>, and transmission occurs along edges: a susceptible node <span class="arithmatex">\( v \)</span> transitions to infectious at rate <span class="arithmatex">\( \beta \cdot |\{u \in N(v) : u \text{ is infectious}\}| \)</span>, while each infectious node recovers at rate <span class="arithmatex">\( \gamma \)</span>.</p>
+<p>On heterogeneous networks with power-law degree distributions (which are common in real social and biological networks), the effective epidemic threshold <span class="arithmatex">\( \beta_c \)</span> is:</p>
+<div class="arithmatex">\[
+\beta_c = \frac{\gamma \langle k \rangle}{\langle k^2 \rangle}
+\]</div>
+<p>where <span class="arithmatex">\( \langle k \rangle \)</span> is the mean degree and <span class="arithmatex">\( \langle k^2 \rangle \)</span> is the mean of the squared degree. Because <span class="arithmatex">\( \langle k^2 \rangle / \langle k \rangle \gg 1 \)</span> for heavy-tailed degree distributions, the threshold <span class="arithmatex">\( \beta_c \to 0 \)</span> in the limit of diverging degree variance — meaning scale-free networks are extraordinarily susceptible to epidemic spread, regardless of how small the per-contact transmission probability is.</p>
+<h4 id="diagram-sir-epidemic-dynamics-on-network-structures">Diagram: SIR Epidemic Dynamics on Network Structures<a class="headerlink" href="#diagram-sir-epidemic-dynamics-on-network-structures" title="Permanent link">¶</a></h4>
+<iframe src="../../sims/ch05-sir-epidemic-network/main.html" width="100%" height="557px" scrolling="no"></iframe>
+<p><a href="../../sims/ch05-sir-epidemic-network/main.html">Run SIR Epidemic Dynamics on Network Structures Fullscreen</a></p>
+<h3 id="5101-connection-to-influence-maximization">5.10.1 Connection to Influence Maximization<a class="headerlink" href="#5101-connection-to-influence-maximization" title="Permanent link">¶</a></h3>
+<p>The SIR epidemic model and the Independent Cascade Model are mathematically equivalent under a specific parameter correspondence. In an ICM with uniform edge probability <span class="arithmatex">\( p \)</span>, the expected cascade size from a seed set <span class="arithmatex">\( S \)</span> equals the expected number of recovered nodes in an SIR epidemic initialized from <span class="arithmatex">\( S \)</span> with transmission rate <span class="arithmatex">\( \beta = p \)</span> and recovery rate <span class="arithmatex">\( \gamma = 1 \)</span> (one-round recovery). This equivalence, established by Draief and Massoulié (2010), allows epidemic models to inform the selection of intervention strategies — vaccinating the highest-degree nodes in an SIR model corresponds to removing the most influential seed candidates in an ICM.</p>
+<p><strong>Greedy influence maximization</strong> exploits submodularity to find a provably near-optimal seed set in polynomial time. The algorithm selects seeds one at a time, at each step choosing the node that maximizes the marginal gain in expected spread:</p>
+<div class="arithmatex">\[
+v^* = \arg\max_{v \notin S} \left[ \sigma(S \cup \{v\}) - \sigma(S) \right]
+\]</div>
+<p>Because <span class="arithmatex">\( \sigma \)</span> is submodular and monotone, the greedy algorithm achieves a <span class="arithmatex">\( (1 - 1/e) \approx 0.632 \)</span> approximation to the optimal <span class="arithmatex">\( k \)</span>-node seed set. In practice, <span class="arithmatex">\( \sigma(S) \)</span> is estimated by Monte Carlo sampling — running the ICM or LTM from <span class="arithmatex">\( S \)</span> for thousands of simulations and averaging the final cascade size — which is computationally expensive but embarrassingly parallelizable.</p>
+<hr>
+<h2 id="511-common-pitfalls">5.11 Common Pitfalls<a class="headerlink" href="#511-common-pitfalls" title="Permanent link">¶</a></h2>
+<p><strong>1. Violating the homophily assumption silently.</strong> Label propagation will confidently produce wrong predictions on <strong>heterophilic graphs</strong> (where nodes preferentially connect to nodes of different classes), because the averaging update will drive unlabeled nodes toward the opposite class from their labeled neighbors. Always check the homophily ratio <span class="arithmatex">\( h = \frac{|\{(u,v) \in E : y_u = y_v\}|}{|E|} \)</span> before applying LP. If <span class="arithmatex">\( h &lt; 0.3 \)</span>, LP is likely to underperform a node-feature-only classifier.</p>
+<p><strong>2. Forgetting to normalize edge weights in LTM.</strong> The constraint <span class="arithmatex">\( \sum_{u \in N^-(v)} w_{uv} \leq 1 \)</span> for each node <span class="arithmatex">\( v \)</span> is load-bearing: without it, the threshold <span class="arithmatex">\( \theta_v \sim [0,1] \)</span> has no meaningful relationship to the incoming weights, and any node with more than one active neighbor will activate regardless of its threshold. A common bug is to use symmetric weights summing over both directions.</p>
+<p><strong>3. Conflating fixed-label LP with label spreading.</strong> Running scikit-learn's <code>LabelPropagation</code> with a graph kernel automatically uses the fixed-boundary variant. If you are working with noisy labels, use <code>LabelSpreading</code> and tune <code>alpha</code>. The two APIs share similar names but implement fundamentally different regularization strategies.</p>
+<p><strong>4. Using greedy influence maximization without enough Monte Carlo samples.</strong> The marginal gain estimates for each candidate seed are noisy because each ICM simulation is a random draw. Using too few simulations (e.g., 100 instead of 10,000) can cause the greedy algorithm to make suboptimal choices early in the seed selection, producing a final set far worse than the theoretical guarantee. The Borgs et al. (2012) SKIM algorithm and Tang et al. (2014) TIM algorithm provide theoretically motivated sample-size bounds.</p>
+<p><strong>5. Applying the mean-field SIR ODE to structured networks.</strong> The ODE system assumes homogeneous mixing: every pair of nodes contacts each other at the same rate. On a real social network with degree heterogeneity, the ODE systematically underestimates early epidemic growth (high-degree hubs infect many neighbors quickly) and overestimates the epidemic peak (the high-degree nodes recover early, leaving the epidemic to spread more slowly through the low-degree periphery). Always use the network-structured SIR simulation for quantitative predictions.</p>
+<hr>
+<div class="admonition mascot-celebration">
+<p class="admonition-title">Label Propagation Across the Chapter</p>
+<p><img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating">
+You have just completed one of the most conceptually productive chapters in the textbook. Starting from the simple observation that connected nodes tend to share labels, you derived label propagation as a harmonic function problem, extended it to the regularized label spreading framework, and connected both to the GNN message-passing paradigm via APPNP and C&amp;S. From there you shifted to stochastic spreading: the Linear Threshold Model captures complex contagion requiring social proof, the Independent Cascade Model captures probabilistic single-exposure spread, and the SIR epidemic model bridges graph dynamics to the classical epidemiology literature. These are not unrelated algorithms — they are the same diffusion intuition expressed in different probabilistic vocabularies. The next chapter introduces Graph Neural Networks, which learn to parameterize this diffusion process end-to-end. Your neighbors have insights too!</p>
+</div>
+<hr>
+<h2 id="512-exercises">5.12 Exercises<a class="headerlink" href="#512-exercises" title="Permanent link">¶</a></h2>
+<h3 id="remember">Remember<a class="headerlink" href="#remember" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Define <strong>label propagation</strong> in one sentence and state the homophily assumption it relies on. Give one real-world domain where homophily is likely to hold and one where it is likely to fail.</p>
+</li>
+<li>
+<p>List the three components of <strong>collective classification</strong> and briefly describe the role each plays in the iterative inference procedure.</p>
+</li>
+</ol>
+<h3 id="understand">Understand<a class="headerlink" href="#understand" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Label propagation converges to a <strong>harmonic function</strong> on the graph. Explain what the harmonic property means formally (the averaging condition at unlabeled nodes) and describe its probabilistic interpretation in terms of random walks.</p>
+</li>
+<li>
+<p>The Linear Threshold Model and the Independent Cascade Model both simulate influence spread, but they make different assumptions about how activation occurs. Compare the two models: what is the key probabilistic difference, and what type of real-world contagion is each better suited to model?</p>
+</li>
+</ol>
+<h3 id="apply">Apply<a class="headerlink" href="#apply" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Consider a path graph <span class="arithmatex">\( P_5 \)</span> with nodes <span class="arithmatex">\( \{1, 2, 3, 4, 5\} \)</span> and edges <span class="arithmatex">\( \{(1,2), (2,3), (3,4), (4,5)\} \)</span>. Nodes 1 and 5 have labels <span class="arithmatex">\( y_1 = 1 \)</span> and <span class="arithmatex">\( y_5 = -1 \)</span>. Initialize all unlabeled nodes at <span class="arithmatex">\( f_v^{(0)} = 0 \)</span>. Run 3 iterations of label propagation (averaging update, labeled nodes fixed) by hand and report <span class="arithmatex">\( f_2^{(3)}, f_3^{(3)}, f_4^{(3)} \)</span>. What does the pattern suggest about the harmonic solution?</p>
+</li>
+<li>
+<p>In a small network with 5 nodes and edges <span class="arithmatex">\( \{(A,B), (A,C), (B,D), (C,D), (D,E)\} \)</span>, suppose seed set <span class="arithmatex">\( S = \{A\} \)</span> and each edge has ICM propagation probability <span class="arithmatex">\( p = 0.5 \)</span>. Enumerate all possible cascades and compute <span class="arithmatex">\( \sigma(\{A\}) \)</span>, the expected number of eventually activated nodes (including the seed).</p>
+</li>
+</ol>
+<h3 id="analyze">Analyze<a class="headerlink" href="#analyze" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>On a graph that contains many <strong>short triangles</strong> (3-cycles), loopy belief propagation can give overconfident marginal estimates. Construct a minimal graph example (4–6 nodes) and trace through two rounds of the LBP message update to show how information from a single seed node double-counts evidence when it travels through a triangle. What property of the graph's topology is responsible?</p>
+</li>
+<li>
+<p>The label propagation update <span class="arithmatex">\( F_U \leftarrow D_{UU}^{-1} A_{UU} F_U + D_{UU}^{-1} A_{UL} Y_L \)</span> is equivalent to a <strong>biased random walk</strong> on the graph. What does this equivalence imply about the predicted label for an unlabeled node that is far (graph-distance-wise) from all labeled nodes? Under what graph conditions would label propagation produce near-uniform (uninformative) predictions for such distant nodes?</p>
+</li>
+</ol>
+<h3 id="evaluate">Evaluate<a class="headerlink" href="#evaluate" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Compare <strong>label spreading</strong> (with tunable <span class="arithmatex">\( \alpha \)</span>) to <strong>label propagation</strong> (fixed boundary conditions) from the perspective of the regularization objective each minimizes. Under what graph structure — and what label quality assumption — would you strongly prefer one over the other? Support your answer with reference to the specific terms in each method's energy function.</p>
+</li>
+<li>
+<p>Evaluate the claim: "APPNP is simply label propagation applied on top of learned node features." Is this claim accurate? Identify at least one property of APPNP that standard label propagation does not possess, and explain what practical advantage that property provides in the low-label-rate regime.</p>
+</li>
+</ol>
+<h3 id="create">Create<a class="headerlink" href="#create" title="Permanent link">¶</a></h3>
+<ol>
+<li>
+<p>Design a <strong>directed, temporally decaying</strong> variant of the Independent Cascade Model in which the propagation probability from <span class="arithmatex">\( u \)</span> to <span class="arithmatex">\( v \)</span> at time <span class="arithmatex">\( t \)</span> decays as <span class="arithmatex">\( p_{uv}(t) = p_0 \cdot e^{-\lambda (t - t_u)} \)</span>, where <span class="arithmatex">\( t_u \)</span> is the time <span class="arithmatex">\( u \)</span> first became active and <span class="arithmatex">\( \lambda &gt; 0 \)</span> is a decay constant. Write out the formal activation rule, explain what real-world phenomenon this models, and describe how the expected cascade size <span class="arithmatex">\( \sigma(S) \)</span> changes as <span class="arithmatex">\( \lambda \to 0 \)</span> and <span class="arithmatex">\( \lambda \to \infty \)</span>.</p>
+</li>
+<li>
+<p>Propose a <strong>feature-aware belief propagation</strong> algorithm that augments the standard BP edge potential <span class="arithmatex">\( \psi_{uv}(X_u, X_v) \)</span> with node feature vectors <span class="arithmatex">\( \mathbf{x}_u, \mathbf{x}_v \)</span>. Specifically, define a modified edge potential <span class="arithmatex">\( \psi_{uv}^{\text{feat}}(X_u, X_v; \mathbf{x}_u, \mathbf{x}_v) \)</span> that uses feature similarity to weight the class-compatibility term. Show that your formulation reduces to standard BP in the case where all node feature vectors are identical, and explain what qualitative behavior you expect when two adjacent nodes have very dissimilar features.</p>
+</li>
+</ol>
+<hr>
+<h2 id="513-further-reading">5.13 Further Reading<a class="headerlink" href="#513-further-reading" title="Permanent link">¶</a></h2>
+<ol>
+<li>
+<p><strong>Zhu, X., Ghahramani, Z., &amp; Lafferty, J. (2003). Semi-supervised learning using Gaussian fields and harmonic functions.</strong> <em>Proceedings of ICML 2003.</em> The foundational paper deriving label propagation as a harmonic function problem on graphs. Includes the random-walk interpretation and closed-form solution that this chapter follows.</p>
+</li>
+<li>
+<p><strong>Zhou, D., Bousquet, O., Lal, T. N., Weston, J., &amp; Schölkopf, B. (2004). Learning with local and global consistency.</strong> <em>Advances in Neural Information Processing Systems (NeurIPS) 17.</em> Introduces label spreading with the symmetric normalized Laplacian, the regularization objective, and the α trade-off. Required reading alongside the Zhu et al. paper for a complete picture of the two complementary approaches.</p>
+</li>
+<li>
+<p><strong>Kempe, D., Kleinberg, J., &amp; Tardos, É. (2003). Maximizing the spread of influence through a social network.</strong> <em>Proceedings of KDD 2003.</em> The landmark paper establishing the submodularity of influence functions under both the LTM and ICM, proving the <span class="arithmatex">\( (1-1/e) \)</span> greedy guarantee, and introducing the influence maximization problem as a formal optimization problem.</p>
+</li>
+<li>
+<p><strong>Yedidia, J. S., Freeman, W. T., &amp; Weiss, Y. (2001). Generalized belief propagation.</strong> <em>Advances in Neural Information Processing Systems (NeurIPS) 13.</em> Extends belief propagation to factor graphs with higher-order interactions and provides a rigorous analysis of when and why loopy BP converges. A technically demanding but essential reference for understanding BP's approximation behavior on graphs with cycles.</p>
+</li>
+<li>
+<p><strong>Gasteiger, J., Bojchevski, A., &amp; Günnemann, S. (2019). Predict then propagate: Graph neural networks meet personalized PageRank.</strong> <em>International Conference on Learning Representations (ICLR 2019).</em> Introduces APPNP, making the connection between label spreading and GNN propagation explicit. The separation of feature learning and propagation is a key architectural insight for the chapters ahead.</p>
+</li>
+<li>
+<p><strong>Huang, Q., He, H., Singh, A., Lim, S. N., &amp; Benson, A. R. (2021). Combining label propagation and simple models out-performs graph neural networks.</strong> <em>International Conference on Learning Representations (ICLR 2021).</em> Demonstrates that C&amp;S post-processing — a two-step label propagation applied after a simple MLP — achieves state-of-the-art results on ogbn-arxiv and other OGB benchmarks with far fewer parameters than deep GNNs. A compelling argument that classical diffusion ideas are far from obsolete.</p>
+</li>
+<li>
+<p><strong>Pastor-Satorras, R., &amp; Vespignani, A. (2001). Epidemic spreading in scale-free networks.</strong> <em>Physical Review Letters, 86(14), 3200.</em> Derives the epidemic threshold <span class="arithmatex">\( \beta_c = \gamma \langle k \rangle / \langle k^2 \rangle \)</span> for heterogeneous networks, showing that scale-free networks have vanishing epidemic thresholds. The result fundamentally changed how epidemiologists and network scientists think about disease control on realistic contact networks.</p>
+</li>
+<li>
+<p><strong>Iscen, A., Tolias, G., Avrithis, Y., &amp; Chum, O. (2019). Label propagation for deep semi-supervised learning.</strong> <em>Proceedings of CVPR 2019.</em> Shows that label propagation in the embedding space of a deep network (using cosine similarity as the graph kernel) outperforms standard semi-supervised approaches on visual recognition benchmarks — a modern demonstration that label propagation remains a competitive component of deep learning pipelines when labels are scarce.</p>
+</li>
+</ol>
+<p><a href="references/">See Annotated References</a></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden="">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"></path></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Footer">
+        
+          
+          <a href="../04-node-embeddings/references/" class="md-footer__link md-footer__link--prev" aria-label="Previous: References">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"></path></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              <div class="md-ellipsis">
+                References
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="quiz/" class="md-footer__link md-footer__link--next" aria-label="Next: Quiz">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              <div class="md-ellipsis">
+                Quiz
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"></path></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright © 2026 Anvith Pothula. Licensed under <a href="license/">CC BY-NC-SA 4.0</a> for non-commercial use.
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.copy", "content.action.edit", "navigation.expand", "navigation.path", "navigation.prune", "navigation.indexes", "navigation.top", "navigation.footer", "toc.follow", "search.suggest", "search.highlight", "search.share"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  
+<script id="init-glightbox">const lightbox = GLightbox({"touchNavigation": true, "loop": false, "zoomable": true, "draggable": true, "openEffect": "zoom", "closeEffect": "zoom", "slideEffect": "slide"});
+document$.subscribe(()=>{ lightbox.reload(); });
+</script></body></html>

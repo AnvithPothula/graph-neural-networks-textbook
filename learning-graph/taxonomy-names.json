@@ -1,0 +1,17 @@
+{
+  "PREREQ": "Prerequisites",
+  "FOUND": "Graph Fundamentals",
+  "ALGO": "Classical Graph Algorithms",
+  "EMB": "Node Embeddings",
+  "GNN": "GNN Architecture",
+  "THEORY": "GNN Theory",
+  "TRANS": "Graph Transformers",
+  "KG": "Knowledge Graphs",
+  "HETERO": "Heterogeneous Graphs",
+  "APP": "Applications",
+  "SCALE": "Scalability",
+  "GEN": "Generative Models",
+  "ADV": "Advanced Topics",
+  "TRAIN": "Training & Optimization",
+  "TOOLS": "Tools & Frameworks"
+}
