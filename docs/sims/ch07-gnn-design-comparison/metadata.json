@@ -1,0 +1,45 @@
+{
+  "title": "GNN Design Space Interactive Comparison",
+  "creator": "Dan McCreary",
+  "subject": "High School Geometry",
+  "description": "Interactive MicroSim for gnn design space interactive comparison",
+  "date": "2026-05-30",
+  "educational": {
+    "gradeLevel": [
+      "9",
+      "10",
+      "11",
+      "12"
+    ],
+    "subjectArea": "Mathematics",
+    "topic": "GNN Design Space Interactive Comparison",
+    "learningObjectives": [
+      "TODO: Add learning objectives"
+    ],
+    "bloomsTaxonomy": "Create",
+    "duration": "10-15 minutes",
+    "prerequisites": [],
+    "standards": []
+  },
+  "technical": {
+    "framework": "Chart.js",
+    "version": "1.0",
+    "canvasDimensions": {
+      "width": "responsive",
+      "height": 450
+    },
+    "responsive": true,
+    "dependencies": [],
+    "accessibility": {
+      "hasAltText": false,
+      "keyboardNavigable": false
+    }
+  },
+  "pedagogical": {
+    "teachingStrategy": "Interactive exploration",
+    "keyQuestions": [],
+    "commonMisconceptions": [],
+    "assessmentOpportunities": []
+  },
+  "chapter": "07-gnn-design-space"
+}

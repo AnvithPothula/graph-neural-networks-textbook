@@ -1,6 +1,6 @@
 ---
 title: 'Graph Neural Networks'
-description: 'A comprehensive intelligent textbook on Graph Neural Networks — from graph theory to foundation models, with interactive MicroSims, full mathematical derivations, and Bloom's taxonomy exercises.'
+description: "A comprehensive intelligent textbook on Graph Neural Networks — from graph theory to foundation models, with interactive MicroSims, full mathematical derivations, and Bloom's taxonomy exercises."
 image: img/cover.png
 hide:
   - toc

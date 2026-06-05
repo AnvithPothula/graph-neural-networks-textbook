@@ -423,34 +423,9 @@ The key parameters: `in_steps=12` (60 minutes of history), `out_steps=12` (60 mi
 
 #### Diagram: Traffic Forecasting Architecture — MicroSim
 
-<details markdown="1">
-<summary>Temporal Graph — Traffic Sensor Network Visualization</summary>
-Type: microsim
-**sim-id:** ch22-traffic-temporal
-**Library:** p5.js
-**Status:** Specified
 
-Interactive p5.js MicroSim showing a simplified road sensor network evolving over time. Canvas: 780×460px, responsive to window resize events.
-
-**Layout:**
-- Left panel (380×400px): road network graph with 15 sensor nodes arranged in a loose grid mimicking a small city road network. Edges represent road connections. Node color encodes current traffic speed (green = fast / blue = normal / yellow = slow / red = congested).
-- Right panel (380×400px): time-series chart for the selected node, showing speed (y-axis, 0–70 mph) vs. time (x-axis, last 60 timesteps = 5 hours). A vertical "current time" line sweeps left to right.
-
-**Controls (below panels):**
-- "Play / Pause" button: animates the time scrubber; each frame advances by one 5-minute timestep
-- Speed slider (×1 to ×10): controls animation speed
-- "Select Node" — clicking any node in the left panel selects it and shows its time series in the right panel
-
-**Behavior:**
-- At each timestep, node colors update based on pre-generated synthetic speed data that includes: a morning rush (timesteps 30–50, speed drops), a midday lull (timesteps 60–80, normal), an evening rush (timesteps 90–110, drops again)
-- When a node is selected, the right panel shows its complete time series with the current timestep highlighted
-- Hovering any node shows a tooltip: "Node N | Current speed: X mph | Trend: ↑/↓/→"
-- Clicking any edge shows a tooltip: "Road segment: N1 ↔ N2 | Avg speed correlation: 0.73"
-
-**Learning objective (Understanding — Bloom's Taxonomy):** Students observe how spatial dependencies (neighboring sensors show correlated speed drops) and temporal dependencies (rush hours follow predictable patterns) motivate the joint spatio-temporal modeling approach of STGCN and DCRNN.
-
-Implementation: p5.js with synthetic sinusoidal speed data plus Gaussian noise. Node positions hardcoded as a 3×5 grid with some random offsets. Responsive via `windowResized()` callback.
-</details>
+<iframe src="../../sims/ch22-traffic-temporal/main.html" width="100%" height="522px" scrolling="no"></iframe>
+[Run Traffic Forecasting Architecture — MicroSim Fullscreen](../../sims/ch22-traffic-temporal/main.html)
 
 ## 22.9 Benchmark Results
 
@@ -533,3 +508,5 @@ TGN with the mean message aggregator achieves the best results on Wikipedia, wit
 !!! mascot-celebration "Graphs That Remember and Forget"
     <img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrates">
     You have now equipped yourself with the full temporal graph toolkit: the snapshot-vs.-event-stream choice that sets up the whole architectural design space; TGN's modular memory framework with its self-reinforcing and decay dynamics; TGAT's attention-only approach that forgoes memory in favor of simplicity; CAWN's causal walk encoding that dispenses with node identity entirely; and traffic forecasting as a grounding application where snapshot GNNs shine. The field is still young, and the design space is still being charted — every model we covered was published between 2019 and 2021, and the benchmarks are already due for revision with larger, more diverse datasets. But the core tension — how much to memorize vs. how much to recompute from the current graph state — will remain the fundamental trade-off in temporal graph learning for years to come.
+
+[See Annotated References](./references.md)

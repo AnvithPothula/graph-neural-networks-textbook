@@ -536,38 +536,8 @@ Several trends are noteworthy. GPS with RWSE achieves the best ZINC score despit
 
 The following interactive simulation allows exploration of how attention weights distribute across a molecular graph at different layers of a GPS model. Node brightness indicates attention received; edge thickness indicates the attention weight between connected pairs. Controls allow toggling between the MPNN attention head and the global self-attention head, and stepping through GPS layers to watch how attention evolves from local to long-range.
 
-<details markdown="1">
-<summary>MicroSim: Graph Transformer Attention Heatmap</summary>
-
-#### MicroSim: ch11-graph-transformer-attention
-
-**Concept:** Visualize how GPS attention weights change with graph distance and layer depth.
-
-**Controls:**
-- Graph selector: benzene ring, steroid backbone, random Erdős–Rényi graph
-- Layer slider: 1 → 5 GPS layers
-- Attention type toggle: MPNN local vs. global MHA
-- Node hover: display query vector magnitude and top-5 attended nodes
-
-**p5.js implementation notes:**
-- Initialize a small molecular graph (12–20 nodes) from a SMILES-like adjacency list
-- At each layer, sample synthetic attention weights from a softmax over pairwise distances + random noise (to mimic trained behavior without a real model)
-- Render attention as edge opacity; highlight the selected node's attention distribution in a side panel
-- When "global MHA" is selected, show attention edges even between non-adjacent nodes (rendered as curved arcs)
-- When "local MPNN" is selected, only show attention along existing graph edges
-
-**Pedagogical goal:** Students should observe that (1) MPNN attention is strictly local (only adjacent nodes), while (2) global MHA connects distant nodes directly, and (3) deeper layers use progressively more distributed attention patterns across the entire graph.
-
-```html
-<iframe
-  src="../../sims/ch11-graph-transformer-attention/main.html"
-  width="100%"
-  height="520px"
-  style="border:none;">
-</iframe>
-```
-
-</details>
+<iframe src="../../sims/ch11-graph-transformer-attention/main.html" width="100%" height="522px" scrolling="no"></iframe>
+[Run Graph Transformer Attention Heatmap Fullscreen](../../sims/ch11-graph-transformer-attention/main.html)
 
 ---
 
@@ -652,3 +622,5 @@ The following exercises span all six levels of Bloom's Taxonomy, from recall thr
 !!! mascot-celebration "Chapter 11 Complete — You've Crossed the Local–Global Divide"
     <img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating Chapter 11 completion">
     You've now seen how to lift message-passing GNNs into the Transformer paradigm — and why doing so requires careful thought about positional encoding, sign invariance, and computational cost. The key principles to carry forward: (1) graph topology must be explicitly encoded because attention is permutation-blind; (2) Laplacian eigenvectors are powerful but require sign-invariant processing; (3) RWSE is a simpler, sign-free alternative; and (4) GPS's modular MPNN + attention combination consistently outperforms pure Transformer or pure MPNN designs on molecular benchmarks. The next chapter turns from graph encoders to a different challenge — representing *knowledge* rather than structure — in the form of knowledge graph embeddings.
+
+[See Annotated References](./references.md)

@@ -499,34 +499,9 @@ GIN and PNA both approach the 1-WL ceiling on MUTAG. GCN's mean aggregation fall
 
 #### Diagram: GIN vs. GCN Expressiveness MicroSim
 
-<details markdown="1">
-<summary>ch10-gin-gcn-expressiveness — Interactive Expressiveness Demonstrator</summary>
 
-**sim-id:** ch10-gin-gcn-expressiveness  
-**Library:** p5.js  
-**Status:** scaffold
-
-**Purpose:** Show the expressive difference between GCN (mean aggregation) and GIN (sum aggregation) on two classic failure cases: the K₃,₃ / prism graph pair (both regular, WL-indistinguishable) and a pair of graphs that differ only in a triangle.
-
-**Layout:**
-
-- **Left panel**: Graph A with node embeddings shown as colored circles; color encodes the current embedding's first principal component (updated in real time as epochs advance).
-- **Right panel**: Graph B, same display.
-- **Bottom panel**: scatter plot of the final node embeddings in 2D (PCA projection). Distinct clusters = model can distinguish; overlapping clusters = model cannot.
-
-**Controls:**
-
-- **Model selector**: GCN (mean) vs. GIN (sum). Switches architecture without reloading the graphs.
-- **Graph pair selector**: K₃,₃ vs. prism | triangle vs. no-triangle | regular vs. irregular.
-- **Epoch slider**: 0–200 epochs. Drag to see how embeddings evolve during training.
-- **Run animation**: animates embedding evolution from epoch 0 to 200.
-
-**Interaction:**
-
-- Click any node → highlight which nodes in the other graph receive the same embedding (if any).
-- At convergence, a banner appears: "DISTINGUISHABLE" (green) or "INDISTINGUISHABLE" (red) based on whether any node embedding pair differs.
-
-</details>
+<iframe src="../../sims/ch10-gin-gcn-expressiveness/main.html" width="100%" height="542px" scrolling="no"></iframe>
+[Run GIN vs. GCN Expressiveness MicroSim Fullscreen](../../sims/ch10-gin-gcn-expressiveness/main.html)
 
 ---
 
@@ -624,3 +599,5 @@ Lower MAE is better for ZINC. Higher AUC and accuracy are better for all other m
 7. **Dwivedi, V. P., Luu, A. T., Laurent, T., Bengio, Y., & Bresson, X. (2022). Graph Neural Networks with Learnable Structural and Positional Representations.** *ICLR 2022.* Introduces learnable RWSE and LapPE as pre-computable node features that give standard 1-WL GNNs access to structural information beyond 1-WL, at no increase in per-layer computational cost. Achieves state-of-the-art on ZINC and PCQM4Mv2.
 
 8. **Huang, G., Sun, Y., Liu, Z., Sedra, D., & Weinberger, K. Q. (2016). Deep Networks with Stochastic Depth.** *ECCV 2016.* The original stochastic depth paper for CNNs, whose ideas transfer directly to GNNs. Shows that randomly dropping layers during training (with identity bypasses) improves accuracy, reduces training time, and allows training networks up to 1,200 layers. The GNN adaptation follows the same principle with GNN layers as the dropped units.
+
+[See Annotated References](./references.md)

@@ -214,45 +214,9 @@ def contrastive_loss(z1, z2, tau=0.5):
 
 #### Diagram: Graph Contrastive Learning — Two-View Pipeline
 
-<details markdown="1">
-<summary>Interactive contrastive learning pipeline with augmentation controls</summary>
-Type: MicroSim
-**sim-id:** ch24-graph-contrastive-learning<br/>
-**Library:** p5.js<br/>
-**Status:** Specified
 
-**Learning objective:** Students observe how different graph augmentation strategies create two views and how the contrastive loss is computed from their embeddings (Bloom's: Understanding — explaining how augmentation and loss interact to produce invariant representations).
-
-**Canvas:** 900 × 500 px, responsive to window resize. Dark gray background (#1a1a2e) for contrast.
-
-**Layout:** Three columns.
-
-Left column — "Original Graph": A small p5.js force-directed graph with 10 nodes and ~15 edges, colored by node type (two classes: blue and orange). Node labels 1–10.
-
-Middle column — "Two Views" (split into top half and bottom half):
-- Top: View 1 — the same graph with a subset of edges drawn in red (indicating dropped edges). A header shows "View 1: Edge Dropout (15%)".
-- Bottom: View 2 — the same graph with some node feature bars grayed out (indicating masked features). A header shows "View 2: Feature Masking (20%)".
-
-Right column — "Embedding Space": A 2D scatter plot (t-SNE visualization) showing 10 pairs of points. Each pair (view 1 embedding, view 2 embedding of the same node) is connected by a dashed line. Points from the same node are colored the same; points from different nodes have different colors. The loss value is shown below the plot.
-
-**Controls (bottom panel):**
-- "Edge Dropout %" slider: 0–40%, updates View 1 in real time
-- "Feature Masking %" slider: 0–40%, updates View 2 in real time
-- "Temperature τ" slider: 0.1–1.0, updates the loss display
-- "Resample Views" button: generates new random augmentations
-- Augmentation type dropdown for View 1: "Edge Dropout | Node Dropout | Feature Masking"
-- Augmentation type dropdown for View 2: same options
-
-**Interactions:**
-- Clicking a node in the Original Graph highlights its corresponding pair of points in the embedding scatter plot and draws connecting lines
-- Hovering over a point in the scatter plot shows: node ID, view number, embedding coordinates, cosine similarity to its pair
-- The loss value updates in real time when sliders change
-- Hovering over the loss display shows a tooltip explaining the NT-Xent formula in plain language
-
-**Visual style:** blue/orange for node classes, red for dropped edges, gray for masked features, dashed lines for positive pairs in embedding space
-
-**Responsiveness:** below 700px, display in single-column scroll layout
-</details>
+<iframe src="../../sims/ch24-graph-contrastive-learning/main.html" width="100%" height="522px" scrolling="no"></iframe>
+[Run Graph Contrastive Learning — Two-View Pipeline Fullscreen](../../sims/ch24-graph-contrastive-learning/main.html)
 
 The following table summarizes the augmentation strategies discussed above, organized by what they transform and what structural invariance they encourage. All strategies have been explained in prose before this table.
 
@@ -418,50 +382,9 @@ The following table compares OFA, PRODIGY, and a standard supervised GNN across 
 
 #### Diagram: DGI vs. Contrastive Learning — Concept Map
 
-<details markdown="1">
-<summary>Interactive concept map comparing self-supervised learning paradigms</summary>
-Type: MicroSim
-**sim-id:** ch24-ssl-concept-map<br/>
-**Library:** p5.js<br/>
-**Status:** Specified
 
-**Learning objective:** Students compare and contrast DGI and graph contrastive learning by interacting with a concept map that reveals how each method satisfies the three core SSL properties (Bloom's: Analyzing — comparing structural relationships between methods).
-
-**Canvas:** 800 × 480 px, responsive to window resize. White background with a subtle radial gradient.
-
-**Layout:** A concept map with three tiers:
-
-Top tier — "Three Core SSL Properties" (three rounded rectangles):
-- "Invariance to Augmentation" (light blue)
-- "Discrimination Across Nodes" (light green)  
-- "Structural Context" (light orange)
-
-Middle tier — "SSL Methods" (two oval nodes):
-- "DGI" (purple)
-- "Graph Contrastive Learning" (teal)
-
-Bottom tier — "Mechanisms" (five small boxes):
-- "Graph Corruption" → DGI
-- "Mutual Information (JSD)" → DGI
-- "Edge Dropout / Feature Masking" → GCL
-- "NT-Xent Loss" → GCL
-- "Two-View Encoder" → GCL
-
-Edges connect methods to the properties they satisfy:
-- DGI → Discrimination ✓, Structural Context ✓, Invariance to Augmentation (partial — via corruption)
-- GCL → Invariance ✓, Discrimination ✓, Structural Context ✓
-
-**Interactions:**
-- Clicking a method node (DGI or GCL) highlights all connected property and mechanism nodes, fades others
-- Clicking a property node highlights which methods satisfy it (fully or partially)
-- Clicking a mechanism node shows a tooltip with a one-paragraph explanation of that mechanism
-- Clicking a property node shows a tooltip with a one-paragraph definition
-- "Reset" button restores default state
-
-**Visual style:** color-coded by tier, click to highlight sub-graph, animated edge pulses when a connection is highlighted
-
-**Responsiveness:** nodes reposition to fill available canvas width via proportional scaling
-</details>
+<iframe src="../../sims/ch24-ssl-concept-map/main.html" width="100%" height="482px" scrolling="no"></iframe>
+[Run DGI vs. Contrastive Learning — Concept Map Fullscreen](../../sims/ch24-ssl-concept-map/main.html)
 
 ## 24.8 Benchmark Results
 
@@ -495,39 +418,9 @@ The table reveals an important pattern: **self-supervised methods approach super
 
 #### Diagram: Contrastive Loss Surface Explorer
 
-<details markdown="1">
-<summary>Interactive visualization of how augmentation strength affects contrastive loss</summary>
-Type: MicroSim
-**sim-id:** ch24-contrastive-loss-explorer<br/>
-**Library:** p5.js<br/>
-**Status:** Specified
 
-**Learning objective:** Students develop intuition for how augmentation strength and temperature interact to determine the shape of the contrastive loss landscape (Bloom's: Applying — manipulating parameters to observe their effect on the learning objective).
-
-**Canvas:** 780 × 440 px, responsive. Background: #f0f4ff.
-
-**Layout:** Two panels side by side.
-
-Left panel — "Augmented Views" (400 × 400): A small force-directed graph with 8 nodes. Two copies of this graph are shown as overlapping translucent layers. View 1 is blue; View 2 is orange. Dropped edges are drawn as dotted lines; masked features are shown as nodes with a gray center. A slider controls the augmentation strength (0–50%), which simultaneously adjusts edge dropout and feature masking percentages.
-
-Right panel — "Loss Landscape" (360 × 400): A heatmap showing the contrastive loss value as a function of:
-- X-axis: cosine similarity between the two views (−1 to 1)
-- Y-axis: temperature τ (0.1 to 1.0)
-A crosshair cursor marks the current (similarity, τ) point based on the current augmentation settings and temperature slider.
-
-**Controls:**
-- "Augmentation Strength" slider: 0–50% (adjusts both edge dropout and feature masking)
-- "Temperature τ" slider: 0.1–1.0
-- "Batch Size" dropdown: 16 / 64 / 256 (affects the number of negatives in the loss formula)
-- "Compute Loss" button: triggers a mock training step animation
-
-**Interactions:**
-- Clicking a node in the left panel shows its embedding vector (4D) as a bar chart in a tooltip
-- Hovering over the loss heatmap shows the loss value, gradient magnitude, and what the model "would learn" at that point (tooltip: "High τ → soft distribution, slow learning; Low τ → sharp distribution, faster learning but unstable")
-- A "Why does this work?" button shows a one-paragraph pop-up explaining the InfoNCE lower bound
-
-**Responsiveness:** panels stack vertically on screens narrower than 650px
-</details>
+<iframe src="../../sims/ch24-contrastive-loss-explorer/main.html" width="100%" height="482px" scrolling="no"></iframe>
+[Run Contrastive Loss Surface Explorer Fullscreen](../../sims/ch24-contrastive-loss-explorer/main.html)
 
 ## 24.11 Exercises
 
@@ -588,3 +481,5 @@ The following twelve exercises span all six levels of Bloom's taxonomy.
 !!! mascot-celebration "Chapter 24 Complete!"
     <img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrates chapter completion">
     You have reached the end of Chapter 24 — and with it, covered two of the most important open frontiers in graph machine learning. You now understand how DGI and graph contrastive learning extract rich representations from unlabeled graph data, how graph augmentation strategies create the views that drive contrastive learning, how PRODIGY extends in-context learning to graph-structured inputs, and how conformalized GNNs provide statistically rigorous uncertainty guarantees on top of any trained model. The next chapter brings everything together — agents, planning, and graphs — before the final conclusion synthesizes the full arc of the textbook.
+
+[See Annotated References](./references.md)

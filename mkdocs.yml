@@ -38,33 +38,114 @@ nav:
 
   - Chapters:
       - List of Chapters: chapters/index.md
-      - "0. Math and Programming Prerequisites": chapters/00-math-prerequisites/index.md
-      - "1. Introduction to Graphs and Networks": chapters/01-intro-to-graphs/index.md
-      - "2. Graph Properties and Traditional ML Features": chapters/02-graph-properties-and-features/index.md
-      - "3. Link Analysis and PageRank": chapters/03-link-analysis-pagerank/index.md
-      - "4. Node Embeddings: DeepWalk and node2vec": chapters/04-node-embeddings/index.md
-      - "5. Label Propagation and Semi-Supervised Learning": chapters/05-label-propagation/index.md
-      - "6. GNN Foundations: Message Passing and GCN": chapters/06-gnn-foundations/index.md
-      - "7. GNN Design Space: GraphSAGE and GAT": chapters/07-gnn-design-space/index.md
-      - "8. GNN Training, Augmentation, and Practical Tips": chapters/08-gnn-training/index.md
-      - "9. Theory of GNNs: Expressiveness and the WL Test": chapters/09-gnn-theory/index.md
-      - "10. Designing Powerful Encoders: GIN and Beyond": chapters/10-powerful-gnns/index.md
-      - "11. Graph Transformers": chapters/11-graph-transformers/index.md
-      - "12. Knowledge Graph Embeddings": chapters/12-knowledge-graph-embeddings/index.md
-      - "13. Reasoning over Knowledge Graphs": chapters/13-kg-reasoning/index.md
-      - "14. Knowledge Graph Foundation Models": chapters/14-kg-foundation-models/index.md
-      - "15. Heterogeneous Graphs": chapters/15-heterogeneous-graphs/index.md
-      - "16. GNNs for Recommender Systems": chapters/16-recommender-systems/index.md
-      - "17. Relational Deep Learning": chapters/17-relational-deep-learning/index.md
-      - "18. Community Structure in Networks": chapters/18-community-structure/index.md
-      - "19. Frequent Subgraph Mining": chapters/19-subgraph-mining/index.md
-      - "20. Scaling GNNs to Billion-Node Graphs": chapters/20-scaling-gnns/index.md
-      - "21. Deep Generative Models for Graphs": chapters/21-generative-models/index.md
-      - "22. Temporal and Dynamic Graphs": chapters/22-temporal-graphs/index.md
-      - "23. LLMs and GNNs: Text-Attributed Graphs and Joint Training": chapters/23-llm-gnn/index.md
-      - "24. Advanced GNN Topics: In-Context Learning and Uncertainty": chapters/24-advanced-gnn-topics/index.md
-      - "25. Agents and Graphs": chapters/25-agents-and-graphs/index.md
-      - "26. Conclusion: The GNN Design Space and Open Problems": chapters/26-conclusion/index.md
+      - "0. Math and Programming Prerequisites":
+          - Content: chapters/00-math-prerequisites/index.md
+          - Quiz: chapters/00-math-prerequisites/quiz.md
+          - References: chapters/00-math-prerequisites/references.md
+      - "1. Introduction to Graphs and Networks":
+          - Content: chapters/01-intro-to-graphs/index.md
+          - Quiz: chapters/01-intro-to-graphs/quiz.md
+          - References: chapters/01-intro-to-graphs/references.md
+      - "2. Graph Properties and Traditional ML Features":
+          - Content: chapters/02-graph-properties-and-features/index.md
+          - Quiz: chapters/02-graph-properties-and-features/quiz.md
+          - References: chapters/02-graph-properties-and-features/references.md
+      - "3. Link Analysis and PageRank":
+          - Content: chapters/03-link-analysis-pagerank/index.md
+          - Quiz: chapters/03-link-analysis-pagerank/quiz.md
+          - References: chapters/03-link-analysis-pagerank/references.md
+      - "4. Node Embeddings: DeepWalk and node2vec":
+          - Content: chapters/04-node-embeddings/index.md
+          - Quiz: chapters/04-node-embeddings/quiz.md
+          - References: chapters/04-node-embeddings/references.md
+      - "5. Label Propagation and Semi-Supervised Learning":
+          - Content: chapters/05-label-propagation/index.md
+          - Quiz: chapters/05-label-propagation/quiz.md
+          - References: chapters/05-label-propagation/references.md
+      - "6. GNN Foundations: Message Passing and GCN":
+          - Content: chapters/06-gnn-foundations/index.md
+          - Quiz: chapters/06-gnn-foundations/quiz.md
+          - References: chapters/06-gnn-foundations/references.md
+      - "7. GNN Design Space: GraphSAGE and GAT":
+          - Content: chapters/07-gnn-design-space/index.md
+          - Quiz: chapters/07-gnn-design-space/quiz.md
+          - References: chapters/07-gnn-design-space/references.md
+      - "8. GNN Training, Augmentation, and Practical Tips":
+          - Content: chapters/08-gnn-training/index.md
+          - Quiz: chapters/08-gnn-training/quiz.md
+          - References: chapters/08-gnn-training/references.md
+      - "9. Theory of GNNs: Expressiveness and the WL Test":
+          - Content: chapters/09-gnn-theory/index.md
+          - Quiz: chapters/09-gnn-theory/quiz.md
+          - References: chapters/09-gnn-theory/references.md
+      - "10. Designing Powerful Encoders: GIN and Beyond":
+          - Content: chapters/10-powerful-gnns/index.md
+          - Quiz: chapters/10-powerful-gnns/quiz.md
+          - References: chapters/10-powerful-gnns/references.md
+      - "11. Graph Transformers":
+          - Content: chapters/11-graph-transformers/index.md
+          - Quiz: chapters/11-graph-transformers/quiz.md
+          - References: chapters/11-graph-transformers/references.md
+      - "12. Knowledge Graph Embeddings":
+          - Content: chapters/12-knowledge-graph-embeddings/index.md
+          - Quiz: chapters/12-knowledge-graph-embeddings/quiz.md
+          - References: chapters/12-knowledge-graph-embeddings/references.md
+      - "13. Reasoning over Knowledge Graphs":
+          - Content: chapters/13-kg-reasoning/index.md
+          - Quiz: chapters/13-kg-reasoning/quiz.md
+          - References: chapters/13-kg-reasoning/references.md
+      - "14. Knowledge Graph Foundation Models":
+          - Content: chapters/14-kg-foundation-models/index.md
+          - Quiz: chapters/14-kg-foundation-models/quiz.md
+          - References: chapters/14-kg-foundation-models/references.md
+      - "15. Heterogeneous Graphs":
+          - Content: chapters/15-heterogeneous-graphs/index.md
+          - Quiz: chapters/15-heterogeneous-graphs/quiz.md
+          - References: chapters/15-heterogeneous-graphs/references.md
+      - "16. GNNs for Recommender Systems":
+          - Content: chapters/16-recommender-systems/index.md
+          - Quiz: chapters/16-recommender-systems/quiz.md
+          - References: chapters/16-recommender-systems/references.md
+      - "17. Relational Deep Learning":
+          - Content: chapters/17-relational-deep-learning/index.md
+          - Quiz: chapters/17-relational-deep-learning/quiz.md
+          - References: chapters/17-relational-deep-learning/references.md
+      - "18. Community Structure in Networks":
+          - Content: chapters/18-community-structure/index.md
+          - Quiz: chapters/18-community-structure/quiz.md
+          - References: chapters/18-community-structure/references.md
+      - "19. Frequent Subgraph Mining":
+          - Content: chapters/19-subgraph-mining/index.md
+          - Quiz: chapters/19-subgraph-mining/quiz.md
+          - References: chapters/19-subgraph-mining/references.md
+      - "20. Scaling GNNs to Billion-Node Graphs":
+          - Content: chapters/20-scaling-gnns/index.md
+          - Quiz: chapters/20-scaling-gnns/quiz.md
+          - References: chapters/20-scaling-gnns/references.md
+      - "21. Deep Generative Models for Graphs":
+          - Content: chapters/21-generative-models/index.md
+          - Quiz: chapters/21-generative-models/quiz.md
+          - References: chapters/21-generative-models/references.md
+      - "22. Temporal and Dynamic Graphs":
+          - Content: chapters/22-temporal-graphs/index.md
+          - Quiz: chapters/22-temporal-graphs/quiz.md
+          - References: chapters/22-temporal-graphs/references.md
+      - "23. LLMs and GNNs: Text-Attributed Graphs and Joint Training":
+          - Content: chapters/23-llm-gnn/index.md
+          - Quiz: chapters/23-llm-gnn/quiz.md
+          - References: chapters/23-llm-gnn/references.md
+      - "24. Advanced GNN Topics: In-Context Learning and Uncertainty":
+          - Content: chapters/24-advanced-gnn-topics/index.md
+          - Quiz: chapters/24-advanced-gnn-topics/quiz.md
+          - References: chapters/24-advanced-gnn-topics/references.md
+      - "25. Agents and Graphs":
+          - Content: chapters/25-agents-and-graphs/index.md
+          - Quiz: chapters/25-agents-and-graphs/quiz.md
+          - References: chapters/25-agents-and-graphs/references.md
+      - "26. Conclusion: The GNN Design Space and Open Problems":
+          - Content: chapters/26-conclusion/index.md
+          - Quiz: chapters/26-conclusion/quiz.md
+          - References: chapters/26-conclusion/references.md
 
   - Learning Graph:
       - Introduction: learning-graph/index.md
@@ -74,11 +155,69 @@ nav:
       - Taxonomy Distribution: learning-graph/taxonomy-distribution.md
       - Course Description Assessment: learning-graph/course-description-assessment.md
       - Mascot Style Guide: learning-graph/mascot-test.md
+      - Book Metrics: learning-graph/book-metrics.md
+      - Chapter Metrics: learning-graph/chapter-metrics.md
+      - Diagrams Table: learning-graph/diagram-table.md
+      - Diagrams Details: learning-graph/diagram-details.md
 
   - MicroSims:
-      - List of MicroSims: sims/index.md
-      - Learning Graph Viewer: sims/graph-viewer/index.md
+    - List of MicroSims: sims/index.md
+    - Agent Tool-Use Graph — Interactive Planner: sims/ch25-tool-use-graph/index.md
+    - Contrastive Loss Surface Explorer: sims/ch24-contrastive-loss-explorer/index.md
+    - Cross-KG Structure Transfer: sims/ch14-kg-embedding-space/index.md
+    - DGI vs. Contrastive Learning — Concept Map: sims/ch24-ssl-concept-map/index.md
+    - Drug Discovery GNN Pipeline: sims/ch21-drug-discovery-pipeline/index.md
+    - GAT Attention Weight Visualizer: sims/ch07-gat-attention-weights/index.md
+    - GCN Message Passing Visualizer: sims/ch06-gcn-message-passing/index.md
+    - GIN vs. GCN Expressiveness MicroSim: sims/ch10-gin-gcn-expressiveness/index.md
+    - Girvan-Newman Step-by-Step on the Karate Club Graph: sims/ch18-girvan-newman/index.md
+    - GNN Architecture Family Tree: sims/ch26-gnn-family-tree/index.md
+    - GNN Design Space Interactive Comparison: sims/ch07-gnn-design-comparison/index.md
+    - GNN Training Dynamics MicroSim: sims/ch08-gnn-training-dynamics/index.md
+    - Graph Contrastive Learning — Two-View Pipeline: sims/ch24-graph-contrastive-learning/index.md
+    - Graph Property Explorer: sims/ch01-graph-explorer/index.md
+    - Graph Transformer Attention Heatmap: sims/ch11-graph-transformer-attention/index.md
+    - Label Propagation Step-by-Step Simulator: sims/ch05-label-propagation-stepper/index.md
+    - Learning Graph Viewer: sims/graph-viewer/index.md
+    - LLM+GNN Pipeline Explorer (Full Version): sims/ch23-llm-gnn-explorer/index.md
+    - LLM+GNN Pipeline — Text-to-Prediction: sims/ch23-llm-gnn-pipeline/index.md
+    - Louvain Two-Phase Iteration Explorer: sims/ch18-louvain-explorer/index.md
+    - Matrix × Graph Explorer: sims/ch00-matrix-graph-explorer/index.md
+    - Motif Z-Score Explorer: sims/ch19-motif-zscore/index.md
+    - Multi-Hop KG Reasoning Agent: sims/ch25-multi-hop-reasoning/index.md
+    - node2vec Biased Random Walk Explorer: sims/ch04-node2vec-walk/index.md
+    - PageRank Power Iteration Simulator: sims/ch03-pagerank-power-iteration/index.md
+    - Query2Box Multi-Hop Traversal: sims/ch13-kg-query-traversal/index.md
+    - Relational Schema to Heterogeneous Graph: sims/ch17-table-to-graph/index.md
+    - SIGN Architecture vs. Neighbor Sampling Architecture: sims/ch20-sign-vs-sampling/index.md
+    - SIR Epidemic Dynamics on Network Structures: sims/ch05-sir-epidemic-network/index.md
+    - Spectral vs. Spatial GNN Explorer: sims/ch06-spectral-spatial-explorer/index.md
+    - SPMiner Order Embedding Space: sims/ch19-spminer-embedding/index.md
+    - Traffic Forecasting Architecture — MicroSim: sims/ch22-traffic-temporal/index.md
+    - TransE Embedding Geometry: sims/ch12-kg-embedding-geometry/index.md
+    - Typed Node and Edge Explorer: sims/ch15-hetero-graph-explorer/index.md
+    - User-Item Graph with Multi-Hop Propagation Visualization: sims/ch16-lightgcn-explorer/index.md
+    - WL Color Refinement Simulator: sims/ch02-wl-refinement/index.md
+    - WL Refinement MicroSim: sims/ch09-wl-refinement/index.md
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  - Glossary: glossary.md
+  - FAQ: faq.md
   - License: license.md
   - Contact: contact.md
 
@@ -172,6 +311,7 @@ exclude_docs: |
   **/cover-prompt.md
   **/TODO.md
   **/character-sheet.md
+  **/sim-spec.md
 
 # Rebuild on changes during `mkdocs serve`
 watch:

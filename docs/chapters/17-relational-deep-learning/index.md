@@ -500,43 +500,9 @@ The pattern across all three tasks is consistent: graph-based methods outperform
 
 #### Diagram: Relational Schema to Heterogeneous Graph
 
-<details markdown="1">
-<summary>Interactive visualization of relational-to-graph construction for a three-table e-commerce database</summary>
-Type: MicroSim
-**sim-id:** ch17-table-to-graph<br/>
-**Library:** p5.js<br/>
-**Status:** Specified
 
-**Learning objective:** Understand — students observe how foreign key relationships in a three-table relational database (Customers, Orders, Products) map to a heterogeneous graph with typed nodes and typed edges.
-
-**Canvas:** 900×520px, two-panel layout.
-
-**Left panel (380px): Tabular view**
-- Three scrollable HTML-style table widgets rendered with p5.js: Customers (4 rows shown), Orders (6 rows shown), Products (3 rows shown)
-- Each table has a distinct header color: Customers (blue), Orders (green), Products (orange)
-- FK columns highlighted in yellow (Orders.customer\_id, OrderItems.order\_id, OrderItems.product\_id)
-- On hover over an FK value (e.g., customer\_id = 3 in the Orders table), the referenced row in the Customers table also highlights
-- A "selected row" state: click any row to make it the focus row (highlighted with a border)
-
-**Right panel (500px): Graph view**
-- Heterogeneous graph with the same three node types (blue circles for customers, green squares for orders, orange diamonds for products)
-- 8 customer nodes, 12 order nodes, 5 product nodes, positioned using a force-directed layout with type-grouped initialization
-- Edges drawn as thin lines, colored by meta-relation type (blue for places→, green for for→, orange for includes→)
-- When a table row is selected in the left panel, the corresponding graph node highlights (red border + bold), and all its 1-hop and 2-hop neighbors are highlighted at decreasing opacity (1-hop bright, 2-hop dim)
-- When hovering over a graph node, a tooltip shows: node type, row ID, and feature values (from the table)
-
-**Interaction:**
-- Click any row in the left panel → highlights the corresponding node in the right panel and its neighborhood
-- Click any node in the right panel → highlights the corresponding table row in the left panel and the node's graph neighborhood
-- Toggle "Show reverse edges" checkbox: toggles display of reverse FK edges (customer→has\_order→order etc.)
-- Toggle "Show meta-relation labels" checkbox: labels each edge with its meta-relation type
-
-**Animation (optional):** when a node is first selected, a brief ripple animation shows messages propagating outward to 1-hop, then 2-hop neighbors, illustrating the GNN propagation concept.
-
-**Color scheme:** dark background (#1a1a2e). Customer nodes: #4fc3f7. Order nodes: #81c784. Product nodes: #ffb74d. Selected node: #ef5350. FK values in table: #ffd54f. Highlighted table rows: match node color at 30% opacity.
-
-**Caption below canvas:** "Every foreign key in a relational database becomes an edge in a graph. Click a row in any table to see which graph node it becomes and how information propagates through its neighborhood."
-</details>
+<iframe src="../../sims/ch17-table-to-graph/main.html" width="100%" height="562px" scrolling="no"></iframe>
+[Run Relational Schema to Heterogeneous Graph Fullscreen](../../sims/ch17-table-to-graph/main.html)
 
 ---
 
@@ -611,3 +577,5 @@ The following 12 exercises span all six levels of Bloom's taxonomy.
 !!! mascot-celebration "You've Linked the Tables"
     <img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating">
     The insight at the heart of Relational Deep Learning — that a relational database is already a graph, and its foreign keys are already edges — is one of those ideas that seems obvious once stated and yet took decades of separate development in database research and graph learning research before anyone formalized it explicitly. With this insight, the GNN toolkit developed across Chapters 6–16 becomes immediately applicable to the most abundant form of structured data in the world: not benchmark datasets curated for machine learning competitions, but the operational databases that run hospitals, banks, retailers, and governments. In Chapter 18, we shift focus from how information propagates through graphs to how graphs themselves are organized into communities — a question that is central to understanding social networks, biological systems, and the clustering structure of any large-scale relational system.
+
+[See Annotated References](./references.md)

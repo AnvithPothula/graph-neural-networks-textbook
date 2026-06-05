@@ -535,38 +535,8 @@ Three patterns stand out. First, Query2Box substantially outperforms GQE on all 
 
 ## 13.8 MicroSim: Query Box Traversal
 
-<details markdown="1">
-<summary>MicroSim: Interactive KG Multi-Hop Query Traversal</summary>
-
-#### MicroSim: ch13-kg-query-traversal
-
-**Concept:** Visualize how Query2Box grows and intersects boxes as it resolves a multi-hop query over a toy KG.
-
-**Controls:**
-- Query type selector: 1p / 2p / 2i
-- Anchor entity selector (click a node in the KG graph)
-- Relation dropdowns for each hop
-- Step button: advance one projection step and animate the box update
-
-**p5.js implementation notes:**
-- Render a toy KG with 8 entities as labeled circles connected by colored directed edges
-- Below the graph, show a 2D slice of the embedding space as a scatter plot with entity points
-- On each "Step" click: animate the current box (blue rectangle), shift its center and widen its offset, draw the new box (green rectangle)
-- For 2i: show two chains projecting independently to two boxes, then animate the intersection (gold region = overlap)
-- Entities inside the final answer box are highlighted as candidates in both views
-
-**Pedagogical goal:** Students observe that (1) each projection shifts and widens the box, (2) intersection narrows the feasible region to the overlap of two query chains, and (3) entities inside the final box are exactly those satisfying all path conditions simultaneously.
-
-```html
-<iframe
-  src="../../sims/ch13-kg-query-traversal/main.html"
-  width="100%"
-  height="520px"
-  style="border:none;">
-</iframe>
-```
-
-</details>
+<iframe src="../../sims/ch13-kg-query-traversal/main.html" width="100%" height="522px" scrolling="no"></iframe>
+[Run Query2Box Multi-Hop Traversal Fullscreen](../../sims/ch13-kg-query-traversal/main.html)
 
 ---
 
@@ -645,3 +615,5 @@ Three patterns stand out. First, Query2Box substantially outperforms GQE on all 
 !!! mascot-celebration "Chapter 13 Complete — From Triples to Multi-Hop Reasoning"
     <img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating Chapter 13 completion">
     You've traversed the full arc from individual triple scoring to complex multi-hop conjunctive reasoning. The key design principles: use box embeddings when you need to answer conjunctive queries at scale with constant per-query inference cost; use NBFNet when single-hop link prediction accuracy is the priority and you can afford per-query graph propagation; use BetaE when your query workload includes negation. Chapter 14 takes one more step — asking whether KG reasoning can be made truly universal, transferring across entirely different knowledge graphs without retraining, via foundation models for KGs.
+
+[See Annotated References](./references.md)

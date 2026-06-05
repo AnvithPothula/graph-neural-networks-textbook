@@ -564,38 +564,8 @@ Several results deserve attention. TransR outperforms TransE despite sharing the
 
 ## 12.13 MicroSim: TransE Geometry in 2D
 
-<details markdown="1">
-<summary>MicroSim: Knowledge Graph TransE Embedding Space</summary>
-
-#### MicroSim: ch12-kg-embedding-geometry
-
-**Concept:** Visualize TransE's translational geometry in 2D, showing how training drives valid triples to satisfy h + r ≈ t.
-
-**Controls:**
-- Entity selector: choose head entity (e.g., France, Germany, Japan)
-- Relation selector: choose relation (e.g., hasCapital, hasLanguage, borderedBy)
-- Step button: advance one training epoch and watch entity/relation vectors update
-- "Show invalid" toggle: highlight triples where ||h + r - t|| exceeds margin
-
-**p5.js implementation notes:**
-- Initialize 6 entities and 3 relations as 2D random vectors
-- Each frame, compute margin loss and update vectors via gradient step
-- Draw entities as colored circles; relations as colored arrows
-- For each true triple, draw a dotted arrow from h → h+r, solid arrow from h → t; close arrows = low loss
-- Show loss curve in corner panel
-
-**Pedagogical goal:** Students observe that training rotates and scales the vectors until the translational constraint is approximately satisfied for all positive triples, and that symmetric-relation triples cannot be simultaneously satisfied (h + r ≈ t AND t + r ≈ h → 2r ≈ 0).
-
-```html
-<iframe
-  src="../../sims/ch12-kg-embedding-geometry/main.html"
-  width="100%"
-  height="520px"
-  style="border:none;">
-</iframe>
-```
-
-</details>
+<iframe src="../../sims/ch12-kg-embedding-geometry/main.html" width="100%" height="522px" scrolling="no"></iframe>
+[Run TransE Embedding Geometry Fullscreen](../../sims/ch12-kg-embedding-geometry/main.html)
 
 ---
 
@@ -678,3 +648,5 @@ Several results deserve attention. TransR outperforms TransE despite sharing the
 !!! mascot-celebration "Chapter 12 Complete — You've Embedded the World's Knowledge"
     <img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating Chapter 12 completion">
     You've now seen how to compress the structured knowledge of millions of entities into dense geometric embeddings — and why the geometry must be chosen carefully to match the logical structure of the relations you're modeling. The key principles: translation handles composition but fails at symmetry; bilinear scoring handles symmetry but not antisymmetry; complex rotations cover all four patterns at no extra parameter cost. Chapter 13 pushes further: rather than completing individual triples, it tackles multi-hop reasoning chains — answering questions that require traversing several relation steps through the knowledge graph.
+
+[See Annotated References](./references.md)

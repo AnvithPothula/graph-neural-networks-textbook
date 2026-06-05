@@ -3,7 +3,7 @@
 **Skill Version:** 0.03
 **Assessment Date:** 2026-05-27
 
-## Overall Score: 97/100
+## Overall Score: 100/100
 
 **Quality Rating: Excellent — Ready for learning graph generation**
 
@@ -15,7 +15,7 @@
 | Target Audience | 5 | 5 | Four distinct audiences named with backgrounds specified |
 | Prerequisites | 5 | 5 | Required and optional prerequisites clearly distinguished; optional ones taught in Chapter 0 |
 | Main Topics Covered | 10 | 10 | 14 major topic areas enumerated; chapter structure reflects topic breadth |
-| Topics Excluded | 5 | 2 | No explicit "not covered" section; scope is implied by the chapter table but not stated directly |
+| Topics Excluded | 5 | 5 | Explicit "Explicitly Out of Scope" section added (2026-06-04): 7 out-of-scope areas named with rationale |
 | Learning Outcomes Header | 5 | 5 | Explicitly references 2001 Bloom's Taxonomy revision |
 | Remember (Level 1) | 10 | 10 | 4+ specific recall outcomes; names exact equations and algorithms |
 | Understand (Level 2) | 10 | 10 | 7 outcomes; explain/describe/summarize verbs correctly used |
@@ -25,27 +25,19 @@
 | Create (Level 6) | 10 | 10 | 5 outcomes; includes MicroSim design, KG construction, and lit review writing |
 | Descriptive Context | 5 | 5 | Strong motivation paragraph; improvement table vs. CS224W |
 
-**Total: 97/100**
+**Total: 100/100**
 
 ## Gap Analysis
 
-Only one minor gap identified:
+No gaps remaining. Previously identified gap resolved on 2026-06-04:
 
-**Topics Excluded (2/5):** The course description does not have an explicit "Topics NOT Covered" section. While the chapter structure implies scope (e.g., no reinforcement learning on graphs, no graph signal processing beyond GCN derivation), this is not stated. This has minimal impact on learning graph generation since the 282-concept list in `Materials/concept-list.md` provides authoritative scope.
+~~**Topics Excluded (2/5):** The course description did not have an explicit "Topics NOT Covered" section.~~
+
+**✅ Resolved:** An "Explicitly Out of Scope" section was added covering 7 areas: reinforcement learning on graphs, graph signal processing (beyond GCN derivation), streaming graph algorithms, hardware-level GNN optimization, GNN libraries beyond PyTorch Geometric, continuous-time differential equations on graphs, and quantum computing on graphs.
 
 ## Improvement Suggestions
 
-1. **Add a "Topics Not Covered" section** (low priority — does not block learning graph generation):
-   ```markdown
-   ## Explicitly Out of Scope
-   - Reinforcement learning on graphs
-   - Graph signal processing (beyond GCN spectral derivation)
-   - Streaming graph algorithms
-   - Hardware-level GNN optimization
-   - Survey of GNN libraries beyond PyTorch Geometric
-   ```
-
-All other elements score at the maximum. No other changes are needed before generating the learning graph.
+All improvement suggestions have been implemented. No further changes are needed.
 
 ## Concept Generation Readiness
 
@@ -61,7 +53,7 @@ The course description is exceptionally well-suited for learning graph generatio
 
 ## Next Steps
 
-Score is 97/100 — well above the 85-point threshold.
+Score is 100/100 — well above the 85-point threshold.
 
 Run the learning graph generator:
 

@@ -361,40 +361,9 @@ The spectral clustering algorithm thus operates in what we now recognize as the 
 
 #### Diagram: Spectral vs. Spatial GNN Explorer
 
-<details markdown="1">
-<summary>Interactive diagram comparing spectral and spatial views of graph convolution</summary>
 
-**sim-id:** ch06-spectral-spatial-explorer<br/>
-**Library:** p5.js<br/>
-**Status:** Specified
-
-**Learning objective:** Analyzing (Bloom's Level 4) — Students compare the spectral domain (Laplacian eigenvectors) and spatial domain (neighborhood aggregation) views of graph operations, identifying which operations are equivalent and which differ.
-
-**Canvas:** 800×500px, responsive to window resize. Split into two labeled panels side by side:
-
-**Left panel — Spatial Domain (400×500):**
-- A 12-node graph drawn with force layout (fixed seed positions for determinism)
-- Two seed nodes marked in orange; an interactive depth slider (K = 1, 2, 3) below the panel
-- Clicking "Propagate" runs K rounds of mean aggregation from the seed nodes, with concentric highlight rings showing the receptive field expanding hop-by-hop (color: blue→teal→green by distance)
-- Node labels show current h_v value (scalar, 2 decimal places) next to each node
-- Title: "Spatial: K-hop neighborhood aggregation"
-
-**Right panel — Spectral Domain (400×500):**
-- A bar chart of the 12 eigenvectors (sorted by eigenvalue) of the normalized Laplacian
-- Each bar colored by the eigenvalue magnitude (low = blue, high = red)
-- Clicking a bar highlights the corresponding eigenvector values on the graph in the left panel (node colors = eigenvector component values, diverging colormap)
-- A "low-pass filter" toggle: when on, zeros out all eigenvalues above a threshold (slider 0–λ_max), showing the smoothing effect of low-pass spectral filtering on the spatial graph
-- Title: "Spectral: Laplacian eigenvectors"
-
-**Interaction bridge:** actions in one panel synchronize to the other:
-- Propagating K hops in the spatial view updates the spectral filter band in the right panel to show which frequency components are active
-- Clicking a spectral eigenvector in the right panel highlights nodes by component magnitude in the left panel
-
-**Hover tooltips:** every node shows "Node [id] | h_v: [value] | degree: [d]"; every bar shows "Eigenvector [k] | λ_k = [value]"
-
-**Implementation notes:** pre-compute the 12-node graph's Laplacian eigendecomposition (all 12 eigenvalues and eigenvectors) as hardcoded arrays in the JavaScript. Use D3 or p5.js for rendering.
-
-</details>
+<iframe src="../../sims/ch06-spectral-spatial-explorer/main.html" width="100%" height="532px" scrolling="no"></iframe>
+[Run Spectral vs. Spatial GNN Explorer Fullscreen](../../sims/ch06-spectral-spatial-explorer/main.html)
 
 ---
 
@@ -531,42 +500,9 @@ After 200 epochs, this two-layer GCN should achieve approximately 81% test accur
 
 #### Diagram: GCN Message Passing Visualizer
 
-<details markdown="1">
-<summary>Interactive GCN message passing animation on the Karate Club graph</summary>
 
-**sim-id:** ch06-gcn-message-passing<br/>
-**Library:** p5.js<br/>
-**Status:** Specified
-
-**Learning objective:** Understanding (Bloom's Level 2) — Students observe how a GCN layer aggregates neighbor representations into a node's new embedding, developing intuition for the receptive field expansion across layers.
-
-**Canvas:** 760×540px, responsive to window resize. Force-directed layout of the 34-node Karate Club graph with fixed seed positions.
-
-**Initial state:**
-- All nodes rendered as gray circles (radius proportional to degree, range 10–20px)
-- Each node labeled with its current scalar feature value \( h_v^{(0)} \) (initialize to degree value normalized to [0,1])
-- A layer counter: "Layer: 0 / K"
-
-**Controls (below canvas):**
-- **K slider** (1–3, integer): number of GNN layers to animate
-- **Select node** button: click a node to highlight it as the "focal node" — messages from its neighbors will be animated
-- **Step** button: animate one layer of message passing for the focal node
-- **Reset** button: return to initial state
-
-**Animation per step:**
-1. **Message phase (1.2s):** animated arrows appear along all edges incident to the focal node, flowing from neighbors toward the focal node (color: gradient from gray to gold). Neighbor nodes briefly highlight (brighter outline).
-2. **Aggregation phase (0.8s):** the arrows converge to a glowing circle at the focal node. A small text overlay shows "AGGREGATE: mean of [N] neighbors".
-3. **Update phase (0.8s):** the focal node's color transitions smoothly from its current shade to its updated shade (new \( h_v \) value). The layer counter increments.
-
-**Receptive field visualization:**
-- When K > 1 and the user clicks Step multiple times, concentric rings highlight the 1-hop, 2-hop, 3-hop neighborhoods of the focal node in decreasing opacity (dark blue, medium blue, light blue).
-- A sidebar panel lists: "Focal node: [id] | Degree: [d] | h_v after Layer [k]: [value]"
-
-**Hover:** hovering any node shows "Node [id] | h_v: [value] | Neighbors: [list of IDs]"
-
-**Implementation notes:** Pre-compute Karate Club adjacency as a hardcoded edge list. Use a simple numerical mean aggregation (\( h_v^{(k)} \leftarrow \text{mean}_{u \in N(v) \cup \{v\}} h_u^{(k-1)} \)) for the animation — no learned weights needed. Ensure arrows are curved slightly for visual clarity on bidirectional edges.
-
-</details>
+<iframe src="../../sims/ch06-gcn-message-passing/main.html" width="100%" height="522px" scrolling="no"></iframe>
+[Run GCN Message Passing Visualizer Fullscreen](../../sims/ch06-gcn-message-passing/main.html)
 
 ---
 
@@ -664,3 +600,5 @@ GCN achieves strong performance on Cora with only two layers, illustrating that 
 7. **Nt, H., & Maehara, T. (2019). Revisiting graph neural networks: All we have is low-pass filtering.** *arXiv:1905.09550.* A rigorous analysis showing that GCN with ReLU activations is a polynomial low-pass filter and that over-smoothing is the inevitable consequence of high-order (deep) filtering. The spectral/spatial equivalence argument in this chapter builds on this work.
 
 8. **Bronstein, M. M., Bruna, J., Cohen, T., & Veličković, P. (2021). Geometric deep learning: Grids, groups, graphs, geodesics, and gauges.** *arXiv:2104.13478.* The comprehensive theoretical treatment of graph deep learning from first principles of symmetry and equivariance. Chapters 3–5 cover the spectral and spatial GNN derivations at graduate textbook depth.
+
+[See Annotated References](./references.md)

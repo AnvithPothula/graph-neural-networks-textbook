@@ -159,44 +159,9 @@ The original GAT paper uses \( K = 8 \) heads in the first layer and \( K = 1 \)
 
 #### Diagram: GAT Attention Weight Visualizer
 
-<details markdown="1">
-<summary>Interactive GAT attention weight visualization on a small graph</summary>
 
-**sim-id:** ch07-gat-attention-weights<br/>
-**Library:** p5.js<br/>
-**Status:** Specified
-
-**Learning objective:** Applying (Bloom's Level 3) — Students apply their understanding of attention coefficients by manipulating node features and observing how attention weights change, connecting the mathematical definition to visual intuition.
-
-**Canvas:** 720×500px, responsive to window resize. A 12-node graph (Karate Club subgraph: nodes 0–11) drawn with fixed force-layout positions.
-
-**Initial state:**
-- Nodes rendered as circles (radius 14px), colored by their class label (2 classes: blue/red for the two Karate Club factions)
-- Edges rendered as thin gray lines
-- No focal node selected; instruction text: "Click a node to inspect its attention pattern"
-
-**Interaction — click focal node:**
-When the user clicks a node \( i \):
-1. Highlight node \( i \) with a white border ring
-2. For each neighbor \( j \in \mathcal{N}(i) \):
-   - Compute a synthetic attention score: \( \alpha_{ij} = \text{softmax}(\cos(\mathbf{h}_i, \mathbf{h}_j)) \) where \( \mathbf{h}_v \) is the node's 2D position vector (proxy for features)
-   - Render the edge \( (i,j) \) with width proportional to \( \alpha_{ij} \) (range: 1px–12px)
-   - Color the edge on a cold-to-warm gradient: low attention = cool blue (#93c5fd), high attention = warm orange (#f97316)
-   - Display \( \alpha_{ij} \) as a label floating midway along the edge (2 decimal places)
-3. Render non-neighbor edges in light gray (opacity 0.2)
-4. Show a sidebar panel:
-   - "Focal node: [id]" 
-   - Table of neighbors sorted by \( \alpha_{ij} \) descending: columns = Neighbor ID, Attention Weight
-
-**Head selector:** a row of 4 toggle buttons labeled "Head 1", "Head 2", "Head 3", "Head 4" below the canvas. Each head uses a different synthetic attention function (e.g., different random projections of the position vectors) to simulate independent attention patterns. Selecting a head re-renders edge widths and colors for that head.
-
-**Reset button:** clears focal node selection.
-
-**Hover tooltip on any edge:** "Edge (\( i \), \( j \)) | \( \alpha_{ij} \) = [value] | Head: [k]"
-
-**Implementation notes:** Initialize 4 random 2×2 projection matrices at load time (fixed seed for reproducibility). For each head \( k \), attention score \( e_{ij}^{(k)} = \tanh(\mathbf{p}_k^T [\mathbf{pos}_i \| \mathbf{pos}_j]) \) where \( \mathbf{p}_k \) is the projection vector and \( \mathbf{pos}_v \) is node \( v \)'s 2D canvas position. Apply softmax over each focal node's neighborhood. Ensure canvas is readable at 480px width (collapse sidebar below canvas on narrow screens).
-
-</details>
+<iframe src="../../sims/ch07-gat-attention-weights/main.html" width="100%" height="502px" scrolling="no"></iframe>
+[Run GAT Attention Weight Visualizer Fullscreen](../../sims/ch07-gat-attention-weights/main.html)
 
 ---
 
@@ -443,39 +408,9 @@ print(f"GAT        | Val: {gat_val:.3f}  | Test: {gat_test:.3f}")
 
 #### Diagram: GNN Design Space Interactive Comparison
 
-<details markdown="1">
-<summary>Interactive benchmark chart comparing GCN, GraphSAGE, and GAT across design axes</summary>
 
-**sim-id:** ch07-gnn-design-comparison<br/>
-**Library:** Chart.js<br/>
-**Status:** Specified
-
-**Learning objective:** Evaluating (Bloom's Level 5) — Students compare architecture choices across multiple performance dimensions, developing the judgment to select appropriate GNN designs for given task constraints.
-
-**Canvas:** 720×480px, responsive to window resize.
-
-**Chart type:** Grouped bar chart with 4 bar groups (one per dataset: Cora, CiteSeer, ogbn-arxiv, QM9-molecule) and 3 bars per group (one per model: GCN, GraphSAGE, GAT).
-
-**Bar data (test accuracy or MAE):**
-- Cora: GCN 81.5%, GraphSAGE 82.0%, GAT 83.0%
-- CiteSeer: GCN 70.3%, GraphSAGE 71.3%, GAT 72.5%
-- ogbn-arxiv: GCN 71.7%, GraphSAGE 71.5%, GAT 73.9%
-- QM9 (MAE, lower is better, shown inverted as 1 − normalized_MAE): GCN 0.65, GraphSAGE 0.66, GAT 0.70
-
-**Bar colors:** GCN = #6366f1 (indigo), GraphSAGE = #10b981 (green), GAT = #f59e0b (amber)
-
-**Axes:** Y-axis labeled "Test Accuracy (%) or Performance Score"; X-axis labeled "Dataset"; gridlines at 10% intervals.
-
-**Controls (below chart):**
-- **Metric selector** toggle: "Accuracy" | "Relative Improvement over GCN" — switching shows delta bars
-- **Architecture filter** checkboxes: GCN, GraphSAGE, GAT — toggling hides/shows bars
-- **Design axis overlay** dropdown: "None" | "Skip connections effect" | "Aggregation effect" | "Depth effect" — selecting an overlay adds a line series showing the effect of that design change on each dataset
-
-**Hover on any bar:** tooltip showing "Model: [name] | Dataset: [name] | Score: [value] | Parameters: [count]"
-
-**Implementation notes:** Use Chart.js with the grouped bar chart type. Hardcode the data arrays in the JavaScript. For the overlay line series, hardcode the delta values from the You et al. (2020) design space study.
-
-</details>
+<iframe src="../../sims/ch07-gnn-design-comparison/main.html" width="100%" height="522px" scrolling="no"></iframe>
+[Run GNN Design Space Interactive Comparison Fullscreen](../../sims/ch07-gnn-design-comparison/main.html)
 
 ---
 
@@ -573,3 +508,5 @@ Several patterns are worth noting. GAT consistently outperforms both GCN and Gra
 7. **Bianchi, F. M., Grattarola, D., & Alippi, C. (2020). Spectral clustering with graph neural networks for graph pooling.** *Proceedings of ICML 2020.* The MinCutPool paper. Section 3's derivation of the MinCut loss from the normalized cut objective makes the connection to spectral clustering precise and readable.
 
 8. **Zhang, M., & Chen, Y. (2018). Link prediction based on graph neural networks.** *Advances in Neural Information Processing Systems (NeurIPS 31).* Introduces SEAL — an enclosing-subgraph-based link prediction framework that systematically uses virtual edges (local subgraph extraction) to provide structural context for link prediction. Benchmark results show consistent improvements over pure embedding-based methods on citation and biological networks.
+
+[See Annotated References](./references.md)

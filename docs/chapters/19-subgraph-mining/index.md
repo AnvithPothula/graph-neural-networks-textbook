@@ -157,34 +157,9 @@ where \( f_Q^{\text{real}} \) is the observed frequency of \( Q \) in \( G \), a
 
 #### Diagram: Motif Z-Score Explorer
 
-<details markdown="1">
-<summary>Interactive motif significance profile for small connected subgraphs</summary>
-Type: MicroSim
-**sim-id:** ch19-motif-zscore
-**Library:** p5.js
-**Status:** Specified
 
-**Learning objective:** Analyzing (Bloom's Level 4) — the student computes and interprets Z-scores for different subgraph patterns across multiple graph types, distinguishing statistical significance from raw frequency.
-
-**Canvas:** 800 × 480 px, responsive to window resize.
-
-**Layout:**
-- Left panel (300 px): dropdown to select host graph type (Karate Club, Random Erdős-Rényi, Barabási-Albert scale-free, Regular lattice). Display the selected graph as a force-directed vis-network rendering with 34 nodes. Show node degree distribution as a small bar chart below the graph.
-- Right panel (500 px): bar chart of Z-scores for all 13 non-isomorphic connected subgraphs on 3 and 4 nodes. Bars colored green if Z > 2.0 (motif), red if Z < -2.0 (anti-motif), gray otherwise. X-axis labels are small SVG thumbnails of each subgraph pattern.
-
-**Controls:**
-- Dropdown: "Host graph type" (Karate Club | Random | Scale-free | Lattice).
-- Slider: "Random ensemble size" (100, 500, 1000 samples). Increasing samples narrows confidence intervals.
-- "Recompute" button: regenerates the random ensemble and recomputes Z-scores.
-
-**Interaction:**
-- Hovering a bar shows a tooltip with the subgraph thumbnail, raw frequency in real graph, mean and std of random ensemble, and Z-score.
-- Clicking a bar highlights all instances of that subgraph pattern in the left panel (nodes turn gold, edges turn red).
-
-**Data:** Precompute and hardcode frequencies for the Karate Club graph. Simulate random ensembles using degree-sequence-preserving random rewiring (configuration model). Approximate Z-scores for other graph types using the same rewiring procedure.
-
-**Visual style:** White background, indigo bars default, green/red for significance thresholds. Font: sans-serif, 12px.
-</details>
+<iframe src="../../sims/ch19-motif-zscore/main.html" width="100%" height="522px" scrolling="no"></iframe>
+[Run Motif Z-Score Explorer Fullscreen](../../sims/ch19-motif-zscore/main.html)
 
 ## 19.5 Order Embeddings: Encoding Partial Orders in Continuous Space
 
@@ -319,36 +294,9 @@ The critical parameters are: `embed_dim` (the dimensionality of the order embedd
 
 #### Diagram: SPMiner Order Embedding Space
 
-<details markdown="1">
-<summary>Interactive 2D projection of order embedding space showing query-neighborhood relationships</summary>
-Type: MicroSim
-**sim-id:** ch19-spminer-embedding
-**Library:** p5.js
-**Status:** Specified
 
-**Learning objective:** Understanding (Bloom's Level 2) — the student observes how order embeddings encode the subgraph partial order geometrically, and how frequency estimation reduces to counting dominated points in embedding space.
-
-**Canvas:** 900 × 500 px, responsive to window resize.
-
-**Layout:**
-- Left panel (200 px): list of 6 predefined query graphs of increasing size (edge, triangle, 4-cycle, diamond, 4-clique, path-of-length-3). Clicking selects the active query.
-- Center panel (500 px): 2D scatter plot of order embedding space (embed_dim=2). Each point represents a node neighborhood embedding from the Karate Club graph. Points colored by size of neighborhood (small = blue, large = orange). Active query embedding shown as a large gold star. Points that "dominate" the query (i.e., are coordinate-wise >= query in both dimensions) shown in green (estimated subgraph matches). Non-dominating points shown in gray.
-- Right panel (200 px): estimated frequency (green match count / total points), true frequency from VF2 (for reference), and a precision metric.
-
-**Controls:**
-- Query selector (left panel): click any of the 6 query graphs.
-- Slider: "embedding dimension" (2D only — this sim is fixed at 2D for visualization).
-- Slider: "epsilon threshold" (0.001 to 0.1): changes which points count as "matches." Matching points turn green or revert to gray in real time.
-- "Show cone" toggle: draws the coordinate-wise dominance cone extending from the query point toward (+∞, +∞).
-
-**Interaction:**
-- Hovering a point shows a tooltip: neighborhood size, order violation value, match/no-match status.
-- The cone visualization updates in real time as epsilon changes.
-
-**Data:** Hardcode 2D order embeddings for the 34 Karate Club neighborhoods. Pre-compute true VF2 frequencies for the 6 query graphs. Embeddings can be synthetic but must satisfy the order property for the known ground-truth containment relationships.
-
-**Visual style:** White background, indigo axis lines, gold query star, green matches, gray non-matches. Font: sans-serif, 12px.
-</details>
+<iframe src="../../sims/ch19-spminer-embedding/main.html" width="100%" height="522px" scrolling="no"></iframe>
+[Run SPMiner Order Embedding Space Fullscreen](../../sims/ch19-spminer-embedding/main.html)
 
 ## 19.7 Comparing Classical and Neural Approaches
 
@@ -432,3 +380,5 @@ Frequent subgraph mining connects classical combinatorics to modern neural repre
 !!! mascot-celebration "Chapter 19 Complete!"
     <img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating at chapter end">
     You have traveled from a problem that is NP-complete in theory to an algorithm that answers frequency queries in milliseconds — and understood exactly where the gap between them lives. Subgraph isomorphism is hard in the worst case but tractable on real graphs; anti-monotonicity makes exhaustive enumeration feasible up to a point; and beyond that point, the partial order structure of subgraph containment can be encoded geometrically so that frequency estimation becomes a lookup rather than a search. The tension between exactness and scalability that runs through this chapter is not unique to subgraph mining — it is a recurring theme throughout graph machine learning, and the tools you have built here (order embeddings, max-margin contrastive training, approximation via geometric counting) will reappear in the chapters ahead.
+
+[See Annotated References](./references.md)

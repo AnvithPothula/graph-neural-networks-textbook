@@ -136,40 +136,9 @@ The critical limitation of Girvan-Newman is computational: computing exact edge 
 
 #### Diagram: Girvan-Newman Step-by-Step on the Karate Club Graph
 
-<details markdown="1">
-<summary>Girvan-Newman algorithm animated on the Karate Club graph</summary>
-Type: MicroSim
-**sim-id:** ch18-girvan-newman
-**Library:** p5.js
-**Status:** Specified
 
-**Learning objective:** Understand (Bloom's Level 2) — the student observes how edge betweenness centrality identifies bridge edges and how their successive removal exposes community structure.
-
-**Canvas:** 760 × 480 px, responsive to window resize.
-
-**Layout:**
-- Left panel (500 px wide): Karate Club graph with 34 nodes, force-directed layout. Nodes colored by current component membership (start all the same color, split into distinct colors as components separate). Edges colored by betweenness value: gradient from light gray (low betweenness) to vivid red (highest betweenness).
-- Right panel (260 px): current iteration number, current modularity Q, list of last 5 removed edges.
-
-**Controls (below the canvas):**
-- "Step" button: remove one edge (highest betweenness), recompute betweenness, rerender.
-- "Auto Play" button: continuously step every 800ms until graph is fully disconnected.
-- "Reset" button: restore original graph.
-
-**Interaction:**
-- Hovering any edge shows a tooltip with its betweenness value and rank.
-- Hovering any node shows its degree and community ID.
-
-**Behavior:**
-- On each step, highlight the to-be-removed edge in thick orange before deleting it (200ms pause).
-- After removal, recompute betweenness and update edge colors immediately.
-- Track and display modularity Q after each removal (using the formula shown in §18.4).
-- When Q is maximized, display a gold banner: "Maximum modularity reached: Q = {value}".
-
-**Visual style:** White background, indigo node fill, node labels showing node ID. Font: sans-serif, 12px.
-
-**Data:** Hardcode the adjacency list of the Karate Club graph (34 nodes, 78 edges).
-</details>
+<iframe src="../../sims/ch18-girvan-newman/main.html" width="100%" height="512px" scrolling="no"></iframe>
+[Run Girvan-Newman Step-by-Step on the Karate Club Graph Fullscreen](../../sims/ch18-girvan-newman/main.html)
 
 ## 18.6 The Louvain Algorithm: Greedy Modularity Optimization at Scale
 
@@ -236,35 +205,9 @@ The `resolution` parameter \( \gamma \) generalizes the null model: modularity b
 
 #### Diagram: Louvain Two-Phase Iteration Explorer
 
-<details markdown="1">
-<summary>Interactive visualization of Louvain's two-phase modularity optimization</summary>
-Type: MicroSim
-**sim-id:** ch18-louvain-explorer
-**Library:** p5.js
-**Status:** Specified
 
-**Learning objective:** Analyzing (Bloom's Level 4) — the student traces how local node moves aggregate into global community structure across multiple passes, and observes the compression operation that enables scaling.
-
-**Canvas:** 900 × 500 px, responsive to window resize.
-
-**Three-panel layout:**
-- Left panel (300 px): Original Karate Club graph. Nodes colored by current community assignment. Highlighted node (if any) shown in gold.
-- Center panel (300 px): Current super-graph after the last Phase 2 compression. Nodes are community super-nodes sized proportionally to the number of original nodes they represent. Edge thickness proportional to cross-community edge weight.
-- Right panel (300 px): Line chart tracking modularity Q across passes (x-axis: pass number, y-axis: Q value, range [0, 1]). A horizontal dashed line marks "Q = 0.3" as the community detection threshold.
-
-**Controls:**
-- "Run Phase 1" button: animates node reassignment — for each node (in order), shows the ΔQ arrow pointing to its new community (300ms per node), then snaps to final state.
-- "Run Phase 2" button: animates the compression — communities collapse into super-nodes with a brief animation, then the super-graph appears in center panel.
-- "Next Pass" button: triggers both Phase 1 and Phase 2 sequentially.
-- Slider: "Resolution γ" from 0.5 to 2.0, step 0.1. Resets and reruns when changed.
-- "Reset" button: restore initial state.
-
-**Interaction:**
-- Click any node in the left panel to see its ΔQ values for each neighboring community (shown as a tooltip bar chart).
-- Click any super-node in the center panel to expand it and see its constituent original nodes highlighted in the left panel.
-
-**Data:** Hardcode the Karate Club graph (34 nodes, 78 edges). Ground-truth faction labels available for comparison.
-</details>
+<iframe src="../../sims/ch18-louvain-explorer/main.html" width="100%" height="502px" scrolling="no"></iframe>
+[Run Louvain Two-Phase Iteration Explorer Fullscreen](../../sims/ch18-louvain-explorer/main.html)
 
 ## 18.7 Overlapping Communities: Beyond Disjoint Partitions
 
@@ -537,3 +480,5 @@ The following twelve exercises span all six Bloom's taxonomy levels.
 !!! mascot-celebration "Chapter 18 Complete!"
     <img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating the end of the chapter">
     You have now traversed the full arc of community detection — from the sociological intuition of strong and weak ties, through the modularity quality function and the algorithms that optimize it, to overlapping memberships and adversarial applications in fraud detection. The Karate Club graph's two factions, which Zachary observed by hand in 1977, turn out to be discoverable by every algorithm in this chapter: Girvan-Newman finds the bridge edge that separated them, Louvain assigns each node to its correct faction, and BigCLAM places the boundary-spanning members in both communities simultaneously. Real networks are rarely this clean — but understanding why they sometimes are, and why they often are not, is the foundation for everything that comes next.
+
+[See Annotated References](./references.md)

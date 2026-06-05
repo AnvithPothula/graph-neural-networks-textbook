@@ -1,7 +1,7 @@
 ---
 title: Course Description for Graph Neural Networks and Machine Learning with Graphs
 description: A detailed course description for Graph Neural Networks and Machine Learning with Graphs including overview, topics covered and learning objectives in the format of the 2001 Bloom Taxonomy
-quality_score: 97
+quality_score: 100
 ---
 
 # Course Description: Machine Learning with Graphs
@@ -247,6 +247,20 @@ Primary evaluation datasets:
 - **MovieLens-1M** — recommendation
 - **ZINC** — molecular property prediction
 - **RelBench** — relational databases
+
+---
+
+## Explicitly Out of Scope
+
+The following topics are intentionally **not covered** in this textbook:
+
+- **Reinforcement learning on graphs** — graph-structured state/action spaces, GNN-based policy networks, and graph-based reward shaping are excluded; learners should consult dedicated RL textbooks for this intersection.
+- **Graph signal processing (beyond GCN spectral derivation)** — the full GSP literature (filterbanks, graph wavelets, spectral clustering via Laplacian eigenvectors) is covered only insofar as it motivates the GCN derivation in Chapter 6; deeper GSP theory is out of scope.
+- **Streaming and dynamic graph algorithms** — temporal graphs (Chapter 22) covers event-based and snapshot models for GNNs, but classical streaming algorithms (e.g., triangle counting under memory constraints) and fully online graph processing are not covered.
+- **Hardware-level GNN optimization** — GPU kernel design, sparse tensor formats for graphs, and chip-level inference optimization are not addressed; the focus stays at the software/model level.
+- **Survey of GNN libraries beyond PyTorch Geometric** — DGL, Spektral, GraphNets, and JAX-based frameworks are not covered; all code examples use PyTorch Geometric exclusively.
+- **Continuous-time differential equations on graphs** — neural ODEs on graphs and diffusion-PDE interpretations of GNNs are touched on briefly in the theory chapter but not developed in depth.
+- **Quantum computing on graphs** — quantum graph algorithms and quantum GNNs are entirely out of scope.
 
 ---
 

@@ -530,34 +530,9 @@ The plain GCN collapses at depth 8 and produces near-random embeddings at depth 
 
 #### Diagram: GNN Training Dynamics MicroSim
 
-<details markdown="1">
-<summary>ch08-gnn-training-dynamics — Interactive Training Curve Visualizer</summary>
 
-**sim-id:** ch08-gnn-training-dynamics  
-**Library:** p5.js  
-**Status:** scaffold
-
-**Purpose:** Visualize how training loss and validation accuracy diverge over epochs for GCNs of different depths, making the B₁ over-smoothing feedback loop tangible.
-
-**Layout:**
-
-- **Left panel**: dual y-axis chart. Left axis: training loss (red curve). Right axis: validation accuracy (blue curve). X-axis: epochs 0–300. A vertical dashed line marks the epoch of peak validation accuracy (best checkpoint).
-- **Right panel**: schematic graph with 20 nodes colored by predicted class. Colors update every 10 epochs as the model trains.
-
-**Controls:**
-
-- **Depth slider** (1–16 layers): changes GCN depth; re-runs the simulation automatically.
-- **Skip connections toggle**: switches between plain GCN and GCN + residual; both curves are overlaid in different line styles.
-- **Dropout slider** (0.0–0.8): adjust regularization strength and watch how it affects the accuracy peak.
-- **Run / Pause / Reset buttons**: control the animation.
-
-**Interaction:**
-
-- Hover anywhere on the chart → tooltip shows epoch number, training loss, and validation accuracy at that point.
-- When early stopping fires, the chart displays a "STOP (patience=50)" annotation at the termination epoch.
-- Click a node in the graph panel → highlight which training nodes influenced its embedding via K-hop neighborhood display.
-
-</details>
+<iframe src="../../sims/ch08-gnn-training-dynamics/main.html" width="100%" height="532px" scrolling="no"></iframe>
+[Run GNN Training Dynamics MicroSim Fullscreen](../../sims/ch08-gnn-training-dynamics/main.html)
 
 ---
 
@@ -657,3 +632,5 @@ The table below reports test accuracy on Cora (node classification) for configur
 7. **You, Y., Chen, T., Sui, Y., Chen, T., Wang, Z., & Shen, Y. (2020). Graph Contrastive Learning with Augmentations.** *NeurIPS 2020.* Systematically evaluates four graph augmentation strategies (node dropping, edge perturbation, attribute masking, subgraph sampling) for contrastive SSL. Finds that the best strategy is domain-dependent and that composing node dropping with attribute masking achieves robust performance across diverse benchmarks.
 
 8. **Xu, K., Li, C., Tian, Y., Sonobe, T., Kawarabayashi, K., & Jegelka, S. (2018). Representation Learning on Graphs with Jumping Knowledge Networks.** *ICML 2018.* Proposes JK-Net and proves that different nodes benefit from different effective receptive fields. Demonstrates that concatenating all-layer representations consistently outperforms using only the final layer, with largest gains in graphs with high structural diversity.
+
+[See Annotated References](./references.md)

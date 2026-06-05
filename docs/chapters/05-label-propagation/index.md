@@ -241,47 +241,9 @@ On the Karate Club graph, label propagation from just 2 seed nodes achieves arou
 
 #### Diagram: Label Propagation Step-by-Step Simulator
 
-<details markdown="1">
-<summary>Interactive label propagation visualization on the Karate Club graph</summary>
 
-**sim-id:** ch05-label-propagation-stepper<br/>
-**Library:** p5.js<br/>
-**Status:** Specified
-
-**Learning objective:** Understanding (Bloom's Level 2) — Students observe how label information flows outward from seed nodes across a graph, developing intuition for the harmonic averaging property and convergence behavior of label propagation.
-
-**Canvas:** 750×520px, responsive to window resize. Force-directed layout (D3-force or equivalent physics) for the 34-node Karate Club graph; node positions stable after initialization.
-
-**Initial state:**
-- All nodes rendered as gray circles (radius 12px), except:
-  - Node 0: blue (class 0, Mr. Hi faction)
-  - Node 33: red (class 1, Officer faction)
-- Edges rendered as thin gray lines
-- Iteration counter at top: "Iteration: 0 | Status: Initialized"
-- Bottom-right corner: accuracy readout "Accuracy: — (step to begin)"
-
-**Controls (below canvas, horizontal row):**
-- **Step** button: advance one iteration of label propagation (update all unlabeled nodes)
-- **Auto** button: run iterations automatically at 0.6s intervals until convergence (toggle — clicking again pauses)
-- **Reset** button: return to initial state (only nodes 0 and 33 labeled)
-- **α slider** (0.1 – 0.9, default 0.8): switches between label propagation (α ≈ 0) and label spreading (α ≈ 0.9). Show label "Graph influence α"
-
-**Node color encoding:**
-- Color is a continuous blend: pure blue (#3b82f6) for \( f_v = 0 \), pure red (#ef4444) for \( f_v = 1 \), interpolated as `lerpColor(blue, red, f_v)` for intermediate values
-- Border ring: dashed outline for seed/labeled nodes; solid outline for propagated nodes; thin outline for still-uncertain nodes (|f_v - 0.5| < 0.05)
-- On hover: tooltip showing node ID, current \( f_v \) value (2 decimal places), and degree
-
-**Behavior per step:**
-- Synchronous update: compute all new \( f_v^{(t+1)} \) values before applying (not in-place)
-- Labeled nodes (0 and 33) hold fixed regardless of α
-- Convergence: declare converged when \( \max_v |f_v^{(t+1)} - f_v^{(t)}| < 0.001 \)
-- On convergence: display "Converged at iteration K | Accuracy: X%" (compare to ground-truth factions)
-
-**Accuracy computation:** use known faction labels for all 34 nodes; threshold \( f_v \geq 0.5 \) for class 1. Update accuracy readout after every step.
-
-**Implementation notes:** embed the Karate Club graph edge list directly in the JavaScript as a hardcoded array of 78 edge pairs. Derive node positions from a fixed seed force simulation run for 300 ticks at load time so positions are deterministic. Ensure the sim remains readable at 480px wide (mobile).
-
-</details>
+<iframe src="../../sims/ch05-label-propagation-stepper/main.html" width="100%" height="522px" scrolling="no"></iframe>
+[Run Label Propagation Step-by-Step Simulator Fullscreen](../../sims/ch05-label-propagation-stepper/main.html)
 
 ---
 
@@ -392,38 +354,9 @@ where \( \langle k \rangle \) is the mean degree and \( \langle k^2 \rangle \) i
 
 #### Diagram: SIR Epidemic Dynamics on Network Structures
 
-<details markdown="1">
-<summary>Interactive SIR simulation comparing homogeneous-mixing ODE vs. network-structured spread</summary>
 
-**sim-id:** ch05-sir-epidemic-network<br/>
-**Library:** p5.js<br/>
-**Status:** Specified
-
-**Learning objective:** Analyzing (Bloom's Level 4) — Students compare SIR dynamics on a well-mixed population (classical ODE) versus an explicit network graph, identifying how network heterogeneity changes epidemic behavior.
-
-**Canvas:** 800×560px, split into two panels:
-- **Left panel (400×560):** Network simulation — 60-node Karate Club graph (or small ER random graph with 60 nodes, ⟨k⟩=4), node size proportional to degree, color = SIR state (blue=S, red=I, green=R)
-- **Right panel (400×560):** Time series plot — S(t), I(t), R(t) curves for both the ODE model (dashed lines) and the network simulation (solid lines) on the same axes
-
-**Controls (below canvas):**
-- **β slider** (0.01 – 0.5, step 0.01, default 0.1): transmission rate
-- **γ slider** (0.01 – 0.3, step 0.01, default 0.05): recovery rate
-- **R₀ display** (computed automatically as β/γ): colored red if >1, green if <1
-- **Network selector** dropdown: "Karate Club (heterogeneous)", "Erdős-Rényi (homogeneous)", "Star (extreme hub)"
-- **Seed** button: randomly infect 2 nodes to begin the simulation
-- **Reset** button: return all nodes to Susceptible
-
-**Behavior:**
-- Continuous-time simulation: at each frame (30fps), for each I-node, independently activate each S-neighbor with probability \( 1 - e^{-\beta \Delta t} \) and recover with probability \( 1 - e^{-\gamma \Delta t} \) (discrete-time Gillespie approximation with Δt = 0.1)
-- ODE curves use Euler integration with Δt = 0.01, initialized to S(0) = N-2, I(0) = 2, R(0) = 0
-- Right panel axes: x = time (0 to 200), y = fraction of population (0 to 1)
-- Show vertical dashed line at current time step connecting left and right panels
-
-**Hover interaction:** hovering a node in the left panel shows tooltip: "Node [id] | State: [S/I/R] | Degree: [k] | Time infected: [T or —]"
-
-**Implementation notes:** hardcode both the Karate Club edge list (78 edges) and a pre-generated ER graph. Star graph: 1 hub connected to 59 leaves. All three networks have identical mean degree ≈ 4 for fair comparison.
-
-</details>
+<iframe src="../../sims/ch05-sir-epidemic-network/main.html" width="100%" height="557px" scrolling="no"></iframe>
+[Run SIR Epidemic Dynamics on Network Structures Fullscreen](../../sims/ch05-sir-epidemic-network/main.html)
 
 ### 5.10.1 Connection to Influence Maximization
 
@@ -516,3 +449,5 @@ Because \( \sigma \) is submodular and monotone, the greedy algorithm achieves a
 7. **Pastor-Satorras, R., & Vespignani, A. (2001). Epidemic spreading in scale-free networks.** *Physical Review Letters, 86(14), 3200.* Derives the epidemic threshold \( \beta_c = \gamma \langle k \rangle / \langle k^2 \rangle \) for heterogeneous networks, showing that scale-free networks have vanishing epidemic thresholds. The result fundamentally changed how epidemiologists and network scientists think about disease control on realistic contact networks.
 
 8. **Iscen, A., Tolias, G., Avrithis, Y., & Chum, O. (2019). Label propagation for deep semi-supervised learning.** *Proceedings of CVPR 2019.* Shows that label propagation in the embedding space of a deep network (using cosine similarity as the graph kernel) outperforms standard semi-supervised approaches on visual recognition benchmarks — a modern demonstration that label propagation remains a competitive component of deep learning pipelines when labels are scarce.
+
+[See Annotated References](./references.md)

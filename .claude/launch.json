@@ -5,8 +5,7 @@
       "name": "mkdocs-serve",
       "runtimeExecutable": "node",
       "runtimeArgs": ["/tmp/gnn-mkdocs-spawner.js"],
-      "port": 8000,
-      "autoPort": false
+      "port": 8000
     }
   ]
 }

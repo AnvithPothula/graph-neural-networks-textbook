@@ -228,56 +228,9 @@ print("Execution order:", order)
 
 #### Diagram: Agent Tool-Use Graph — Interactive Planner
 
-<details markdown="1">
-<summary>Interactive tool-use graph showing dependency traversal and parallel execution</summary>
-Type: MicroSim
-**sim-id:** ch25-tool-use-graph<br/>
-**Library:** p5.js<br/>
-**Status:** Specified
 
-**Learning objective:** Students observe how a tool-use graph structures an agent's execution plan and how dependency edges determine which tools can run in parallel versus sequentially (Bloom's: Understanding — explaining how graph structure enables agent planning).
-
-**Canvas:** 900 × 500 px, responsive to window resize. Background: #0d1117 (dark mode).
-
-**Layout:** Full canvas force-directed graph with 8 tool nodes. Nodes are large circles (radius 40px) with icons (text labels inside) and category-colored borders:
-- Web/search tools: blue
-- Code execution tools: orange
-- Data/DB tools: green
-- Output/write tools: purple
-- Analysis tools: teal
-
-Edges are directed arrows. Dependency edges (solid, white) point from prerequisite to dependent. Optional parallel-safe annotations appear as dashed green arcs between independent sibling nodes.
-
-**Preloaded scenario:** "Research report agent" with 8 tools:
-1. web-search (blue) → 2. retrieve-papers (blue)
-2. retrieve-papers → 4. summarize (teal)
-4. summarize → 7. write-report (purple)
-3. python-exec (orange) → 7. write-report
-5. sql-query (green) → 6. data-analysis (teal) → 7. write-report
-7. write-report → 8. email-send (purple)
-
-**Execution animation (triggered by "Run Plan" button):**
-- Step 1: nodes with in-degree 0 (web-search, python-exec, sql-query) glow gold simultaneously — label "Can run in parallel"
-- Step 2: retrieve-papers unlocks and glows (web-search done)
-- Step 3: summarize unlocks, data-analysis unlocks (both predecessors done)
-- Step 4: write-report unlocks (summarize, python-exec, data-analysis done)
-- Step 5: email-send unlocks
-- Speed: 1.5 seconds per step, with completed nodes turning green
-
-**Controls:**
-- "Run Plan" button: starts the step-by-step execution animation
-- "Reset" button: returns all nodes to idle state
-- "Add Tool" button: opens a modal to add a new tool node and specify which existing tools it depends on
-- "Remove Edge" button: click two nodes to remove the dependency between them; re-run to see the updated plan
-- Scenario dropdown: "Research agent | Code debugging agent | Data pipeline agent"
-
-**Interactions:**
-- Clicking a node shows a tooltip: tool name, description, expected inputs/outputs, current status (idle/running/done)
-- Clicking an edge shows: which tool produces the input for which tool
-- Hovering a "parallel group" of nodes (those with in-degree 0 at a given step) highlights them with a shared glow
-
-**Responsiveness:** graph scales to fill canvas; nodes reposition via force layout on resize
-</details>
+<iframe src="../../sims/ch25-tool-use-graph/main.html" width="100%" height="522px" scrolling="no"></iframe>
+[Run Agent Tool-Use Graph — Interactive Planner Fullscreen](../../sims/ch25-tool-use-graph/main.html)
 
 ## 25.5 Multi-Hop Reasoning Agents and the Query Refinement Loop
 
@@ -374,53 +327,9 @@ This two-hop trace illustrates how the reinforcing loop (R1) operates: the first
 
 #### Diagram: Multi-Hop KG Reasoning Agent
 
-<details markdown="1">
-<summary>Interactive multi-hop reasoning agent traversing a knowledge graph</summary>
-Type: MicroSim
-**sim-id:** ch25-multi-hop-reasoning<br/>
-**Library:** p5.js<br/>
-**Status:** Specified
 
-**Learning objective:** Students watch an agent execute the query-retrieve-reason-refine loop step by step on a small knowledge graph, building intuition for how each hop narrows toward the answer (Bloom's: Applying — tracing an agent's reasoning path through a structured knowledge base).
-
-**Canvas:** 960 × 540 px, responsive. Dark background (#0f0f1a). Two panels.
-
-**Left panel (600px wide) — Knowledge Graph:**
-Force-directed graph with 12 nodes and 18 edges. Nodes are colored by entity type:
-- Person nodes: blue circles (Bahdanau, VaswaniEtAl, etc.)
-- Institution nodes: green circles (UniversityMontreal, GoogleBrain, Stanford)
-- Model/concept nodes: orange circles (Transformer, GAT, attention, GCN, GraphSAGE, GIN)
-
-Edges are labeled with relationship types in small gray text. All edges are visible but unactivated at start.
-
-**Animation per hop:**
-- The seed node(s) for the current query glow gold
-- Edges traversed in this hop animate with a traveling dot (gold, 0.5s)
-- Newly discovered nodes light up white
-- The "answer path" nodes and edges remain highlighted (green) after each hop
-
-**Right panel (340px wide) — Agent Reasoning Log:**
-A scrolling text panel showing:
-- Current Query (Q_t): displayed in blue italic
-- Retrieved Subgraph: list of (subject, relation, object) triples found this hop
-- Reasoning: two-sentence LLM-style reasoning text
-- Refined Query: next query in green
-- Confidence bar: grows across hops (0 → 50% → 90% → terminates)
-- Hop counter: "Hop 1 of 3 max"
-
-**Controls:**
-- "Next Hop →" button: advances one reasoning step
-- "Auto Run" button: runs all hops with 2s delay between each
-- "Reset" button: clears highlights and resets to hop 0
-- Question dropdown: 3 preloaded multi-hop questions of increasing complexity (1-hop, 2-hop, 3-hop)
-
-**Interactions:**
-- Clicking any node shows its full list of outgoing relations in a tooltip
-- Clicking any edge shows the (subject, relation, object) triple and confidence weight
-- Hovering the confidence bar shows a tooltip explaining how confidence is estimated
-
-**Responsiveness:** panels resize proportionally; at < 700px width, stack panels vertically with knowledge graph on top
-</details>
+<iframe src="../../sims/ch25-multi-hop-reasoning/main.html" width="100%" height="562px" scrolling="no"></iframe>
+[Run Multi-Hop KG Reasoning Agent Fullscreen](../../sims/ch25-multi-hop-reasoning/main.html)
 
 ## 25.6 Integrating the Three Graph Architectures
 
@@ -519,3 +428,5 @@ The following twelve exercises span all six levels of Bloom's taxonomy.
 !!! mascot-celebration "Chapter 25 Complete!"
     <img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrates chapter completion">
     You have completed Chapter 25 — and with it, the last full technical chapter of this textbook. You now understand how graphs structure the three core components of modern AI agents: scene graphs for visual understanding, memory graphs for persistent knowledge, and tool-use graphs for structured planning. You have seen how these components combine in the multi-hop reasoning loop, and you understand the reinforcing and balancing dynamics that govern when and how that loop terminates. One chapter remains — the conclusion, where we step back and synthesize the full arc of everything you have learned.
+
+[See Annotated References](./references.md)

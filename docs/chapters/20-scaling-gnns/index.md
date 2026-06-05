@@ -490,39 +490,9 @@ The absence of a graph loader inside `train_sign` is the signature of SIGN's des
 
 #### Diagram: SIGN Architecture vs. Neighbor Sampling Architecture
 
-<details markdown="1">
-<summary>SIGN vs. Neighbor Sampling — Side-by-Side Architecture Comparison</summary>
-Type: interactive-infographic
-**sim-id:** ch20-sign-vs-sampling
-**Library:** p5.js
-**Status:** Specified
 
-Two-panel interactive diagram (each panel 380×500px, total 760×500px, responsive to window resize) comparing SIGN pre-computation and neighbor-sampling training pipelines side-by-side.
-
-**Left panel — Neighbor Sampling:**
-- Show a target node (orange circle) and 2 layers of sampled neighbors (smaller circles)
-- Animate arrows showing messages flowing inward from layer-2 neighbors to layer-1 to target
-- Label "In-loop graph ops: O(K^L) per step"
-- Controls: sliders for K (fan-out, range 2-20) and L (layers, range 1-3)
-- As K increases, show more neighbor circles appearing at each hop
-- As L increases, add additional hop rings
-
-**Right panel — SIGN Pre-computation:**
-- Top section: static "Offline" block showing A^0 X, A^1 X, A^2 X, A^3 X as stacked matrices with colored bars (one color per hop level)
-- Bottom section: dynamic "Online Training" block showing a multi-input MLP receiving the 4 pre-computed vectors
-- Label "No graph ops in training loop: O(d) per node"
-- Arrow from offline block to online block labeled "pre-computed once"
-- Controls: slider for K (range 0-4) adding/removing precomputed diffusion levels
-
-**Interactions:**
-- Clicking any node circle in the left panel opens a tooltip explaining that node's role (target, 1-hop neighbor, 2-hop neighbor)
-- Clicking any matrix block in the right panel opens a tooltip explaining what A^k X computes and its neighborhood interpretation
-- Toggle button "Show Memory Usage" adds a colored bar below each panel showing relative memory proportional to subgraph size vs. pre-computed matrix size
-
-**Learning objective (Applying — Bloom's Taxonomy):** Students can manipulate the fan-out K and depth L to observe how sampling complexity scales and compare it with SIGN's constant-per-node pre-computation cost.
-
-Implementation: p5.js with DOM sliders and tooltip divs. Mouse-over on all interactive elements. Responsive via `windowResized()` callback.
-</details>
+<iframe src="../../sims/ch20-sign-vs-sampling/main.html" width="100%" height="572px" scrolling="no"></iframe>
+[Run SIGN Architecture vs. Neighbor Sampling Architecture Fullscreen](../../sims/ch20-sign-vs-sampling/main.html)
 
 ## 20.8 Choosing Your Scaling Strategy
 
@@ -633,3 +603,5 @@ The following 12 exercises span all six levels of Bloom's Taxonomy, progressing 
 !!! mascot-celebration "You've Conquered the Scalability Wall"
     <img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrates">
     You now understand the full landscape of GNN scaling strategies — from the neighborhood explosion that makes full-batch training on large graphs impossible, to the four families of methods that tame it: neighbor sampling, layer-wise sampling, subgraph sampling (Cluster-GCN and GraphSAINT), and pre-computation (SIGN). Each method makes a different bet about where to spend computation: online graph traversal versus offline pre-computation, exact neighborhoods versus sampled approximations, biased gradients versus unbiased ones with normalization overhead. The billion-node graphs that power modern recommendation systems, drug discovery pipelines, and knowledge bases all rely on these ideas. Next, we turn to a different challenge entirely: not how to scale GNNs, but how to use them to generate new graphs from scratch.
+
+[See Annotated References](./references.md)
