@@ -1,25 +1,72 @@
-# Python
+# ── MkDocs ────────────────────────────────────────────────────────────────────
+site/
+.cache/
+
+# ── Python ────────────────────────────────────────────────────────────────────
 __pycache__/
 *.py[cod]
 *$py.class
 *.egg-info/
 .Python
+*.pyo
+*.pyd
+*.so
 
-# MkDocs
-site/
-.cache/
-
-# Environments
+# ── Virtual environments ──────────────────────────────────────────────────────
 .venv/
 venv/
 env/
+.env
+.env.*
 
-# OS
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ── Testing / Coverage ────────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+*.cover
+
+# ── Build artifacts ───────────────────────────────────────────────────────────
+dist/
+build/
+*.egg
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── OS metadata ───────────────────────────────────────────────────────────────
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 Thumbs.db
+ehthumbs.db
+desktop.ini
 
-# Editors
+# ── Editors & IDEs ───────────────────────────────────────────────────────────
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 ~$*
+
+# ── Claude Code / gstack ─────────────────────────────────────────────────────
+.claude/
 .gstack/
+
+# ── Temp / scratch ───────────────────────────────────────────────────────────
+*.tmp
+*.temp
+*.bak
+*.orig
+
+# ── Node (if any JS tooling is added) ────────────────────────────────────────
+node_modules/
+package-lock.json
