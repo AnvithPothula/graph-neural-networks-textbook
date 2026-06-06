@@ -341,7 +341,7 @@ extra:
   textbook_name: 'Graph Neural Networks'
   textbook_version: '0.1'
 
-  # Google Analytics — uncomment once a property ID exists:
-  # analytics:
-  #   provider: google
-  #   property: G-XXXXXXXXXX
+  # Google Analytics
+  analytics:
+    provider: google
+    property: G-NT6158LJT7
