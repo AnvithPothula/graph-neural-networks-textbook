@@ -19,6 +19,7 @@ site_url: 'https://AnvithPothula.github.io/graph-neural-networks-textbook/'
 # declared cover image. Verify the result with `bk-check-social-cover`.
 hooks:
   - plugins/social_override.py
+  - plugins/consent_mode.py
 
 # Repository
 repo_name: 'GitHub Repo'
