@@ -161,6 +161,7 @@ This textbook is built on the shoulders of the open source community:
 **Anvith Pothula**
 
 - GitHub: [@AnvithPothula](https://github.com/AnvithPothula)
+- LinkedIn: [Anvith Pothula](https://www.linkedin.com/in/anvith-pothula/)
 - Email: anvithpothula@gmail.com
 
 Questions, corrections, or collaboration opportunities? Open an issue or reach out directly.
