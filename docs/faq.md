@@ -14,7 +14,7 @@ The primary audiences are: graduate students in CS, data science, computational 
 
 ### What prerequisites do I need?
 
-**Required:** Python proficiency, NumPy/Pandas familiarity, linear algebra (matrix multiplication, eigenvalues, SVD), probability and statistics, and ML fundamentals (gradient descent, backpropagation). **Not required upfront:** PyTorch, graph theory, or PyTorch Geometric — these are taught from scratch in Chapter 0. If you can implement a multilayer perceptron in PyTorch and explain why gradient descent converges, you have enough background to begin. See [Chapter 0: Math and Programming Prerequisites](chapters/00-math-prerequisites/index.md) for a full review.
+**Required:** Python proficiency, NumPy/Pandas familiarity, linear algebra (matrix multiplication, eigenvalues, SVD), probability and statistics, and ML fundamentals (gradient descent, backpropagation). **Not required upfront:** PyTorch, graph theory, or PyTorch Geometric — these are taught from scratch in Chapter 0. If you can implement a multilayer perceptron in PyTorch and explain why gradient descent converges, you have enough background to begin. If you need to build that foundation first, the [Machine Learning Textbook](https://anvithpothula.github.io/machine-learning-textbook/) covers supervised learning, neural networks, backpropagation, and optimization from scratch. See [Chapter 0: Math and Programming Prerequisites](chapters/00-math-prerequisites/index.md) for a full review.
 
 ### Do I need to know graph theory before starting?
 
@@ -54,7 +54,7 @@ Each chapter contains 12 exercises distributed across all 6 levels of Bloom's Ta
 
 ### Are there companion resources I should use alongside this textbook?
 
-The most relevant companion is *Graph Representation Learning* by William Hamilton (free online) — the closest textbook in scope, useful for alternative derivations. *Network Science* by Barabási (free online) provides deep background on complex network properties. The PyTorch Geometric documentation is the primary coding reference. For concise formula lookup, the CS224W Course Notes PDF is useful. These are linked in the course description for convenience.
+For readers who need to build or refresh their general ML foundation before starting, the [Machine Learning Textbook](https://anvithpothula.github.io/machine-learning-textbook/) by the same author covers supervised and unsupervised learning, neural networks, optimization, and evaluation from the ground up — at the same level of interactivity as this textbook. For graph-specific companions: *Graph Representation Learning* by William Hamilton (free online) is the closest textbook in scope, useful for alternative derivations. *Network Science* by Barabási (free online) provides deep background on complex network properties. The PyTorch Geometric documentation is the primary coding reference. For concise formula lookup, the CS224W Course Notes PDF is useful. These are linked in the course description for convenience.
 
 ### What benchmarks does the textbook report results for?
 

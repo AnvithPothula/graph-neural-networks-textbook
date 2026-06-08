@@ -70,4 +70,4 @@ Define the schema graph for the Customers–Orders–Products database. For each
 2. Cvitkovic (2020). Supervised Learning on Relational Databases with Graph Neural Networks.
 
 ---
-*Part of Chapter 17: Relational Deep Learning. Return to the [chapter page](../../chapters/17-relational-deep-learning/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 17: Relational Deep Learning. Return to the [chapter page](../../chapters/17-relational-deep-learning/index.md) or browse all [MicroSims](../index.md).*

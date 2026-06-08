@@ -70,4 +70,4 @@ Write the NT-Xent loss formula for a batch of N positive pairs. Decompose it int
 2. Wang & Isola (2020). Understanding Contrastive Representation Learning through Alignment and Uniformity. ICML.
 
 ---
-*Part of Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty. Return to the [chapter page](../../chapters/24-advanced-gnn-topics/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty. Return to the [chapter page](../../chapters/24-advanced-gnn-topics/index.md) or browse all [MicroSims](../index.md).*

@@ -70,4 +70,4 @@ State the formula for the local clustering coefficient and verify it manually fo
 2. Newman (2010). Networks: An Introduction. Oxford University Press.
 
 ---
-*Part of Chapter 1: Introduction to Graphs and Networks. Return to the [chapter page](../../chapters/01-intro-to-graphs/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 1: Introduction to Graphs and Networks. Return to the [chapter page](../../chapters/01-intro-to-graphs/index.md) or browse all [MicroSims](../index.md).*

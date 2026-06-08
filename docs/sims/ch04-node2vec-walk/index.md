@@ -70,4 +70,4 @@ The node2vec paper defines the transition probabilities \(\alpha(t, x)\) for mov
 2. Perozzi et al. (2014). DeepWalk: Online Learning of Social Representations. KDD.
 
 ---
-*Part of Chapter 4: Node Embeddings: DeepWalk and node2vec. Return to the [chapter page](../../chapters/04-node-embeddings/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 4: Node Embeddings: DeepWalk and node2vec. Return to the [chapter page](../../chapters/04-node-embeddings/index.md) or browse all [MicroSims](../index.md).*

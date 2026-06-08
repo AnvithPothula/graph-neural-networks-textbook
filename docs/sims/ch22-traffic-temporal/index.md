@@ -70,4 +70,4 @@ Define the spatio-temporal graph forecasting task formally. Write the input/outp
 2. Li et al. (2018). Diffusion Convolutional Recurrent Neural Network. ICLR.
 
 ---
-*Part of Chapter 22: Temporal and Dynamic Graphs. Return to the [chapter page](../../chapters/22-temporal-graphs/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 22: Temporal and Dynamic Graphs. Return to the [chapter page](../../chapters/22-temporal-graphs/index.md) or browse all [MicroSims](../index.md).*

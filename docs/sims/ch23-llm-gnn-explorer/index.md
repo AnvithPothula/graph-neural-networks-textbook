@@ -70,4 +70,4 @@ Compare the three LLM+GNN integration modes along three axes: computational cost
 2. Chen et al. (2024). Label-free Node Classification on Graphs with Large Language Models (TAPE). ICLR 2024.
 
 ---
-*Part of Chapter 23: LLMs and GNNs: Text-Attributed Graphs and Joint Training. Return to the [chapter page](../../chapters/23-llm-gnn/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 23: LLMs and GNNs: Text-Attributed Graphs and Joint Training. Return to the [chapter page](../../chapters/23-llm-gnn/index.md) or browse all [MicroSims](../index.md).*

@@ -70,4 +70,4 @@ Derive the modularity gain formula \(\Delta Q\) for moving node \(i\) from commu
 2. Lancichinetti & Fortunato (2009). Community detection algorithms: A comparative analysis. PRE.
 
 ---
-*Part of Chapter 18: Community Structure in Networks. Return to the [chapter page](../../chapters/18-community-structure/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 18: Community Structure in Networks. Return to the [chapter page](../../chapters/18-community-structure/index.md) or browse all [MicroSims](../index.md).*

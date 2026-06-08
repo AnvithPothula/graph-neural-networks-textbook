@@ -69,4 +69,4 @@ Formally state the GIN theorem: under what conditions on the aggregation functio
 2. Morris et al. (2019). Weisfeiler and Leman Go Neural: Higher-order Graph Neural Networks. AAAI.
 
 ---
-*Part of Chapter 10: Designing Powerful Encoders: GIN and Beyond. Return to the [chapter page](../../chapters/10-powerful-gnns/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 10: Designing Powerful Encoders: GIN and Beyond. Return to the [chapter page](../../chapters/10-powerful-gnns/index.md) or browse all [MicroSims](../index.md).*

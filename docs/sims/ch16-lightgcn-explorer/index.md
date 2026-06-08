@@ -70,4 +70,4 @@ Write the LightGCN aggregation rule: \(e_u^{(k)} = \sum_{i \in \mathcal{N}(u)} \
 2. Wang et al. (2019). Neural Graph Collaborative Filtering. SIGIR.
 
 ---
-*Part of Chapter 16: GNNs for Recommender Systems. Return to the [chapter page](../../chapters/16-recommender-systems/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 16: GNNs for Recommender Systems. Return to the [chapter page](../../chapters/16-recommender-systems/index.md) or browse all [MicroSims](../index.md).*

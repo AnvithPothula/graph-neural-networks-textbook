@@ -70,4 +70,4 @@ Explain the key design principle that makes ULTRA transferable: why must relatio
 2. Zhu et al. (2021). Neural Bellman-Ford Networks. NeurIPS.
 
 ---
-*Part of Chapter 14: Knowledge Graph Foundation Models. Return to the [chapter page](../../chapters/14-kg-foundation-models/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 14: Knowledge Graph Foundation Models. Return to the [chapter page](../../chapters/14-kg-foundation-models/index.md) or browse all [MicroSims](../index.md).*

@@ -69,4 +69,4 @@ Explain in your own words why symmetric normalization prevents high-degree hubs 
 2. Hamilton (2020). Graph Representation Learning. Synthesis Lectures on AI and ML.
 
 ---
-*Part of Chapter 0: Math and Programming Prerequisites. Return to the [chapter page](../../chapters/00-math-prerequisites/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 0: Math and Programming Prerequisites. Return to the [chapter page](../../chapters/00-math-prerequisites/index.md) or browse all [MicroSims](../index.md).*

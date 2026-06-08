@@ -70,4 +70,4 @@ Explain what representation collapse is in contrastive learning and how it arise
 2. Zhu et al. (2021). Graph Contrastive Learning with Adaptive Augmentation. WWW.
 
 ---
-*Part of Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty. Return to the [chapter page](../../chapters/24-advanced-gnn-topics/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty. Return to the [chapter page](../../chapters/24-advanced-gnn-topics/index.md) or browse all [MicroSims](../index.md).*

@@ -70,4 +70,4 @@ Define order embeddings formally and prove that they satisfy the containment pro
 2. Vendrov et al. (2016). Order-Embeddings of Images and Language. ICLR.
 
 ---
-*Part of Chapter 19: Frequent Subgraph Mining. Return to the [chapter page](../../chapters/19-subgraph-mining/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 19: Frequent Subgraph Mining. Return to the [chapter page](../../chapters/19-subgraph-mining/index.md) or browse all [MicroSims](../index.md).*

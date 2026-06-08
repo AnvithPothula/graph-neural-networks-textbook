@@ -70,4 +70,4 @@ For each of the three pipeline stages, identify: (1) the graph input, (2) the GN
 2. Vignac et al. (2023). DiGress: Discrete Denoising diffusion for graph generation. ICLR.
 
 ---
-*Part of Chapter 21: Deep Generative Models for Graphs. Return to the [chapter page](../../chapters/21-generative-models/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 21: Deep Generative Models for Graphs. Return to the [chapter page](../../chapters/21-generative-models/index.md) or browse all [MicroSims](../index.md).*

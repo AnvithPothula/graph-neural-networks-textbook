@@ -70,4 +70,4 @@ Prove that repeated application of the GCN propagation rule \(D^{-1/2}AD^{-1/2}\
 2. Chen et al. (2020). Simple and Deep Graph Convolutional Networks. ICML.
 
 ---
-*Part of Chapter 8: GNN Training, Augmentation, and Practical Tips. Return to the [chapter page](../../chapters/08-gnn-training/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 8: GNN Training, Augmentation, and Practical Tips. Return to the [chapter page](../../chapters/08-gnn-training/index.md) or browse all [MicroSims](../index.md).*

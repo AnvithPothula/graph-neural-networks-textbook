@@ -70,4 +70,4 @@ Write out the GCN update rule for one layer: \(h_v^{(k)} = \sigma(W \cdot \text{
 2. Hamilton (2020). Graph Representation Learning. Synthesis Lectures on AI and ML.
 
 ---
-*Part of Chapter 6: GNN Foundations: Message Passing and GCN. Return to the [chapter page](../../chapters/06-gnn-foundations/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 6: GNN Foundations: Message Passing and GCN. Return to the [chapter page](../../chapters/06-gnn-foundations/index.md) or browse all [MicroSims](../index.md).*

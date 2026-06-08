@@ -70,4 +70,4 @@ Explain why SIGN can be trained without any graph operations in the training loo
 2. Hamilton et al. (2017). Inductive Representation Learning on Large Graphs. NeurIPS.
 
 ---
-*Part of Chapter 20: Scaling GNNs to Billion-Node Graphs. Return to the [chapter page](../../chapters/20-scaling-gnns/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 20: Scaling GNNs to Billion-Node Graphs. Return to the [chapter page](../../chapters/20-scaling-gnns/index.md) or browse all [MicroSims](../index.md).*

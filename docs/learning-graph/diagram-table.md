@@ -20,7 +20,7 @@ hide:
 
 | Chapter | Element Title | Status | Type | Bloom Levels | UI Elements | Difficulty |
 |---------|---------------|--------|------|--------------|-------------|------------|
-| 0 | [Matrix × Graph Explorer](../chapters/00-math-prerequisites/index.md#diagram-matrix-×-graph-explorer) | Implemented | Microsim | Understand | 5 | Medium |
+| 0 | [Matrix × Graph Explorer](../chapters/00-math-prerequisites/index.md#diagram-matrix-graph-explorer) | Implemented | Microsim | Understand | 5 | Medium |
 | 1 | [Graph Property Explorer](../chapters/01-intro-to-graphs/index.md#diagram-graph-property-explorer) | Implemented | Microsim | Apply | 3 | Medium |
 | 2 | [WL Color Refinement Simulator](../chapters/02-graph-properties-and-features/index.md#diagram-wl-color-refinement-simulator) | Implemented | Microsim | Understand | 4 | Medium |
 | 3 | [PageRank Feedback Loops](../chapters/03-link-analysis-pagerank/index.md#diagram-pagerank-feedback-loops) | Implemented | Diagram | Apply | 5 | Easy |
@@ -32,11 +32,11 @@ hide:
 | 7 | [GAT Attention Weight Visualizer](../chapters/07-gnn-design-space/index.md#diagram-gat-attention-weight-visualizer) | Implemented | Microsim | Apply | 2 | Medium |
 | 7 | [GNN Design Space Interactive Comparison](../chapters/07-gnn-design-space/index.md#diagram-gnn-design-space-interactive-comparison) | Implemented | Microsim | Create | 0 | Easy |
 | 8 | [Over-Smoothing Feedback Loop](../chapters/08-gnn-training/index.md#diagram-over-smoothing-feedback-loop) | Implemented | Diagram | Understand | 5 | Easy |
-| 9 | [WL Color Refinement Convergence — Causal Loop Diagram](../chapters/09-gnn-theory/index.md#diagram-wl-color-refinement-convergence-—-causal-loop-diagram) | Implemented | Diagram | Apply | 4 | Easy |
+| 9 | [WL Color Refinement Convergence — Causal Loop Diagram](../chapters/09-gnn-theory/index.md#diagram-wl-color-refinement-convergence-causal-loop-diagram) | Implemented | Diagram | Apply | 4 | Easy |
 | 10 | [GIN vs. GCN Expressiveness MicroSim](../chapters/10-powerful-gnns/index.md#diagram-gin-vs-gcn-expressiveness-microsim) | Implemented | Microsim | Understand | 4 | Medium |
-| 11 | [Graph Transformer Attention Heatmap](../chapters/11-graph-transformers/index.md#diagram-graph-transformer-attention-heatmap) | Implemented | Microsim | Analyze | 4 | Medium |
-| 12 | [TransE Geometry in 2D](../chapters/12-knowledge-graph-embeddings/index.md#diagram-transe-geometry-in-2d) | Implemented | Microsim | Apply | 6 | Medium |
-| 13 | [Query Box Traversal](../chapters/13-kg-reasoning/index.md#diagram-query-box-traversal) | Implemented | Microsim | Analyze | 5 | Medium |
+| 11 | [Graph Transformer Attention Heatmap](../chapters/11-graph-transformers/index.md#1112-microsim-graph-transformer-attention-heatmap) | Implemented | Microsim | Analyze | 4 | Medium |
+| 12 | [TransE Geometry in 2D](../chapters/12-knowledge-graph-embeddings/index.md#1213-microsim-transe-geometry-in-2d) | Implemented | Microsim | Apply | 6 | Medium |
+| 13 | [Query Box Traversal](../chapters/13-kg-reasoning/index.md#138-microsim-query-box-traversal) | Implemented | Microsim | Analyze | 5 | Medium |
 | 14 | [Cross-KG Structure Transfer](../chapters/14-kg-foundation-models/index.md#diagram-cross-kg-structure-transfer) | Implemented | Microsim | Analyze | 4 | Medium |
 | 15 | [Typed Node and Edge Explorer](../chapters/15-heterogeneous-graphs/index.md#diagram-typed-node-and-edge-explorer) | Implemented | Microsim | Apply | 6 | Medium |
 | 16 | [User-Item Graph with Multi-Hop Propagation Visualization](../chapters/16-recommender-systems/index.md#diagram-user-item-graph-with-multi-hop-propagation-visualization) | Implemented | Microsim | Apply | 3 | Medium |
@@ -47,12 +47,12 @@ hide:
 | 19 | [SPMiner Order Embedding Space](../chapters/19-subgraph-mining/index.md#diagram-spminer-order-embedding-space) | Implemented | Microsim | Understand | 2 | Medium |
 | 20 | [Neighbor Explosion Causal Loop Diagram](../chapters/20-scaling-gnns/index.md#diagram-neighbor-explosion-causal-loop-diagram) | Implemented | Diagram | Analyze | 3 | Easy |
 | 21 | [Drug Discovery GNN Pipeline](../chapters/21-generative-models/index.md#diagram-drug-discovery-gnn-pipeline) | Implemented | Microsim | Understand | 2 | Medium |
-| 22 | [Temporal Graph Memory Dynamics — Causal Loop Diagram](../chapters/22-temporal-graphs/index.md#diagram-temporal-graph-memory-dynamics-—-causal-loop-diagram) | Implemented | Diagram | Understand | 3 | Easy |
-| 23 | [LLM+GNN Pipeline Explorer (Full Version)](../chapters/23-llm-gnn/index.md#diagram-llm+gnn-pipeline-explorer-full-version) | Implemented | Microsim | Evaluate | 6 | Medium |
-| 23 | [LLM+GNN Pipeline — Text-to-Prediction](../chapters/23-llm-gnn/index.md#diagram-llm+gnn-pipeline-—-text-to-prediction) | Implemented | Microsim | Understand | 4 | Medium |
+| 22 | [Temporal Graph Memory Dynamics — Causal Loop Diagram](../chapters/22-temporal-graphs/index.md#diagram-temporal-graph-memory-dynamics-causal-loop-diagram) | Implemented | Diagram | Understand | 3 | Easy |
+| 23 | [LLM+GNN Pipeline Explorer (Full Version)](../chapters/23-llm-gnn/index.md#diagram-llmgnn-pipeline-explorer-full-version) | Implemented | Microsim | Evaluate | 6 | Medium |
+| 23 | [LLM+GNN Pipeline — Text-to-Prediction](../chapters/23-llm-gnn/index.md#diagram-llmgnn-pipeline-text-to-prediction) | Implemented | Microsim | Understand | 4 | Medium |
 | 24 | [Contrastive Loss Surface Explorer](../chapters/24-advanced-gnn-topics/index.md#diagram-contrastive-loss-surface-explorer) | Implemented | Microsim | Apply | 4 | Medium |
-| 24 | [DGI vs. Contrastive Learning — Concept Map](../chapters/24-advanced-gnn-topics/index.md#diagram-dgi-vs-contrastive-learning-—-concept-map) | Implemented | Diagram | Analyze | 1 | Easy |
-| 24 | [Graph Contrastive Learning — Two-View Pipeline](../chapters/24-advanced-gnn-topics/index.md#diagram-graph-contrastive-learning-—-two-view-pipeline) | Implemented | Microsim | Create | 4 | Medium |
-| 25 | [Agent Graph Reasoning Loop — Causal Loop Diagram](../chapters/25-agents-and-graphs/index.md#diagram-agent-graph-reasoning-loop-—-causal-loop-diagram) | Implemented | Diagram | Apply | 4 | Easy |
-| 25 | [Agent Tool-Use Graph — Interactive Planner](../chapters/25-agents-and-graphs/index.md#diagram-agent-tool-use-graph-—-interactive-planner) | Implemented | Microsim | Understand | 2 | Medium |
+| 24 | [DGI vs. Contrastive Learning — Concept Map](../chapters/24-advanced-gnn-topics/index.md#diagram-dgi-vs-contrastive-learning-concept-map) | Implemented | Diagram | Analyze | 1 | Easy |
+| 24 | [Graph Contrastive Learning — Two-View Pipeline](../chapters/24-advanced-gnn-topics/index.md#diagram-graph-contrastive-learning-two-view-pipeline) | Implemented | Microsim | Create | 4 | Medium |
+| 25 | [Agent Graph Reasoning Loop — Causal Loop Diagram](../chapters/25-agents-and-graphs/index.md#diagram-agent-graph-reasoning-loop-causal-loop-diagram) | Implemented | Diagram | Apply | 4 | Easy |
+| 25 | [Agent Tool-Use Graph — Interactive Planner](../chapters/25-agents-and-graphs/index.md#diagram-agent-tool-use-graph-interactive-planner) | Implemented | Microsim | Understand | 2 | Medium |
 | 26 | [GNN Architecture Family Tree](../chapters/26-conclusion/index.md#diagram-gnn-architecture-family-tree) | Implemented | Microsim | Create | 2 | Medium |

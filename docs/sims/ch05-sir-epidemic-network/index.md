@@ -70,4 +70,4 @@ Derive the basic reproduction number \(R_0\) for the SIR ODE model. Explain why 
 2. Pastor-Satorras & Vespignani (2001). Epidemic spreading in scale-free networks. PRL.
 
 ---
-*Part of Chapter 5: Label Propagation and Semi-Supervised Learning. Return to the [chapter page](../../chapters/05-label-propagation/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 5: Label Propagation and Semi-Supervised Learning. Return to the [chapter page](../../chapters/05-label-propagation/index.md) or browse all [MicroSims](../index.md).*

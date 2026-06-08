@@ -70,4 +70,4 @@ Describe the ReasonPath / MINERVA agent architecture for multi-hop KG reasoning.
 2. Xiong et al. (2017). DeepPath: A Reinforcement Learning Method for Knowledge Graph Reasoning. EMNLP.
 
 ---
-*Part of Chapter 25: Agents and Graphs. Return to the [chapter page](../../chapters/25-agents-and-graphs/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 25: Agents and Graphs. Return to the [chapter page](../../chapters/25-agents-and-graphs/index.md) or browse all [MicroSims](../index.md).*

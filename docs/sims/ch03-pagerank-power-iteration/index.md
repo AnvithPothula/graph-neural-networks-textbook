@@ -70,4 +70,4 @@ Explain in matrix form why PageRank converges. What property of the transition m
 2. Langville & Meyer (2006). Google's PageRank and Beyond. Princeton University Press.
 
 ---
-*Part of Chapter 3: Link Analysis and PageRank. Return to the [chapter page](../../chapters/03-link-analysis-pagerank/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 3: Link Analysis and PageRank. Return to the [chapter page](../../chapters/03-link-analysis-pagerank/index.md) or browse all [MicroSims](../index.md).*

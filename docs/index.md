@@ -26,7 +26,7 @@ Every chapter leads with real-world motivation, builds intuition before equation
 - Practitioners applying graph learning to recommender systems, knowledge graphs, drug discovery, or fraud detection
 - Researchers who want a thorough reference covering both classical and frontier methods
 
-Prior exposure to linear algebra, probability, and basic neural networks is assumed. Graph theory and PyTorch prerequisites are covered in Chapter 0.
+Prior exposure to linear algebra, probability, and basic neural networks is assumed — if you need to build that foundation first, the [Machine Learning Textbook](https://anvithpothula.github.io/machine-learning-textbook/) covers it in full. Graph theory and PyTorch prerequisites are covered in Chapter 0.
 
 ## What's Inside
 

@@ -70,4 +70,4 @@ Define a network motif formally using statistical significance. Explain why a fe
 2. Przulj (2007). Biological network comparison using graphlet degree distribution. Bioinformatics.
 
 ---
-*Part of Chapter 19: Frequent Subgraph Mining. Return to the [chapter page](../../chapters/19-subgraph-mining/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 19: Frequent Subgraph Mining. Return to the [chapter page](../../chapters/19-subgraph-mining/index.md) or browse all [MicroSims](../index.md).*

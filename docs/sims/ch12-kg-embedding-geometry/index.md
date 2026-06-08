@@ -70,4 +70,4 @@ Define the TransE scoring function \(\|\mathbf{h} + \mathbf{r} - \mathbf{t}\|\).
 2. Sun et al. (2019). RotatE: Knowledge Graph Embedding by Relational Rotation in Complex Space. ICLR.
 
 ---
-*Part of Chapter 12: Knowledge Graph Embeddings. Return to the [chapter page](../../chapters/12-knowledge-graph-embeddings/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 12: Knowledge Graph Embeddings. Return to the [chapter page](../../chapters/12-knowledge-graph-embeddings/index.md) or browse all [MicroSims](../index.md).*

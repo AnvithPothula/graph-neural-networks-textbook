@@ -45,7 +45,7 @@ Complex data can be represented as a graph of relationships between objects. Suc
 
 This textbook is designed for:
 - **Graduate students** in CS, computational biology, data science, or any field with relational data
-- **Advanced undergraduates** who have completed an ML course and want to go deeper on graphs
+- **Advanced undergraduates** who have completed an [ML course](https://anvithpothula.github.io/machine-learning-textbook/) and want to go deeper on graphs
 - **Practitioners** building recommendation engines, drug discovery pipelines, fraud detection systems, or knowledge bases
 - **Researchers** entering graph ML who want a unified, up-to-date reference
 

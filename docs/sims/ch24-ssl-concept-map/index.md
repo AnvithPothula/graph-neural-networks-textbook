@@ -69,4 +69,4 @@ Compare DGI and a two-view GCL method along the three SSL properties. For each (
 2. You et al. (2020). Graph Contrastive Learning with Augmentations. NeurIPS.
 
 ---
-*Part of Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty. Return to the [chapter page](../../chapters/24-advanced-gnn-topics/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 24: Advanced GNN Topics: In-Context Learning and Uncertainty. Return to the [chapter page](../../chapters/24-advanced-gnn-topics/index.md) or browse all [MicroSims](../index.md).*

@@ -70,4 +70,4 @@ Define a meta-path formally. Explain how HAN (Hierarchical Attention Network) le
 2. Sun & Han (2012). Mining Heterogeneous Information Networks. Synthesis Lectures.
 
 ---
-*Part of Chapter 15: Heterogeneous Graphs. Return to the [chapter page](../../chapters/15-heterogeneous-graphs/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 15: Heterogeneous Graphs. Return to the [chapter page](../../chapters/15-heterogeneous-graphs/index.md) or browse all [MicroSims](../index.md).*

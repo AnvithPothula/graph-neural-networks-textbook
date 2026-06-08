@@ -70,4 +70,4 @@ Prove that label propagation converges on connected graphs and the fixed point s
 2. Zhou et al. (2004). Learning with Local and Global Consistency. NeurIPS.
 
 ---
-*Part of Chapter 5: Label Propagation and Semi-Supervised Learning. Return to the [chapter page](../../chapters/05-label-propagation/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 5: Label Propagation and Semi-Supervised Learning. Return to the [chapter page](../../chapters/05-label-propagation/index.md) or browse all [MicroSims](../index.md).*

@@ -70,4 +70,4 @@ State and prove the Xu et al. (2019) theorem: a GNN is at most as powerful as th
 2. Weisfeiler & Lehman (1968). A reduction of a graph to a canonical form.
 
 ---
-*Part of Chapter 9: Theory of GNNs: Expressiveness and the WL Test. Return to the [chapter page](../../chapters/09-gnn-theory/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 9: Theory of GNNs: Expressiveness and the WL Test. Return to the [chapter page](../../chapters/09-gnn-theory/index.md) or browse all [MicroSims](../index.md).*

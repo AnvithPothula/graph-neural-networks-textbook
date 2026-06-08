@@ -70,4 +70,4 @@ Describe the GNN design space along four dimensions: aggregation function, scope
 2. Bronstein et al. (2021). Geometric Deep Learning: Grids, Groups, Graphs, Geodesics, and Gauges.
 
 ---
-*Part of Chapter 26: Conclusion: The GNN Design Space and Open Problems. Return to the [chapter page](../../chapters/26-conclusion/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 26: Conclusion: The GNN Design Space and Open Problems. Return to the [chapter page](../../chapters/26-conclusion/index.md) or browse all [MicroSims](../index.md).*

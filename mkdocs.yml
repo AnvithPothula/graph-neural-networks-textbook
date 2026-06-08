@@ -19,7 +19,6 @@ site_url: 'https://AnvithPothula.github.io/graph-neural-networks-textbook/'
 # declared cover image. Verify the result with `bk-check-social-cover`.
 hooks:
   - plugins/social_override.py
-  - plugins/consent_mode.py
 
 # Repository
 repo_name: 'GitHub Repo'
@@ -201,22 +200,6 @@ nav:
     - WL Color Refinement Simulator: sims/ch02-wl-refinement/index.md
     - WL Refinement MicroSim: sims/ch09-wl-refinement/index.md
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   - Glossary: glossary.md
   - FAQ: faq.md
   - License: license.md
@@ -225,6 +208,7 @@ nav:
 # Theme configuration
 theme:
   name: material
+  custom_dir: overrides
   logo: img/mascot/neutral.png
   favicon: img/favicon.ico
   palette:
@@ -342,7 +326,5 @@ extra:
   textbook_name: 'Graph Neural Networks'
   textbook_version: '0.1'
 
-  # Google Analytics
-  analytics:
-    provider: google
-    property: G-NT6158LJT7
+  # Google Analytics is injected directly via overrides/main.html
+  # with Consent Mode v2 defaults (analytics_storage=granted, ads=denied).

@@ -70,4 +70,4 @@ Explain why betweenness centrality identifies bridge edges. Derive the computati
 2. Newman & Girvan (2004). Finding and evaluating community structure in networks. PRE.
 
 ---
-*Part of Chapter 18: Community Structure in Networks. Return to the [chapter page](../../chapters/18-community-structure/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 18: Community Structure in Networks. Return to the [chapter page](../../chapters/18-community-structure/index.md) or browse all [MicroSims](../index.md).*

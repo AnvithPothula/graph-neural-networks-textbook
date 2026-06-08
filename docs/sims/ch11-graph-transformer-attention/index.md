@@ -70,4 +70,4 @@ Describe the GPS architecture: what are the local and global modules, and how ar
 2. Ying et al. (2021). Do Transformers Really Perform Badly for Graph Representation? (Graphormer). NeurIPS.
 
 ---
-*Part of Chapter 11: Graph Transformers. Return to the [chapter page](../../chapters/11-graph-transformers/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 11: Graph Transformers. Return to the [chapter page](../../chapters/11-graph-transformers/index.md) or browse all [MicroSims](../index.md).*

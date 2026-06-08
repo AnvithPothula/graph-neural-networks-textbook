@@ -8,7 +8,7 @@
 
 **Total elements:** 1
 
-### [Matrix × Graph Explorer](../chapters/00-math-prerequisites/index.md#diagram-matrix-×-graph-explorer)
+### [Matrix × Graph Explorer](../chapters/00-math-prerequisites/index.md#diagram-matrix-graph-explorer)
 - **Status:** Implemented
 - **Type:** Microsim
 - **Bloom's Taxonomy:** Understand
@@ -140,7 +140,7 @@
 
 **Total elements:** 1
 
-### [WL Color Refinement Convergence — Causal Loop Diagram](../chapters/09-gnn-theory/index.md#diagram-wl-color-refinement-convergence-—-causal-loop-diagram)
+### [WL Color Refinement Convergence — Causal Loop Diagram](../chapters/09-gnn-theory/index.md#diagram-wl-color-refinement-convergence-causal-loop-diagram)
 - **Status:** Implemented
 - **Type:** Diagram
 - **Bloom's Taxonomy:** Apply
@@ -164,7 +164,7 @@
 
 **Total elements:** 1
 
-### [Graph Transformer Attention Heatmap](../chapters/11-graph-transformers/index.md#diagram-graph-transformer-attention-heatmap)
+### [Graph Transformer Attention Heatmap](../chapters/11-graph-transformers/index.md#1112-microsim-graph-transformer-attention-heatmap)
 - **Status:** Implemented
 - **Type:** Microsim
 - **Bloom's Taxonomy:** Analyze
@@ -176,7 +176,7 @@
 
 **Total elements:** 1
 
-### [TransE Geometry in 2D](../chapters/12-knowledge-graph-embeddings/index.md#diagram-transe-geometry-in-2d)
+### [TransE Geometry in 2D](../chapters/12-knowledge-graph-embeddings/index.md#1213-microsim-transe-geometry-in-2d)
 - **Status:** Implemented
 - **Type:** Microsim
 - **Bloom's Taxonomy:** Apply
@@ -188,7 +188,7 @@
 
 **Total elements:** 1
 
-### [Query Box Traversal](../chapters/13-kg-reasoning/index.md#diagram-query-box-traversal)
+### [Query Box Traversal](../chapters/13-kg-reasoning/index.md#138-microsim-query-box-traversal)
 - **Status:** Implemented
 - **Type:** Microsim
 - **Bloom's Taxonomy:** Analyze
@@ -312,7 +312,7 @@
 
 **Total elements:** 1
 
-### [Temporal Graph Memory Dynamics — Causal Loop Diagram](../chapters/22-temporal-graphs/index.md#diagram-temporal-graph-memory-dynamics-—-causal-loop-diagram)
+### [Temporal Graph Memory Dynamics — Causal Loop Diagram](../chapters/22-temporal-graphs/index.md#diagram-temporal-graph-memory-dynamics-causal-loop-diagram)
 - **Status:** Implemented
 - **Type:** Diagram
 - **Bloom's Taxonomy:** Understand
@@ -324,7 +324,7 @@
 
 **Total elements:** 2
 
-### [LLM+GNN Pipeline Explorer (Full Version)](../chapters/23-llm-gnn/index.md#diagram-llm+gnn-pipeline-explorer-full-version)
+### [LLM+GNN Pipeline Explorer (Full Version)](../chapters/23-llm-gnn/index.md#diagram-llmgnn-pipeline-explorer-full-version)
 - **Status:** Implemented
 - **Type:** Microsim
 - **Bloom's Taxonomy:** Evaluate
@@ -332,7 +332,7 @@
 - **Difficulty:** Medium
 - **Learning Objective:** TODO: Add learning objectives...
 
-### [LLM+GNN Pipeline — Text-to-Prediction](../chapters/23-llm-gnn/index.md#diagram-llm+gnn-pipeline-—-text-to-prediction)
+### [LLM+GNN Pipeline — Text-to-Prediction](../chapters/23-llm-gnn/index.md#diagram-llmgnn-pipeline-text-to-prediction)
 - **Status:** Implemented
 - **Type:** Microsim
 - **Bloom's Taxonomy:** Understand
@@ -352,7 +352,7 @@
 - **Difficulty:** Medium
 - **Learning Objective:** TODO: Add learning objectives...
 
-### [DGI vs. Contrastive Learning — Concept Map](../chapters/24-advanced-gnn-topics/index.md#diagram-dgi-vs-contrastive-learning-—-concept-map)
+### [DGI vs. Contrastive Learning — Concept Map](../chapters/24-advanced-gnn-topics/index.md#diagram-dgi-vs-contrastive-learning-concept-map)
 - **Status:** Implemented
 - **Type:** Diagram
 - **Bloom's Taxonomy:** Analyze
@@ -360,7 +360,7 @@
 - **Difficulty:** Easy
 - **Learning Objective:** TODO: Add learning objectives...
 
-### [Graph Contrastive Learning — Two-View Pipeline](../chapters/24-advanced-gnn-topics/index.md#diagram-graph-contrastive-learning-—-two-view-pipeline)
+### [Graph Contrastive Learning — Two-View Pipeline](../chapters/24-advanced-gnn-topics/index.md#diagram-graph-contrastive-learning-two-view-pipeline)
 - **Status:** Implemented
 - **Type:** Microsim
 - **Bloom's Taxonomy:** Create
@@ -372,7 +372,7 @@
 
 **Total elements:** 2
 
-### [Agent Graph Reasoning Loop — Causal Loop Diagram](../chapters/25-agents-and-graphs/index.md#diagram-agent-graph-reasoning-loop-—-causal-loop-diagram)
+### [Agent Graph Reasoning Loop — Causal Loop Diagram](../chapters/25-agents-and-graphs/index.md#diagram-agent-graph-reasoning-loop-causal-loop-diagram)
 - **Status:** Implemented
 - **Type:** Diagram
 - **Bloom's Taxonomy:** Apply
@@ -380,7 +380,7 @@
 - **Difficulty:** Easy
 - **Learning Objective:** TODO: Add learning objectives...
 
-### [Agent Tool-Use Graph — Interactive Planner](../chapters/25-agents-and-graphs/index.md#diagram-agent-tool-use-graph-—-interactive-planner)
+### [Agent Tool-Use Graph — Interactive Planner](../chapters/25-agents-and-graphs/index.md#diagram-agent-tool-use-graph-interactive-planner)
 - **Status:** Implemented
 - **Type:** Microsim
 - **Bloom's Taxonomy:** Understand

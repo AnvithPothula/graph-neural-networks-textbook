@@ -69,4 +69,4 @@ What property of a pair of graphs guarantees WL cannot distinguish them? Give a 
 2. Xu et al. (2019). How Powerful are Graph Neural Networks? ICLR.
 
 ---
-*Part of Chapter 2: Graph Properties and Traditional ML Features. Return to the [chapter page](../../chapters/02-graph-properties-and-features/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 2: Graph Properties and Traditional ML Features. Return to the [chapter page](../../chapters/02-graph-properties-and-features/index.md) or browse all [MicroSims](../index.md).*

@@ -70,4 +70,4 @@ Why does GAT use multiple heads? What is the theoretical advantage of attending 
 2. Brody et al. (2022). How Attentive are Graph Attention Networks? ICLR.
 
 ---
-*Part of Chapter 7: GNN Design Space: GraphSAGE and GAT. Return to the [chapter page](../../chapters/07-gnn-design-space/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 7: GNN Design Space: GraphSAGE and GAT. Return to the [chapter page](../../chapters/07-gnn-design-space/index.md) or browse all [MicroSims](../index.md).*

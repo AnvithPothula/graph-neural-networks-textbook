@@ -70,4 +70,4 @@ Compare GCN, GraphSAGE, and GAT along three axes: inductive capability, computat
 2. Hamilton et al. (2017). Inductive Representation Learning on Large Graphs. NeurIPS.
 
 ---
-*Part of Chapter 7: GNN Design Space: GraphSAGE and GAT. Return to the [chapter page](../../chapters/07-gnn-design-space/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 7: GNN Design Space: GraphSAGE and GAT. Return to the [chapter page](../../chapters/07-gnn-design-space/index.md) or browse all [MicroSims](../index.md).*

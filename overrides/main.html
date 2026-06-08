@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{#
+  Replace Material's minified analytics block with the standard Google tag
+  snippet so consent mode defaults are explicitly ordered before gtag('js').
+
+  Google requires gtag('consent', 'default', ...) to fire before
+  gtag('js', ...) and gtag('config', ...) for Consent Mode v2 to register.
+#}
+{% block analytics %}
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-NT6158LJT7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+
+    // Consent Mode v2 defaults — must come before gtag('js') and gtag('config')
+    gtag('consent', 'default', {
+      'analytics_storage': 'granted',
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied'
+    });
+
+    gtag('js', new Date());
+    gtag('config', 'G-NT6158LJT7');
+  </script>
+{% endblock %}

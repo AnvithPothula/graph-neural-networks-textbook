@@ -69,4 +69,4 @@ Explain why the graph Laplacian eigenvectors form a Fourier basis for graph sign
 2. Defferrard et al. (2016). Convolutional Neural Networks on Graphs with Fast Localized Spectral Filtering. NeurIPS.
 
 ---
-*Part of Chapter 6: GNN Foundations: Message Passing and GCN. Return to the [chapter page](../../chapters/06-gnn-foundations/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 6: GNN Foundations: Message Passing and GCN. Return to the [chapter page](../../chapters/06-gnn-foundations/index.md) or browse all [MicroSims](../index.md).*

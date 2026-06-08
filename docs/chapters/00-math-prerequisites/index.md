@@ -38,7 +38,7 @@ This chapter covers the following 20 concepts from the learning graph:
 
 ## Prerequisites
 
-This chapter has no prerequisites. It is the mathematical and computational foundation for the entire textbook. Readers comfortable with undergraduate linear algebra, multivariable calculus, and Python may skim or skip individual sections.
+This chapter has no prerequisites. It is the mathematical and computational foundation for the entire textbook. Readers comfortable with undergraduate linear algebra, multivariable calculus, and Python may skim or skip individual sections. Readers who need a broader machine learning foundation — covering supervised learning, neural networks, and optimization — before diving in can refer to the [Machine Learning Textbook](https://anvithpothula.github.io/machine-learning-textbook/).
 
 ---
 
@@ -663,6 +663,9 @@ This paper introduces the benchmarking framework we use throughout the textbook.
 
 **[7] Fey & Lenssen (2019) — Fast Graph Representation Learning with PyTorch Geometric.** *ICLR Workshop 2019.*
 The original PyTorch Geometric paper describes the `MessagePassing` base class that underlies every GNN implementation in Chapters 6–11. Read this early — it will make the PyG API feel less magical and more principled.
+
+**[8] Pothula, A. (2026) — Machine Learning Textbook.** *[anvithpothula.github.io/machine-learning-textbook](https://anvithpothula.github.io/machine-learning-textbook/)*
+Covers the full ML prerequisite stack — supervised and unsupervised learning, neural networks, backpropagation, optimization, and evaluation — at the same level of rigor and interactivity as this textbook. If any section of this chapter feels rushed, this is the companion to read alongside it.
 
 !!! mascot-celebration "You've Built Your Foundation!"
     <img src="../../img/mascot/celebration.png" class="mascot-admonition-img" alt="Sage celebrating">

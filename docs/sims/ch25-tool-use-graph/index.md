@@ -70,4 +70,4 @@ Explain how topological sort determines the execution order of a tool-use DAG. D
 2. Yao et al. (2023). ReAct: Synergizing Reasoning and Acting in Language Models. ICLR.
 
 ---
-*Part of Chapter 25: Agents and Graphs. Return to the [chapter page](../../chapters/25-agents-and-graphs/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 25: Agents and Graphs. Return to the [chapter page](../../chapters/25-agents-and-graphs/index.md) or browse all [MicroSims](../index.md).*

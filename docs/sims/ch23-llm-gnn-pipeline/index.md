@@ -70,4 +70,4 @@ For each of the five stages (tokenize, LLM encode, GNN aggregate, readout, class
 2. He et al. (2023). HARNESSING EXPLANATIONS: LLM-TO-LM INTERPRETER FOR ENHANCED TEXT-ATTRIBUTED GRAPH REPRESENTATION LEARNING (TAPE). ICLR 2024.
 
 ---
-*Part of Chapter 23: LLMs and GNNs: Text-Attributed Graphs and Joint Training. Return to the [chapter page](../../chapters/23-llm-gnn/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 23: LLMs and GNNs: Text-Attributed Graphs and Joint Training. Return to the [chapter page](../../chapters/23-llm-gnn/index.md) or browse all [MicroSims](../index.md).*

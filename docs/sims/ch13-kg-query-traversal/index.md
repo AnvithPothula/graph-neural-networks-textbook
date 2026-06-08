@@ -70,4 +70,4 @@ Derive the projection operator p(q, r) for Query2Box: given a box q = (center, o
 2. Hamilton et al. (2018). Embedding Methods for Link Prediction. Knowledge Graph Handbook.
 
 ---
-*Part of Chapter 13: Reasoning over Knowledge Graphs. Return to the [chapter page](../../chapters/13-kg-reasoning/) or browse all [MicroSims](../index.md).*
+*Part of Chapter 13: Reasoning over Knowledge Graphs. Return to the [chapter page](../../chapters/13-kg-reasoning/index.md) or browse all [MicroSims](../index.md).*
